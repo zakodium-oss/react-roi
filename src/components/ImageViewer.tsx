@@ -1,9 +1,10 @@
 import { Image, writeCanvas } from "image-js";
 import { useContext, useEffect, useRef, useState } from "react";
 import { BoxAnnotation } from "./BoxAnnotation";
-import { Rectangle } from "../types/Rectangle";
 import { DragContext } from "../context/DragContext";
-import { ResizeBox } from "./ResizeBox";
+import { Annotations } from "./Annotations";
+import { Point } from "../types/Point";
+import { getRectangle } from "../utilities/getRectangle";
 
 export function ImageViewer({
   image,
@@ -17,14 +18,17 @@ export function ImageViewer({
 }) {
   const { state, dispatch } = useContext(DragContext);
   const { width = image.width, height = image.height } = options;
-  const imageRef = useRef<HTMLCanvasElement>(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startPosition, setStartPosition] = useState<Point>({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = useState<Point>({ x: 0, y: 0 });
-  const rect = document.getElementById("draggable")?.getBoundingClientRect();
+  const [delta, setDelta] = useState({ width: 1, height: 1 });
+  const divRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLCanvasElement>(null);
 
-  console.log(state);
-
+  const rect = {
+    offsetLeft: divRef.current?.offsetLeft || 0,
+    offsetTop: divRef.current?.offsetTop || 0,
+  };
   function onMouseDown(event: React.MouseEvent) {
     setIsMouseDown(true);
     setStartPosition({ x: event.clientX, y: event.clientY });
@@ -39,19 +43,51 @@ export function ImageViewer({
       type: "addDragObject",
       payload: {
         id: Math.random(),
-        selected: true,
-        rectangle: swap(rect as DOMRect, startPosition, currentPosition),
+        selected: false,
+        rectangle: getRectangle(startPosition, currentPosition, delta, rect),
       },
     });
   }
 
   function onMouseMove(event: React.MouseEvent) {
     if (isMouseDown) {
-      setCurrentPosition({ x: event.clientX, y: event.clientY });
+      setCurrentPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
     }
   }
 
-  const rectangle = swap(rect as DOMRect, startPosition, currentPosition);
+  function onMouseUpOutside() {
+    setIsMouseDown(false);
+    // const x =
+    //   event.clientX > width / delta.width ? width / delta.width : event.clientX;
+    // const y =
+    //   event.clientY > height / delta.height
+    //     ? height / delta.height
+    //     : event.clientY;
+  }
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.target === imageRef.current) {
+          setDelta({
+            width: width / entry.contentRect.width,
+            height: height / entry.contentRect.height,
+          });
+        }
+      }
+    });
+    window.addEventListener("mouseup", onMouseUpOutside);
+    if (imageRef.current) resizeObserver.observe(imageRef.current);
+    return () => {
+      if (imageRef.current) resizeObserver.unobserve(imageRef.current);
+      window.removeEventListener("mouseup", onMouseUpOutside);
+    };
+  }, [image]);
+
+  const rectangle = getRectangle(startPosition, currentPosition, delta, rect);
 
   let boxes = state.objects.map((obj) => (
     <BoxAnnotation key={obj.id} rectangle={obj.rectangle} />
@@ -60,6 +96,7 @@ export function ImageViewer({
   let annotations = [
     <BoxAnnotation
       rectangle={rectangle}
+      key={"new_rect"}
       options={{
         fill: "transparent",
         stroke: "#44aaff",
@@ -74,96 +111,26 @@ export function ImageViewer({
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
-  }, [imageRef, image]);
+  }, [image]);
 
   return (
     <div
       id="draggable"
+      ref={divRef}
+      style={{ position: "relative", width: "50%" }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
-      style={{
-        position: "relative",
-        margin: "10px",
-        width: "50%",
-        height: "50%",
-      }}
     >
-      <canvas ref={imageRef} style={{ maxWidth: "100%" }} />
+      <canvas ref={imageRef} style={{ maxWidth: "100%", maxHeight: "100%" }} />
       {annotations !== undefined ? (
-        <Annotations annotations={annotations} width={width} height={height} />
+        <Annotations
+          annotations={annotations}
+          width={width}
+          height={height}
+          imageRef={imageRef}
+        />
       ) : null}
     </div>
   );
-}
-
-function Annotations({
-  annotations,
-  width,
-  height,
-}: {
-  annotations: JSX.Element[];
-  width: number;
-  height: number;
-}) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        height="100%"
-        viewBox={`0 0 ${width}px ${height}px`}
-      >
-        {annotations}
-      </svg>
-      {/* <ResizeBox children={annotations[0]} width={300} height={200} /> */}
-    </div>
-  );
-}
-
-type Point = {
-  x: number;
-  y: number;
-};
-
-function swap(rect: DOMRect, p0: Point, p1: Point): Rectangle {
-  let result = {
-    height: 0,
-    origin: { row: 0, column: 0 },
-    width: 0,
-  };
-  if (p0.x < p1.x && p0.y < p1.y) {
-    result = {
-      origin: { column: p0.x - rect.left, row: p0.y - rect.top },
-      width: p1.x - p0.x,
-      height: p1.y - p0.y,
-    };
-  } else if (p1.x > p0.x && p1.y < p0.y) {
-    result = {
-      origin: { column: p0.x - rect.left, row: p1.y - rect.top },
-      width: p1.x - p0.x,
-      height: p0.y - p1.y,
-    };
-  } else if (p0.x > p1.x && p0.y > p1.y) {
-    result = {
-      origin: { column: p1.x - rect.left, row: p1.y - rect.top },
-      width: p0.x - p1.x,
-      height: p0.y - p1.y,
-    };
-  } else if (p1.x < p0.x && p1.y > p0.y) {
-    result = {
-      origin: { column: p1.x - rect.left, row: p0.y - rect.top },
-      width: p0.x - p1.x,
-      height: p1.y - p0.y,
-    };
-  }
-  return result;
 }

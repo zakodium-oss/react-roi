@@ -12,6 +12,7 @@
     "image-js": "^0.0.0-next-5076c621a0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-inspector": "^6.0.1",
     "react-router-dom": "^6.11.0"
   },
   "devDependencies": {

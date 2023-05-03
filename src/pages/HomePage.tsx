@@ -1,12 +1,12 @@
 import * as Image from "image-js";
 
 import {} from "../../data/test.png";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ImageViewer } from "../components/ImageViewer";
-import { DragProvider } from "../context/DragContext";
+import { DragProvider, DragContext } from "../context/DragContext";
+import { ObjectInspector } from "react-inspector";
 
 export function HomePage() {
-  // TODO: this is hardcoded. Find the way to make it reusable.
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
   const [image, setImage] = useState<Image.Image>(new Image.Image(1, 1));
   useEffect(() => {
@@ -16,12 +16,39 @@ export function HomePage() {
 }
 
 function DraggableComponent({ image }: { image: Image.Image }) {
-  console.log("image", { width: image.width, height: image.height });
   return (
     <DragProvider>
-      <ImageViewer image={image} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <ImageViewer
+          image={image}
+          options={{ width: image.width, height: image.height }}
+        />
+        <div
+          style={{
+            position: "relative",
+            backgroundColor: "grey",
+            width: "50%",
+            height: "50%",
+          }}
+        >
+          <StateObject />
+        </div>
+      </div>
     </DragProvider>
   );
+}
+
+function StateObject() {
+  const { state } = useContext(DragContext);
+  return <ObjectInspector expandLevel={2} data={state} />;
 }
 
 async function fetchImage(url: URL, setImage: React.Dispatch<Image.Image>) {
