@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import './css/Pages.css';
 
 export function HomePage() {
-  console.log('-------- Homepage');
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
   const [image, setImage] = useState<Image.Image>(new Image.Image(1, 1));
   useEffect(() => {
@@ -21,7 +20,7 @@ export function HomePage() {
     <div className="page">
       <div className="bar-button">
         <button className="button" style={{ marginLeft: '20px' }}>
-          <Link to="/">Movable</Link>
+          <Link to="/moveable">Moveable</Link>
         </button>
       </div>
       <div>

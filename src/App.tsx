@@ -6,7 +6,7 @@ import { MoveablePage } from './pages/MovablePage';
 
 const router = createBrowserRouter([
   {
-    path: '/movable',
+    path: '/moveable',
     element: <MoveablePage />,
     children: [],
   },

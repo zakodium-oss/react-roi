@@ -9,7 +9,6 @@ export function StateObject({ image }: { image: Image }) {
   useEffect(() => {
     setData(state);
   }, [image]);
-  console.log(image);
   return (
     <div style={{ width: '80%', height: '100%' }}>
       <ObjectInspector expandLevel={2} data={data} />

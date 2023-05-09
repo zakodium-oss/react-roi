@@ -16,7 +16,6 @@ export function ImageViewer({
     height?: number;
   };
 }) {
-  console.log('-------- ImageViewer');
   const { state, dispatch } = useContext(DragContext);
   const { width = image.width, height = image.height } = options;
   const [isMouseDown, setIsMouseDown] = useState(false);
