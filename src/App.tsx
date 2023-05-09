@@ -1,11 +1,22 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { HomePage } from "./pages/HomePage";
+import { DragProvider } from './context/DragContext';
+import { HomePage } from './pages/HomePage';
+import { MoveablePage } from './pages/MovablePage';
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomePage />,
+    path: '/movable',
+    element: <MoveablePage />,
+    children: [],
+  },
+  {
+    path: '/',
+    element: (
+      <DragProvider>
+        <HomePage />
+      </DragProvider>
+    ),
     children: [],
   },
 ]);

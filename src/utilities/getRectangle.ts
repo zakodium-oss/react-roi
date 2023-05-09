@@ -1,5 +1,5 @@
-import { Point } from "../types/Point";
-import { Rectangle } from "../types/Rectangle";
+import { Point } from '../types/Point';
+import { Rectangle } from '../types/Rectangle';
 
 export function getRectangle(
   p0: Point,

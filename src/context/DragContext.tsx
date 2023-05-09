@@ -1,5 +1,5 @@
-import { createContext, Dispatch, ReactNode, useReducer } from "react";
-import { Rectangle } from "../types/Rectangle";
+import { createContext, Dispatch, ReactNode, useReducer } from 'react';
+import { Rectangle } from '../types/Rectangle';
 
 export type DragObject = {
   id: string | number;
@@ -7,7 +7,7 @@ export type DragObject = {
   rectangle: Rectangle;
 };
 
-type DragState = {
+export type DragState = {
   objects: DragObject[];
 };
 
@@ -20,7 +20,9 @@ type DragContextProps = {
   dispatch: Dispatch<Actions>;
 };
 
-export const DragContext = createContext({} as DragContextProps);
+export const DragContext = createContext<DragContextProps>(
+  {} as DragContextProps
+);
 
 export const DragProvider = ({
   children,
@@ -36,14 +38,13 @@ export const DragProvider = ({
 };
 
 type Actions = {
-  type: "addDragObject";
+  type: 'addDragObject';
   payload: DragObject;
 };
 
 export const dataReducer = (state: DragState, action: Actions) => {
   switch (action.type) {
-    case "addDragObject":
-      console.log("-------------", action.type);
+    case 'addDragObject':
       state.objects.push(action.payload);
       return state;
 

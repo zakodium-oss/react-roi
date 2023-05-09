@@ -1,4 +1,4 @@
-import { Rectangle } from "../types/Rectangle";
+import { Rectangle } from '../types/Rectangle';
 
 export function BoxAnnotation({
   rectangle,
@@ -11,25 +11,24 @@ export function BoxAnnotation({
     fill?: string;
     strokeDasharray?: number | string;
     strokeDashoffset?: number | string;
+    zIndex?: number | undefined;
   };
 }) {
   const defaultOptions = {
     strokeWidth: 4,
-    stroke: "black",
-    fill: "black",
+    stroke: 'black',
+    fill: 'black',
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
   const { height, width, origin } = rectangle;
   return (
-    <g>
-      <rect
-        x={origin.column}
-        y={origin.row}
-        width={width}
-        height={height}
-        style={{ ...defaultOptions, ...options }}
-      ></rect>
-    </g>
+    <rect
+      x={origin.column}
+      y={origin.row}
+      width={width}
+      height={height}
+      style={{ ...defaultOptions, ...options }}
+    ></rect>
   );
 }

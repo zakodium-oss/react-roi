@@ -1,10 +1,10 @@
-import { Image, writeCanvas } from "image-js";
-import { useContext, useEffect, useRef, useState } from "react";
-import { BoxAnnotation } from "./BoxAnnotation";
-import { DragContext } from "../context/DragContext";
-import { Annotations } from "./Annotations";
-import { Point } from "../types/Point";
-import { getRectangle } from "../utilities/getRectangle";
+import { Image, writeCanvas } from 'image-js';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { BoxAnnotation } from './BoxAnnotation';
+import { DragContext } from '../context/DragContext';
+import { Point } from '../types/Point';
+import { getRectangle } from '../utilities/getRectangle';
+import './css/ImageViewer.css';
 
 export function ImageViewer({
   image,
@@ -16,6 +16,7 @@ export function ImageViewer({
     height?: number;
   };
 }) {
+  console.log('-------- ImageViewer');
   const { state, dispatch } = useContext(DragContext);
   const { width = image.width, height = image.height } = options;
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -40,7 +41,7 @@ export function ImageViewer({
     setStartPosition({ x: event.clientX, y: event.clientY });
     setCurrentPosition({ x: event.clientX, y: event.clientY });
     dispatch({
-      type: "addDragObject",
+      type: 'addDragObject',
       payload: {
         id: Math.random(),
         selected: false,
@@ -79,11 +80,11 @@ export function ImageViewer({
         }
       }
     });
-    window.addEventListener("mouseup", onMouseUpOutside);
+    window.addEventListener('mouseup', onMouseUpOutside);
     if (imageRef.current) resizeObserver.observe(imageRef.current);
     return () => {
       if (imageRef.current) resizeObserver.unobserve(imageRef.current);
-      window.removeEventListener("mouseup", onMouseUpOutside);
+      window.removeEventListener('mouseup', onMouseUpOutside);
     };
   }, [image]);
 
@@ -96,13 +97,14 @@ export function ImageViewer({
   let annotations = [
     <BoxAnnotation
       rectangle={rectangle}
-      key={"new_rect"}
+      key={'new_rect'}
       options={{
-        fill: "transparent",
-        stroke: "#44aaff",
+        fill: 'transparent',
+        stroke: '#44aaff',
         strokeWidth: 2,
-        strokeDasharray: "5",
+        strokeDasharray: 5,
         strokeDashoffset: 5,
+        zIndex: 1,
       }}
     />,
     ...boxes,
@@ -117,19 +119,16 @@ export function ImageViewer({
     <div
       id="draggable"
       ref={divRef}
-      style={{ position: "relative", width: "50%" }}
+      style={{ position: 'relative', width: '100%' }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
     >
-      <canvas ref={imageRef} style={{ maxWidth: "100%", maxHeight: "100%" }} />
+      <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />
       {annotations !== undefined ? (
-        <Annotations
-          annotations={annotations}
-          width={width}
-          height={height}
-          imageRef={imageRef}
-        />
+        <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
+          {annotations}
+        </svg>
       ) : null}
     </div>
   );

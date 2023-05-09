@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export function ResizeBox({
   children,
@@ -12,20 +12,20 @@ export function ResizeBox({
   return (
     <div
       style={{
-        position: "relative",
+        position: 'relative',
         width: `${width}px`,
         height: `${height}px`,
-        border: "1px dashed black",
+        border: '1px dashed black',
       }}
     >
-      <Pointer data={{ top: "-5px", left: "-5px" }} />
-      <Pointer data={{ top: "-5px", right: "-5px" }} />
-      <Pointer data={{ bottom: "-5px", left: "-5px" }} />
-      <Pointer data={{ bottom: "-5px", right: "-5px" }} />
-      <Pointer data={{ top: "-5px", left: "50%" }} />
-      <Pointer data={{ bottom: "-5px", left: "50%" }} />
-      <Pointer data={{ top: "50%", left: "-5px" }} />
-      <Pointer data={{ top: "50%", right: "-5px" }} />
+      <Pointer data={{ top: '-5px', left: '-5px' }} />
+      <Pointer data={{ top: '-5px', right: '-5px' }} />
+      <Pointer data={{ bottom: '-5px', left: '-5px' }} />
+      <Pointer data={{ bottom: '-5px', right: '-5px' }} />
+      <Pointer data={{ top: '-5px', left: '50%' }} />
+      <Pointer data={{ bottom: '-5px', left: '50%' }} />
+      <Pointer data={{ top: '50%', left: '-5px' }} />
+      <Pointer data={{ top: '50%', right: '-5px' }} />
       {children}
     </div>
   );
@@ -40,15 +40,15 @@ function Pointer({
   return (
     <div
       style={{
-        position: "absolute",
+        position: 'absolute',
         top,
         bottom,
         right,
         left,
-        width: "10px",
-        height: "10px",
-        borderRadius: "20%",
-        backgroundColor: "#44aaff",
+        width: '10px',
+        height: '10px',
+        borderRadius: '20%',
+        backgroundColor: '#44aaff',
       }}
     ></div>
   );
