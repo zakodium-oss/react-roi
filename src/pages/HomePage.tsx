@@ -9,6 +9,7 @@ import { StateObject } from '../components/StateObject';
 import { Link } from 'react-router-dom';
 
 import './css/Pages.css';
+import { ResizeBox } from '../components/ResizeBox';
 
 export function HomePage() {
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
@@ -46,7 +47,8 @@ function DraggableComponent({ image }: { image: Image.Image }) {
         image={image}
         options={{ width: image.width, height: image.height }}
       />
-      <StateObject image={image} />
+
+      <StateObject />
     </div>
   );
 }

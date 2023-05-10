@@ -5,6 +5,12 @@ import { DragContext } from '../context/DragContext';
 import { Point } from '../types/Point';
 import { getRectangle } from '../utilities/getRectangle';
 import './css/ImageViewer.css';
+import { ResizeBox, SizeContainer } from './ResizeBox';
+import { Rectangle } from '../types/Rectangle';
+
+type ResizerState = {};
+
+const resizerReducer = (state, action) => {};
 
 export function ImageViewer({
   image,
@@ -22,6 +28,12 @@ export function ImageViewer({
   const [startPosition, setStartPosition] = useState<Point>({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = useState<Point>({ x: 0, y: 0 });
   const [delta, setDelta] = useState({ width: 1, height: 1 });
+  const [object, setObject] = useState<Rectangle>({
+    height: 0,
+    width: 0,
+    origin: { column: 0, row: 0 },
+  });
+  console.log({ object });
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
 
@@ -89,8 +101,12 @@ export function ImageViewer({
 
   const rectangle = getRectangle(startPosition, currentPosition, delta, rect);
 
-  let boxes = state.objects.map((obj) => (
-    <BoxAnnotation key={obj.id} rectangle={obj.rectangle} />
+  let boxes = state.objects.map((obj, index) => (
+    <BoxAnnotation
+      key={`annotation_${index}`}
+      rectangle={obj.rectangle}
+      callback={setObject}
+    />
   ));
 
   let annotations = [
@@ -107,6 +123,7 @@ export function ImageViewer({
       }}
     />,
     ...boxes,
+    <SizeContainer rectangle={object}></SizeContainer>,
   ];
 
   useEffect(() => {

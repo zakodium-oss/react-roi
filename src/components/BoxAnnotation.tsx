@@ -3,6 +3,7 @@ import { Rectangle } from '../types/Rectangle';
 export function BoxAnnotation({
   rectangle,
   options,
+  callback,
 }: {
   rectangle: Rectangle;
   options?: {
@@ -13,6 +14,7 @@ export function BoxAnnotation({
     strokeDashoffset?: number | string;
     zIndex?: number | undefined;
   };
+  callback?: React.Dispatch<Rectangle>;
 }) {
   const defaultOptions = {
     strokeWidth: 4,
@@ -24,6 +26,14 @@ export function BoxAnnotation({
   const { height, width, origin } = rectangle;
   return (
     <rect
+      // onClick={() => callback && callback(rectangle) }
+      onClick={() => {
+        console.log(rectangle);
+        console.log(callback);
+        if (!callback) return;
+        callback(rectangle);
+        console.log('passed', rectangle);
+      }}
       x={origin.column}
       y={origin.row}
       width={width}
