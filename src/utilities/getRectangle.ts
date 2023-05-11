@@ -2,8 +2,7 @@ import { Point } from '../types/Point';
 import { Rectangle } from '../types/Rectangle';
 
 export function getRectangle(
-  p0: Point,
-  p1: Point,
+  rectangle: Rectangle,
   delta: { width: number; height: number },
   rect: {
     offsetLeft: number;
@@ -14,6 +13,16 @@ export function getRectangle(
     origin: { row: 0, column: 0 },
     width: 0,
     height: 0,
+  };
+
+  const p0 = {
+    x: rectangle.origin.column,
+    y: rectangle.origin.row,
+  };
+
+  const p1 = {
+    x: rectangle.origin.column + rectangle.width,
+    y: rectangle.origin.row + rectangle.height,
   };
 
   if (rect) {
@@ -37,6 +46,5 @@ export function getRectangle(
       result.height = Math.floor((p0.y - p1.y) * delta.height);
     }
   }
-
   return result;
 }

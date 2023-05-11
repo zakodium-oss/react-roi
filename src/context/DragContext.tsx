@@ -37,16 +37,24 @@ export const DragProvider = ({
   );
 };
 
-type Actions = {
-  type: 'addDragObject';
-  payload: DragObject;
-};
+type Actions =
+  | {
+      type: 'addDragObject';
+      payload: DragObject;
+    }
+  | {
+      type: 'updateState';
+      payload: DragState;
+    };
 
 export const dataReducer = (state: DragState, action: Actions) => {
   switch (action.type) {
     case 'addDragObject':
       state.objects.push(action.payload);
       return state;
+
+    case 'updateState':
+      return action.payload;
 
     default:
       return state;

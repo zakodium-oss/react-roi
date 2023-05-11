@@ -1,10 +1,13 @@
+import { EventActions } from '../context/EventReducer';
 import { Rectangle } from '../types/Rectangle';
 
 export function BoxAnnotation({
+  id,
   rectangle,
   options,
   callback,
 }: {
+  id: string | number;
   rectangle: Rectangle;
   options?: {
     strokeWidth?: number | string;
@@ -14,7 +17,7 @@ export function BoxAnnotation({
     strokeDashoffset?: number | string;
     zIndex?: number | undefined;
   };
-  callback?: React.Dispatch<Rectangle>;
+  callback?: React.Dispatch<EventActions>;
 }) {
   const defaultOptions = {
     strokeWidth: 4,
@@ -26,14 +29,7 @@ export function BoxAnnotation({
   const { height, width, origin } = rectangle;
   return (
     <rect
-      // onClick={() => callback && callback(rectangle) }
-      onClick={() => {
-        console.log(rectangle);
-        console.log(callback);
-        if (!callback) return;
-        callback(rectangle);
-        console.log('passed', rectangle);
-      }}
+      onClick={() => callback && callback({ type: 'setObject', payload: id })}
       x={origin.column}
       y={origin.row}
       width={width}
