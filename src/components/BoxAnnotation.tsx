@@ -6,6 +6,7 @@ export function BoxAnnotation({
   rectangle,
   options,
   callback,
+  onMouseDown,
 }: {
   id: string | number;
   rectangle: Rectangle;
@@ -18,6 +19,7 @@ export function BoxAnnotation({
     zIndex?: number | undefined;
   };
   callback?: React.Dispatch<EventActions>;
+  onMouseDown?: (event: any) => void;
 }) {
   const defaultOptions = {
     strokeWidth: 4,
@@ -29,6 +31,7 @@ export function BoxAnnotation({
   const { height, width, origin } = rectangle;
   return (
     <rect
+      onMouseDown={onMouseDown}
       onClick={() => callback && callback({ type: 'setObject', payload: id })}
       x={origin.column}
       y={origin.row}
