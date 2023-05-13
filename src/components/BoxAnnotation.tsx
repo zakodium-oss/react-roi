@@ -7,6 +7,8 @@ export function BoxAnnotation({
   options,
   callback,
   onMouseDown,
+  onMouseUp,
+  onClick,
 }: {
   id: string | number;
   rectangle: Rectangle;
@@ -20,6 +22,8 @@ export function BoxAnnotation({
   };
   callback?: React.Dispatch<EventActions>;
   onMouseDown?: (event: any) => void;
+  onMouseUp?: (event: any) => void;
+  onClick?: (event: any) => void;
 }) {
   const defaultOptions = {
     strokeWidth: 4,
@@ -32,6 +36,8 @@ export function BoxAnnotation({
   return (
     <rect
       onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onClickCapture={onClick}
       onClick={() => callback && callback({ type: 'setObject', payload: id })}
       x={origin.column}
       y={origin.row}

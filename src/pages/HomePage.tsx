@@ -2,8 +2,7 @@ import * as Image from 'image-js';
 
 import {} from '../../data/test.png';
 
-import { ImageViewer } from '../components/ImageViewer';
-import { DragProvider, DragContext, DragState } from '../context/DragContext';
+import { ImageComponent } from '../components/ImageComponent';
 import { useEffect, useState } from 'react';
 import { StateObject } from '../components/StateObject';
 import { Link } from 'react-router-dom';
@@ -43,7 +42,7 @@ function DraggableComponent({ image }: { image: Image.Image }) {
         width: '100%',
       }}
     >
-      <ImageViewer
+      <ImageComponent
         image={image}
         options={{ width: image.width, height: image.height }}
       />

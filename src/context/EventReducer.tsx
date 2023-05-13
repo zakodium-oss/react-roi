@@ -1,4 +1,3 @@
-import { useReducer } from 'react';
 import { Point } from '../types/Point';
 
 export type EventStateType = {
@@ -6,12 +5,12 @@ export type EventStateType = {
   startPosition: Point;
   currentPosition: Point;
   delta: { width: number; height: number };
-  object: string | number;
+  object: string | number | undefined;
   setChangeState: {
     resize: boolean;
     drag: boolean;
-    position: number;
-    id: number | string | undefined;
+    delta?: Point & { dx: number; dy: number };
+    position?: number;
   };
 };
 
@@ -34,15 +33,15 @@ export type EventActions =
     }
   | {
       type: 'setObject';
-      payload: string | number;
+      payload: string | number | undefined;
     }
   | {
       type: 'setChangeState';
       payload: {
         resize: boolean;
         drag: boolean;
-        position: number;
-        id: number | string | undefined;
+        delta?: Point & { dx: number; dy: number };
+        position?: number;
       };
     };
 
@@ -92,7 +91,7 @@ export const intialEventState = {
   isMouseDown: false,
   startPosition: { x: 0, y: 0 },
   currentPosition: { x: 0, y: 0 },
-  delta: { width: 1, height: 1 },
   object: 0,
-  setChangeState: { resize: false, drag: false, id: undefined, position: 0 },
+  delta: { width: 1, height: 1 },
+  setChangeState: { resize: false, drag: false, id: 0, position: 0 },
 };

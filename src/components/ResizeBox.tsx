@@ -50,7 +50,7 @@ export function ResizeBox({
     );
     eventDispatch({
       type: 'setChangeState',
-      payload: { resize: true, drag: false, position, id: eventState.object },
+      payload: { resize: true, drag: false, position },
     });
     eventDispatch({
       type: 'setStartPosition',
@@ -65,26 +65,28 @@ export function ResizeBox({
   return (
     <>
       <rect
-        x={rectangle.origin.column}
-        y={rectangle.origin.row}
-        width={rectangle.width}
-        height={rectangle.height}
+        x={rectangle.origin.column - 8}
+        y={rectangle.origin.row - 8}
+        width={rectangle.width + 16}
+        height={rectangle.height + 16}
         style={{
+          padding: '10px',
           fill: 'transparent',
           stroke: '#44aaff',
-          strokeWidth: 3,
-          zIndex: 1,
+          strokeDasharray: 8,
+          strokeWidth: 8,
         }}
       ></rect>
       {pointers.map((pointer) => (
-        <circle
+        <rect
           key={`pointer-${pointer.position}`}
-          cx={pointer.cx}
-          cy={pointer.cy}
-          r={20}
+          x={pointer.cx - 8}
+          y={pointer.cy - 8}
+          width={16}
+          height={16}
           className="circle"
           onMouseDownCapture={() => onMouseDown(pointer.position)}
-        ></circle>
+        ></rect>
       ))}
     </>
   );
