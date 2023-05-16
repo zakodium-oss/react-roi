@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Rectangle } from '../types/Rectangle';
-import { DragContext, DragObject } from '../context/DragContext';
+import { DataContext, DataObject } from '../context/DataContext';
 
 import './css/ResizeBox.css';
 import { EventActions, EventStateType } from '../context/EventReducer';
@@ -15,7 +15,7 @@ export function ResizeBox({
   rect,
 }: {
   id: string | number;
-  object: DragObject;
+  object: DataObject;
   rectangle: Rectangle;
   eventState: EventStateType;
   eventDispatch: React.Dispatch<EventActions>;
@@ -28,7 +28,7 @@ export function ResizeBox({
     offsetTop: number;
   };
 }) {
-  const { state } = useContext(DragContext);
+  const { state } = useContext(DataContext);
   const index = state.objects.findIndex((item) => item.id === id);
   const currentRectangle =
     index !== -1
@@ -49,15 +49,15 @@ export function ResizeBox({
       rect
     );
     eventDispatch({
-      type: 'setChangeState',
+      type: 'setDynamicState',
       payload: { resize: true, drag: false, position },
     });
     eventDispatch({
-      type: 'setStartPosition',
+      type: 'setStartPoint',
       payload: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
     });
     eventDispatch({
-      type: 'setCurrentPosition',
+      type: 'setCurrentPoint',
       payload: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
     });
   }

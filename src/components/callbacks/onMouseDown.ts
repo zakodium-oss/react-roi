@@ -1,11 +1,11 @@
-import { Actions, DragState } from '../../context/DragContext';
+import { Actions, DataState } from '../../context/DataContext';
 import { EventActions, EventStateType } from '../../context/EventReducer';
 
 export function onMouseDown(
   event: React.MouseEvent,
   rect: { offsetLeft: number; offsetTop: number },
   componentState: {
-    contextState: DragState;
+    contextState: DataState;
     contextDispatch: React.Dispatch<Actions>;
     eventState: EventStateType;
     eventDispatch: React.Dispatch<EventActions>;
@@ -13,18 +13,17 @@ export function onMouseDown(
 ) {
   const { eventDispatch, eventState } = componentState;
   eventDispatch({ type: 'setIsMouseDown', payload: true });
-
-  if (eventState.setChangeState.resize) {
+  if (eventState.dynamicState.resize) {
     eventDispatch({
-      type: 'setCurrentPosition',
+      type: 'setCurrentPoint',
       payload: { x: event.clientX, y: event.clientY },
     });
-  } else if (eventState.setChangeState.drag) {
+  } else if (eventState.dynamicState.drag) {
     const initPoint = { x: event.clientX, y: event.clientY };
-    eventDispatch({ type: 'setCurrentPosition', payload: initPoint });
+    eventDispatch({ type: 'setStartPoint', payload: initPoint });
   } else {
     const initPoint = { x: event.clientX, y: event.clientY };
-    eventDispatch({ type: 'setStartPosition', payload: initPoint });
-    eventDispatch({ type: 'setCurrentPosition', payload: initPoint });
+    eventDispatch({ type: 'setStartPoint', payload: initPoint });
+    eventDispatch({ type: 'setCurrentPoint', payload: initPoint });
   }
 }

@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { DragProvider } from './context/DragContext';
+import { DataProvider } from './context/DataContext';
 import { HomePage } from './pages/HomePage';
 import { MoveablePage } from './pages/MovablePage';
 
@@ -13,9 +13,9 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <DragProvider>
+      <DataProvider>
         <HomePage />
-      </DragProvider>
+      </DataProvider>
     ),
     children: [],
   },

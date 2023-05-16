@@ -1,7 +1,7 @@
-import { Actions, DragState } from '../../context/DragContext';
+import { Actions, DataState } from '../../context/DataContext';
 import { EventActions, EventStateType } from '../../context/EventReducer';
 
-export function dragObject(
+export function selectObject(
   event: React.MouseEvent,
   id: string | number,
   rect: {
@@ -9,7 +9,7 @@ export function dragObject(
     offsetTop: number;
   },
   componentState: {
-    contextState: DragState;
+    contextState: DataState;
     contextDispatch: React.Dispatch<Actions>;
     eventState: EventStateType;
     eventDispatch: React.Dispatch<EventActions>;
@@ -17,7 +17,7 @@ export function dragObject(
 ) {
   const { eventDispatch } = componentState;
   eventDispatch({
-    type: 'setChangeState',
+    type: 'setDynamicState',
     payload: {
       drag: true,
       resize: false,

@@ -1,8 +1,8 @@
-import { Actions, DragState } from '../../context/DragContext';
+import { Actions, DataContext, DataState } from '../../context/DataContext';
 import { EventActions, EventStateType } from '../../context/EventReducer';
 
 export function onMouseUpOutside(componentState: {
-  contextState: DragState;
+  contextState: DataState;
   contextDispatch: React.Dispatch<Actions>;
   eventState: EventStateType;
   eventDispatch: React.Dispatch<EventActions>;

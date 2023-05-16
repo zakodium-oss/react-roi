@@ -2,11 +2,11 @@ import { Point } from '../types/Point';
 
 export type EventStateType = {
   isMouseDown: boolean;
-  startPosition: Point;
-  currentPosition: Point;
+  startPoint: Point;
+  currentPoint: Point;
   delta: { width: number; height: number };
   object: string | number | undefined;
-  setChangeState: {
+  dynamicState: {
     resize: boolean;
     drag: boolean;
     delta?: Point & { dx: number; dy: number };
@@ -20,11 +20,11 @@ export type EventActions =
       payload: boolean;
     }
   | {
-      type: 'setStartPosition';
+      type: 'setStartPoint';
       payload: Point;
     }
   | {
-      type: 'setCurrentPosition';
+      type: 'setCurrentPoint';
       payload: Point;
     }
   | {
@@ -36,7 +36,7 @@ export type EventActions =
       payload: string | number | undefined;
     }
   | {
-      type: 'setChangeState';
+      type: 'setDynamicState';
       payload: {
         resize: boolean;
         drag: boolean;
@@ -55,15 +55,15 @@ export const eventReducer = (
         ...eventState,
         isMouseDown: action.payload,
       };
-    case 'setStartPosition':
+    case 'setStartPoint':
       return {
         ...eventState,
-        startPosition: action.payload,
+        startPoint: action.payload,
       };
-    case 'setCurrentPosition':
+    case 'setCurrentPoint':
       return {
         ...eventState,
-        currentPosition: action.payload,
+        currentPoint: action.payload,
       };
     case 'setDelta':
       return {
@@ -76,10 +76,10 @@ export const eventReducer = (
         object: action.payload,
       };
 
-    case 'setChangeState':
+    case 'setDynamicState':
       return {
         ...eventState,
-        setChangeState: action.payload,
+        dynamicState: action.payload,
       };
 
     default:
@@ -89,9 +89,9 @@ export const eventReducer = (
 
 export const intialEventState = {
   isMouseDown: false,
-  startPosition: { x: 0, y: 0 },
-  currentPosition: { x: 0, y: 0 },
+  startPoint: { x: 0, y: 0 },
+  currentPoint: { x: 0, y: 0 },
   object: 0,
   delta: { width: 1, height: 1 },
-  setChangeState: { resize: false, drag: false, id: 0, position: 0 },
+  dynamicState: { resize: false, drag: false, id: 0, position: 0 },
 };

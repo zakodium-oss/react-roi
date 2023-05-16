@@ -26,7 +26,7 @@ export function BoxAnnotation({
   onClick?: (event: any) => void;
 }) {
   const defaultOptions = {
-    strokeWidth: 4,
+    strokeWidth: 1,
     stroke: 'black',
     fill: 'black',
     strokeDasharray: 0,

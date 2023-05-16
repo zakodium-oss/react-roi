@@ -3,11 +3,11 @@ import { useContext, useEffect, useRef } from 'react';
 import { Image, writeCanvas } from 'image-js';
 
 import { BoxAnnotation } from './BoxAnnotation';
-import { DragContext } from '../context/DragContext';
+import { DataContext } from '../context/DataContext';
 import { getRectangle } from '../utilities/getRectangle';
-import './css/ImageViewer.css';
+import './css/ImageComponent.css';
 import { ResizeBox } from './ResizeBox';
-import { dragObject } from './callbacks/dragObject';
+import { selectObject } from './callbacks/selectObject';
 import { observeResizing } from './callbacks/observeResizing';
 import { onMouseMove } from './callbacks/onMouseMove';
 import { onMouseDown } from './callbacks/onMouseDown';
@@ -26,7 +26,7 @@ export function ImageComponent({
   };
 }) {
   const { state, dispatch, eventState, eventDispatch } =
-    useContext(DragContext);
+    useContext(DataContext);
   const { width = image.width, height = image.height } = options;
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -46,12 +46,10 @@ export function ImageComponent({
   const objIndex = state.objects.findIndex(
     (obj) => obj.id === eventState.object
   );
+
   const object = state.objects[objIndex];
   const rectangle = getRectangle(
-    getRectangleFromPoints(
-      eventState.startPosition,
-      eventState.currentPosition
-    ),
+    getRectangleFromPoints(eventState.startPoint, eventState.currentPoint),
     eventState.delta,
     rect
   );
@@ -79,6 +77,20 @@ export function ImageComponent({
   }, [image]);
 
   let annotations = [
+    ...state.objects.map((obj, index) => (
+      <BoxAnnotation
+        id={obj.id}
+        key={`annotation_${index}`}
+        rectangle={obj.rectangle}
+        callback={eventDispatch}
+        onMouseDown={(event) =>
+          selectObject(event, obj.id, rect, componentState)
+        }
+        onMouseUp={() =>
+          eventDispatch({ type: 'setIsMouseDown', payload: false })
+        }
+      />
+    )),
     <ResizeBox
       id={eventState.object as number | string}
       key={`resize-box`}
@@ -89,19 +101,6 @@ export function ImageComponent({
       delta={eventState.delta}
       rect={rect}
     ></ResizeBox>,
-    ...state.objects.map((obj, index) => (
-      <BoxAnnotation
-        id={obj.id}
-        key={`annotation_${index}`}
-        rectangle={obj.rectangle}
-        onMouseDown={(event) => dragObject(event, obj.id, rect, componentState)}
-        // onClick={(event) => dragObject(event, obj.id, rect, componentState)}
-        onMouseUp={() =>
-          eventDispatch({ type: 'setIsMouseDown', payload: false })
-        }
-        callback={eventDispatch}
-      />
-    )),
   ];
 
   return (
@@ -111,7 +110,7 @@ export function ImageComponent({
       style={{ position: 'relative', width: '100%' }}
       onMouseDown={(event) => onMouseDown(event, rect, componentState)}
       onMouseUp={(event) => onMouseUp(event, object, rect, componentState)}
-      onMouseMove={(event) => onMouseMove(event, rect, componentState)}
+      onMouseMove={(event) => onMouseMove(event, object, rect, componentState)}
     >
       <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />
       {annotations !== undefined ? (
