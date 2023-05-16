@@ -1,17 +1,19 @@
-import { useContext, useEffect, useState } from 'react';
-import { Image } from 'image-js';
-import { DragContext } from '../context/DragContext';
+import { useContext } from 'react';
+import { DataContext } from '../context/DataContext';
 import { ObjectInspector } from 'react-inspector';
 
-export function StateObject({ image }: { image: Image }) {
-  const { state } = useContext(DragContext);
-  const [data, setData] = useState(state);
-  useEffect(() => {
-    setData(state);
-  }, [image]);
+export function StateObject() {
+  const { state, eventState } = useContext(DataContext);
   return (
-    <div style={{ width: '80%', height: '100%' }}>
-      <ObjectInspector expandLevel={2} data={data} />
+    <div
+      style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start' }}
+    >
+      <div style={{ width: '50%', height: '100%', padding: '15px' }}>
+        <ObjectInspector expandLevel={2} data={eventState} />
+      </div>
+      <div style={{ width: '50%', height: '100%', padding: '15px' }}>
+        <ObjectInspector expandLevel={2} data={state} />
+      </div>
     </div>
   );
 }

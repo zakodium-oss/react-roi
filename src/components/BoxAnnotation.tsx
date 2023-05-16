@@ -1,9 +1,16 @@
+import { EventActions } from '../context/EventReducer';
 import { Rectangle } from '../types/Rectangle';
 
 export function BoxAnnotation({
+  id,
   rectangle,
   options,
+  callback,
+  onMouseDown,
+  onMouseUp,
+  onClick,
 }: {
+  id: string | number;
   rectangle: Rectangle;
   options?: {
     strokeWidth?: number | string;
@@ -13,9 +20,13 @@ export function BoxAnnotation({
     strokeDashoffset?: number | string;
     zIndex?: number | undefined;
   };
+  callback?: React.Dispatch<EventActions>;
+  onMouseDown?: (event: any) => void;
+  onMouseUp?: (event: any) => void;
+  onClick?: (event: any) => void;
 }) {
   const defaultOptions = {
-    strokeWidth: 4,
+    strokeWidth: 1,
     stroke: 'black',
     fill: 'black',
     strokeDasharray: 0,
@@ -24,6 +35,10 @@ export function BoxAnnotation({
   const { height, width, origin } = rectangle;
   return (
     <rect
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onClickCapture={onClick}
+      onClick={() => callback && callback({ type: 'setObject', payload: id })}
       x={origin.column}
       y={origin.row}
       width={width}

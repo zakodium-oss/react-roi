@@ -1,0 +1,8 @@
+.circle {
+  fill: #44aaff;
+  stroke: black;
+}
+
+.circle:hover {
+  cursor: crosshair;
+}

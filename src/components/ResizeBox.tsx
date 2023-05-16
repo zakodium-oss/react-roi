@@ -1,55 +1,93 @@
-import { ReactNode } from 'react';
+import { useContext } from 'react';
+import { Rectangle } from '../types/Rectangle';
+import { DataContext, DataObject } from '../context/DataContext';
+
+import './css/ResizeBox.css';
+import { EventActions, EventStateType } from '../context/EventReducer';
+import { getPointers } from '../utilities/getPointers';
+import { getReferencePointers } from '../utilities/getReferencePointers';
 
 export function ResizeBox({
-  children,
-  width,
-  height,
+  id,
+  rectangle,
+  eventDispatch,
+  eventState,
+  rect,
 }: {
-  children: ReactNode;
-  width: number;
-  height: number;
+  id: string | number;
+  object: DataObject;
+  rectangle: Rectangle;
+  eventState: EventStateType;
+  eventDispatch: React.Dispatch<EventActions>;
+  delta: {
+    width: number;
+    height: number;
+  };
+  rect: {
+    offsetLeft: number;
+    offsetTop: number;
+  };
 }) {
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: `${width}px`,
-        height: `${height}px`,
-        border: '1px dashed black',
-      }}
-    >
-      <Pointer data={{ top: '-5px', left: '-5px' }} />
-      <Pointer data={{ top: '-5px', right: '-5px' }} />
-      <Pointer data={{ bottom: '-5px', left: '-5px' }} />
-      <Pointer data={{ bottom: '-5px', right: '-5px' }} />
-      <Pointer data={{ top: '-5px', left: '50%' }} />
-      <Pointer data={{ bottom: '-5px', left: '50%' }} />
-      <Pointer data={{ top: '50%', left: '-5px' }} />
-      <Pointer data={{ top: '50%', right: '-5px' }} />
-      {children}
-    </div>
-  );
-}
+  const { state } = useContext(DataContext);
+  const index = state.objects.findIndex((item) => item.id === id);
+  const currentRectangle =
+    index !== -1
+      ? state.objects[index].rectangle
+      : {
+          origin: { column: 0, row: 0 },
+          width: 0,
+          height: 0,
+        };
+  const pointers = getPointers(currentRectangle);
 
-function Pointer({
-  data = {},
-}: {
-  data: { top?: string; bottom?: string; left?: string; right?: string };
-}) {
-  const { top, bottom, right, left } = data;
+  function onMouseDown(position: number) {
+    const objIndex = state.objects.findIndex((obj) => obj.id === id);
+    const points = getReferencePointers(
+      state.objects[objIndex].rectangle,
+      eventState.delta,
+      position,
+      rect
+    );
+    eventDispatch({
+      type: 'setDynamicState',
+      payload: { resize: true, drag: false, position },
+    });
+    eventDispatch({
+      type: 'setStartPoint',
+      payload: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
+    });
+    eventDispatch({
+      type: 'setCurrentPoint',
+      payload: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+    });
+  }
+
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top,
-        bottom,
-        right,
-        left,
-        width: '10px',
-        height: '10px',
-        borderRadius: '20%',
-        backgroundColor: '#44aaff',
-      }}
-    ></div>
+    <>
+      <rect
+        x={rectangle.origin.column - 8}
+        y={rectangle.origin.row - 8}
+        width={rectangle.width + 16}
+        height={rectangle.height + 16}
+        style={{
+          padding: '10px',
+          fill: 'transparent',
+          stroke: '#44aaff',
+          strokeDasharray: 8,
+          strokeWidth: 8,
+        }}
+      ></rect>
+      {pointers.map((pointer) => (
+        <rect
+          key={`pointer-${pointer.position}`}
+          x={pointer.cx - 8}
+          y={pointer.cy - 8}
+          width={16}
+          height={16}
+          className="circle"
+          onMouseDownCapture={() => onMouseDown(pointer.position)}
+        ></rect>
+      ))}
+    </>
   );
 }

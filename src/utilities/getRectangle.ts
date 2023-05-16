@@ -1,9 +1,15 @@
-import { Point } from '../types/Point';
 import { Rectangle } from '../types/Rectangle';
 
+/**
+ * This function returns a rectangle that is scaled to the size of the image, based on a rectangle that is scaled to the size of the SVG
+ * @param rectangle The rectangle scaled to match the size of the SVG.
+ * @param delta This parameter contains information about the relationship between the width and height of the image and the SVG in pixels
+ * @param rect The object contains offset information regarding the top and left positions of the SVG relative to the entire window
+ * @returns
+ */
+
 export function getRectangle(
-  p0: Point,
-  p1: Point,
+  rectangle: Rectangle,
   delta: { width: number; height: number },
   rect: {
     offsetLeft: number;
@@ -14,6 +20,16 @@ export function getRectangle(
     origin: { row: 0, column: 0 },
     width: 0,
     height: 0,
+  };
+
+  const p0 = {
+    x: rectangle.origin.column,
+    y: rectangle.origin.row,
+  };
+
+  const p1 = {
+    x: rectangle.origin.column + rectangle.width,
+    y: rectangle.origin.row + rectangle.height,
   };
 
   if (rect) {
@@ -37,6 +53,5 @@ export function getRectangle(
       result.height = Math.floor((p0.y - p1.y) * delta.height);
     }
   }
-
   return result;
 }
