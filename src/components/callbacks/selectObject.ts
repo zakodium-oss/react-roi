@@ -1,9 +1,14 @@
-import { Actions, DataState } from '../../context/DataContext';
-import { EventActions, EventStateType } from '../../context/EventReducer';
+import { Actions, DataObject, DataState } from '../../context/DataContext';
+import {
+  DrawActions,
+  EventActions,
+  EventStateType,
+} from '../../context/EventReducer';
+import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
+  object: DataObject,
   event: React.MouseEvent,
-  id: string | number,
   rect: {
     offsetLeft: number;
     offsetTop: number;
@@ -15,23 +20,31 @@ export function selectObject(
     eventDispatch: React.Dispatch<EventActions>;
   }
 ) {
-  const { eventDispatch } = componentState;
+  const { eventState, eventDispatch } = componentState;
+  const scaledRectangle = getScaledRectangle(
+    object.rectangle,
+    eventState.delta,
+    rect
+  );
+  const dx = event.clientX - scaledRectangle.origin.column;
+  const dy = event.clientY - scaledRectangle.origin.row;
   eventDispatch({
     type: 'setDynamicState',
     payload: {
-      drag: true,
-      resize: false,
-      delta: {
-        dx: event.clientX - rect.offsetLeft,
-        dy: event.clientY - rect.offsetTop,
+      action: DrawActions.DRAG,
+      point: {
         x: event.clientX,
         y: event.clientY,
+      },
+      delta: {
+        dx,
+        dy,
       },
     },
   });
 
   eventDispatch({
     type: 'setObject',
-    payload: id,
+    payload: object,
   });
 }

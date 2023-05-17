@@ -3,18 +3,21 @@ import { Rectangle } from '../types/Rectangle';
 import { DataContext, DataObject } from '../context/DataContext';
 
 import './css/ResizeBox.css';
-import { EventActions, EventStateType } from '../context/EventReducer';
+import {
+  DrawActions,
+  EventActions,
+  EventStateType,
+} from '../context/EventReducer';
 import { getPointers } from '../utilities/getPointers';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 
 export function ResizeBox({
-  id,
+  object,
   rectangle,
   eventDispatch,
   eventState,
   rect,
 }: {
-  id: string | number;
   object: DataObject;
   rectangle: Rectangle;
   eventState: EventStateType;
@@ -28,11 +31,9 @@ export function ResizeBox({
     offsetTop: number;
   };
 }) {
-  const { state } = useContext(DataContext);
-  const index = state.objects.findIndex((item) => item.id === id);
   const currentRectangle =
-    index !== -1
-      ? state.objects[index].rectangle
+    object !== undefined
+      ? object.rectangle
       : {
           origin: { column: 0, row: 0 },
           width: 0,
@@ -41,16 +42,15 @@ export function ResizeBox({
   const pointers = getPointers(currentRectangle);
 
   function onMouseDown(position: number) {
-    const objIndex = state.objects.findIndex((obj) => obj.id === id);
     const points = getReferencePointers(
-      state.objects[objIndex].rectangle,
+      object.rectangle,
       eventState.delta,
       position,
       rect
     );
     eventDispatch({
       type: 'setDynamicState',
-      payload: { resize: true, drag: false, position },
+      payload: { action: DrawActions.RESIZE, position },
     });
     eventDispatch({
       type: 'setStartPoint',
@@ -73,8 +73,8 @@ export function ResizeBox({
           padding: '10px',
           fill: 'transparent',
           stroke: '#44aaff',
-          strokeDasharray: 8,
-          strokeWidth: 8,
+          strokeDasharray: 4,
+          strokeWidth: 4,
         }}
       ></rect>
       {pointers.map((pointer) => (

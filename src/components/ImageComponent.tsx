@@ -14,6 +14,7 @@ import { onMouseDown } from './callbacks/onMouseDown';
 import { onMouseUp } from './callbacks/onMouseUp';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { onMouseUpOutside } from './callbacks/onMouseUpOutside';
+import { DrawActions } from '../context/EventReducer';
 
 export function ImageComponent({
   image,
@@ -43,11 +44,6 @@ export function ImageComponent({
     eventDispatch,
   };
 
-  const objIndex = state.objects.findIndex(
-    (obj) => obj.id === eventState.object
-  );
-
-  const object = state.objects[objIndex];
   const rectangle = getRectangle(
     getRectangleFromPoints(eventState.startPoint, eventState.currentPoint),
     eventState.delta,
@@ -76,23 +72,22 @@ export function ImageComponent({
     };
   }, [image]);
 
+  const object = eventState.object;
   let annotations = [
     ...state.objects.map((obj, index) => (
       <BoxAnnotation
-        id={obj.id}
+        object={object}
         key={`annotation_${index}`}
         rectangle={obj.rectangle}
         callback={eventDispatch}
-        onMouseDown={(event) =>
-          selectObject(event, obj.id, rect, componentState)
-        }
+        state={eventState}
+        onMouseDown={(event) => selectObject(obj, event, rect, componentState)}
         onMouseUp={() =>
           eventDispatch({ type: 'setIsMouseDown', payload: false })
         }
       />
     )),
     <ResizeBox
-      id={eventState.object as number | string}
       key={`resize-box`}
       object={object}
       rectangle={rectangle}
@@ -108,9 +103,9 @@ export function ImageComponent({
       id="draggable"
       ref={divRef}
       style={{ position: 'relative', width: '100%' }}
-      onMouseDown={(event) => onMouseDown(event, rect, componentState)}
       onMouseUp={(event) => onMouseUp(event, object, rect, componentState)}
       onMouseMove={(event) => onMouseMove(event, object, rect, componentState)}
+      onMouseDown={(event) => onMouseDown(event, componentState)}
     >
       <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />
       {annotations !== undefined ? (

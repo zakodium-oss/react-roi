@@ -7,12 +7,17 @@
  * @returns
  */
 
+import { Delta } from '../context/EventReducer';
 import { Rectangle } from '../types/Rectangle';
 
-export function dragRectangle(rectangle: Rectangle, event: React.MouseEvent) {
+export function dragRectangle(
+  rectangle: Rectangle,
+  event: React.MouseEvent,
+  delta: Delta
+) {
   const startPoint = {
-    x: event.clientX,
-    y: event.clientY,
+    x: event.clientX - delta.dx,
+    y: event.clientY - delta.dy,
   };
   return {
     startPoint,

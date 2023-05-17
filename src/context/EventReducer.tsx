@@ -1,17 +1,32 @@
 import { Point } from '../types/Point';
+import { DataObject } from './DataContext';
+
+export const DrawActions = Object.freeze({
+  DRAG: 'drag' as const,
+  DRAW: 'draw' as const,
+  RESIZE: 'resize' as const,
+  SLEEP: 'sleep' as const,
+});
+
+export type DrawActions = (typeof DrawActions)[keyof typeof DrawActions];
 
 export type EventStateType = {
   isMouseDown: boolean;
   startPoint: Point;
   currentPoint: Point;
   delta: { width: number; height: number };
-  object: string | number | undefined;
+  object: DataObject;
   dynamicState: {
-    resize: boolean;
-    drag: boolean;
-    delta?: Point & { dx: number; dy: number };
+    action: DrawActions;
+    point?: Point;
+    delta?: Delta;
     position?: number;
   };
+};
+
+export type Delta = {
+  dx: number;
+  dy: number;
 };
 
 export type EventActions =
@@ -33,14 +48,14 @@ export type EventActions =
     }
   | {
       type: 'setObject';
-      payload: string | number | undefined;
+      payload: DataObject;
     }
   | {
       type: 'setDynamicState';
       payload: {
-        resize: boolean;
-        drag: boolean;
-        delta?: Point & { dx: number; dy: number };
+        action: DrawActions;
+        point?: Point;
+        delta?: Delta;
         position?: number;
       };
     };
@@ -87,11 +102,19 @@ export const eventReducer = (
   }
 };
 
-export const intialEventState = {
+export const intialEventState: EventStateType = {
   isMouseDown: false,
   startPoint: { x: 0, y: 0 },
   currentPoint: { x: 0, y: 0 },
-  object: 0,
+  object: {
+    id: 0,
+    selected: false,
+    rectangle: {
+      origin: { column: 0, row: 0 },
+      width: 0,
+      height: 0,
+    },
+  },
   delta: { width: 1, height: 1 },
-  dynamicState: { resize: false, drag: false, id: 0, position: 0 },
+  dynamicState: { action: DrawActions.SLEEP, position: 0 },
 };

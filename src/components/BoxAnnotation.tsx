@@ -1,16 +1,22 @@
-import { EventActions } from '../context/EventReducer';
+import { DataObject } from '../context/DataContext';
+import {
+  DrawActions,
+  EventActions,
+  EventStateType,
+} from '../context/EventReducer';
 import { Rectangle } from '../types/Rectangle';
 
 export function BoxAnnotation({
-  id,
+  object,
   rectangle,
   options,
   callback,
+  state,
   onMouseDown,
   onMouseUp,
   onClick,
 }: {
-  id: string | number;
+  object: DataObject;
   rectangle: Rectangle;
   options?: {
     strokeWidth?: number | string;
@@ -21,6 +27,7 @@ export function BoxAnnotation({
     zIndex?: number | undefined;
   };
   callback?: React.Dispatch<EventActions>;
+  state: EventStateType;
   onMouseDown?: (event: any) => void;
   onMouseUp?: (event: any) => void;
   onClick?: (event: any) => void;
@@ -38,7 +45,16 @@ export function BoxAnnotation({
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onClickCapture={onClick}
-      onClick={() => callback && callback({ type: 'setObject', payload: id })}
+      onMouseDownCapture={() => {
+        console.log(callback !== undefined, callback);
+        if (callback === undefined) return;
+        console.log('it pass!');
+        callback({ type: 'setObject', payload: object });
+        callback({
+          type: 'setDynamicState',
+          payload: { ...state.dynamicState, action: DrawActions.DRAG },
+        });
+      }}
       x={origin.column}
       y={origin.row}
       width={width}
