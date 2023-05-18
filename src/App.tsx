@@ -1,8 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { DataProvider } from './context/DataContext';
 import { HomePage } from './pages/HomePage';
 import { MoveablePage } from './pages/MovablePage';
+
+import { DynamicProvider } from './context/DynamicContext';
+import { ObjectProvider } from './context/ObjectContext';
+import { PositionProvider } from './context/PositionContext';
 
 const router = createBrowserRouter([
   {
@@ -13,9 +16,13 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <DataProvider>
-        <HomePage />
-      </DataProvider>
+      <ObjectProvider>
+        <DynamicProvider>
+          <PositionProvider>
+            <HomePage />
+          </PositionProvider>
+        </DynamicProvider>
+      </ObjectProvider>
     ),
     children: [],
   },

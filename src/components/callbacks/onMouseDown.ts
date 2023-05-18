@@ -1,39 +1,36 @@
-import { Actions, DataState } from '../../context/DataContext';
 import {
-  DrawActions,
-  EventActions,
-  EventStateType,
-} from '../../context/EventReducer';
+  DynamicAction,
+  DynamicActions,
+  DynamicStateType,
+} from '../../context/DynamicContext';
+import { PositionAction } from '../../context/PositionContext';
 
 export function onMouseDown(
   event: React.MouseEvent,
-  componentState: {
-    contextState: DataState;
-    contextDispatch: React.Dispatch<Actions>;
-    eventState: EventStateType;
-    eventDispatch: React.Dispatch<EventActions>;
-  }
+  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicState: DynamicStateType,
+  dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const { eventDispatch, eventState, contextState } = componentState;
-  eventDispatch({ type: 'setIsMouseDown', payload: true });
+  dynamicDispatch({ type: 'setIsMouseDown', payload: true });
   const initPoint = { x: event.clientX, y: event.clientY };
-  if (eventState.dynamicState.action === DrawActions.SLEEP) {
-    eventDispatch({
-      type: 'setDynamicState',
-      payload: { ...eventState.dynamicState, action: DrawActions.DRAW },
+  if (dynamicState.action === DynamicActions.SLEEP) {
+    dynamicDispatch({
+      type: 'setAction',
+      payload: DynamicActions.DRAW,
     });
   }
-  switch (eventState.dynamicState.action) {
-    case DrawActions.DRAG:
-      eventDispatch({ type: 'setStartPoint', payload: initPoint });
+  switch (dynamicState.action) {
+    case DynamicActions.DRAG:
+      positionDispatch({ type: 'setStartPoint', payload: initPoint });
+      positionDispatch({ type: 'setEndPoint', payload: initPoint });
       break;
-    case DrawActions.SLEEP:
-      eventDispatch({ type: 'setStartPoint', payload: initPoint });
-      eventDispatch({ type: 'setCurrentPoint', payload: initPoint });
+    case DynamicActions.SLEEP:
+      positionDispatch({ type: 'setStartPoint', payload: initPoint });
+      positionDispatch({ type: 'setEndPoint', payload: initPoint });
       break;
-    case DrawActions.RESIZE:
-      eventDispatch({
-        type: 'setCurrentPoint',
+    case DynamicActions.RESIZE:
+      positionDispatch({
+        type: 'setEndPoint',
         payload: initPoint,
       });
       break;

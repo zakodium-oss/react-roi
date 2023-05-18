@@ -1,9 +1,10 @@
+import { Delta } from '../context/EventReducer';
 import { Rectangle } from '../types/Rectangle';
 import { getScaledRectangle } from './getScaledRectangle';
 
 export function getReferencePointers(
   rectangle: Rectangle,
-  delta: { width: number; height: number },
+  delta: Delta,
   index: number,
   rect: {
     offsetLeft: number;

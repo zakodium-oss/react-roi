@@ -1,5 +1,6 @@
+import { DataObject } from '../types/DataObject';
+import { Delta } from '../types/Delta';
 import { Point } from '../types/Point';
-import { DataObject } from './DataContext';
 
 export const DrawActions = Object.freeze({
   DRAG: 'drag' as const,
@@ -14,7 +15,7 @@ export type EventStateType = {
   isMouseDown: boolean;
   startPoint: Point;
   currentPoint: Point;
-  delta: { width: number; height: number };
+  delta: Delta;
   object: DataObject;
   dynamicState: {
     action: DrawActions;
@@ -22,11 +23,6 @@ export type EventStateType = {
     delta?: Delta;
     position?: number;
   };
-};
-
-export type Delta = {
-  dx: number;
-  dy: number;
 };
 
 export type EventActions =
@@ -44,7 +40,7 @@ export type EventActions =
     }
   | {
       type: 'setDelta';
-      payload: { width: number; height: number };
+      payload: Delta;
     }
   | {
       type: 'setObject';
@@ -115,6 +111,6 @@ export const intialEventState: EventStateType = {
       height: 0,
     },
   },
-  delta: { width: 1, height: 1 },
+  delta: { dx: 1, dy: 1 },
   dynamicState: { action: DrawActions.SLEEP, position: 0 },
 };

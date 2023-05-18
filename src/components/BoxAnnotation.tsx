@@ -1,17 +1,14 @@
-import { DataObject } from '../context/DataContext';
-import {
-  DrawActions,
-  EventActions,
-  EventStateType,
-} from '../context/EventReducer';
+import { DynamicAction, DynamicActions } from '../context/DynamicContext';
+import { PositionAction } from '../context/PositionContext';
+import { DataObject } from '../types/DataObject';
 import { Rectangle } from '../types/Rectangle';
 
 export function BoxAnnotation({
   object,
   rectangle,
   options,
-  callback,
-  state,
+  positionDispatch,
+  dynamicDispatch,
   onMouseDown,
   onMouseUp,
   onClick,
@@ -26,16 +23,16 @@ export function BoxAnnotation({
     strokeDashoffset?: number | string;
     zIndex?: number | undefined;
   };
-  callback?: React.Dispatch<EventActions>;
-  state: EventStateType;
+  positionDispatch?: React.Dispatch<PositionAction>;
+  dynamicDispatch?: React.Dispatch<DynamicAction>;
   onMouseDown?: (event: any) => void;
   onMouseUp?: (event: any) => void;
   onClick?: (event: any) => void;
 }) {
   const defaultOptions = {
-    strokeWidth: 1,
+    strokeWidth: object.selected ? 3 : 1,
     stroke: 'black',
-    fill: 'black',
+    fill: object.selected ? 'rgba(0,0,0,0.4)' : 'black',
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
@@ -46,13 +43,12 @@ export function BoxAnnotation({
       onMouseUp={onMouseUp}
       onClickCapture={onClick}
       onMouseDownCapture={() => {
-        console.log(callback !== undefined, callback);
-        if (callback === undefined) return;
-        console.log('it pass!');
-        callback({ type: 'setObject', payload: object });
-        callback({
-          type: 'setDynamicState',
-          payload: { ...state.dynamicState, action: DrawActions.DRAG },
+        if (positionDispatch === undefined || dynamicDispatch === undefined)
+          return;
+        positionDispatch({ type: 'setObject', payload: object });
+        dynamicDispatch({
+          type: 'setAction',
+          payload: DynamicActions.DRAG,
         });
       }}
       x={origin.column}

@@ -1,3 +1,4 @@
+import { Delta } from '../types/Delta';
 import { Rectangle } from '../types/Rectangle';
 
 /**
@@ -10,7 +11,7 @@ import { Rectangle } from '../types/Rectangle';
 
 export function getRectangle(
   rectangle: Rectangle,
-  delta: { width: number; height: number },
+  delta: Delta,
   rect: {
     offsetLeft: number;
     offsetTop: number;
@@ -34,23 +35,19 @@ export function getRectangle(
 
   if (rect) {
     if (p0.x < p1.x) {
-      result.origin.column = Math.floor(
-        (p0.x - rect.offsetLeft) * delta.height
-      );
-      result.width = Math.floor((p1.x - p0.x) * delta.width);
+      result.origin.column = Math.floor((p0.x - rect.offsetLeft) * delta.dy);
+      result.width = Math.floor((p1.x - p0.x) * delta.dx);
     } else {
-      result.origin.column = Math.floor(
-        (p1.x - rect.offsetLeft) * delta.height
-      );
-      result.width = Math.floor((p0.x - p1.x) * delta.width);
+      result.origin.column = Math.floor((p1.x - rect.offsetLeft) * delta.dy);
+      result.width = Math.floor((p0.x - p1.x) * delta.dx);
     }
 
     if (p0.y < p1.y) {
-      result.origin.row = Math.floor((p0.y - rect.offsetTop) * delta.width);
-      result.height = Math.floor((p1.y - p0.y) * delta.height);
+      result.origin.row = Math.floor((p0.y - rect.offsetTop) * delta.dx);
+      result.height = Math.floor((p1.y - p0.y) * delta.dy);
     } else {
-      result.origin.row = Math.floor((p1.y - rect.offsetTop) * delta.width);
-      result.height = Math.floor((p0.y - p1.y) * delta.height);
+      result.origin.row = Math.floor((p1.y - rect.offsetTop) * delta.dx);
+      result.height = Math.floor((p0.y - p1.y) * delta.dy);
     }
   }
   return result;

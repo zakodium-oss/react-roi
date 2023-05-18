@@ -1,10 +1,22 @@
-import { Actions, DataObject, DataState } from '../../context/DataContext';
+import {
+  Actions,
+  DataContextProps,
+  DataState,
+} from '../../context/DataContext';
+import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
 import {
   DrawActions,
   EventActions,
   EventStateType,
 } from '../../context/EventReducer';
+import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
+import {
+  PositionAction,
+  PositionStateType,
+} from '../../context/PositionContext';
+import { DataObject } from '../../types/DataObject';
 import { Point } from '../../types/Point';
+import { checkRectangle } from '../../utilities/checkRectangle';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getRectangle } from '../../utilities/getRectangle';
 import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
@@ -14,16 +26,15 @@ export function onMouseUp(
   event: React.MouseEvent,
   object: DataObject,
   rect: { offsetLeft: number; offsetTop: number },
-  componentState: {
-    contextState: DataState;
-    contextDispatch: React.Dispatch<Actions>;
-    eventState: EventStateType;
-    eventDispatch: React.Dispatch<EventActions>;
-  }
+  objectState: ObjectStateType,
+  objectDispatch: React.Dispatch<ObjectActions>,
+  positionState: PositionStateType,
+  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicState: DynamicStateType,
+  dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const { eventDispatch, eventState, contextDispatch } = componentState;
-  const { startPoint, currentPoint, delta, dynamicState } = eventState;
-  switch (eventState.dynamicState.action) {
+  const { startPoint, endPoint, delta } = positionState;
+  switch (dynamicState.action) {
     case DrawActions.DRAG:
       const scaledRectangle = getScaledRectangle(object.rectangle, delta, rect);
       const position = dragRectangle(
@@ -31,18 +42,24 @@ export function onMouseUp(
         event,
         dynamicState.delta || { dx: 0, dy: 0 }
       );
-      if (checkRectangle(startPoint, currentPoint, delta, rect)) {
-        eventDispatch({ type: 'setStartPoint', payload: position.startPoint });
-        eventDispatch({ type: 'setCurrentPoint', payload: position.endPoint });
+      if (checkRectangle(positionState.startPoint, endPoint, delta, rect)) {
+        positionDispatch({
+          type: 'setStartPoint',
+          payload: position.startPoint,
+        });
+        positionDispatch({
+          type: 'setEndPoint',
+          payload: position.endPoint,
+        });
         object.rectangle = getRectangle(
-          getRectangleFromPoints(startPoint, currentPoint),
+          getRectangleFromPoints(startPoint, endPoint),
           delta,
           rect
         );
       }
-      eventDispatch({
-        type: 'setDynamicState',
-        payload: { action: DrawActions.SLEEP, position: 0 },
+      dynamicDispatch({
+        type: 'setAction',
+        payload: DrawActions.SLEEP,
       });
       break;
     case DrawActions.DRAW:
@@ -54,13 +71,13 @@ export function onMouseUp(
           rect
         )
       ) {
-        contextDispatch({
+        objectDispatch({
           type: 'addObject',
           payload: {
             id: Math.random(),
             selected: false,
             rectangle: getRectangle(
-              getRectangleFromPoints(startPoint, currentPoint),
+              getRectangleFromPoints(startPoint, endPoint),
               delta,
               rect
             ),
@@ -71,37 +88,22 @@ export function onMouseUp(
 
     case DrawActions.RESIZE:
       object.rectangle = getRectangle(
-        getRectangleFromPoints(startPoint, currentPoint),
+        getRectangleFromPoints(startPoint, endPoint),
         delta,
         rect
       );
-      eventDispatch({
-        type: 'setDynamicState',
-        payload: { action: DrawActions.SLEEP, position: 0 },
+      dynamicDispatch({
+        type: 'setAction',
+        payload: DrawActions.SLEEP,
       });
       break;
   }
-  eventDispatch({ type: 'setStartPoint', payload: { x: 0, y: 0 } });
-  eventDispatch({ type: 'setCurrentPoint', payload: { x: 0, y: 0 } });
-  eventDispatch({ type: 'setIsMouseDown', payload: false });
-  eventDispatch({
-    type: 'setDynamicState',
-    payload: { action: DrawActions.SLEEP, position: 0 },
+  object.selected = false;
+  positionDispatch({ type: 'setStartPoint', payload: { x: 0, y: 0 } });
+  positionDispatch({ type: 'setEndPoint', payload: { x: 0, y: 0 } });
+  dynamicDispatch({ type: 'setIsMouseDown', payload: false });
+  dynamicDispatch({
+    type: 'setAction',
+    payload: DrawActions.SLEEP,
   });
-}
-
-function checkRectangle(
-  startPoint: Point,
-  endPoint: Point,
-  delta: { width: number; height: number },
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  },
-  options: { limit?: number } = {}
-) {
-  const { limit = 10 } = options;
-  const rectangle = getRectangleFromPoints(startPoint, endPoint);
-  const actualRectangle = getRectangle(rectangle, delta, rect);
-  return actualRectangle.width > limit && actualRectangle.height > limit;
 }

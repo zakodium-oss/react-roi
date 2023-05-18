@@ -1,12 +1,6 @@
-import { Actions, DataContext, DataState } from '../../context/DataContext';
-import { EventActions, EventStateType } from '../../context/EventReducer';
+import { DataContextProps } from '../../context/DataContext';
 
-export function onMouseUpOutside(componentState: {
-  contextState: DataState;
-  contextDispatch: React.Dispatch<Actions>;
-  eventState: EventStateType;
-  eventDispatch: React.Dispatch<EventActions>;
-}) {
+export function onMouseUpOutside(componentState: DataContextProps) {
   const { eventDispatch } = componentState;
   eventDispatch({ type: 'setIsMouseDown', payload: false });
   // TODO: Find out how to handle events outside of boundaries

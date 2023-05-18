@@ -1,6 +1,4 @@
-import { useContext } from 'react';
 import { Rectangle } from '../types/Rectangle';
-import { DataContext, DataObject } from '../context/DataContext';
 
 import './css/ResizeBox.css';
 import {
@@ -10,30 +8,34 @@ import {
 } from '../context/EventReducer';
 import { getPointers } from '../utilities/getPointers';
 import { getReferencePointers } from '../utilities/getReferencePointers';
+import { Delta } from '../types/Delta';
+import { DataObject } from '../types/DataObject';
+import { ObjectStateType } from '../context/ObjectContext';
+import { PositionAction, PositionStateType } from '../context/PositionContext';
+import { DynamicAction } from '../context/DynamicContext';
 
 export function ResizeBox({
   object,
   rectangle,
-  eventDispatch,
-  eventState,
+  positionDispatch,
+  dynamicDispatch,
+  positionState,
   rect,
 }: {
   object: DataObject;
   rectangle: Rectangle;
-  eventState: EventStateType;
-  eventDispatch: React.Dispatch<EventActions>;
-  delta: {
-    width: number;
-    height: number;
-  };
+  positionState: PositionStateType;
+  positionDispatch: React.Dispatch<PositionAction>;
+  dynamicDispatch: React.Dispatch<DynamicAction>;
+  delta: Delta;
   rect: {
     offsetLeft: number;
     offsetTop: number;
   };
 }) {
   const currentRectangle =
-    object !== undefined
-      ? object.rectangle
+    positionState.object !== undefined
+      ? positionState.object.rectangle
       : {
           origin: { column: 0, row: 0 },
           width: 0,
@@ -44,31 +46,31 @@ export function ResizeBox({
   function onMouseDown(position: number) {
     const points = getReferencePointers(
       object.rectangle,
-      eventState.delta,
+      positionState.delta,
       position,
       rect
     );
-    eventDispatch({
-      type: 'setDynamicState',
-      payload: { action: DrawActions.RESIZE, position },
+    object.selected = true;
+    dynamicDispatch({
+      type: 'setAction',
+      payload: DrawActions.RESIZE,
     });
-    eventDispatch({
-      type: 'setStartPoint',
-      payload: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
-    });
-    eventDispatch({
-      type: 'setCurrentPoint',
-      payload: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+    positionDispatch({
+      type: 'setPosition',
+      payload: {
+        startPoint: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
+        endPoint: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+      },
     });
   }
 
   return (
     <>
       <rect
-        x={rectangle.origin.column - 8}
-        y={rectangle.origin.row - 8}
-        width={rectangle.width + 16}
-        height={rectangle.height + 16}
+        x={rectangle.origin.column - 1}
+        y={rectangle.origin.row - 1}
+        width={rectangle.width + 2}
+        height={rectangle.height + 2}
         style={{
           padding: '10px',
           fill: 'transparent',
