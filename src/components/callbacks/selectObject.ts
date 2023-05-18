@@ -1,37 +1,49 @@
-import { Actions, DataState } from '../../context/DataContext';
-import { EventActions, EventStateType } from '../../context/EventReducer';
+import { DataContextProps } from '../../context/DataContext';
+import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
+import { DrawActions } from '../../context/EventReducer';
+import { ObjectActions } from '../../context/ObjectContext';
+import {
+  PositionAction,
+  PositionStateType,
+} from '../../context/PositionContext';
+import { DataObject } from '../../types/DataObject';
+import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
+  object: DataObject,
   event: React.MouseEvent,
-  id: string | number,
   rect: {
     offsetLeft: number;
     offsetTop: number;
   },
-  componentState: {
-    contextState: DataState;
-    contextDispatch: React.Dispatch<Actions>;
-    eventState: EventStateType;
-    eventDispatch: React.Dispatch<EventActions>;
-  }
+  positionState: PositionStateType,
+  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const { eventDispatch } = componentState;
-  eventDispatch({
+  const scaledRectangle = getScaledRectangle(
+    object.rectangle,
+    positionState.delta,
+    rect
+  );
+  dynamicDispatch({
     type: 'setDynamicState',
     payload: {
-      drag: true,
-      resize: false,
-      delta: {
-        dx: event.clientX - rect.offsetLeft,
-        dy: event.clientY - rect.offsetTop,
+      isMouseDown: true,
+      action: DrawActions.DRAG,
+      point: {
         x: event.clientX,
         y: event.clientY,
+      },
+      delta: {
+        dx: event.clientX - scaledRectangle.origin.column,
+        dy: event.clientY - scaledRectangle.origin.row,
       },
     },
   });
 
-  eventDispatch({
+  object.selected = true;
+  positionDispatch({
     type: 'setObject',
-    payload: id,
+    payload: object,
   });
 }

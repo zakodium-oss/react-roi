@@ -1,40 +1,47 @@
-import { Actions, DataObject, DataState } from '../../context/DataContext';
-import { EventActions, EventStateType } from '../../context/EventReducer';
+import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
+import { DrawActions } from '../../context/EventReducer';
+import {
+  PositionAction,
+  PositionStateType,
+} from '../../context/PositionContext';
+import { DataObject } from '../../types/DataObject';
 import { dragRectangle } from '../../utilities/dragRectangle';
-import { getRectangle } from '../../utilities/getRectangle';
-import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function onMouseMove(
   event: React.MouseEvent,
   object: DataObject,
   rect: { offsetLeft: number; offsetTop: number },
-  componentState: {
-    contextState: DataState;
-    contextDispatch: React.Dispatch<Actions>;
-    eventState: EventStateType;
-    eventDispatch: React.Dispatch<EventActions>;
-  }
+  positionState: PositionStateType,
+  dynamicState: DynamicStateType,
+  positionDispatch: React.Dispatch<PositionAction>
 ) {
-  const { eventDispatch, eventState } = componentState;
-  const { isMouseDown, dynamicState } = eventState;
-  if (isMouseDown) {
-    if (dynamicState.drag) {
-      const { delta } = eventState;
-      const scaledRectangle = getScaledRectangle(object.rectangle, delta, rect);
-      const position = dragRectangle(scaledRectangle, event);
-      eventDispatch({ type: 'setStartPoint', payload: position.startPoint });
-      eventDispatch({ type: 'setCurrentPoint', payload: position.endPoint });
-    } else if (dynamicState.resize) {
-      eventDispatch({
-        type: 'setCurrentPoint',
-        payload: { x: event.clientX, y: event.clientY },
-      });
-    } else {
-      eventDispatch({
-        type: 'setCurrentPoint',
-        payload: { x: event.clientX, y: event.clientY },
-      });
+  if (dynamicState.isMouseDown) {
+    switch (dynamicState.action) {
+      case DrawActions.DRAG:
+        const scaledRectangle = getScaledRectangle(
+          object.rectangle,
+          positionState.delta,
+          rect
+        );
+        const position = dragRectangle(
+          scaledRectangle,
+          event,
+          dynamicState.delta || { dx: 0, dy: 0 }
+        );
+        positionDispatch({
+          type: 'setStartPoint',
+          payload: position.startPoint,
+        });
+        positionDispatch({ type: 'setEndPoint', payload: position.endPoint });
+        break;
+      case DrawActions.DRAW:
+      case DrawActions.RESIZE:
+        positionDispatch({
+          type: 'setEndPoint',
+          payload: { x: event.clientX, y: event.clientY },
+        });
+        break;
     }
   }
 }

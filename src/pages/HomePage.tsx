@@ -1,14 +1,11 @@
 import * as Image from 'image-js';
 
-import {} from '../../data/test.png';
+import './css/Pages.css';
 
 import { ImageComponent } from '../components/ImageComponent';
 import { useEffect, useState } from 'react';
 import { StateObject } from '../components/StateObject';
 import { Link } from 'react-router-dom';
-
-import './css/Pages.css';
-import { ResizeBox } from '../components/ResizeBox';
 
 export function HomePage() {
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
@@ -23,10 +20,9 @@ export function HomePage() {
           <Link to="/moveable">Moveable</Link>
         </button>
       </div>
-      <div>
+      <div style={{ height: '100%' }}>
         <DraggableComponent image={image} />
       </div>
-      <div></div>
     </div>
   );
 }
@@ -39,14 +35,13 @@ function DraggableComponent({ image }: { image: Image.Image }) {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
+        width: '70%',
       }}
     >
       <ImageComponent
         image={image}
         options={{ width: image.width, height: image.height }}
       />
-
       <StateObject />
     </div>
   );

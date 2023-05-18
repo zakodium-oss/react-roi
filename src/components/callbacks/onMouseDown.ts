@@ -1,29 +1,38 @@
-import { Actions, DataState } from '../../context/DataContext';
-import { EventActions, EventStateType } from '../../context/EventReducer';
+import {
+  DynamicAction,
+  DynamicActions,
+  DynamicStateType,
+} from '../../context/DynamicContext';
+import { PositionAction } from '../../context/PositionContext';
 
 export function onMouseDown(
   event: React.MouseEvent,
-  rect: { offsetLeft: number; offsetTop: number },
-  componentState: {
-    contextState: DataState;
-    contextDispatch: React.Dispatch<Actions>;
-    eventState: EventStateType;
-    eventDispatch: React.Dispatch<EventActions>;
-  }
+  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicState: DynamicStateType,
+  dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const { eventDispatch, eventState } = componentState;
-  eventDispatch({ type: 'setIsMouseDown', payload: true });
-  if (eventState.dynamicState.resize) {
-    eventDispatch({
-      type: 'setCurrentPoint',
-      payload: { x: event.clientX, y: event.clientY },
+  dynamicDispatch({ type: 'setIsMouseDown', payload: true });
+  const initPoint = { x: event.clientX, y: event.clientY };
+  if (dynamicState.action === DynamicActions.SLEEP) {
+    dynamicDispatch({
+      type: 'setAction',
+      payload: DynamicActions.DRAW,
     });
-  } else if (eventState.dynamicState.drag) {
-    const initPoint = { x: event.clientX, y: event.clientY };
-    eventDispatch({ type: 'setStartPoint', payload: initPoint });
-  } else {
-    const initPoint = { x: event.clientX, y: event.clientY };
-    eventDispatch({ type: 'setStartPoint', payload: initPoint });
-    eventDispatch({ type: 'setCurrentPoint', payload: initPoint });
+  }
+  switch (dynamicState.action) {
+    case DynamicActions.DRAG:
+      positionDispatch({ type: 'setStartPoint', payload: initPoint });
+      positionDispatch({ type: 'setEndPoint', payload: initPoint });
+      break;
+    case DynamicActions.SLEEP:
+      positionDispatch({ type: 'setStartPoint', payload: initPoint });
+      positionDispatch({ type: 'setEndPoint', payload: initPoint });
+      break;
+    case DynamicActions.RESIZE:
+      positionDispatch({
+        type: 'setEndPoint',
+        payload: initPoint,
+      });
+      break;
   }
 }

@@ -1,38 +1,41 @@
-import { useContext } from 'react';
 import { Rectangle } from '../types/Rectangle';
-import { DataContext, DataObject } from '../context/DataContext';
 
 import './css/ResizeBox.css';
-import { EventActions, EventStateType } from '../context/EventReducer';
+import {
+  DrawActions,
+  EventActions,
+  EventStateType,
+} from '../context/EventReducer';
 import { getPointers } from '../utilities/getPointers';
 import { getReferencePointers } from '../utilities/getReferencePointers';
+import { Delta } from '../types/Delta';
+import { DataObject } from '../types/DataObject';
+import { ObjectStateType } from '../context/ObjectContext';
+import { PositionAction, PositionStateType } from '../context/PositionContext';
+import { DynamicAction } from '../context/DynamicContext';
 
 export function ResizeBox({
-  id,
+  object,
   rectangle,
-  eventDispatch,
-  eventState,
+  positionDispatch,
+  dynamicDispatch,
+  positionState,
   rect,
 }: {
-  id: string | number;
   object: DataObject;
   rectangle: Rectangle;
-  eventState: EventStateType;
-  eventDispatch: React.Dispatch<EventActions>;
-  delta: {
-    width: number;
-    height: number;
-  };
+  positionState: PositionStateType;
+  positionDispatch: React.Dispatch<PositionAction>;
+  dynamicDispatch: React.Dispatch<DynamicAction>;
+  delta: Delta;
   rect: {
     offsetLeft: number;
     offsetTop: number;
   };
 }) {
-  const { state } = useContext(DataContext);
-  const index = state.objects.findIndex((item) => item.id === id);
   const currentRectangle =
-    index !== -1
-      ? state.objects[index].rectangle
+    positionState.object !== undefined
+      ? positionState.object.rectangle
       : {
           origin: { column: 0, row: 0 },
           width: 0,
@@ -41,40 +44,39 @@ export function ResizeBox({
   const pointers = getPointers(currentRectangle);
 
   function onMouseDown(position: number) {
-    const objIndex = state.objects.findIndex((obj) => obj.id === id);
     const points = getReferencePointers(
-      state.objects[objIndex].rectangle,
-      eventState.delta,
+      object.rectangle,
+      positionState.delta,
       position,
       rect
     );
-    eventDispatch({
-      type: 'setDynamicState',
-      payload: { resize: true, drag: false, position },
+    object.selected = true;
+    dynamicDispatch({
+      type: 'setAction',
+      payload: DrawActions.RESIZE,
     });
-    eventDispatch({
-      type: 'setStartPoint',
-      payload: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
-    });
-    eventDispatch({
-      type: 'setCurrentPoint',
-      payload: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+    positionDispatch({
+      type: 'setPosition',
+      payload: {
+        startPoint: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
+        endPoint: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+      },
     });
   }
 
   return (
     <>
       <rect
-        x={rectangle.origin.column - 8}
-        y={rectangle.origin.row - 8}
-        width={rectangle.width + 16}
-        height={rectangle.height + 16}
+        x={rectangle.origin.column - 1}
+        y={rectangle.origin.row - 1}
+        width={rectangle.width + 2}
+        height={rectangle.height + 2}
         style={{
           padding: '10px',
           fill: 'transparent',
           stroke: '#44aaff',
-          strokeDasharray: 8,
-          strokeWidth: 8,
+          strokeDasharray: 4,
+          strokeWidth: 4,
         }}
       ></rect>
       {pointers.map((pointer) => (

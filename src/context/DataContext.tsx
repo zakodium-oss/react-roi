@@ -6,12 +6,7 @@ import {
   EventStateType,
   intialEventState,
 } from './EventReducer';
-
-export type DataObject = {
-  id: string | number;
-  selected: boolean;
-  rectangle: Rectangle;
-};
+import { DataObject } from '../types/DataObject';
 
 export type DataState = {
   objects: DataObject[];
@@ -21,7 +16,7 @@ const dataContext: DataState = {
   objects: [],
 };
 
-type DataContextProps = {
+export type DataContextProps = {
   state: DataState;
   dispatch: Dispatch<Actions>;
   eventState: EventStateType;
@@ -37,7 +32,7 @@ export const DataProvider = ({
 }: {
   children: ReactNode | ReactNode[];
 }) => {
-  const [state, dispatch] = useReducer(dataReducer, dataContext);
+  const [state, dispatch] = useReducer(objectReducer, dataContext);
   const [eventState, eventDispatch] = useReducer(
     eventReducer,
     intialEventState
@@ -57,17 +52,17 @@ export type Actions =
       payload: DataObject;
     }
   | {
-      type: 'updateState';
+      type: 'updateObject';
       payload: DataState;
     };
 
-export const dataReducer = (state: DataState, action: Actions) => {
+export const objectReducer = (state: DataState, action: Actions) => {
   switch (action.type) {
     case 'addObject':
       state.objects.push(action.payload);
       return state;
 
-    case 'updateState':
+    case 'updateObject':
       return action.payload;
 
     default:
