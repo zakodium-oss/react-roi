@@ -1,25 +1,33 @@
-import { DataContextProps } from '../../context/DataContext';
-import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
-import { DrawActions } from '../../context/EventReducer';
-import { ObjectActions } from '../../context/ObjectContext';
 import {
-  PositionAction,
-  PositionStateType,
-} from '../../context/PositionContext';
-import { DataObject } from '../../types/DataObject';
+  DynamicAction,
+  DynamicActions,
+  DynamicStateType,
+} from '../../context/DynamicContext';
+import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
+import { PositionStateType } from '../../context/PositionContext';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
-  object: DataObject,
+  objectID: number | string | undefined,
   event: React.MouseEvent,
   rect: {
     offsetLeft: number;
     offsetTop: number;
   },
+  objectState: ObjectStateType,
+  objectDispatch: React.Dispatch<ObjectActions>,
   positionState: PositionStateType,
-  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
+  const object = objectState.objects.find(
+    (obj) => obj.id === dynamicState.objectID
+  );
+  if (!object) return;
+  objectDispatch({
+    type: 'updateSelection',
+    payload: { id: objectID as number, selected: true },
+  });
   const scaledRectangle = getScaledRectangle(
     object.rectangle,
     positionState.delta,
@@ -29,7 +37,7 @@ export function selectObject(
     type: 'setDynamicState',
     payload: {
       isMouseDown: true,
-      action: DrawActions.DRAG,
+      action: DynamicActions.DRAG,
       point: {
         x: event.clientX,
         y: event.clientY,
@@ -39,11 +47,5 @@ export function selectObject(
         dy: event.clientY - scaledRectangle.origin.row,
       },
     },
-  });
-
-  object.selected = true;
-  positionDispatch({
-    type: 'setObject',
-    payload: object,
   });
 }

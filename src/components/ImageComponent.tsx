@@ -3,18 +3,16 @@ import { useContext, useEffect, useRef } from 'react';
 import { Image, writeCanvas } from 'image-js';
 
 import { BoxAnnotation } from './BoxAnnotation';
-import { getRectangle } from '../utilities/getRectangle';
-import './css/ImageComponent.css';
 import { ResizeBox } from './ResizeBox';
 import { selectObject } from './callbacks/selectObject';
 import { observeResizing } from './callbacks/observeResizing';
 import { onMouseMove } from './callbacks/onMouseMove';
 import { onMouseDown } from './callbacks/onMouseDown';
 import { onMouseUp } from './callbacks/onMouseUp';
-import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { PositionContext } from '../context/PositionContext';
 import { ObjectContext } from '../context/ObjectContext';
 import { DynamicContext } from '../context/DynamicContext';
+import './css/ImageComponent.css';
 
 export function ImageComponent({
   image,
@@ -29,9 +27,7 @@ export function ImageComponent({
   const { positionState, positionDispatch } = useContext(PositionContext);
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
   const { objectState, objectDispatch } = useContext(ObjectContext);
-
   const { width = image.width, height = image.height } = options;
-
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
   const rect = {
@@ -39,17 +35,12 @@ export function ImageComponent({
     offsetTop: divRef.current?.offsetTop || 0,
   };
 
-  const rectangle = getRectangle(
-    getRectangleFromPoints(positionState.startPoint, positionState.endPoint),
-    positionState.delta,
-    rect
-  );
-
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
   }, [image]);
 
+  // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
     // window.addEventListener('mouseup', () => onMouseUpOutside(componentState));
     const resizeObserver = observeResizing(
@@ -67,25 +58,30 @@ export function ImageComponent({
     };
   }, [image]);
 
-  const object = positionState.object;
-  let annotations = [
+  const annotations = [
     ...objectState.objects.map((obj, index) => (
       <BoxAnnotation
-        object={object}
+        objectID={obj.id}
         key={`annotation_${index}`}
         rectangle={obj.rectangle}
+        rect={rect}
+        objectState={objectState}
+        objectDispatch={objectDispatch}
         positionDispatch={positionDispatch}
+        positionState={positionState}
         dynamicDispatch={dynamicDispatch}
-        onMouseDown={(event) =>
+        onMouseDown={(event) => {
           selectObject(
-            obj,
+            obj.id,
             event,
             rect,
+            objectState,
+            objectDispatch,
             positionState,
-            positionDispatch,
+            dynamicState,
             dynamicDispatch
-          )
-        }
+          );
+        }}
         onMouseUp={() =>
           dynamicDispatch({ type: 'setIsMouseDown', payload: false })
         }
@@ -93,15 +89,17 @@ export function ImageComponent({
     )),
     <ResizeBox
       key={`resize-box`}
-      object={object}
-      rectangle={rectangle}
+      objectState={objectState}
+      objectDispatch={objectDispatch}
       positionState={positionState}
       positionDispatch={positionDispatch}
+      dynamicState={dynamicState}
       dynamicDispatch={dynamicDispatch}
       delta={positionState.delta}
       rect={rect}
     ></ResizeBox>,
   ];
+
   return (
     <div
       id="draggable"
@@ -110,7 +108,6 @@ export function ImageComponent({
       onMouseUp={(event) =>
         onMouseUp(
           event,
-          object,
           rect,
           objectState,
           objectDispatch,
@@ -123,15 +120,24 @@ export function ImageComponent({
       onMouseMove={(event) =>
         onMouseMove(
           event,
-          object,
           rect,
-          positionState,
           dynamicState,
+          objectState,
+          positionState,
           positionDispatch
         )
       }
       onMouseDown={(event) =>
-        onMouseDown(event, positionDispatch, dynamicState, dynamicDispatch)
+        onMouseDown(
+          event,
+          rect,
+          objectState,
+          objectDispatch,
+          positionState,
+          positionDispatch,
+          dynamicState,
+          dynamicDispatch
+        )
       }
     >
       <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />

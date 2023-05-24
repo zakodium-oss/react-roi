@@ -1,21 +1,14 @@
 import {
-  Actions,
-  DataContextProps,
-  DataState,
-} from '../../context/DataContext';
-import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
-import {
-  DrawActions,
-  EventActions,
-  EventStateType,
-} from '../../context/EventReducer';
+  DynamicAction,
+  DynamicActions,
+  DynamicStateType,
+} from '../../context/DynamicContext';
 import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
 import {
   PositionAction,
   PositionStateType,
 } from '../../context/PositionContext';
 import { DataObject } from '../../types/DataObject';
-import { Point } from '../../types/Point';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getRectangle } from '../../utilities/getRectangle';
@@ -24,7 +17,6 @@ import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function onMouseUp(
   event: React.MouseEvent,
-  object: DataObject,
   rect: { offsetLeft: number; offsetTop: number },
   objectState: ObjectStateType,
   objectDispatch: React.Dispatch<ObjectActions>,
@@ -34,8 +26,12 @@ export function onMouseUp(
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
   const { startPoint, endPoint, delta } = positionState;
+  const objectID = objectState.objects.find((obj) => obj.selected)?.id;
+  const object = objectState.objects.find(
+    (obj) => obj.id === objectID
+  ) as DataObject;
   switch (dynamicState.action) {
-    case DrawActions.DRAG:
+    case DynamicActions.DRAG:
       const scaledRectangle = getScaledRectangle(object.rectangle, delta, rect);
       const position = dragRectangle(
         scaledRectangle,
@@ -51,31 +47,10 @@ export function onMouseUp(
           type: 'setEndPoint',
           payload: position.endPoint,
         });
-        object.rectangle = getRectangle(
-          getRectangleFromPoints(startPoint, endPoint),
-          delta,
-          rect
-        );
-      }
-      dynamicDispatch({
-        type: 'setAction',
-        payload: DrawActions.SLEEP,
-      });
-      break;
-    case DrawActions.DRAW:
-      if (
-        checkRectangle(
-          startPoint,
-          { x: event.clientX, y: event.clientY },
-          delta,
-          rect
-        )
-      ) {
         objectDispatch({
-          type: 'addObject',
+          type: 'updateRectangle',
           payload: {
-            id: Math.random(),
-            selected: false,
+            id: objectID as number | string,
             rectangle: getRectangle(
               getRectangleFromPoints(startPoint, endPoint),
               delta,
@@ -84,26 +59,65 @@ export function onMouseUp(
           },
         });
       }
+      objectDispatch({
+        type: 'updateSelection',
+        payload: { id: objectID as number, selected: true },
+      });
+      break;
+    case DynamicActions.DRAW:
+      const newID = Math.random();
+      if (
+        checkRectangle(
+          startPoint,
+          { x: event.clientX, y: event.clientY },
+          delta,
+          rect
+        )
+      ) {
+        const object: DataObject = {
+          id: newID,
+          selected: true,
+          rectangle: getRectangle(
+            getRectangleFromPoints(startPoint, endPoint),
+            delta,
+            rect
+          ),
+        };
+        objectDispatch({
+          type: 'addObject',
+          payload: object,
+        });
+      }
+      objectDispatch({
+        type: 'updateSelection',
+        payload: { id: newID as number, selected: true },
+      });
       break;
 
-    case DrawActions.RESIZE:
-      object.rectangle = getRectangle(
-        getRectangleFromPoints(startPoint, endPoint),
-        delta,
-        rect
-      );
-      dynamicDispatch({
-        type: 'setAction',
-        payload: DrawActions.SLEEP,
+    case DynamicActions.RESIZE:
+      objectDispatch({
+        type: 'updateRectangle',
+        payload: {
+          id: objectID as number | string,
+          rectangle: getRectangle(
+            getRectangleFromPoints(startPoint, endPoint),
+            delta,
+            rect
+          ),
+        },
+      });
+      objectDispatch({
+        type: 'updateSelection',
+        payload: { id: objectID as number | string, selected: true },
       });
       break;
   }
-  object.selected = false;
+
   positionDispatch({ type: 'setStartPoint', payload: { x: 0, y: 0 } });
   positionDispatch({ type: 'setEndPoint', payload: { x: 0, y: 0 } });
   dynamicDispatch({ type: 'setIsMouseDown', payload: false });
   dynamicDispatch({
     type: 'setAction',
-    payload: DrawActions.SLEEP,
+    payload: DynamicActions.SLEEP,
   });
 }

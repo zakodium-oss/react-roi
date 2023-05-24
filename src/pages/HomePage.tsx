@@ -35,7 +35,7 @@ function DraggableComponent({ image }: { image: Image.Image }) {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '70%',
+        width: '700px',
       }}
     >
       <ImageComponent

@@ -1,4 +1,4 @@
-import { Delta } from '../context/EventReducer';
+import { Delta } from '../types/Delta';
 import { Rectangle } from '../types/Rectangle';
 import { getScaledRectangle } from './getScaledRectangle';
 

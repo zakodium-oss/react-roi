@@ -17,6 +17,7 @@ export type DynamicStateType = {
   action: DynamicActions;
   point?: Point;
   delta?: Delta;
+  objectID?: number;
   position?: number;
 };
 
@@ -33,6 +34,7 @@ export type DynamicAction =
   | { type: 'setAction'; payload: DynamicActions }
   | { type: 'setPoint'; payload: Point }
   | { type: 'setDelta'; payload: Delta }
+  | { type: 'setObjectID'; payload: number }
   | { type: 'setPointerPosition'; payload: number }
   | { type: 'setDynamicState'; payload: DynamicStateType };
 
@@ -63,6 +65,12 @@ export const dynamicReducer = (
       return {
         ...state,
         delta: action.payload,
+      };
+
+    case 'setObjectID':
+      return {
+        ...state,
+        setObjectID: action.payload,
       };
 
     case 'setPointerPosition':

@@ -1,20 +1,29 @@
 import { DynamicAction, DynamicActions } from '../context/DynamicContext';
-import { PositionAction } from '../context/PositionContext';
-import { DataObject } from '../types/DataObject';
+import { ObjectActions, ObjectStateType } from '../context/ObjectContext';
+import { PositionAction, PositionStateType } from '../context/PositionContext';
 import { Rectangle } from '../types/Rectangle';
+import { getReferencePointers } from '../utilities/getReferencePointers';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 export function BoxAnnotation({
-  object,
+  objectID,
   rectangle,
+  rect,
   options,
+  objectState,
+  objectDispatch,
+  positionState,
   positionDispatch,
   dynamicDispatch,
   onMouseDown,
   onMouseUp,
-  onClick,
 }: {
-  object: DataObject;
+  objectID: number | string | undefined;
   rectangle: Rectangle;
+  rect: {
+    offsetLeft: number;
+    offsetTop: number;
+  };
   options?: {
     strokeWidth?: number | string;
     stroke?: string;
@@ -23,32 +32,61 @@ export function BoxAnnotation({
     strokeDashoffset?: number | string;
     zIndex?: number | undefined;
   };
+  objectState: ObjectStateType;
+  objectDispatch: React.Dispatch<ObjectActions>;
+  positionState: PositionStateType;
   positionDispatch?: React.Dispatch<PositionAction>;
   dynamicDispatch?: React.Dispatch<DynamicAction>;
   onMouseDown?: (event: any) => void;
   onMouseUp?: (event: any) => void;
-  onClick?: (event: any) => void;
-}) {
+}): JSX.Element {
   const defaultOptions = {
-    strokeWidth: object.selected ? 3 : 1,
+    strokeWidth: 1,
     stroke: 'black',
-    fill: object.selected ? 'rgba(0,0,0,0.4)' : 'black',
+    fill: 'black',
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
   const { height, width, origin } = rectangle;
+  const object = objectState.objects.find((obj) => obj.id === objectID);
   return (
     <rect
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      onClickCapture={onClick}
-      onMouseDownCapture={() => {
-        if (positionDispatch === undefined || dynamicDispatch === undefined)
-          return;
-        positionDispatch({ type: 'setObject', payload: object });
+      onMouseDownCapture={(event) => {
+        if (!positionDispatch || !dynamicDispatch) return;
+        if (!object) return;
+        const scaledRectangle = getScaledRectangle(
+          object?.rectangle,
+          positionState.delta,
+          rect
+        );
+        const points = getReferencePointers(
+          object?.rectangle as Rectangle,
+          positionState.delta,
+          2,
+          rect
+        );
         dynamicDispatch({
-          type: 'setAction',
-          payload: DynamicActions.DRAG,
+          type: 'setDynamicState',
+          payload: {
+            isMouseDown: false,
+            action: DynamicActions.DRAG,
+            point: {
+              x: event.clientX,
+              y: event.clientY,
+            },
+            delta: {
+              dx: event.clientX - scaledRectangle.origin.column,
+              dy: event.clientY - scaledRectangle.origin.row,
+            },
+            objectID: objectID as number,
+          },
+        });
+        // objectID !== undefined ??
+        objectDispatch({
+          type: 'updateSelection',
+          payload: { id: objectID as number, selected: true },
         });
       }}
       x={origin.column}

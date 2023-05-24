@@ -1,13 +1,11 @@
 import { Dispatch, ReactNode, createContext, useReducer } from 'react';
 import { Delta } from '../types/Delta';
 import { Point } from '../types/Point';
-import { DataObject } from '../types/DataObject';
 
 export type PositionStateType = {
   startPoint: Point;
   endPoint: Point;
   delta: Delta;
-  object: DataObject;
 };
 
 export type PositionAction =
@@ -29,10 +27,6 @@ export type PositionAction =
   | {
       type: 'setDelta';
       payload: Delta;
-    }
-  | {
-      type: 'setObject';
-      payload: DataObject;
     };
 
 const positionReducer = (state: PositionStateType, action: PositionAction) => {
@@ -60,26 +54,12 @@ const positionReducer = (state: PositionStateType, action: PositionAction) => {
         ...state,
         delta: action.payload,
       };
-    case 'setObject':
-      return {
-        ...state,
-        object: action.payload,
-      };
   }
 };
 
 const initialPositionState: PositionStateType = {
   startPoint: { x: 0, y: 0 },
   endPoint: { x: 0, y: 0 },
-  object: {
-    id: 0,
-    selected: false,
-    rectangle: {
-      origin: { column: 0, row: 0 },
-      width: 0,
-      height: 0,
-    },
-  },
   delta: { dx: 1, dy: 1 },
 };
 

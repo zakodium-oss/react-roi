@@ -1,5 +1,5 @@
-import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
-import { DrawActions } from '../../context/EventReducer';
+import { DynamicActions, DynamicStateType } from '../../context/DynamicContext';
+import { ObjectStateType } from '../../context/ObjectContext';
 import {
   PositionAction,
   PositionStateType,
@@ -10,15 +10,18 @@ import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function onMouseMove(
   event: React.MouseEvent,
-  object: DataObject,
   rect: { offsetLeft: number; offsetTop: number },
-  positionState: PositionStateType,
   dynamicState: DynamicStateType,
+  objectState: ObjectStateType,
+  positionState: PositionStateType,
   positionDispatch: React.Dispatch<PositionAction>
 ) {
+  const object = objectState.objects.find(
+    (obj) => obj.id === dynamicState.objectID
+  ) as DataObject;
   if (dynamicState.isMouseDown) {
     switch (dynamicState.action) {
-      case DrawActions.DRAG:
+      case DynamicActions.DRAG:
         const scaledRectangle = getScaledRectangle(
           object.rectangle,
           positionState.delta,
@@ -35,8 +38,8 @@ export function onMouseMove(
         });
         positionDispatch({ type: 'setEndPoint', payload: position.endPoint });
         break;
-      case DrawActions.DRAW:
-      case DrawActions.RESIZE:
+      case DynamicActions.DRAW:
+      case DynamicActions.RESIZE:
         positionDispatch({
           type: 'setEndPoint',
           payload: { x: event.clientX, y: event.clientY },
