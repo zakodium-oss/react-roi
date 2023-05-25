@@ -1,4 +1,5 @@
-import { Delta } from '../types/Delta';
+import { Offset } from '../types/Offset';
+import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
 
 /**
@@ -11,11 +12,8 @@ import { Rectangle } from '../types/Rectangle';
 
 export function getScaledRectangle(
   rectangle: Rectangle,
-  delta: Delta,
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  }
+  ratio: Ratio,
+  offset: Offset
 ): Rectangle {
   const result: Rectangle = {
     origin: { row: 0, column: 0 },
@@ -23,28 +21,28 @@ export function getScaledRectangle(
     height: 0,
   };
 
-  if (rect) {
+  if (offset) {
     if (rectangle.origin.column < rectangle.origin.column + rectangle.width) {
       result.origin.column = Math.floor(
-        rectangle.origin.column / delta.dy + rect.offsetLeft
+        rectangle.origin.column / ratio.y + offset.left
       );
-      result.width = Math.floor(rectangle.width / delta.dx);
+      result.width = Math.floor(rectangle.width / ratio.x);
     } else {
       result.origin.column = Math.floor(
-        (rectangle.origin.column + rectangle.width) / delta.dy + rect.offsetLeft
+        (rectangle.origin.column + rectangle.width) / ratio.y + offset.left
       );
-      result.width = Math.floor(rectangle.width / delta.dx);
+      result.width = Math.floor(rectangle.width / ratio.x);
     }
     if (rectangle.origin.row < rectangle.origin.row + rectangle.height) {
       result.origin.row = Math.floor(
-        rectangle.origin.row / delta.dx + rect.offsetTop
+        rectangle.origin.row / ratio.x + offset.top
       );
-      result.height = Math.floor(rectangle.height / delta.dy);
+      result.height = Math.floor(rectangle.height / ratio.y);
     } else {
       result.origin.row = Math.floor(
-        (rectangle.origin.row + rectangle.height) / delta.dx + rect.offsetTop
+        (rectangle.origin.row + rectangle.height) / ratio.x + offset.top
       );
-      result.height = Math.floor(rectangle.height / delta.dy);
+      result.height = Math.floor(rectangle.height / ratio.y);
     }
   }
   return result;

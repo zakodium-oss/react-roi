@@ -1,18 +1,17 @@
 import { Delta } from '../types/Delta';
+import { Offset } from '../types/Offset';
+import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
 import { getScaledRectangle } from './getScaledRectangle';
 
 export function getReferencePointers(
   rectangle: Rectangle,
-  delta: Delta,
+  ratio: Ratio,
   index: number,
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  }
+  offset: Offset
 ) {
-  const smallRectangle = getScaledRectangle(rectangle, delta, rect);
-  const { height, width, origin } = smallRectangle;
+  const scaledRectangle = getScaledRectangle(rectangle, ratio, offset);
+  const { height, width, origin } = scaledRectangle;
   if (index === 0) {
     return {
       p0: { x: origin.column + width, y: origin.row + height },

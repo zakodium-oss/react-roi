@@ -4,21 +4,16 @@ import {
   DynamicStateType,
 } from '../../context/DynamicContext';
 import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
-import {
-  PositionAction,
-  PositionStateType,
-} from '../../context/PositionContext';
+import { Offset } from '../../types/Offset';
+import { Ratio } from '../../types/Ratio';
 import { Rectangle } from '../../types/Rectangle';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function onMouseDown(
   event: React.MouseEvent,
-  rect: { offsetLeft: number; offsetTop: number },
   objectState: ObjectStateType,
   objectDispatch: React.Dispatch<ObjectActions>,
-  positionState: PositionStateType,
-  positionDispatch: React.Dispatch<PositionAction>,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
@@ -29,39 +24,38 @@ export function onMouseDown(
       type: 'setAction',
       payload: DynamicActions.DRAW,
     });
-    positionDispatch({ type: 'setStartPoint', payload: initPoint });
-    positionDispatch({ type: 'setEndPoint', payload: initPoint });
+    dynamicDispatch({ type: 'setStartPoint', payload: initPoint });
+    dynamicDispatch({ type: 'setEndPoint', payload: initPoint });
   }
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       const scaledRectangle = getScaledRectangle(
         object?.rectangle as Rectangle,
-        positionState.delta,
-        rect
+        dynamicState.ratio as Ratio,
+        dynamicState.offset as Offset
       );
       const position = dragRectangle(
         scaledRectangle,
-        event,
+        { x: event.clientX, y: event.clientY },
         dynamicState.delta || { dx: 0, dy: 0 }
       );
-      positionDispatch({
+      dynamicDispatch({
         type: 'setStartPoint',
         payload: position.startPoint,
       });
-      positionDispatch({ type: 'setEndPoint', payload: position.endPoint });
+      dynamicDispatch({ type: 'setEndPoint', payload: position.endPoint });
       break;
     case DynamicActions.SLEEP:
-      positionDispatch({ type: 'setStartPoint', payload: initPoint });
-      positionDispatch({ type: 'setEndPoint', payload: initPoint });
+      dynamicDispatch({ type: 'setStartPoint', payload: initPoint });
+      dynamicDispatch({ type: 'setEndPoint', payload: initPoint });
       break;
 
     case DynamicActions.DRAW:
     case DynamicActions.RESIZE:
-      positionDispatch({
+      dynamicDispatch({
         type: 'setEndPoint',
         payload: initPoint,
       });
       break;
   }
-  dynamicDispatch({ type: 'setIsMouseDown', payload: true });
 }

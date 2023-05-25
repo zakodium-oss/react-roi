@@ -1,56 +1,44 @@
-import { Rectangle } from '../types/Rectangle';
+import { useContext } from 'react';
 
-import './css/ResizeBox.css';
+import { selectObject } from './callbacks/selectObject';
+import { DynamicActions, DynamicContext } from '../context/DynamicContext';
+import { ObjectContext } from '../context/ObjectContext';
 import { getPointers } from '../utilities/getPointers';
 import { getReferencePointers } from '../utilities/getReferencePointers';
-import { Delta } from '../types/Delta';
-import { PositionAction, PositionStateType } from '../context/PositionContext';
-import {
-  DynamicAction,
-  DynamicActions,
-  DynamicStateType,
-} from '../context/DynamicContext';
-import { ObjectActions, ObjectStateType } from '../context/ObjectContext';
 import { getRectangle } from '../utilities/getRectangle';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { selectObject } from './callbacks/selectObject';
+import { Rectangle } from '../types/Rectangle';
+import { Ratio } from '../types/Ratio';
+import { Point } from '../types/Point';
+import { Offset } from '../types/Offset';
 
-export function ResizeBox({
-  objectState,
-  objectDispatch,
-  positionState,
-  dynamicState,
-  positionDispatch,
-  dynamicDispatch,
-  rect,
-}: {
-  objectState: ObjectStateType;
-  objectDispatch: React.Dispatch<ObjectActions>;
-  positionState: PositionStateType;
-  positionDispatch: React.Dispatch<PositionAction>;
-  dynamicState: DynamicStateType;
-  dynamicDispatch: React.Dispatch<DynamicAction>;
-  delta: Delta;
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  };
-}) {
-  const object = objectState.objects.find(
-    (obj) => obj.id === dynamicState.objectID
-  );
+import './css/ResizeBox.css';
+
+export function ResizeBox() {
+  const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
+  const { objectState, objectDispatch } = useContext(ObjectContext);
+  const { ratio, offset, objectID, action, startPoint, endPoint } =
+    dynamicState;
+  const object = objectState.objects.find((obj) => obj.id === objectID);
+
   function onMouseDown(position: number) {
     const points = getReferencePointers(
       object?.rectangle as Rectangle,
-      positionState.delta,
+      ratio as Ratio,
       position,
-      rect
+      offset as Offset
     );
-    positionDispatch({
+    dynamicDispatch({
       type: 'setPosition',
       payload: {
-        startPoint: { x: points?.p0.x || 0, y: points?.p0.y || 0 },
-        endPoint: { x: points?.p1.x || 0, y: points!?.p1.y || 0 },
+        startPoint: {
+          x: points?.p0.x ?? (startPoint?.x || 0),
+          y: points?.p0.y ?? (startPoint?.y || 0),
+        },
+        endPoint: {
+          x: points?.p1.x ?? (endPoint?.x || 0),
+          y: points?.p1.y ?? (endPoint?.y || 0),
+        },
       },
     });
     dynamicDispatch({
@@ -59,36 +47,36 @@ export function ResizeBox({
     });
   }
 
-  let rectangle = getRectangle(
-    getRectangleFromPoints(positionState.startPoint, positionState.endPoint),
-    positionState.delta,
-    rect
-  );
-  if (object && dynamicState.action === DynamicActions.SLEEP) {
-    rectangle = object.rectangle;
-  }
+  const rectangle =
+    object && action === DynamicActions.SLEEP
+      ? object.rectangle
+      : getRectangle(
+          getRectangleFromPoints(startPoint as Point, endPoint as Point),
+          ratio as Ratio,
+          offset as Offset
+        );
+
   const pointers = getPointers(rectangle);
+
   return (
     <>
       <rect
-        x={rectangle.origin.column - 1}
-        y={rectangle.origin.row - 1}
-        width={rectangle.width + 2}
-        height={rectangle.height + 2}
+        x={rectangle.origin.column}
+        y={rectangle.origin.row}
+        width={rectangle.width}
+        height={rectangle.height}
         style={{
           padding: '10px',
-          fill: dynamicState.isMouseDown ? 'rgba(0,0,0,0.4)' : 'black',
+          fill: action !== DynamicActions.SLEEP ? 'rgba(0,0,0,0.4)' : 'black',
           stroke: 'black',
           strokeWidth: 2,
         }}
         onMouseDownCapture={(event) => {
           selectObject(
-            dynamicState.objectID,
+            objectID,
             event,
-            rect,
             objectState,
             objectDispatch,
-            positionState,
             dynamicState,
             dynamicDispatch
           );

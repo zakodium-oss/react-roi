@@ -1,45 +1,33 @@
-import { DynamicAction, DynamicActions } from '../context/DynamicContext';
-import { ObjectActions, ObjectStateType } from '../context/ObjectContext';
-import { PositionAction, PositionStateType } from '../context/PositionContext';
+import { useContext } from 'react';
+import {
+  DynamicAction,
+  DynamicActions,
+  DynamicContext,
+  DynamicStateType,
+} from '../context/DynamicContext';
+import { ObjectActions, ObjectContext } from '../context/ObjectContext';
+import { DataObject } from '../types/DataObject';
+import { Offset } from '../types/Offset';
+import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
-import { getReferencePointers } from '../utilities/getReferencePointers';
+import { dragRectangle } from '../utilities/dragRectangle';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
+
+type BoxAnnotationProps = {
+  objectID: number | string | undefined;
+  rectangle: Rectangle;
+  options?: BoxAnnotationOptions;
+  onMouseDown?: (event: any) => void;
+  onMouseUp?: (event: any) => void;
+};
 
 export function BoxAnnotation({
   objectID,
   rectangle,
-  rect,
   options,
-  objectState,
-  objectDispatch,
-  positionState,
-  positionDispatch,
-  dynamicDispatch,
   onMouseDown,
   onMouseUp,
-}: {
-  objectID: number | string | undefined;
-  rectangle: Rectangle;
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  };
-  options?: {
-    strokeWidth?: number | string;
-    stroke?: string;
-    fill?: string;
-    strokeDasharray?: number | string;
-    strokeDashoffset?: number | string;
-    zIndex?: number | undefined;
-  };
-  objectState: ObjectStateType;
-  objectDispatch: React.Dispatch<ObjectActions>;
-  positionState: PositionStateType;
-  positionDispatch?: React.Dispatch<PositionAction>;
-  dynamicDispatch?: React.Dispatch<DynamicAction>;
-  onMouseDown?: (event: any) => void;
-  onMouseUp?: (event: any) => void;
-}): JSX.Element {
+}: BoxAnnotationProps): JSX.Element {
   const defaultOptions = {
     strokeWidth: 1,
     stroke: 'black',
@@ -47,48 +35,26 @@ export function BoxAnnotation({
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
+  const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
+  const { objectState, objectDispatch } = useContext(ObjectContext);
   const { height, width, origin } = rectangle;
-  const object = objectState.objects.find((obj) => obj.id === objectID);
+  const object = objectState.objects.find(
+    (obj) => obj.id === objectID
+  ) as DataObject;
   return (
     <rect
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      onMouseDownCapture={(event) => {
-        if (!positionDispatch || !dynamicDispatch) return;
-        if (!object) return;
-        const scaledRectangle = getScaledRectangle(
-          object?.rectangle,
-          positionState.delta,
-          rect
-        );
-        const points = getReferencePointers(
-          object?.rectangle as Rectangle,
-          positionState.delta,
-          2,
-          rect
-        );
-        dynamicDispatch({
-          type: 'setDynamicState',
-          payload: {
-            isMouseDown: false,
-            action: DynamicActions.DRAG,
-            point: {
-              x: event.clientX,
-              y: event.clientY,
-            },
-            delta: {
-              dx: event.clientX - scaledRectangle.origin.column,
-              dy: event.clientY - scaledRectangle.origin.row,
-            },
-            objectID: objectID as number,
-          },
-        });
-        // objectID !== undefined ??
-        objectDispatch({
-          type: 'updateSelection',
-          payload: { id: objectID as number, selected: true },
-        });
-      }}
+      onMouseDownCapture={(event) =>
+        onMouseDownCapture(
+          object,
+          objectID as number,
+          dynamicState,
+          dynamicDispatch,
+          objectDispatch,
+          event
+        )
+      }
       x={origin.column}
       y={origin.row}
       width={width}
@@ -97,3 +63,54 @@ export function BoxAnnotation({
     ></rect>
   );
 }
+
+function onMouseDownCapture(
+  object: DataObject,
+  objectID: number,
+  dynamicState: DynamicStateType,
+  dynamicDispatch: React.Dispatch<DynamicAction>,
+  objectDispatch: React.Dispatch<ObjectActions>,
+  event: any
+) {
+  const { ratio, offset, delta } = dynamicState;
+  {
+    const scaledRectangle = getScaledRectangle(
+      object.rectangle,
+      ratio as Ratio,
+      offset as Offset
+    );
+    dynamicDispatch({
+      type: 'setDynamicState',
+      payload: {
+        action: DynamicActions.DRAG,
+        delta: {
+          dx: event.clientX - scaledRectangle.origin.column,
+          dy: event.clientY - scaledRectangle.origin.row,
+        },
+        objectID: objectID as number,
+      },
+    });
+    objectDispatch({
+      type: 'updateSelection',
+      payload: { id: objectID as number, selected: true },
+    });
+    const position = dragRectangle(
+      scaledRectangle,
+      {
+        x: scaledRectangle.origin.column + delta.dx,
+        y: scaledRectangle.origin.row + delta.dy,
+      },
+      delta
+    );
+    dynamicDispatch({ type: 'setPosition', payload: position });
+  }
+}
+
+type BoxAnnotationOptions = {
+  strokeWidth?: number | string;
+  stroke?: string;
+  fill?: string;
+  strokeDasharray?: number | string;
+  strokeDashoffset?: number | string;
+  zIndex?: number | undefined;
+};

@@ -4,19 +4,15 @@ import {
   DynamicStateType,
 } from '../../context/DynamicContext';
 import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
-import { PositionStateType } from '../../context/PositionContext';
+import { Offset } from '../../types/Offset';
+import { Ratio } from '../../types/Ratio';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
   objectID: number | string | undefined,
   event: React.MouseEvent,
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  },
   objectState: ObjectStateType,
   objectDispatch: React.Dispatch<ObjectActions>,
-  positionState: PositionStateType,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
@@ -24,24 +20,19 @@ export function selectObject(
     (obj) => obj.id === dynamicState.objectID
   );
   if (!object) return;
+  const scaledRectangle = getScaledRectangle(
+    object.rectangle,
+    dynamicState.ratio as Ratio,
+    dynamicState.offset as Offset
+  );
   objectDispatch({
     type: 'updateSelection',
     payload: { id: objectID as number, selected: true },
   });
-  const scaledRectangle = getScaledRectangle(
-    object.rectangle,
-    positionState.delta,
-    rect
-  );
   dynamicDispatch({
     type: 'setDynamicState',
     payload: {
-      isMouseDown: true,
       action: DynamicActions.DRAG,
-      point: {
-        x: event.clientX,
-        y: event.clientY,
-      },
       delta: {
         dx: event.clientX - scaledRectangle.origin.column,
         dy: event.clientY - scaledRectangle.origin.row,

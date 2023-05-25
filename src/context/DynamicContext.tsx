@@ -1,90 +1,99 @@
 import { Dispatch, ReactNode, createContext, useReducer } from 'react';
+import { produce } from 'immer';
+
 import { Delta } from '../types/Delta';
 import { Point } from '../types/Point';
+import { Ratio } from '../types/Ratio';
+import { Offset } from '../types/Offset';
 
 export const DynamicActions = Object.freeze({
-  DRAG: 'drag' as const,
-  DRAW: 'draw' as const,
-  RESIZE: 'resize' as const,
-  SLEEP: 'sleep' as const,
+  DRAG: 'drag',
+  DRAW: 'draw',
+  RESIZE: 'resize',
+  SLEEP: 'sleep',
 });
 
 export type DynamicActions =
   (typeof DynamicActions)[keyof typeof DynamicActions];
 
 export type DynamicStateType = {
-  isMouseDown: boolean;
   action: DynamicActions;
-  point?: Point;
-  delta?: Delta;
+  delta: Delta;
   objectID?: number;
   position?: number;
+  startPoint?: Point;
+  endPoint?: Point;
+  ratio?: Ratio;
+  offset?: Offset;
 };
 
 const dynamicInitialState: DynamicStateType = {
-  isMouseDown: false,
   action: DynamicActions.SLEEP,
+  startPoint: { x: 0, y: 0 },
+  endPoint: { x: 0, y: 0 },
+  ratio: { x: 1, y: 1 },
+  delta: { dx: 0, dy: 0 },
+  offset: { top: 0, right: 0, left: 0, bottom: 0 },
 };
 
 export type DynamicAction =
-  | {
-      type: 'setIsMouseDown';
-      payload: boolean;
-    }
   | { type: 'setAction'; payload: DynamicActions }
-  | { type: 'setPoint'; payload: Point }
   | { type: 'setDelta'; payload: Delta }
   | { type: 'setObjectID'; payload: number }
-  | { type: 'setPointerPosition'; payload: number }
-  | { type: 'setDynamicState'; payload: DynamicStateType };
+  | { type: 'setDynamicState'; payload: DynamicStateType }
+  | { type: 'setStartPoint'; payload: Point }
+  | { type: 'setEndPoint'; payload: Point }
+  | { type: 'setRatio'; payload: Ratio }
+  | { type: 'setOffset'; payload: Offset }
+  | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } };
 
 export const dynamicReducer = (
   state: DynamicStateType,
   action: DynamicAction
 ) => {
-  switch (action.type) {
-    case 'setIsMouseDown':
-      return {
-        ...state,
-        isMouseDown: action.payload,
-      };
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case 'setAction':
+        draft.action = action.payload;
+        break;
 
-    case 'setAction':
-      return {
-        ...state,
-        action: action.payload,
-      };
+      case 'setDelta':
+        draft.delta = action.payload;
+        break;
 
-    case 'setPoint':
-      return {
-        ...state,
-        point: action.payload,
-      };
+      case 'setObjectID':
+        draft.objectID = action.payload;
+        break;
 
-    case 'setDelta':
-      return {
-        ...state,
-        delta: action.payload,
-      };
+      case 'setDynamicState':
+        Object.assign(draft, action.payload);
+        break;
 
-    case 'setObjectID':
-      return {
-        ...state,
-        setObjectID: action.payload,
-      };
+      case 'setPosition':
+        draft.startPoint = action.payload.startPoint;
+        draft.endPoint = action.payload.endPoint;
+        break;
 
-    case 'setPointerPosition':
-      return {
-        ...state,
-        position: action.payload,
-      };
-    case 'setDynamicState':
-      return {
-        ...state,
-        ...action.payload,
-        isMouseDown: state.isMouseDown,
-      };
-  }
+      case 'setStartPoint':
+        draft.startPoint = action.payload;
+        break;
+
+      case 'setEndPoint':
+        draft.endPoint = action.payload;
+        break;
+
+      case 'setRatio':
+        draft.ratio = action.payload;
+        break;
+
+      case 'setOffset':
+        draft.offset = action.payload;
+        break;
+
+      default:
+        break;
+    }
+  });
 };
 
 type DynamicContextProps = {
@@ -97,7 +106,7 @@ export const DynamicContext = createContext<DynamicContextProps>(
 );
 
 type ObjectProviderProps = {
-  children: ReactNode | ReactNode[];
+  children: ReactNode;
 };
 
 export const DynamicProvider = ({ children }: ObjectProviderProps) => {

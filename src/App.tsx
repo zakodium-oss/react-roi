@@ -5,7 +5,6 @@ import { MoveablePage } from './pages/MovablePage';
 
 import { DynamicProvider } from './context/DynamicContext';
 import { ObjectProvider } from './context/ObjectContext';
-import { PositionProvider } from './context/PositionContext';
 
 const router = createBrowserRouter([
   {
@@ -18,9 +17,7 @@ const router = createBrowserRouter([
     element: (
       <ObjectProvider>
         <DynamicProvider>
-          <PositionProvider>
-            <HomePage />
-          </PositionProvider>
+          <HomePage />
         </DynamicProvider>
       </ObjectProvider>
     ),

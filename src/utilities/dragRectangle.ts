@@ -1,3 +1,6 @@
+import { Delta } from '../types/Delta';
+import { Rectangle } from '../types/Rectangle';
+
 /**
  * This function returns the new coordinates of the rectangle on the SVG
  * @param object the object to drag
@@ -7,17 +10,14 @@
  * @returns
  */
 
-import { Delta } from '../context/EventReducer';
-import { Rectangle } from '../types/Rectangle';
-
 export function dragRectangle(
   rectangle: Rectangle,
-  event: React.MouseEvent,
+  origin: { x: number; y: number },
   delta: Delta
 ) {
   const startPoint = {
-    x: event.clientX - delta.dx,
-    y: event.clientY - delta.dy,
+    x: origin.x - delta.dx,
+    y: origin.y - delta.dy,
   };
   return {
     startPoint,

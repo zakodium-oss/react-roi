@@ -1,4 +1,6 @@
 import { createContext, Dispatch, ReactNode, useReducer } from 'react';
+import { produce } from 'immer';
+
 import { Rectangle } from '../types/Rectangle';
 import { DataObject } from '../types/DataObject';
 
@@ -28,42 +30,40 @@ export type ObjectActions =
     };
 
 const objectReducer = (state: ObjectStateType, action: ObjectActions) => {
-  switch (action.type) {
-    case 'addObject':
-      state.objects.push(action.payload);
-      return state;
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case 'addObject':
+        draft.objects.push(action.payload);
+        break;
 
-    case 'updateRectangle': {
-      let { id, rectangle } = action.payload;
-      const objectIndex = state.objects.findIndex((obj) => obj.id === id);
-      const currentObject = state.objects[objectIndex];
-      currentObject.rectangle = rectangle;
-      state.objects[objectIndex] = currentObject;
-      return state;
-    }
-
-    case 'updateSelection': {
-      for (let i = 0; i < state.objects.length; i++) {
-        state.objects[i].selected = false;
+      case 'updateRectangle': {
+        const { id, rectangle } = action.payload;
+        const object = draft.objects.find((obj) => obj.id === id);
+        if (object) {
+          object.rectangle = rectangle;
+        }
+        break;
       }
-      const { id, selected } = action.payload;
-      const objectIndex = state.objects.findIndex((obj) => obj.id === id);
-      const currentObject = state.objects[objectIndex];
-      currentObject.selected = selected || false;
-      state.objects[objectIndex] = currentObject;
-      return state;
-    }
 
-    case 'resetSelection': {
-      for (let i = 0; i < state.objects.length; i++) {
-        state.objects[i].selected = false;
+      case 'updateSelection': {
+        const { id, selected } = action.payload;
+        draft.objects.forEach((obj) => {
+          obj.selected = obj.id === id ? selected : false;
+        });
+        break;
       }
-      return state;
-    }
 
-    default:
-      return state;
-  }
+      case 'resetSelection': {
+        draft.objects.forEach((obj) => {
+          obj.selected = false;
+        });
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
 };
 
 type ObjectContextProps = {
@@ -76,7 +76,7 @@ export const ObjectContext = createContext<ObjectContextProps>(
 );
 
 type ObjectProviderProps = {
-  children: ReactNode | ReactNode[];
+  children: ReactNode;
 };
 
 export const ObjectProvider = ({ children }: ObjectProviderProps) => {
@@ -84,6 +84,7 @@ export const ObjectProvider = ({ children }: ObjectProviderProps) => {
     objectReducer,
     objectInitialState
   );
+
   return (
     <ObjectContext.Provider value={{ objectState, objectDispatch }}>
       {children}

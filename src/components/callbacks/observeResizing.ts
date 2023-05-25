@@ -1,10 +1,10 @@
-import { PositionAction } from '../../context/PositionContext';
+import { DynamicAction } from '../../context/DynamicContext';
 
 export function observeResizing(
   imageRef: React.RefObject<HTMLCanvasElement>,
   width: number,
   height: number,
-  positionDispatch: (value: PositionAction) => void
+  dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
   return new ResizeObserver((entries) => {
     for (let entry of entries) {
@@ -14,11 +14,11 @@ export function observeResizing(
         content.height !== 0 &&
         content.width !== 0
       ) {
-        positionDispatch({
-          type: 'setDelta',
+        dynamicDispatch({
+          type: 'setRatio',
           payload: {
-            dx: width / entry.contentRect.width,
-            dy: height / entry.contentRect.height,
+            x: width / entry.contentRect.width,
+            y: height / entry.contentRect.height,
           },
         });
       }
