@@ -59,7 +59,7 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const resizeBox = <ResizeBox key={`resize-box`}></ResizeBox>;
   const annotations = objectState.objects.map((obj, index) => {
     if (
-      obj.selected &&
+      obj.id === dynamicState.objectID &&
       (dynamicState.action === DynamicActions.DRAG ||
         dynamicState.action === DynamicActions.RESIZE)
     ) {
@@ -95,13 +95,7 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
         onMouseMove(event, dynamicState, dynamicDispatch, objectState)
       }
       onMouseDown={(event) =>
-        onMouseDown(
-          event,
-          objectState,
-          objectDispatch,
-          dynamicState,
-          dynamicDispatch
-        )
+        onMouseDown(event, objectState, dynamicState, dynamicDispatch)
       }
     >
       <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />

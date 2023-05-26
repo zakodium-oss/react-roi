@@ -22,7 +22,10 @@ export function onMouseUp(
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
   const { startPoint, endPoint, ratio } = dynamicState;
-  const object = objectState.objects.find((obj) => obj.selected) as DataObject;
+  const object = objectState.objects.find(
+    (obj) => obj.id === dynamicState.objectID
+  ) as DataObject;
+  const mousePosition = { x: event.clientX, y: event.clientY };
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       const scaledRectangle = getScaledRectangle(
@@ -32,7 +35,7 @@ export function onMouseUp(
       );
       const position = dragRectangle(
         scaledRectangle,
-        { x: event.clientX, y: event.clientY },
+        mousePosition,
         dynamicState.delta
       );
       if (
@@ -43,14 +46,7 @@ export function onMouseUp(
           dynamicState.offset as Offset
         )
       ) {
-        dynamicDispatch({
-          type: 'setStartPoint',
-          payload: position.startPoint,
-        });
-        dynamicDispatch({
-          type: 'setEndPoint',
-          payload: position.endPoint,
-        });
+        dynamicDispatch({ type: 'setPosition', payload: position });
         objectDispatch({
           type: 'updateRectangle',
           payload: {
@@ -63,39 +59,30 @@ export function onMouseUp(
           },
         });
       }
-      objectDispatch({
-        type: 'updateSelection',
-        payload: { id: object.id, selected: true },
-      });
+      dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
       break;
+
     case DynamicActions.DRAW:
-      const newID = Math.random();
       if (
         checkRectangle(
           startPoint as Point,
-          { x: event.clientX, y: event.clientY },
+          mousePosition,
           ratio as Ratio,
           dynamicState.offset as Offset
         )
       ) {
+        const newID = Math.random();
         const object: DataObject = {
           id: newID,
-          selected: true,
           rectangle: getRectangle(
             getRectangleFromPoints(startPoint as Point, endPoint as Point),
             ratio as Ratio,
             dynamicState.offset as Offset
           ),
         };
-        objectDispatch({
-          type: 'addObject',
-          payload: object,
-        });
+        dynamicDispatch({ type: 'setObjectID', payload: newID });
+        objectDispatch({ type: 'addObject', payload: object });
       }
-      objectDispatch({
-        type: 'updateSelection',
-        payload: { id: newID as number, selected: true },
-      });
       break;
 
     case DynamicActions.RESIZE:
@@ -110,15 +97,13 @@ export function onMouseUp(
           ),
         },
       });
-      objectDispatch({
-        type: 'updateSelection',
-        payload: { id: object.id, selected: true },
-      });
+      dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
       break;
   }
-
-  dynamicDispatch({ type: 'setStartPoint', payload: { x: 0, y: 0 } });
-  dynamicDispatch({ type: 'setEndPoint', payload: { x: 0, y: 0 } });
+  dynamicDispatch({
+    type: 'setPosition',
+    payload: { startPoint: { x: 0, y: 0 }, endPoint: { x: 0, y: 0 } },
+  });
   dynamicDispatch({
     type: 'setAction',
     payload: DynamicActions.SLEEP,

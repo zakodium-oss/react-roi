@@ -20,13 +20,6 @@ export type ObjectActions =
   | {
       type: 'updateRectangle';
       payload: { id: number | string; rectangle: Rectangle };
-    }
-  | {
-      type: 'updateSelection';
-      payload: { id: number | string; selected: boolean };
-    }
-  | {
-      type: 'resetSelection';
     };
 
 const objectReducer = (state: ObjectStateType, action: ObjectActions) => {
@@ -42,21 +35,6 @@ const objectReducer = (state: ObjectStateType, action: ObjectActions) => {
         if (object) {
           object.rectangle = rectangle;
         }
-        break;
-      }
-
-      case 'updateSelection': {
-        const { id, selected } = action.payload;
-        draft.objects.forEach((obj) => {
-          obj.selected = obj.id === id ? selected : false;
-        });
-        break;
-      }
-
-      case 'resetSelection': {
-        draft.objects.forEach((obj) => {
-          obj.selected = false;
-        });
         break;
       }
 

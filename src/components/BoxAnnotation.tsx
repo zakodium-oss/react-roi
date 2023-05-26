@@ -5,7 +5,7 @@ import {
   DynamicContext,
   DynamicStateType,
 } from '../context/DynamicContext';
-import { ObjectActions, ObjectContext } from '../context/ObjectContext';
+import { ObjectContext } from '../context/ObjectContext';
 import { DataObject } from '../types/DataObject';
 import { Offset } from '../types/Offset';
 import { Ratio } from '../types/Ratio';
@@ -36,7 +36,7 @@ export function BoxAnnotation({
     strokeDashoffset: 0,
   };
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState, objectDispatch } = useContext(ObjectContext);
+  const { objectState } = useContext(ObjectContext);
   const { height, width, origin } = rectangle;
   const object = objectState.objects.find(
     (obj) => obj.id === objectID
@@ -51,7 +51,6 @@ export function BoxAnnotation({
           objectID as number,
           dynamicState,
           dynamicDispatch,
-          objectDispatch,
           event
         )
       }
@@ -69,7 +68,6 @@ function onMouseDownCapture(
   objectID: number,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>,
-  objectDispatch: React.Dispatch<ObjectActions>,
   event: any
 ) {
   const { ratio, offset, delta } = dynamicState;
@@ -90,10 +88,7 @@ function onMouseDownCapture(
         objectID: objectID as number,
       },
     });
-    objectDispatch({
-      type: 'updateSelection',
-      payload: { id: objectID as number, selected: true },
-    });
+    dynamicDispatch({ type: 'setObjectID', payload: objectID });
     const position = dragRectangle(
       scaledRectangle,
       {

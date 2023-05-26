@@ -3,16 +3,14 @@ import {
   DynamicActions,
   DynamicStateType,
 } from '../../context/DynamicContext';
-import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
+import { ObjectStateType } from '../../context/ObjectContext';
 import { Offset } from '../../types/Offset';
 import { Ratio } from '../../types/Ratio';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
-  objectID: number | string | undefined,
   event: React.MouseEvent,
   objectState: ObjectStateType,
-  objectDispatch: React.Dispatch<ObjectActions>,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
@@ -25,10 +23,7 @@ export function selectObject(
     dynamicState.ratio as Ratio,
     dynamicState.offset as Offset
   );
-  objectDispatch({
-    type: 'updateSelection',
-    payload: { id: objectID as number, selected: true },
-  });
+
   dynamicDispatch({
     type: 'setDynamicState',
     payload: {

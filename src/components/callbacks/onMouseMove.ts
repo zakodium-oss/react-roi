@@ -16,7 +16,10 @@ export function onMouseMove(
   dynamicDispatch: React.Dispatch<DynamicAction>,
   objectState: ObjectStateType
 ) {
-  const object = objectState.objects.find((obj) => obj.selected) as DataObject;
+  const object = objectState.objects.find(
+    (obj) => obj.id === dynamicState.objectID
+  ) as DataObject;
+  const mousePosition = { x: event.clientX, y: event.clientY };
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       const scaledRectangle = getScaledRectangle(
@@ -26,7 +29,7 @@ export function onMouseMove(
       );
       const position = dragRectangle(
         scaledRectangle,
-        { x: event.clientX, y: event.clientY },
+        mousePosition,
         dynamicState.delta || { dx: 0, dy: 0 }
       );
       dynamicDispatch({ type: 'setPosition', payload: position });
@@ -35,7 +38,7 @@ export function onMouseMove(
     case DynamicActions.RESIZE:
       dynamicDispatch({
         type: 'setEndPoint',
-        payload: { x: event.clientX, y: event.clientY },
+        payload: mousePosition,
       });
       break;
   }

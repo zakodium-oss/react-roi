@@ -16,7 +16,7 @@ import './css/ResizeBox.css';
 
 export function ResizeBox() {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState, objectDispatch } = useContext(ObjectContext);
+  const { objectState } = useContext(ObjectContext);
   const { ratio, offset, objectID, action, startPoint, endPoint } =
     dynamicState;
   const object = objectState.objects.find((obj) => obj.id === objectID);
@@ -72,14 +72,7 @@ export function ResizeBox() {
           strokeWidth: 2,
         }}
         onMouseDownCapture={(event) => {
-          selectObject(
-            objectID,
-            event,
-            objectState,
-            objectDispatch,
-            dynamicState,
-            dynamicDispatch
-          );
+          selectObject(event, objectState, dynamicState, dynamicDispatch);
         }}
       ></rect>
 

@@ -1,4 +1,3 @@
-import { Delta } from '../types/Delta';
 import { Offset } from '../types/Offset';
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
@@ -6,7 +5,7 @@ import { Rectangle } from '../types/Rectangle';
 /**
  * This function returns a rectangle that is scaled to the size of the image, based on a rectangle that is scaled to the size of the SVG
  * @param rectangle The rectangle scaled to match the size of the SVG.
- * @param delta This parameter contains information about the relationship between the width and height of the image and the SVG in pixels
+ * @param ratio This parameter contains information about the relationship between the width and height of the image and the SVG in pixels
  * @param rect The object contains offset information regarding the top and left positions of the SVG relative to the entire window
  * @returns
  */

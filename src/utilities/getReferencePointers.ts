@@ -1,4 +1,3 @@
-import { Delta } from '../types/Delta';
 import { Offset } from '../types/Offset';
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
