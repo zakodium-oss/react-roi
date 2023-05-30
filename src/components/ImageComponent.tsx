@@ -18,13 +18,18 @@ type ImageComponentProps = {
   options?: {
     width?: number;
     height?: number;
+    cursorSize?: number;
   };
 };
 
 export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
   const { objectState, objectDispatch } = useContext(ObjectContext);
-  const { width = image.width, height = image.height } = options;
+  const {
+    width = image.width,
+    height = image.height,
+    cursorSize = 5,
+  } = options;
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
 
@@ -35,28 +40,30 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
 
   // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
-    const resizeObserver = observeResizing(
-      imageRef,
-      width,
-      height,
-      dynamicDispatch
-    );
-    if (imageRef.current) resizeObserver.observe(imageRef.current);
+    // const resizeObserver = observeResizing(
+    //   imageRef,
+    //   width,
+    //   height,
+    //   dynamicDispatch
+    // );
+    // if (imageRef.current) resizeObserver.observe(imageRef.current);
     dynamicDispatch({
       type: 'setOffset',
       payload: {
-        top: divRef.current?.offsetTop || 0,
+        top: (divRef.current?.offsetTop || 0) + cursorSize * 2,
         left: divRef.current?.offsetLeft || 0,
         right: 0,
         bottom: 0,
       },
     });
     return () => {
-      if (imageRef.current) resizeObserver.unobserve(imageRef.current);
+      // if (imageRef.current) resizeObserver.unobserve(imageRef.current);
     };
   }, [image]);
 
-  const resizeBox = <ResizeBox key={`resize-box`}></ResizeBox>;
+  const resizeBox = (
+    <ResizeBox key={`resize-box`} cursorSize={cursorSize}></ResizeBox>
+  );
   const annotations = objectState.objects.map((obj, index) => {
     if (
       obj.id === dynamicState.objectID &&

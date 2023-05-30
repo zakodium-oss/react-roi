@@ -19,7 +19,7 @@ export function onMouseMove(
   const object = objectState.objects.find(
     (obj) => obj.id === dynamicState.objectID
   ) as DataObject;
-  const mousePosition = { x: event.clientX, y: event.clientY };
+  const mousePosition = getMousePosition(event, dynamicState);
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       const scaledRectangle = getScaledRectangle(
@@ -41,5 +41,21 @@ export function onMouseMove(
         payload: mousePosition,
       });
       break;
+  }
+}
+
+function getMousePosition(
+  event: React.MouseEvent,
+  dynamicState: DynamicStateType
+): { x: number; y: number } {
+  switch (dynamicState.pointerIndex) {
+    case 4:
+    case 5:
+      return { x: dynamicState.endPoint?.x || 0, y: event.clientY };
+    case 6:
+    case 7:
+      return { x: event.clientX || 0, y: dynamicState.endPoint?.y || 0 };
+    default:
+      return { x: event.clientX, y: event.clientY };
   }
 }

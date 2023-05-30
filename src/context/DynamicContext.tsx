@@ -17,23 +17,60 @@ export type DynamicActions =
   (typeof DynamicActions)[keyof typeof DynamicActions];
 
 export type DynamicStateType = {
+  /**
+   * @param action Current action
+   */
   action: DynamicActions;
+
+  /**
+   * @param delta offset from the point where the click was made to the top-left corner of the rectangle
+   */
   delta: Delta;
+
+  /**
+   * @param objectID Identification of the selected object
+   */
   objectID?: number;
+
+  /**
+   * position object with the startPoint (top-left) and endPoint (bottom-right) of the rectangle
+   */
   position?: number;
+
+  /**
+   * @param startPoint Point at the top-left of the rectangle.
+   */
   startPoint?: Point;
+
+  /**
+   * @param endPoint Point at the bottom-right of the rectangle.
+   */
   endPoint?: Point;
+
+  /**
+   * @param ratio ratio of the width and height of the image related to the window, measured in pixels
+   */
   ratio?: Ratio;
+
+  /**
+   * @param offset offset information for the SVG relative to the entire window
+   */
   offset?: Offset;
+
+  /**
+   * @param pointerIndex offset index of the selected pointer
+   */
+  pointerIndex?: number;
 };
 
 const dynamicInitialState: DynamicStateType = {
   action: DynamicActions.SLEEP,
   startPoint: { x: 0, y: 0 },
   endPoint: { x: 0, y: 0 },
-  ratio: { x: 1, y: 1 },
+  ratio: { x: 1.05, y: 1.05 },
   delta: { dx: 0, dy: 0 },
   offset: { top: 0, right: 0, left: 0, bottom: 0 },
+  pointerIndex: undefined,
 };
 
 export type DynamicAction =
@@ -45,7 +82,8 @@ export type DynamicAction =
   | { type: 'setEndPoint'; payload: Point }
   | { type: 'setRatio'; payload: Ratio }
   | { type: 'setOffset'; payload: Offset }
-  | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } };
+  | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } }
+  | { type: 'setPointerIndex'; payload: number | undefined };
 
 export const dynamicReducer = (
   state: DynamicStateType,
@@ -88,6 +126,10 @@ export const dynamicReducer = (
 
       case 'setOffset':
         draft.offset = action.payload;
+        break;
+
+      case 'setPointerIndex':
+        draft.pointerIndex = action.payload;
         break;
 
       default:

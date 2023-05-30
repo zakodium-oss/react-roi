@@ -6,7 +6,7 @@ import { Rectangle } from '../types/Rectangle';
  * @param object the object to drag
  * @param event the event with the new coordinates
  * @param rect The object contains offset information regarding the top and left positions of the SVG relative to the entire window
- * @param delta This parameter contains information about the relationship between the width and height of the image and the SVG in pixels
+ * @param delta This parameter contains information about the offset from the point where the click was made to the top-left corner of the rectangle
  * @returns
  */
 

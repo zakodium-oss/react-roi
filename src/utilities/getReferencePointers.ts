@@ -11,31 +11,33 @@ export function getReferencePointers(
 ) {
   const scaledRectangle = getScaledRectangle(rectangle, ratio, offset);
   const { height, width, origin } = scaledRectangle;
-  if (index === 0) {
-    return {
-      p0: { x: origin.column + width, y: origin.row + height },
-      p1: { x: origin.column, y: origin.row },
-    };
-  } else if (index === 1) {
-    return {
-      p0: { x: origin.column + width, y: origin.row },
-      p1: { x: origin.column, y: origin.row + height },
-    };
-  } else if (index === 2) {
-    return {
-      p0: {
-        x: Math.floor(origin.column),
-        y: Math.floor(origin.row),
-      },
-      p1: {
-        x: Math.floor(origin.column + width),
-        y: Math.floor(origin.row + height),
-      },
-    };
-  } else if (index === 3) {
-    return {
-      p0: { x: origin.column, y: origin.row + height },
-      p1: { x: origin.column + width, y: origin.row },
-    };
+  switch (index) {
+    case 0:
+    case 4:
+    case 6:
+      return {
+        p0: { x: origin.column + width, y: origin.row + height },
+        p1: { x: origin.column, y: origin.row },
+      };
+
+    case 1:
+      return {
+        p0: { x: origin.column + width, y: origin.row },
+        p1: { x: origin.column, y: origin.row + height },
+      };
+
+    case 2:
+    case 5:
+    case 7:
+      return {
+        p0: { x: origin.column, y: origin.row },
+        p1: { x: origin.column + width, y: origin.row + height },
+      };
+
+    case 3:
+      return {
+        p0: { x: origin.column, y: origin.row + height },
+        p1: { x: origin.column + width, y: origin.row },
+      };
   }
 }

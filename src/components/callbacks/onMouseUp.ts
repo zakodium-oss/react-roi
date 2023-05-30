@@ -91,13 +91,20 @@ export function onMouseUp(
         payload: {
           id: object.id,
           rectangle: getRectangle(
-            getRectangleFromPoints(startPoint as Point, endPoint as Point),
+            getRectangleFromPoints(
+              startPoint as Point,
+              endPoint as Point,
+              dynamicState.action === DynamicActions.RESIZE
+                ? dynamicState.pointerIndex
+                : undefined
+            ),
             ratio as Ratio,
             dynamicState.offset as Offset
           ),
         },
       });
       dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
+      dynamicDispatch({ type: 'setPointerIndex', payload: undefined });
       break;
   }
   dynamicDispatch({

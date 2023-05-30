@@ -9,7 +9,24 @@ export type ObjectStateType = {
 };
 
 const objectInitialState: ObjectStateType = {
-  objects: [],
+  objects: [
+    {
+      id: 0.08787081976685629,
+      rectangle: { origin: { row: 152, column: 369 }, width: 83, height: 15 },
+    },
+    {
+      id: 0.5108332018722821,
+      rectangle: { origin: { row: 193, column: 343 }, width: 34, height: 15 },
+    },
+    {
+      id: 0.05981619466014365,
+      rectangle: { origin: { row: 295, column: 346 }, width: 115, height: 32 },
+    },
+    {
+      id: 0.3942252292733659,
+      rectangle: { origin: { row: 83, column: 685 }, width: 72, height: 33 },
+    },
+  ],
 };
 
 export type ObjectActions =

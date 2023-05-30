@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { selectObject } from './callbacks/selectObject';
 import { DynamicActions, DynamicContext } from '../context/DynamicContext';
@@ -14,20 +14,24 @@ import { Offset } from '../types/Offset';
 
 import './css/ResizeBox.css';
 
-export function ResizeBox() {
+export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
   const { objectState } = useContext(ObjectContext);
   const { ratio, offset, objectID, action, startPoint, endPoint } =
     dynamicState;
+
   const object = objectState.objects.find((obj) => obj.id === objectID);
 
-  function onMouseDown(position: number) {
+  function onMouseDown(index: number) {
+    dynamicDispatch({ type: 'setPointerIndex', payload: index });
+    console.log(index);
     const points = getReferencePointers(
       object?.rectangle as Rectangle,
       ratio as Ratio,
-      position,
+      index,
       offset as Offset
     );
+
     dynamicDispatch({
       type: 'setPosition',
       payload: {
@@ -51,7 +55,13 @@ export function ResizeBox() {
     object && action === DynamicActions.SLEEP
       ? object.rectangle
       : getRectangle(
-          getRectangleFromPoints(startPoint as Point, endPoint as Point),
+          getRectangleFromPoints(
+            startPoint as Point,
+            endPoint as Point,
+            action === DynamicActions.RESIZE
+              ? dynamicState.pointerIndex
+              : undefined
+          ),
           ratio as Ratio,
           offset as Offset
         );
@@ -61,6 +71,7 @@ export function ResizeBox() {
   return (
     <>
       <rect
+        cursor={'grab'}
         x={rectangle.origin.column}
         y={rectangle.origin.row}
         width={rectangle.width}
@@ -79,10 +90,11 @@ export function ResizeBox() {
       {pointers.map((pointer) => (
         <rect
           key={`pointer-${pointer.position}`}
-          x={pointer.cx - 8}
-          y={pointer.cy - 8}
-          width={16}
-          height={16}
+          x={pointer.cx - cursorSize}
+          y={pointer.cy - cursorSize}
+          cursor={pointer.cursor}
+          width={cursorSize * 2}
+          height={cursorSize * 2}
           className="circle"
           onMouseDownCapture={() => onMouseDown(pointer.position)}
         ></rect>
