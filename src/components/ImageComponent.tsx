@@ -4,7 +4,6 @@ import { Image, writeCanvas } from 'image-js';
 
 import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
-import { observeResizing } from './callbacks/observeResizing';
 import { onMouseMove } from './callbacks/onMouseMove';
 import { onMouseDown } from './callbacks/onMouseDown';
 import { onMouseUp } from './callbacks/onMouseUp';
@@ -33,6 +32,7 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
 
+  // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
@@ -40,25 +40,23 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
 
   // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
-    // const resizeObserver = observeResizing(
-    //   imageRef,
-    //   width,
-    //   height,
-    //   dynamicDispatch
-    // );
-    // if (imageRef.current) resizeObserver.observe(imageRef.current);
+    dynamicDispatch({
+      type: 'setRatio',
+      payload: {
+        x: (imageRef.current?.width as number) / width,
+        y: (imageRef.current?.height as number) / height,
+      },
+    });
     dynamicDispatch({
       type: 'setOffset',
       payload: {
-        top: (divRef.current?.offsetTop || 0) + cursorSize * 2,
+        top: divRef.current?.offsetTop || 0,
         left: divRef.current?.offsetLeft || 0,
         right: 0,
         bottom: 0,
       },
     });
-    return () => {
-      // if (imageRef.current) resizeObserver.unobserve(imageRef.current);
-    };
+    return;
   }, [image]);
 
   const resizeBox = (
@@ -105,9 +103,13 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
         onMouseDown(event, objectState, dynamicState, dynamicDispatch)
       }
     >
-      <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+      <canvas ref={imageRef} style={{ width: `${width}px`, height }} />
       {annotations !== undefined ? (
-        <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
+        <svg
+          style={{ width: `${width}px`, height }}
+          className="svg"
+          viewBox={`0 0 ${width} ${height}`}
+        >
           {[...annotations, resizeBox]}
         </svg>
       ) : null}

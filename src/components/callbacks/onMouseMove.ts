@@ -36,10 +36,7 @@ export function onMouseMove(
       break;
     case DynamicActions.DRAW:
     case DynamicActions.RESIZE:
-      dynamicDispatch({
-        type: 'setEndPoint',
-        payload: mousePosition,
-      });
+      dynamicDispatch({ type: 'setEndPoint', payload: mousePosition });
       break;
   }
 }

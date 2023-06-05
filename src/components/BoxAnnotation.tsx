@@ -71,34 +71,34 @@ function onMouseDownCapture(
   event: any
 ) {
   const { ratio, offset, delta } = dynamicState;
-  {
-    const scaledRectangle = getScaledRectangle(
-      object.rectangle,
-      ratio as Ratio,
-      offset as Offset
-    );
-    dynamicDispatch({
-      type: 'setDynamicState',
-      payload: {
-        action: DynamicActions.DRAG,
-        delta: {
-          dx: event.clientX - scaledRectangle.origin.column,
-          dy: event.clientY - scaledRectangle.origin.row,
-        },
-        objectID: objectID as number,
+
+  const scaledRectangle = getScaledRectangle(
+    object.rectangle,
+    ratio as Ratio,
+    offset as Offset
+  );
+
+  dynamicDispatch({
+    type: 'setDynamicState',
+    payload: {
+      action: DynamicActions.DRAG,
+      delta: {
+        dx: event.clientX - scaledRectangle.origin.column,
+        dy: event.clientY - scaledRectangle.origin.row,
       },
-    });
-    dynamicDispatch({ type: 'setObjectID', payload: objectID });
-    const position = dragRectangle(
-      scaledRectangle,
-      {
-        x: scaledRectangle.origin.column + delta.dx,
-        y: scaledRectangle.origin.row + delta.dy,
-      },
-      delta
-    );
-    dynamicDispatch({ type: 'setPosition', payload: position });
-  }
+      objectID: objectID as number,
+    },
+  });
+  dynamicDispatch({ type: 'setObjectID', payload: objectID });
+  const position = dragRectangle(
+    scaledRectangle,
+    {
+      x: scaledRectangle.origin.column + delta.dx,
+      y: scaledRectangle.origin.row + delta.dy,
+    },
+    delta
+  );
+  dynamicDispatch({ type: 'setPosition', payload: position });
 }
 
 type BoxAnnotationOptions = {

@@ -22,10 +22,7 @@ export function onMouseDown(
   const startPoint = { x: event.clientX, y: event.clientY };
   switch (dynamicState.action) {
     case DynamicActions.SLEEP:
-      dynamicDispatch({
-        type: 'setAction',
-        payload: DynamicActions.DRAW,
-      });
+      dynamicDispatch({ type: 'setAction', payload: DynamicActions.DRAW });
       dynamicDispatch({
         type: 'setPosition',
         payload: { startPoint, endPoint: startPoint },
@@ -43,18 +40,12 @@ export function onMouseDown(
         startPoint,
         dynamicState.delta || { dx: 0, dy: 0 }
       );
-      dynamicDispatch({
-        type: 'setPosition',
-        payload: position,
-      });
+      dynamicDispatch({ type: 'setPosition', payload: position });
       break;
 
     case DynamicActions.DRAW:
     case DynamicActions.RESIZE:
-      dynamicDispatch({
-        type: 'setEndPoint',
-        payload: startPoint,
-      });
+      // dynamicDispatch({ type: 'setEndPoint', payload: startPoint });
       break;
   }
 }

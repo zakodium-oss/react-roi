@@ -1,55 +1,88 @@
-import * as Image from 'image-js';
+import { Image, decode, writeCanvas } from 'image-js';
 
 import './css/Pages.css';
 
 import { ImageComponent } from '../components/ImageComponent';
-import { useEffect, useState } from 'react';
-import { StateObject } from '../components/StateObject';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { DynamicContext } from '../context/DynamicContext';
+import { ObjectInspector } from 'react-inspector';
+import { ObjectContext } from '../context/ObjectContext';
 
 export function HomePage() {
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
-  const [image, setImage] = useState<Image.Image>(new Image.Image(1, 1));
+  const [image, setImage] = useState<Image>(new Image(1, 1));
+  const [isDrawing, setIsDrawing] = useState(true);
+
   useEffect(() => {
     fetchImage(imageURL, setImage);
   }, []);
   return (
     <div className="page">
       <div className="bar-button">
-        <button className="button" style={{ marginLeft: '20px' }}>
-          <Link to="/moveable">Moveable</Link>
+        <button
+          className="button"
+          style={{ marginLeft: '20px' }}
+          onClick={() => setIsDrawing(!isDrawing)}
+        >
+          {isDrawing ? 'Show result' : 'Draw'}
         </button>
       </div>
-      <div style={{ height: '100%' }}>
-        <DraggableComponent image={image} />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '10px',
+        }}
+      >
+        {isDrawing ? (
+          <DrawableComponent image={image} />
+        ) : (
+          <ResultComponent image={image} />
+        )}
       </div>
     </div>
   );
 }
 
-function DraggableComponent({ image }: { image: Image.Image }) {
+function DrawableComponent({ image }: { image: Image }) {
+  const { dynamicState } = useContext(DynamicContext);
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '1200px',
-      }}
-    >
+    <>
       <ImageComponent
         image={image}
         options={{ width: image.width, height: image.height }}
       />
-      <StateObject />
-    </div>
+      <ObjectInspector expandLevel={2} data={{ dynamicState }} />
+    </>
   );
 }
 
-async function fetchImage(url: URL, setImage: React.Dispatch<Image.Image>) {
+function ResultComponent({ image }: { image: Image }) {
+  const imageRef = useRef<HTMLCanvasElement>(null);
+  const { objectState } = useContext(ObjectContext);
+  const result = image.clone();
+  const objects = objectState.objects;
+  for (const object of objects) {
+    result.drawRectangle({
+      ...object.rectangle,
+      fillColor: [0, 255, 0, 255],
+      out: result,
+    });
+  }
+
+  useEffect(() => {
+    if (!result) return;
+    writeCanvas(result, imageRef.current as HTMLCanvasElement);
+    return;
+  }, [result]);
+  return <canvas ref={imageRef} />;
+}
+
+async function fetchImage(url: URL, setImage: React.Dispatch<Image>) {
   const response = await fetch(url.pathname);
   const buffer = await response.arrayBuffer();
-  const image = Image.decode(new Uint8Array(buffer));
+  const image = decode(new Uint8Array(buffer));
   setImage(image);
 }

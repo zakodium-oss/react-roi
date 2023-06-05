@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import { selectObject } from './callbacks/selectObject';
 import { DynamicActions, DynamicContext } from '../context/DynamicContext';
@@ -24,7 +24,7 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
 
   function onMouseDown(index: number) {
     dynamicDispatch({ type: 'setPointerIndex', payload: index });
-    console.log(index);
+
     const points = getReferencePointers(
       object?.rectangle as Rectangle,
       ratio as Ratio,
@@ -45,23 +45,14 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
         },
       },
     });
-    dynamicDispatch({
-      type: 'setAction',
-      payload: DynamicActions.RESIZE,
-    });
+    dynamicDispatch({ type: 'setAction', payload: DynamicActions.RESIZE });
   }
 
   const rectangle =
     object && action === DynamicActions.SLEEP
       ? object.rectangle
       : getRectangle(
-          getRectangleFromPoints(
-            startPoint as Point,
-            endPoint as Point,
-            action === DynamicActions.RESIZE
-              ? dynamicState.pointerIndex
-              : undefined
-          ),
+          getRectangleFromPoints(startPoint as Point, endPoint as Point),
           ratio as Ratio,
           offset as Offset
         );

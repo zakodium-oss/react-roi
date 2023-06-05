@@ -33,19 +33,19 @@ export function getRectangle(
 
   if (offset) {
     if (p0.x < p1.x) {
-      result.origin.column = (p0.x - offset.left) * ratio.y;
-      result.width = (p1.x - p0.x) * ratio.x;
+      result.origin.column = Math.ceil(p0.x - offset.left);
+      result.width = Math.ceil((p1.x - p0.x) * ratio.x);
     } else {
-      result.origin.column = (p1.x - offset.left) * ratio.y;
-      result.width = (p0.x - p1.x) * ratio.x;
+      result.origin.column = Math.ceil((p1.x - offset.left) * ratio.y);
+      result.width = Math.ceil((p0.x - p1.x) * ratio.x);
     }
 
     if (p0.y < p1.y) {
-      result.origin.row = (p0.y - offset.top) * ratio.x;
+      result.origin.row = Math.ceil((p0.y - offset.top) * ratio.x);
       result.height = (p1.y - p0.y) * ratio.y;
     } else {
-      result.origin.row = (p1.y - offset.top) * ratio.x;
-      result.height = (p0.y - p1.y) * ratio.y;
+      result.origin.row = Math.ceil((p1.y - offset.top) * ratio.x);
+      result.height = Math.ceil((p0.y - p1.y) * ratio.y);
     }
   }
   return result;

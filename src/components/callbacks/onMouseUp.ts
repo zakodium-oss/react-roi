@@ -91,13 +91,7 @@ export function onMouseUp(
         payload: {
           id: object.id,
           rectangle: getRectangle(
-            getRectangleFromPoints(
-              startPoint as Point,
-              endPoint as Point,
-              dynamicState.action === DynamicActions.RESIZE
-                ? dynamicState.pointerIndex
-                : undefined
-            ),
+            getRectangleFromPoints(startPoint as Point, endPoint as Point),
             ratio as Ratio,
             dynamicState.offset as Offset
           ),

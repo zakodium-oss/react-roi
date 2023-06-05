@@ -67,7 +67,7 @@ const dynamicInitialState: DynamicStateType = {
   action: DynamicActions.SLEEP,
   startPoint: { x: 0, y: 0 },
   endPoint: { x: 0, y: 0 },
-  ratio: { x: 1.05, y: 1.05 },
+  ratio: { x: 1, y: 1 },
   delta: { dx: 0, dy: 0 },
   offset: { top: 0, right: 0, left: 0, bottom: 0 },
   pointerIndex: undefined,
