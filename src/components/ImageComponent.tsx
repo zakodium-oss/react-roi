@@ -7,7 +7,6 @@ import { ResizeBox } from './ResizeBox';
 import { onMouseMove } from './callbacks/onMouseMove';
 import { onMouseDown } from './callbacks/onMouseDown';
 import { onMouseUp } from './callbacks/onMouseUp';
-import { ObjectContext } from '../context/ObjectContext';
 import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
 import './css/ImageComponent.css';
@@ -23,7 +22,6 @@ type ImageComponentProps = {
 
 export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState, objectDispatch } = useContext(ObjectContext);
   const {
     width = image.width,
     height = image.height,
@@ -41,19 +39,18 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
     dynamicDispatch({
-      type: 'setRatio',
+      type: 'setDynamicState',
       payload: {
-        x: (imageRef.current?.width as number) / width,
-        y: (imageRef.current?.height as number) / height,
-      },
-    });
-    dynamicDispatch({
-      type: 'setOffset',
-      payload: {
-        top: divRef.current?.offsetTop || 0,
-        left: divRef.current?.offsetLeft || 0,
-        right: 0,
-        bottom: 0,
+        ratio: {
+          x: (imageRef.current?.width as number) / width,
+          y: (imageRef.current?.height as number) / height,
+        },
+        offset: {
+          top: divRef.current?.offsetTop || 0,
+          left: divRef.current?.offsetLeft || 0,
+          right: 0,
+          bottom: 0,
+        },
       },
     });
     return;
@@ -62,7 +59,7 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const resizeBox = (
     <ResizeBox key={`resize-box`} cursorSize={cursorSize}></ResizeBox>
   );
-  const annotations = objectState.objects.map((obj, index) => {
+  const annotations = dynamicState.objects.map((obj, index) => {
     if (
       obj.id === dynamicState.objectID &&
       (dynamicState.action === DynamicActions.DRAG ||
@@ -87,26 +84,17 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
       id="draggable"
       ref={divRef}
       style={{ position: 'relative', width: '100%' }}
-      onMouseUp={(event) =>
-        onMouseUp(
-          event,
-          objectState,
-          objectDispatch,
-          dynamicState,
-          dynamicDispatch
-        )
-      }
-      onMouseMove={(event) =>
-        onMouseMove(event, dynamicState, dynamicDispatch, objectState)
-      }
-      onMouseDown={(event) =>
-        onMouseDown(event, objectState, dynamicState, dynamicDispatch)
-      }
+      onMouseUp={(event) => onMouseUp(event, dynamicState, dynamicDispatch)}
+      onMouseMove={(event) => onMouseMove(event, dynamicState, dynamicDispatch)}
+      onMouseDown={(event) => onMouseDown(event, dynamicState, dynamicDispatch)}
     >
-      <canvas ref={imageRef} style={{ width: `${width}px`, height }} />
+      <canvas
+        ref={imageRef}
+        style={{ width: `${width}px`, height: `${height}px` }}
+      />
       {annotations !== undefined ? (
         <svg
-          style={{ width: `${width}px`, height }}
+          style={{ width: `${width}px`, height: `${height}px` }}
           className="svg"
           viewBox={`0 0 ${width} ${height}`}
         >

@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { selectObject } from './callbacks/selectObject';
-import { DynamicActions, DynamicContext } from '../context/DynamicContext';
-import { ObjectContext } from '../context/ObjectContext';
+import {
+  DynamicAction,
+  DynamicActions,
+  DynamicContext,
+} from '../context/DynamicContext';
 import { getPointers } from '../utilities/getPointers';
-import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getRectangle } from '../utilities/getRectangle';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { Rectangle } from '../types/Rectangle';
@@ -16,48 +18,29 @@ import './css/ResizeBox.css';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState } = useContext(ObjectContext);
   const { ratio, offset, objectID, action, startPoint, endPoint } =
     dynamicState;
 
-  const object = objectState.objects.find((obj) => obj.id === objectID);
-
-  function onMouseDown(index: number) {
-    dynamicDispatch({ type: 'setPointerIndex', payload: index });
-
-    const points = getReferencePointers(
-      object?.rectangle as Rectangle,
-      ratio as Ratio,
-      index,
-      offset as Offset
-    );
-
-    dynamicDispatch({
-      type: 'setPosition',
-      payload: {
-        startPoint: {
-          x: points?.p0.x ?? (startPoint?.x || 0),
-          y: points?.p0.y ?? (startPoint?.y || 0),
-        },
-        endPoint: {
-          x: points?.p1.x ?? (endPoint?.x || 0),
-          y: points?.p1.y ?? (endPoint?.y || 0),
-        },
-      },
-    });
-    dynamicDispatch({ type: 'setAction', payload: DynamicActions.RESIZE });
-  }
-
-  const rectangle =
-    object && action === DynamicActions.SLEEP
-      ? object.rectangle
-      : getRectangle(
-          getRectangleFromPoints(startPoint as Point, endPoint as Point),
-          ratio as Ratio,
-          offset as Offset
-        );
-
+  const [rectangle, setRectangle] = useState({
+    origin: { row: 0, column: 0 },
+    width: 0,
+    height: 0,
+  } as Rectangle);
   const pointers = getPointers(rectangle);
+
+  useEffect(() => {
+    if (!objectID) return;
+    const object = dynamicState.getObject({ id: objectID });
+    const newRectangle =
+      object && action === DynamicActions.SLEEP
+        ? object.rectangle
+        : getRectangle(
+            getRectangleFromPoints(startPoint as Point, endPoint as Point),
+            ratio as Ratio,
+            offset as Offset
+          );
+    setRectangle(newRectangle);
+  }, [objectID, endPoint]);
 
   return (
     <>
@@ -74,7 +57,7 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           strokeWidth: 2,
         }}
         onMouseDownCapture={(event) => {
-          selectObject(event, objectState, dynamicState, dynamicDispatch);
+          selectObject(event, dynamicState, dynamicDispatch);
         }}
       ></rect>
 
@@ -87,9 +70,25 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           width={cursorSize * 2}
           height={cursorSize * 2}
           className="circle"
-          onMouseDownCapture={() => onMouseDown(pointer.position)}
+          onMouseDownCapture={() =>
+            onMouseDownCapture(pointer.position, dynamicDispatch)
+          }
         ></rect>
       ))}
     </>
   );
+}
+
+function onMouseDownCapture(
+  index: number,
+  dynamicDispatch: React.Dispatch<DynamicAction>
+) {
+  dynamicDispatch({ type: 'updatePosition', payload: index });
+  dynamicDispatch({
+    type: 'setDynamicState',
+    payload: {
+      action: DynamicActions.RESIZE,
+      pointerIndex: index,
+    },
+  });
 }

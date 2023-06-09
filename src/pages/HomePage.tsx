@@ -6,7 +6,6 @@ import { ImageComponent } from '../components/ImageComponent';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { DynamicContext } from '../context/DynamicContext';
 import { ObjectInspector } from 'react-inspector';
-import { ObjectContext } from '../context/ObjectContext';
 
 export function HomePage() {
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
@@ -61,9 +60,9 @@ function DrawableComponent({ image }: { image: Image }) {
 
 function ResultComponent({ image }: { image: Image }) {
   const imageRef = useRef<HTMLCanvasElement>(null);
-  const { objectState } = useContext(ObjectContext);
+  const { dynamicState } = useContext(DynamicContext);
   const result = image.clone();
-  const objects = objectState.objects;
+  const objects = dynamicState.objects || [];
   for (const object of objects) {
     result.drawRectangle({
       ...object.rectangle,

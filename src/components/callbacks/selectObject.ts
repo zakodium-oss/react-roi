@@ -3,20 +3,16 @@ import {
   DynamicActions,
   DynamicStateType,
 } from '../../context/DynamicContext';
-import { ObjectStateType } from '../../context/ObjectContext';
 import { Offset } from '../../types/Offset';
 import { Ratio } from '../../types/Ratio';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
   event: React.MouseEvent,
-  objectState: ObjectStateType,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const object = objectState.objects.find(
-    (obj) => obj.id === dynamicState.objectID
-  );
+  const object = dynamicState.getObject();
   if (!object) return;
   const scaledRectangle = getScaledRectangle(
     object.rectangle,

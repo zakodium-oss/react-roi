@@ -9,11 +9,9 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <ObjectProvider>
-        <DynamicProvider>
-          <HomePage />
-        </DynamicProvider>
-      </ObjectProvider>
+      <DynamicProvider>
+        <HomePage />
+      </DynamicProvider>
     ),
     children: [],
   },

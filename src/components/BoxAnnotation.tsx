@@ -5,7 +5,6 @@ import {
   DynamicContext,
   DynamicStateType,
 } from '../context/DynamicContext';
-import { ObjectContext } from '../context/ObjectContext';
 import { DataObject } from '../types/DataObject';
 import { Offset } from '../types/Offset';
 import { Ratio } from '../types/Ratio';
@@ -36,23 +35,14 @@ export function BoxAnnotation({
     strokeDashoffset: 0,
   };
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState } = useContext(ObjectContext);
   const { height, width, origin } = rectangle;
-  const object = objectState.objects.find(
-    (obj) => obj.id === objectID
-  ) as DataObject;
+  const object = dynamicState.getObject({ id: objectID as number });
   return (
     <rect
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onMouseDownCapture={(event) =>
-        onMouseDownCapture(
-          object,
-          objectID as number,
-          dynamicState,
-          dynamicDispatch,
-          event
-        )
+        onMouseDownCapture(object, dynamicState, dynamicDispatch, event)
       }
       x={origin.column}
       y={origin.row}
@@ -65,40 +55,39 @@ export function BoxAnnotation({
 
 function onMouseDownCapture(
   object: DataObject,
-  objectID: number,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>,
-  event: any
+  event: React.MouseEvent
 ) {
-  const { ratio, offset, delta } = dynamicState;
+  if (object) {
+    const { ratio, offset, delta } = dynamicState;
+    const scaledRectangle = getScaledRectangle(
+      object.rectangle,
+      ratio as Ratio,
+      offset as Offset
+    );
 
-  const scaledRectangle = getScaledRectangle(
-    object.rectangle,
-    ratio as Ratio,
-    offset as Offset
-  );
-
-  dynamicDispatch({
-    type: 'setDynamicState',
-    payload: {
-      action: DynamicActions.DRAG,
-      delta: {
-        dx: event.clientX - scaledRectangle.origin.column,
-        dy: event.clientY - scaledRectangle.origin.row,
+    const position = dragRectangle(
+      scaledRectangle,
+      {
+        x: scaledRectangle.origin.column + delta.dx,
+        y: scaledRectangle.origin.row + delta.dy,
       },
-      objectID: objectID as number,
-    },
-  });
-  dynamicDispatch({ type: 'setObjectID', payload: objectID });
-  const position = dragRectangle(
-    scaledRectangle,
-    {
-      x: scaledRectangle.origin.column + delta.dx,
-      y: scaledRectangle.origin.row + delta.dy,
-    },
-    delta
-  );
-  dynamicDispatch({ type: 'setPosition', payload: position });
+      delta
+    );
+    dynamicDispatch({
+      type: 'setDynamicState',
+      payload: {
+        objectID: object.id as number,
+        action: DynamicActions.DRAG,
+        delta: {
+          dx: event.clientX - scaledRectangle.origin.column,
+          dy: event.clientY - scaledRectangle.origin.row,
+        },
+        ...position,
+      },
+    });
+  }
 }
 
 type BoxAnnotationOptions = {

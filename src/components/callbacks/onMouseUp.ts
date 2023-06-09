@@ -3,102 +3,49 @@ import {
   DynamicActions,
   DynamicStateType,
 } from '../../context/DynamicContext';
-import { ObjectActions, ObjectStateType } from '../../context/ObjectContext';
-import { DataObject } from '../../types/DataObject';
-import { Offset } from '../../types/Offset';
-import { Point } from '../../types/Point';
-import { Ratio } from '../../types/Ratio';
-import { checkRectangle } from '../../utilities/checkRectangle';
-import { dragRectangle } from '../../utilities/dragRectangle';
-import { getRectangle } from '../../utilities/getRectangle';
-import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
-import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function onMouseUp(
   event: React.MouseEvent,
-  objectState: ObjectStateType,
-  objectDispatch: React.Dispatch<ObjectActions>,
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const { startPoint, endPoint, ratio } = dynamicState;
-  const object = objectState.objects.find(
-    (obj) => obj.id === dynamicState.objectID
-  ) as DataObject;
+  const object = dynamicState.getObject();
   const mousePosition = { x: event.clientX, y: event.clientY };
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
-      const scaledRectangle = getScaledRectangle(
-        object.rectangle,
-        ratio as Ratio,
-        dynamicState.offset as Offset
-      );
-      const position = dragRectangle(
-        scaledRectangle,
-        mousePosition,
-        dynamicState.delta
-      );
-      if (
-        checkRectangle(
-          dynamicState.startPoint as Point,
-          endPoint as Point,
-          ratio as Ratio,
-          dynamicState.offset as Offset
-        )
-      ) {
-        dynamicDispatch({ type: 'setPosition', payload: position });
-        objectDispatch({
+      if (dynamicState.checkRectangle()) {
+        dynamicDispatch({
+          type: 'dragRectangle',
+          payload: { point: mousePosition },
+        });
+        dynamicDispatch({
           type: 'updateRectangle',
-          payload: {
-            id: object.id,
-            rectangle: getRectangle(
-              getRectangleFromPoints(startPoint as Point, endPoint as Point),
-              ratio as Ratio,
-              dynamicState.offset as Offset
-            ),
-          },
+          payload: object.id as number,
         });
       }
       dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
       break;
 
     case DynamicActions.DRAW:
-      if (
-        checkRectangle(
-          startPoint as Point,
-          mousePosition,
-          ratio as Ratio,
-          dynamicState.offset as Offset
-        )
-      ) {
-        const newID = Math.random();
-        const object: DataObject = {
-          id: newID,
-          rectangle: getRectangle(
-            getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio,
-            dynamicState.offset as Offset
-          ),
-        };
-        dynamicDispatch({ type: 'setObjectID', payload: newID });
-        objectDispatch({ type: 'addObject', payload: object });
+      if (dynamicState.checkRectangle({ point: mousePosition })) {
+        dynamicDispatch({ type: 'addObject', payload: Math.random() });
       }
       break;
 
     case DynamicActions.RESIZE:
-      objectDispatch({
+      dynamicDispatch({
         type: 'updateRectangle',
+        payload: object.id as number,
+      });
+      dynamicDispatch({
+        type: 'setDynamicState',
         payload: {
-          id: object.id,
-          rectangle: getRectangle(
-            getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio,
-            dynamicState.offset as Offset
-          ),
+          objectID: object.id as number,
+          pointerIndex: undefined,
         },
       });
-      dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
-      dynamicDispatch({ type: 'setPointerIndex', payload: undefined });
+      break;
+    case DynamicActions.SLEEP:
       break;
   }
   dynamicDispatch({
