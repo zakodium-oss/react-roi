@@ -10,6 +10,8 @@ import { onMouseUp } from './callbacks/onMouseUp';
 import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
 import './css/ImageComponent.css';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { Ratio } from '../types/Ratio';
 
 type ImageComponentProps = {
   image: Image;
@@ -25,7 +27,7 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const {
     width = image.width,
     height = image.height,
-    cursorSize = 5,
+    cursorSize = 3,
   } = options;
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
@@ -36,7 +38,6 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
   }, [image]);
 
-  // TODO: implement boundaries when the box is outside of the component.
   useEffect(() => {
     dynamicDispatch({
       type: 'setDynamicState',
@@ -69,12 +70,12 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
     }
     return (
       <BoxAnnotation
-        objectID={obj.id}
+        id={obj.id}
         key={`annotation_${index}`}
-        rectangle={obj.rectangle}
-        onMouseUp={() =>
-          dynamicDispatch({ type: 'setAction', payload: DynamicActions.SLEEP })
-        }
+        rectangle={getScaledRectangle(
+          obj.rectangle,
+          dynamicState.ratio as Ratio
+        )}
       />
     );
   });

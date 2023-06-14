@@ -58,8 +58,7 @@ const dynamicInitialState: DynamicStateType = {
     return checkRectangle(
       this.startPoint as Point,
       point as Point,
-      this.ratio as Ratio,
-      this.offset as Offset
+      this.ratio as Ratio
     );
   },
 };
@@ -67,7 +66,7 @@ const dynamicInitialState: DynamicStateType = {
 export type DynamicAction =
   | { type: 'setAction'; payload: DynamicActions }
   | { type: 'setDelta'; payload: Delta }
-  | { type: 'setObjectID'; payload: number }
+  | { type: 'setObjectID'; payload: number | undefined }
   | { type: 'setDynamicState'; payload: Partial<DynamicStateType> }
   | { type: 'setStartPoint'; payload: Point }
   | { type: 'setEndPoint'; payload: Point }
@@ -78,9 +77,10 @@ export type DynamicAction =
   | { type: 'addObject'; payload: number }
   | { type: 'dragRectangle'; payload: { id?: number; point: Point } }
   | { type: 'updatePosition'; payload: number }
+  | { type: 'updateRectangle'; payload: number }
   | {
-      type: 'updateRectangle';
-      payload: number;
+      type: 'selectBoxAnnotation';
+      payload: { id: number; event: React.MouseEvent };
     };
 
 export const dynamicReducer = (
@@ -131,14 +131,13 @@ export const dynamicReducer = (
         break;
 
       case 'addObject': {
-        const { startPoint, endPoint, ratio, offset } = draft;
+        const { startPoint, endPoint, ratio } = draft;
         const id = action.payload;
         draft.objects.push({
           id,
           rectangle: getRectangle(
             getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio,
-            offset as Offset
+            ratio as Ratio
           ),
         });
         draft.objectID = id;
@@ -147,12 +146,11 @@ export const dynamicReducer = (
 
       case 'updateRectangle': {
         const object = draft.getObject({ id: action.payload });
-        const { startPoint, endPoint, ratio, offset } = draft;
+        const { startPoint, endPoint, ratio } = draft;
         if (object) {
           object.rectangle = getRectangle(
             getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio,
-            offset as Offset
+            ratio as Ratio
           );
         }
         break;
@@ -163,8 +161,7 @@ export const dynamicReducer = (
         const object = draft.getObject();
         const scaledRectangle = getScaledRectangle(
           object.rectangle,
-          draft.ratio as Ratio,
-          draft.offset as Offset
+          draft.ratio as Ratio
         );
 
         const position = dragRectangle(
@@ -177,14 +174,14 @@ export const dynamicReducer = (
       }
 
       case 'updatePosition': {
-        const { ratio, offset } = draft;
+        const { ratio } = draft;
         const object = draft.getObject();
         const points = getReferencePointers(
           object.rectangle,
           ratio as Ratio,
-          action.payload as number,
-          offset as Offset
+          action.payload as number
         );
+
         draft.startPoint = {
           x: points?.p0.x ?? (draft.startPoint?.x || 0),
           y: points?.p0.y ?? (draft.startPoint?.y || 0),
@@ -193,6 +190,39 @@ export const dynamicReducer = (
           x: points?.p1.x ?? (draft.endPoint?.x || 0),
           y: points?.p1.y ?? (draft.endPoint?.y || 0),
         };
+        break;
+      }
+
+      case 'selectBoxAnnotation': {
+        const { id, event } = action.payload;
+        const object = draft.getObject({ id });
+        const { ratio, offset, delta } = draft;
+        const scaledRectangle = getScaledRectangle(
+          object.rectangle,
+          ratio as Ratio
+        );
+        const { startPoint, endPoint } = dragRectangle(
+          scaledRectangle,
+          {
+            x: scaledRectangle.origin.column + delta.dx,
+            y: scaledRectangle.origin.row + delta.dy,
+          },
+          delta
+        );
+        draft.objectID = id;
+        draft.action = DynamicActions.DRAG;
+        draft.delta = {
+          dx:
+            event.clientX -
+            scaledRectangle.origin.column -
+            (offset?.left as number),
+          dy:
+            event.clientY -
+            scaledRectangle.origin.row -
+            (offset?.top as number),
+        };
+        draft.startPoint = startPoint;
+        draft.endPoint = endPoint;
         break;
       }
 

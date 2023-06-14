@@ -19,7 +19,10 @@ export function onMouseMove(
       break;
     case DynamicActions.DRAW:
     case DynamicActions.RESIZE:
-      dynamicDispatch({ type: 'setEndPoint', payload: mousePosition });
+      dynamicDispatch({
+        type: 'setEndPoint',
+        payload: mousePosition,
+      });
       break;
   }
 }
@@ -31,11 +34,20 @@ function getMousePosition(
   switch (dynamicState.pointerIndex) {
     case 4:
     case 5:
-      return { x: dynamicState.endPoint?.x || 0, y: event.clientY };
+      return {
+        x: dynamicState.endPoint?.x || 0,
+        y: event.clientY - (dynamicState.offset?.top as number),
+      };
     case 6:
     case 7:
-      return { x: event.clientX || 0, y: dynamicState.endPoint?.y || 0 };
+      return {
+        x: event.clientX - (dynamicState.offset?.left as number) || 0,
+        y: dynamicState.endPoint?.y || 0,
+      };
     default:
-      return { x: event.clientX, y: event.clientY };
+      return {
+        x: event.clientX - (dynamicState.offset?.left as number),
+        y: event.clientY - (dynamicState.offset?.top as number),
+      };
   }
 }

@@ -7,20 +7,17 @@ import {
   DynamicContext,
 } from '../context/DynamicContext';
 import { getPointers } from '../utilities/getPointers';
-import { getRectangle } from '../utilities/getRectangle';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { Rectangle } from '../types/Rectangle';
 import { Ratio } from '../types/Ratio';
 import { Point } from '../types/Point';
-import { Offset } from '../types/Offset';
 
 import './css/ResizeBox.css';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { ratio, offset, objectID, action, startPoint, endPoint } =
-    dynamicState;
-
+  const { ratio, objectID, action, startPoint, endPoint } = dynamicState;
   const [rectangle, setRectangle] = useState({
     origin: { row: 0, column: 0 },
     width: 0,
@@ -29,17 +26,14 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const pointers = getPointers(rectangle);
 
   useEffect(() => {
-    if (!objectID) return;
-    const object = dynamicState.getObject({ id: objectID });
-    const newRectangle =
-      object && action === DynamicActions.SLEEP
-        ? object.rectangle
-        : getRectangle(
-            getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio,
-            offset as Offset
-          );
-    setRectangle(newRectangle);
+    if (objectID && action === DynamicActions.SLEEP) {
+      const object = dynamicState.getObject({ id: objectID as number });
+      setRectangle(getScaledRectangle(object.rectangle, ratio as Ratio));
+    } else {
+      setRectangle(
+        getRectangleFromPoints(startPoint as Point, endPoint as Point)
+      );
+    }
   }, [objectID, endPoint]);
 
   return (
@@ -52,7 +46,10 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
         height={rectangle.height}
         style={{
           padding: '10px',
-          fill: action !== DynamicActions.SLEEP ? 'rgba(0,0,0,0.4)' : 'black',
+          fill:
+            action !== DynamicActions.SLEEP
+              ? 'rgba(0,0,0,0.4)'
+              : 'rgba(0,0,0,0.8)',
           stroke: 'black',
           strokeWidth: 2,
         }}

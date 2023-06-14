@@ -1,4 +1,3 @@
-import { Offset } from '../types/Offset';
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
 import { getScaledRectangle } from './getScaledRectangle';
@@ -6,10 +5,9 @@ import { getScaledRectangle } from './getScaledRectangle';
 export function getReferencePointers(
   rectangle: Rectangle,
   ratio: Ratio,
-  index: number,
-  offset: Offset
+  index: number
 ) {
-  const scaledRectangle = getScaledRectangle(rectangle, ratio, offset);
+  const scaledRectangle = getScaledRectangle(rectangle, ratio);
   const { height, width, origin } = scaledRectangle;
   switch (index) {
     case 0:

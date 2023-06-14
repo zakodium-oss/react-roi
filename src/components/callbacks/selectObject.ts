@@ -3,7 +3,6 @@ import {
   DynamicActions,
   DynamicStateType,
 } from '../../context/DynamicContext';
-import { Offset } from '../../types/Offset';
 import { Ratio } from '../../types/Ratio';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
@@ -16,8 +15,7 @@ export function selectObject(
   if (!object) return;
   const scaledRectangle = getScaledRectangle(
     object.rectangle,
-    dynamicState.ratio as Ratio,
-    dynamicState.offset as Offset
+    dynamicState.ratio as Ratio
   );
 
   dynamicDispatch({
@@ -25,8 +23,14 @@ export function selectObject(
     payload: {
       action: DynamicActions.DRAG,
       delta: {
-        dx: event.clientX - scaledRectangle.origin.column,
-        dy: event.clientY - scaledRectangle.origin.row,
+        dx:
+          event.clientX -
+          scaledRectangle.origin.column -
+          (dynamicState.offset?.left as number),
+        dy:
+          event.clientY -
+          scaledRectangle.origin.row -
+          (dynamicState.offset?.top as number),
       },
     },
   });

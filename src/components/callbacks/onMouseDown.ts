@@ -9,23 +9,27 @@ export function onMouseDown(
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const startPoint = { x: event.clientX, y: event.clientY };
+  const mousePosition = {
+    x: event.clientX - (dynamicState.offset?.left as number),
+    y: event.clientY - (dynamicState.offset?.top as number),
+  };
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       dynamicDispatch({
         type: 'dragRectangle',
-        payload: { point: startPoint },
+        payload: { point: mousePosition },
       });
       break;
 
     case DynamicActions.DRAW:
+      break;
     case DynamicActions.RESIZE:
       break;
     case DynamicActions.SLEEP:
       dynamicDispatch({ type: 'setAction', payload: DynamicActions.DRAW });
       dynamicDispatch({
         type: 'setPosition',
-        payload: { startPoint, endPoint: startPoint },
+        payload: { startPoint: mousePosition, endPoint: mousePosition },
       });
       break;
   }

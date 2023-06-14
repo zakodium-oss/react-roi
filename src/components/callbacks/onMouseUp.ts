@@ -10,13 +10,19 @@ export function onMouseUp(
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
   const object = dynamicState.getObject();
-  const mousePosition = { x: event.clientX, y: event.clientY };
+  const mousePosition = {
+    x: event.clientX - (dynamicState.offset?.left as number),
+    y: event.clientY - (dynamicState.offset?.top as number),
+  };
+
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       if (dynamicState.checkRectangle()) {
         dynamicDispatch({
           type: 'dragRectangle',
-          payload: { point: mousePosition },
+          payload: {
+            point: mousePosition,
+          },
         });
         dynamicDispatch({
           type: 'updateRectangle',
@@ -29,6 +35,8 @@ export function onMouseUp(
     case DynamicActions.DRAW:
       if (dynamicState.checkRectangle({ point: mousePosition })) {
         dynamicDispatch({ type: 'addObject', payload: Math.random() });
+      } else {
+        dynamicDispatch({ type: 'setObjectID', payload: undefined });
       }
       break;
 
