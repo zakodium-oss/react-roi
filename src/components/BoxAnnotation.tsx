@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { DynamicContext } from '../context/DynamicContext';
 import { Rectangle } from '../types/Rectangle';
+import { useKbsGlobal } from 'react-kbs';
 
 type BoxAnnotationProps = {
   id: number | string | undefined;
@@ -22,14 +23,25 @@ export function BoxAnnotation({
   };
   const { dynamicDispatch } = useContext(DynamicContext);
   const { height, width, origin } = rectangle;
+  useKbsGlobal([
+    {
+      shortcut: ['delete', 'backspace'],
+      handler: (event) => {
+        if (event.isTrusted) {
+          dynamicDispatch({ type: 'removeObject', payload: id as number });
+        }
+      },
+    },
+  ]);
+
   return (
     <rect
-      onMouseDownCapture={(event) =>
+      onMouseDownCapture={(event) => {
         dynamicDispatch({
           type: 'selectBoxAnnotation',
           payload: { id: id as number, event: event },
-        })
-      }
+        });
+      }}
       x={origin.column}
       y={origin.row}
       width={width}

@@ -3,14 +3,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 
 import { DynamicProvider } from './context/DynamicContext';
-import { ObjectProvider } from './context/ObjectContext';
+import { KbsProvider } from 'react-kbs';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <DynamicProvider>
-        <HomePage />
+        <KbsProvider>
+          <HomePage />
+        </KbsProvider>
       </DynamicProvider>
     ),
     children: [],

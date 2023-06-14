@@ -74,7 +74,8 @@ export type DynamicAction =
   | { type: 'setOffset'; payload: Offset }
   | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } }
   | { type: 'setPointerIndex'; payload: number | undefined }
-  | { type: 'addObject'; payload: number }
+  | { type: 'addObject'; payload: number } //removeObject
+  | { type: 'removeObject'; payload: number }
   | { type: 'dragRectangle'; payload: { id?: number; point: Point } }
   | { type: 'updatePosition'; payload: number }
   | { type: 'updateRectangle'; payload: number }
@@ -129,6 +130,15 @@ export const dynamicReducer = (
       case 'setPointerIndex':
         draft.pointerIndex = action.payload;
         break;
+
+      case 'removeObject': {
+        const index = draft.objects.findIndex(
+          (object) => object.id === action.payload
+        );
+        draft.objects.splice(index, 1);
+        draft.objectID = undefined;
+        return;
+      }
 
       case 'addObject': {
         const { startPoint, endPoint, ratio } = draft;
