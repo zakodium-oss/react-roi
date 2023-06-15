@@ -61,6 +61,30 @@ const dynamicInitialState: DynamicStateType = {
       this.ratio as Ratio
     );
   },
+  getMousePosition: function (event: React.MouseEvent): {
+    x: number;
+    y: number;
+  } {
+    switch (this.pointerIndex) {
+      case 4:
+      case 5:
+        return {
+          x: this.endPoint?.x || 0,
+          y: event.clientY - (this.offset?.top as number),
+        };
+      case 6:
+      case 7:
+        return {
+          x: event.clientX - (this.offset?.left as number) || 0,
+          y: this.endPoint?.y || 0,
+        };
+      default:
+        return {
+          x: event.clientX - (this.offset?.left as number),
+          y: event.clientY - (this.offset?.top as number),
+        };
+    }
+  },
 };
 
 export type DynamicAction =
@@ -78,7 +102,7 @@ export type DynamicAction =
   | { type: 'removeObject'; payload: number }
   | { type: 'dragRectangle'; payload: { id?: number; point: Point } }
   | { type: 'updatePosition'; payload: number }
-  | { type: 'updateRectangle'; payload: number }
+  | { type: 'updateRectangle' }
   | {
       type: 'selectBoxAnnotation';
       payload: { id: number; event: React.MouseEvent };
@@ -155,7 +179,7 @@ export const dynamicReducer = (
       }
 
       case 'updateRectangle': {
-        const object = draft.getObject({ id: action.payload });
+        const object = draft.getObject();
         const { startPoint, endPoint, ratio } = draft;
         if (object) {
           object.rectangle = getRectangle(
@@ -328,4 +352,9 @@ export type DynamicStateType = {
    *
    */
   checkRectangle: (options?: { point: Point }) => boolean;
+
+  /**
+   *
+   */
+  getMousePosition: (event: React.MouseEvent) => { x: number; y: number };
 };

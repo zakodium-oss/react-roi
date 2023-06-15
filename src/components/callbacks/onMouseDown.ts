@@ -9,10 +9,7 @@ export function onMouseDown(
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const mousePosition = {
-    x: event.clientX - (dynamicState.offset?.left as number),
-    y: event.clientY - (dynamicState.offset?.top as number),
-  };
+  const mousePosition = dynamicState.getMousePosition(event);
   switch (dynamicState.action) {
     case DynamicActions.DRAG:
       dynamicDispatch({
@@ -22,7 +19,6 @@ export function onMouseDown(
       break;
 
     case DynamicActions.DRAW:
-      break;
     case DynamicActions.RESIZE:
       break;
     case DynamicActions.SLEEP:
