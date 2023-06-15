@@ -33,12 +33,10 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const imageRef = useRef<HTMLCanvasElement>(null);
 
   // TODO: implement boundaries when the box is outside of the component.
+
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
-  }, [image]);
-
-  useEffect(() => {
     dynamicDispatch({
       type: 'setDynamicState',
       payload: {
