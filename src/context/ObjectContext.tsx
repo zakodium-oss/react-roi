@@ -1,7 +1,17 @@
 import { createContext, Dispatch, ReactNode, useReducer } from 'react';
+<<<<<<< HEAD
 import { produce } from 'immer';
 
 import { Rectangle } from '../types/Rectangle';
+=======
+import { Rectangle } from '../types/Rectangle';
+import {
+  EventActions,
+  eventReducer,
+  EventStateType,
+  intialEventState,
+} from './EventReducer';
+>>>>>>> main
 import { DataObject } from '../types/DataObject';
 
 export type ObjectStateType = {
@@ -9,6 +19,7 @@ export type ObjectStateType = {
 };
 
 const objectInitialState: ObjectStateType = {
+<<<<<<< HEAD
   objects: [
     {
       id: 0.08787081976685629,
@@ -27,6 +38,9 @@ const objectInitialState: ObjectStateType = {
       rectangle: { origin: { row: 83, column: 685 }, width: 72, height: 33 },
     },
   ],
+=======
+  objects: [],
+>>>>>>> main
 };
 
 export type ObjectActions =
@@ -35,6 +49,7 @@ export type ObjectActions =
       payload: DataObject;
     }
   | {
+<<<<<<< HEAD
       type: 'updateRectangle';
       payload: { id: number | string; rectangle: Rectangle };
     };
@@ -59,6 +74,24 @@ const objectReducer = (state: ObjectStateType, action: ObjectActions) => {
         break;
     }
   });
+=======
+      type: 'updateObject';
+      payload: DataObject;
+    };
+
+const objectReducer = (state: ObjectStateType, action: ObjectActions) => {
+  switch (action.type) {
+    case 'addObject':
+      state.objects.push(action.payload);
+      return state;
+
+    // case 'updateObject':
+    //   return action.payload;
+
+    default:
+      return state;
+  }
+>>>>>>> main
 };
 
 type ObjectContextProps = {
@@ -71,7 +104,11 @@ export const ObjectContext = createContext<ObjectContextProps>(
 );
 
 type ObjectProviderProps = {
+<<<<<<< HEAD
   children: ReactNode;
+=======
+  children: ReactNode | ReactNode[];
+>>>>>>> main
 };
 
 export const ObjectProvider = ({ children }: ObjectProviderProps) => {
@@ -79,7 +116,10 @@ export const ObjectProvider = ({ children }: ObjectProviderProps) => {
     objectReducer,
     objectInitialState
   );
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
   return (
     <ObjectContext.Provider value={{ objectState, objectDispatch }}>
       {children}
