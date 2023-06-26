@@ -4,9 +4,6 @@ import { Image, writeCanvas } from 'image-js';
 
 import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
-import { onMouseMove } from './callbacks/onMouseMove';
-import { onMouseDown } from './callbacks/onMouseDown';
-import { onMouseUp } from './callbacks/onMouseUp';
 import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
 import './css/ImageComponent.css';
@@ -83,9 +80,15 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
       id="draggable"
       ref={divRef}
       style={{ position: 'relative', width: '100%' }}
-      onMouseUp={(event) => onMouseUp(event, dynamicState, dynamicDispatch)}
-      onMouseMove={(event) => onMouseMove(event, dynamicState, dynamicDispatch)}
-      onMouseDown={(event) => onMouseDown(event, dynamicState, dynamicDispatch)}
+      onMouseUp={(event) =>
+        dynamicDispatch({ type: 'onMouseUp', payload: event })
+      }
+      onMouseMove={(event) =>
+        dynamicDispatch({ type: 'onMouseMove', payload: event })
+      }
+      onMouseDown={(event) =>
+        dynamicDispatch({ type: 'onMouseDown', payload: event })
+      }
     >
       <canvas
         ref={imageRef}

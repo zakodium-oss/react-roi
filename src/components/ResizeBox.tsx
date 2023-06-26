@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { selectObject } from './callbacks/selectObject';
 import {
   DynamicAction,
   DynamicActions,
@@ -10,33 +9,28 @@ import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { Rectangle } from '../types/Rectangle';
 import { Ratio } from '../types/Ratio';
-import { Point } from '../types/Point';
 
 import './css/ResizeBox.css';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { ratio, objectID, action, startPoint, endPoint } = dynamicState;
-  const [rectangle, setRectangle] = useState({
-    origin: { row: 0, column: 0 },
-    width: 0,
-    height: 0,
-  } as Rectangle);
-  const pointers = getPointers(rectangle);
-
+  const { ratio, objectID, action, startPoint, endPoint, objects } =
+    dynamicState;
+  const [rectangle, setRectangle] = useState<Rectangle | undefined>(undefined);
   useEffect(() => {
-    if (objectID && action === DynamicActions.SLEEP) {
-      const object = dynamicState.getObject({ id: objectID as number });
+    const object = objects.find((obj) => obj.id === objectID);
+    if (startPoint && endPoint) {
+      setRectangle(getRectangleFromPoints(startPoint, endPoint));
+    } else if (
+      object &&
+      (action === DynamicActions.SLEEP || action === DynamicActions.DRAG)
+    ) {
       setRectangle(getScaledRectangle(object.rectangle, ratio as Ratio));
-    } else {
-      setRectangle(
-        getRectangleFromPoints(startPoint as Point, endPoint as Point)
-      );
     }
   }, [objectID, endPoint]);
 
-  return (
+  return rectangle ? (
     <>
       <rect
         cursor={'grab'}
@@ -54,11 +48,14 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           strokeWidth: 2,
         }}
         onMouseDownCapture={(event) => {
-          selectObject(event, dynamicState, dynamicDispatch);
+          dynamicDispatch({
+            type: 'selectBoxAnnotation',
+            payload: { id: objectID as string, event: event },
+          });
         }}
       ></rect>
 
-      {pointers.map((pointer) => (
+      {getPointers(rectangle).map((pointer) => (
         <rect
           key={`pointer-${pointer.position}`}
           x={pointer.cx - cursorSize}
@@ -73,7 +70,7 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
         ></rect>
       ))}
     </>
-  );
+  ) : null;
 }
 
 function onMouseDownCapture(

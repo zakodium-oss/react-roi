@@ -1,9 +1,5 @@
-import {
-  DynamicAction,
-  DynamicActions,
-  DynamicStateType,
-} from '../../context/DynamicContext';
-import { Ratio } from '../../types/Ratio';
+import { DynamicAction, DynamicActions } from '../../context/DynamicContext';
+import { DynamicStateType } from '../../types/DynamicStateType';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
@@ -11,12 +7,10 @@ export function selectObject(
   dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const object = dynamicState.getObject();
+  const { objects, objectID, ratio } = dynamicState;
+  const object = objects.find((obj) => obj.id === objectID);
   if (!object) return;
-  const scaledRectangle = getScaledRectangle(
-    object.rectangle,
-    dynamicState.ratio as Ratio
-  );
+  const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
 
   dynamicDispatch({
     type: 'setDynamicState',

@@ -21,25 +21,26 @@ export function BoxAnnotation({
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
-  const { dynamicDispatch } = useContext(DynamicContext);
+  const { dynamicDispatch, dynamicState } = useContext(DynamicContext);
   const { height, width, origin } = rectangle;
-  useKbsGlobal([
-    {
-      shortcut: ['delete', 'backspace'],
-      handler: (event) => {
-        if (event.isTrusted) {
-          dynamicDispatch({ type: 'removeObject', payload: id as number });
-        }
-      },
-    },
-  ]);
+  // useKbsGlobal([
+  //   {
+  //     shortcut: ['delete', 'backspace'],
+  //     handler: (event) => {
+  //       if (event.isTrusted) {
+  //         dynamicDispatch({ type: 'removeObject', payload: id as number });
+  //       }
+  //     },
+  //   },
+  // ]);
 
   return (
     <rect
       onMouseDownCapture={(event) => {
+        console.log('on mouse down capture', dynamicState.action);
         dynamicDispatch({
           type: 'selectBoxAnnotation',
-          payload: { id: id as number, event: event },
+          payload: { id: id as string, event: event },
         });
       }}
       x={origin.column}

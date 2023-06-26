@@ -1,57 +1,43 @@
-import {
-  DynamicAction,
-  DynamicActions,
-  DynamicStateType,
-} from '../../context/DynamicContext';
+import { DynamicActions } from '../../context/DynamicContext';
+import { DynamicStateType } from '../../types/DynamicStateType';
+import { addObject } from '../../utilities/addObject';
+import { checkRectangle } from '../../utilities/checkRectangle';
+import { dragRectangle } from '../../utilities/dragRectangle';
+import { getMousePosition } from '../../utilities/getMousePosition';
+import { updateObject } from '../../utilities/updateObject';
 
-export function onMouseUp(
-  event: React.MouseEvent,
-  dynamicState: DynamicStateType,
-  dynamicDispatch: React.Dispatch<DynamicAction>
-) {
-  const object = dynamicState.getObject();
-  const mousePosition = dynamicState.getMousePosition(event);
-  switch (dynamicState.action) {
-    case DynamicActions.DRAG:
-      if (dynamicState.checkRectangle()) {
-        dynamicDispatch({
-          type: 'dragRectangle',
-          payload: {
-            point: mousePosition,
-          },
-        });
-        dynamicDispatch({ type: 'updateRectangle' });
-      }
-      dynamicDispatch({ type: 'setObjectID', payload: object.id as number });
+export function onMouseUp(draft: DynamicStateType, event: React.MouseEvent) {
+  const point = getMousePosition(draft, event);
+  switch (draft.action) {
+    case DynamicActions.DRAG: {
+      const { startPoint, endPoint } = dragRectangle(draft, point);
+      draft.startPoint = startPoint;
+      draft.endPoint = endPoint;
+      draft.objectID = updateObject(draft) as string;
       break;
+    }
 
-    case DynamicActions.DRAW:
-      if (dynamicState.checkRectangle({ point: mousePosition })) {
-        dynamicDispatch({ type: 'addObject', payload: Math.random() });
+    case DynamicActions.DRAW: {
+      if (checkRectangle(draft, point)) {
+        addObject(draft, crypto.randomUUID());
       } else {
-        dynamicDispatch({ type: 'setObjectID', payload: undefined });
+        draft.objectID = undefined;
       }
       break;
+    }
 
-    case DynamicActions.RESIZE:
-      dynamicDispatch({ type: 'updateRectangle' });
-      dynamicDispatch({
-        type: 'setDynamicState',
-        payload: {
-          objectID: object.id as number,
-          pointerIndex: undefined,
-        },
-      });
+    case DynamicActions.RESIZE: {
+      draft.objectID = updateObject(draft) as string;
+      draft.pointerIndex = undefined;
       break;
+    }
     case DynamicActions.SLEEP:
       break;
+    default:
+      break;
   }
-  dynamicDispatch({
-    type: 'setPosition',
-    payload: { startPoint: { x: 0, y: 0 }, endPoint: { x: 0, y: 0 } },
-  });
-  dynamicDispatch({
-    type: 'setAction',
-    payload: DynamicActions.SLEEP,
-  });
+  draft.action = DynamicActions.SLEEP;
+  draft.startPoint = undefined;
+  draft.endPoint = undefined;
+  draft.delta = undefined;
 }

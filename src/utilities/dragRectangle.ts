@@ -1,5 +1,6 @@
-import { Delta } from '../types/Delta';
-import { Rectangle } from '../types/Rectangle';
+import { DynamicStateType } from '../types/DynamicStateType';
+import { Point } from '../types/Point';
+import { getScaledRectangle } from './getScaledRectangle';
 
 /**
  * This function returns the new coordinates of the rectangle on the SVG
@@ -10,19 +11,27 @@ import { Rectangle } from '../types/Rectangle';
  */
 
 export function dragRectangle(
-  rectangle: Rectangle,
-  origin: { x: number; y: number },
-  delta: Delta
-) {
-  const startPoint = {
+  draft: DynamicStateType,
+  origin: Point
+): {
+  startPoint: Point;
+  endPoint: Point;
+} {
+  const { delta, ratio, objects, objectID, startPoint, endPoint } = draft;
+  const object = objects.find((obj) => obj.id === objectID);
+  if (!delta || !object) {
+    return { startPoint: startPoint as Point, endPoint: endPoint as Point };
+  }
+  const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
+  const start = {
     x: origin.x - delta.dx,
     y: origin.y - delta.dy,
   };
   return {
-    startPoint,
+    startPoint: start,
     endPoint: {
-      x: startPoint.x + rectangle.width,
-      y: startPoint.y + rectangle.height,
+      x: start.x + scaledRectangle.width,
+      y: start.y + scaledRectangle.height,
     },
   };
 }

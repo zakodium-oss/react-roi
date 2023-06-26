@@ -6,7 +6,7 @@ export function getReferencePointers(
   rectangle: Rectangle,
   ratio: Ratio,
   index: number
-) {
+): Pointers {
   const scaledRectangle = getScaledRectangle(rectangle, ratio);
   const { height, width, origin } = scaledRectangle;
   switch (index) {
@@ -37,5 +37,10 @@ export function getReferencePointers(
         p0: { x: origin.column, y: origin.row + height },
         p1: { x: origin.column + width, y: origin.row },
       };
+    default: {
+      return { p0: { x: 0, y: 0 }, p1: { x: 0, y: 0 } };
+    }
   }
 }
+
+type Pointers = { p0: { x: number; y: number }; p1: { x: number; y: number } };
