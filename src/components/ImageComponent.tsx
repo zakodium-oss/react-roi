@@ -47,6 +47,8 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
           right: 0,
           bottom: 0,
         },
+        width,
+        height,
       },
     });
     return;

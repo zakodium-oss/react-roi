@@ -52,6 +52,16 @@ export type DynamicStateType = {
   pointerIndex?: number;
 
   /**
+   * position object with the startPoint (top-left) and endPoint (bottom-right) of the rectangle
+   */
+  width: number;
+
+  /**
+   * position object with the startPoint (top-left) and endPoint (bottom-right) of the rectangle
+   */
+  height: number;
+
+  /**
    * @param objects
    */
 

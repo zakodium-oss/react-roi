@@ -17,15 +17,28 @@ export function dragRectangle(
   startPoint: Point;
   endPoint: Point;
 } {
-  const { delta, ratio, objects, objectID, startPoint, endPoint } = draft;
+  const {
+    delta,
+    ratio,
+    objects,
+    objectID,
+    startPoint,
+    endPoint,
+    width,
+    height,
+  } = draft;
   const object = objects.find((obj) => obj.id === objectID);
   if (!delta || !object) {
     return { startPoint: startPoint as Point, endPoint: endPoint as Point };
   }
   const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
+  const minX = Math.max(origin.x - delta.dx, 0);
+  const minY = Math.max(origin.y - delta.dy, 0);
+  const maxX = Math.min(minX, width - scaledRectangle.width);
+  const maxY = Math.min(minY, height - scaledRectangle.height);
   const start = {
-    x: origin.x - delta.dx,
-    y: origin.y - delta.dy,
+    x: maxX,
+    y: maxY,
   };
   return {
     startPoint: start,

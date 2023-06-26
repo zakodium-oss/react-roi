@@ -58,7 +58,6 @@ function DrawableComponent({
   const { dynamicState } = useContext(DynamicContext);
   const wRef = useRef<HTMLInputElement>(null);
   const hRef = useRef<HTMLInputElement>(null);
-
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column' }}>

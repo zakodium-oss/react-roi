@@ -35,6 +35,8 @@ const dynamicInitialState: DynamicStateType = {
   offset: { top: 0, right: 0, left: 0, bottom: 0 },
   pointerIndex: undefined,
   objectID: undefined,
+  width: 0,
+  height: 0,
   objects: [
     {
       id: '0.08787081976685629',
@@ -66,7 +68,7 @@ export type DynamicAction =
   | { type: 'setOffset'; payload: Offset }
   | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } }
   | { type: 'setPointerIndex'; payload: number | undefined }
-  | { type: 'addObject'; payload: string } //removeObject
+  | { type: 'addObject'; payload: string }
   | { type: 'removeObject'; payload: string }
   | { type: 'dragRectangle'; payload: { id?: string; point: Point } }
   | { type: 'updatePosition'; payload: number }
