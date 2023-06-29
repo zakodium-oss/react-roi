@@ -1,28 +1,19 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { HomePage } from './pages/HomePage';
-import { MoveablePage } from './pages/MovablePage';
 
 import { DynamicProvider } from './context/DynamicContext';
-import { ObjectProvider } from './context/ObjectContext';
-import { PositionProvider } from './context/PositionContext';
+import { KbsProvider } from 'react-kbs';
 
 const router = createBrowserRouter([
   {
-    path: '/moveable',
-    element: <MoveablePage />,
-    children: [],
-  },
-  {
     path: '/',
     element: (
-      <ObjectProvider>
-        <DynamicProvider>
-          <PositionProvider>
-            <HomePage />
-          </PositionProvider>
-        </DynamicProvider>
-      </ObjectProvider>
+      <DynamicProvider>
+        <KbsProvider>
+          <HomePage />
+        </KbsProvider>
+      </DynamicProvider>
     ),
     children: [],
   },

@@ -1,49 +1,31 @@
-import { DataContextProps } from '../../context/DataContext';
-import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
-import { DrawActions } from '../../context/EventReducer';
-import { ObjectActions } from '../../context/ObjectContext';
-import {
-  PositionAction,
-  PositionStateType,
-} from '../../context/PositionContext';
-import { DataObject } from '../../types/DataObject';
+import { DynamicAction, DynamicActions } from '../../context/DynamicContext';
+import { DynamicStateType } from '../../types/DynamicStateType';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
-  object: DataObject,
   event: React.MouseEvent,
-  rect: {
-    offsetLeft: number;
-    offsetTop: number;
-  },
-  positionState: PositionStateType,
-  positionDispatch: React.Dispatch<PositionAction>,
+  dynamicState: DynamicStateType,
   dynamicDispatch: React.Dispatch<DynamicAction>
 ) {
-  const scaledRectangle = getScaledRectangle(
-    object.rectangle,
-    positionState.delta,
-    rect
-  );
+  const { objects, objectID, ratio } = dynamicState;
+  const object = objects.find((obj) => obj.id === objectID);
+  if (!object) return;
+  const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
+
   dynamicDispatch({
     type: 'setDynamicState',
     payload: {
-      isMouseDown: true,
-      action: DrawActions.DRAG,
-      point: {
-        x: event.clientX,
-        y: event.clientY,
-      },
+      action: DynamicActions.DRAG,
       delta: {
-        dx: event.clientX - scaledRectangle.origin.column,
-        dy: event.clientY - scaledRectangle.origin.row,
+        dx:
+          event.clientX -
+          scaledRectangle.origin.column -
+          (dynamicState.offset?.left as number),
+        dy:
+          event.clientY -
+          scaledRectangle.origin.row -
+          (dynamicState.offset?.top as number),
       },
     },
-  });
-
-  object.selected = true;
-  positionDispatch({
-    type: 'setObject',
-    payload: object,
   });
 }

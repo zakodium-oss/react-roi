@@ -1,38 +1,26 @@
-import {
-  DynamicAction,
-  DynamicActions,
-  DynamicStateType,
-} from '../../context/DynamicContext';
-import { PositionAction } from '../../context/PositionContext';
+import { DynamicActions } from '../../context/DynamicContext';
+import { DynamicStateType } from '../../types/DynamicStateType';
+import { dragRectangle } from '../../utilities/dragRectangle';
+import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseDown(
-  event: React.MouseEvent,
-  positionDispatch: React.Dispatch<PositionAction>,
-  dynamicState: DynamicStateType,
-  dynamicDispatch: React.Dispatch<DynamicAction>
-) {
-  dynamicDispatch({ type: 'setIsMouseDown', payload: true });
-  const initPoint = { x: event.clientX, y: event.clientY };
-  if (dynamicState.action === DynamicActions.SLEEP) {
-    dynamicDispatch({
-      type: 'setAction',
-      payload: DynamicActions.DRAW,
-    });
-  }
-  switch (dynamicState.action) {
+export function onMouseDown(draft: DynamicStateType, event: React.MouseEvent) {
+  const point = getMousePosition(draft, event);
+  switch (draft.action) {
     case DynamicActions.DRAG:
-      positionDispatch({ type: 'setStartPoint', payload: initPoint });
-      positionDispatch({ type: 'setEndPoint', payload: initPoint });
+      const { startPoint, endPoint } = dragRectangle(draft, point);
+      draft.startPoint = startPoint;
+      draft.endPoint = endPoint;
+      break;
+
+    case DynamicActions.DRAW:
+    case DynamicActions.RESIZE:
       break;
     case DynamicActions.SLEEP:
-      positionDispatch({ type: 'setStartPoint', payload: initPoint });
-      positionDispatch({ type: 'setEndPoint', payload: initPoint });
+      draft.action = DynamicActions.DRAW;
+      draft.startPoint = point;
+      draft.endPoint = point;
       break;
-    case DynamicActions.RESIZE:
-      positionDispatch({
-        type: 'setEndPoint',
-        payload: initPoint,
-      });
+    default:
       break;
   }
 }

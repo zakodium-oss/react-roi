@@ -1,29 +1,50 @@
+import { DynamicStateType } from '../types/DynamicStateType';
+import { Point } from '../types/Point';
+import { getScaledRectangle } from './getScaledRectangle';
+
 /**
  * This function returns the new coordinates of the rectangle on the SVG
- * @param object the object to drag
- * @param event the event with the new coordinates
- * @param rect The object contains offset information regarding the top and left positions of the SVG relative to the entire window
- * @param delta This parameter contains information about the relationship between the width and height of the image and the SVG in pixels
+ * @param rectangle the rectangle to drag
+ * @param origin the event with the new coordinates
+ * @param delta This parameter contains information about the offset from the point where the click was made to the top-left corner of the rectangle
  * @returns
  */
 
-import { Delta } from '../context/EventReducer';
-import { Rectangle } from '../types/Rectangle';
-
 export function dragRectangle(
-  rectangle: Rectangle,
-  event: React.MouseEvent,
-  delta: Delta
-) {
-  const startPoint = {
-    x: event.clientX - delta.dx,
-    y: event.clientY - delta.dy,
+  draft: DynamicStateType,
+  origin: Point
+): {
+  startPoint: Point;
+  endPoint: Point;
+} {
+  const {
+    delta,
+    ratio,
+    objects,
+    objectID,
+    startPoint,
+    endPoint,
+    width,
+    height,
+  } = draft;
+  const object = objects.find((obj) => obj.id === objectID);
+  if (!delta || !object) {
+    return { startPoint: startPoint as Point, endPoint: endPoint as Point };
+  }
+  const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
+  const minX = Math.max(origin.x - delta.dx, 0);
+  const minY = Math.max(origin.y - delta.dy, 0);
+  const maxX = Math.min(minX, width - scaledRectangle.width);
+  const maxY = Math.min(minY, height - scaledRectangle.height);
+  const start = {
+    x: maxX,
+    y: maxY,
   };
   return {
-    startPoint,
+    startPoint: start,
     endPoint: {
-      x: startPoint.x + rectangle.width,
-      y: startPoint.y + rectangle.height,
+      x: start.x + scaledRectangle.width,
+      y: start.y + scaledRectangle.height,
     },
   };
 }

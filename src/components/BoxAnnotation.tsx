@@ -1,54 +1,46 @@
-import { DynamicAction, DynamicActions } from '../context/DynamicContext';
-import { PositionAction } from '../context/PositionContext';
-import { DataObject } from '../types/DataObject';
+import { useContext } from 'react';
+import { DynamicContext } from '../context/DynamicContext';
 import { Rectangle } from '../types/Rectangle';
+import { useKbsGlobal } from 'react-kbs';
+
+type BoxAnnotationProps = {
+  id: number | string | undefined;
+  rectangle: Rectangle;
+  options?: BoxAnnotationOptions;
+};
 
 export function BoxAnnotation({
-  object,
+  id,
   rectangle,
   options,
-  positionDispatch,
-  dynamicDispatch,
-  onMouseDown,
-  onMouseUp,
-  onClick,
-}: {
-  object: DataObject;
-  rectangle: Rectangle;
-  options?: {
-    strokeWidth?: number | string;
-    stroke?: string;
-    fill?: string;
-    strokeDasharray?: number | string;
-    strokeDashoffset?: number | string;
-    zIndex?: number | undefined;
-  };
-  positionDispatch?: React.Dispatch<PositionAction>;
-  dynamicDispatch?: React.Dispatch<DynamicAction>;
-  onMouseDown?: (event: any) => void;
-  onMouseUp?: (event: any) => void;
-  onClick?: (event: any) => void;
-}) {
+}: BoxAnnotationProps): JSX.Element {
   const defaultOptions = {
-    strokeWidth: object.selected ? 3 : 1,
+    strokeWidth: 1,
     stroke: 'black',
-    fill: object.selected ? 'rgba(0,0,0,0.4)' : 'black',
+    fill: 'rgba(0,0,0,0.8)',
     strokeDasharray: 0,
     strokeDashoffset: 0,
   };
+  const { dynamicDispatch, dynamicState } = useContext(DynamicContext);
   const { height, width, origin } = rectangle;
+  // useKbsGlobal([
+  //   {
+  //     shortcut: ['delete', 'backspace'],
+  //     handler: (event) => {
+  //       if (event.isTrusted) {
+  //         dynamicDispatch({ type: 'removeObject', payload: id as number });
+  //       }
+  //     },
+  //   },
+  // ]);
+
   return (
     <rect
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onClickCapture={onClick}
-      onMouseDownCapture={() => {
-        if (positionDispatch === undefined || dynamicDispatch === undefined)
-          return;
-        positionDispatch({ type: 'setObject', payload: object });
+      onMouseDownCapture={(event) => {
+        console.log('on mouse down capture', dynamicState.action);
         dynamicDispatch({
-          type: 'setAction',
-          payload: DynamicActions.DRAG,
+          type: 'selectBoxAnnotation',
+          payload: { id: id as string, event: event },
         });
       }}
       x={origin.column}
@@ -59,3 +51,12 @@ export function BoxAnnotation({
     ></rect>
   );
 }
+
+type BoxAnnotationOptions = {
+  strokeWidth?: number | string;
+  stroke?: string;
+  fill?: string;
+  strokeDasharray?: number | string;
+  strokeDashoffset?: number | string;
+  zIndex?: number | undefined;
+};

@@ -3,141 +3,106 @@ import { useContext, useEffect, useRef } from 'react';
 import { Image, writeCanvas } from 'image-js';
 
 import { BoxAnnotation } from './BoxAnnotation';
-import { getRectangle } from '../utilities/getRectangle';
-import './css/ImageComponent.css';
 import { ResizeBox } from './ResizeBox';
-import { selectObject } from './callbacks/selectObject';
-import { observeResizing } from './callbacks/observeResizing';
-import { onMouseMove } from './callbacks/onMouseMove';
-import { onMouseDown } from './callbacks/onMouseDown';
-import { onMouseUp } from './callbacks/onMouseUp';
-import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { PositionContext } from '../context/PositionContext';
-import { ObjectContext } from '../context/ObjectContext';
-import { DynamicContext } from '../context/DynamicContext';
+import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
-export function ImageComponent({
-  image,
-  options = {},
-}: {
+import './css/ImageComponent.css';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { Ratio } from '../types/Ratio';
+
+type ImageComponentProps = {
   image: Image;
   options?: {
     width?: number;
     height?: number;
+    cursorSize?: number;
   };
-}) {
-  const { positionState, positionDispatch } = useContext(PositionContext);
+};
+
+export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { objectState, objectDispatch } = useContext(ObjectContext);
-
-  const { width = image.width, height = image.height } = options;
-
+  const {
+    width = image.width,
+    height = image.height,
+    cursorSize = 3,
+  } = options;
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
-  const rect = {
-    offsetLeft: divRef.current?.offsetLeft || 0,
-    offsetTop: divRef.current?.offsetTop || 0,
-  };
 
-  const rectangle = getRectangle(
-    getRectangleFromPoints(positionState.startPoint, positionState.endPoint),
-    positionState.delta,
-    rect
-  );
+  // TODO: implement boundaries when the box is outside of the component.
 
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
+    dynamicDispatch({
+      type: 'setDynamicState',
+      payload: {
+        ratio: {
+          x: (imageRef.current?.width as number) / width,
+          y: (imageRef.current?.height as number) / height,
+        },
+        offset: {
+          top: divRef.current?.offsetTop || 0,
+          left: divRef.current?.offsetLeft || 0,
+          right: 0,
+          bottom: 0,
+        },
+        width,
+        height,
+      },
+    });
+    return;
   }, [image]);
 
-  useEffect(() => {
-    // window.addEventListener('mouseup', () => onMouseUpOutside(componentState));
-    const resizeObserver = observeResizing(
-      imageRef,
-      width,
-      height,
-      positionDispatch
-    );
-    if (imageRef.current) resizeObserver.observe(imageRef.current);
-    return () => {
-      if (imageRef.current) resizeObserver.unobserve(imageRef.current);
-      // window.removeEventListener('mouseup', () =>
-      //   onMouseUpOutside(componentState)
-      // );
-    };
-  }, [image]);
-
-  const object = positionState.object;
-  let annotations = [
-    ...objectState.objects.map((obj, index) => (
+  const resizeBox = (
+    <ResizeBox key={`resize-box`} cursorSize={cursorSize}></ResizeBox>
+  );
+  const annotations = dynamicState.objects.map((obj, index) => {
+    if (
+      obj.id === dynamicState.objectID &&
+      (dynamicState.action === DynamicActions.DRAG ||
+        dynamicState.action === DynamicActions.RESIZE)
+    ) {
+      return null;
+    }
+    return (
       <BoxAnnotation
-        object={object}
+        id={obj.id}
         key={`annotation_${index}`}
-        rectangle={obj.rectangle}
-        positionDispatch={positionDispatch}
-        dynamicDispatch={dynamicDispatch}
-        onMouseDown={(event) =>
-          selectObject(
-            obj,
-            event,
-            rect,
-            positionState,
-            positionDispatch,
-            dynamicDispatch
-          )
-        }
-        onMouseUp={() =>
-          dynamicDispatch({ type: 'setIsMouseDown', payload: false })
-        }
+        rectangle={getScaledRectangle(
+          obj.rectangle,
+          dynamicState.ratio as Ratio
+        )}
       />
-    )),
-    <ResizeBox
-      key={`resize-box`}
-      object={object}
-      rectangle={rectangle}
-      positionState={positionState}
-      positionDispatch={positionDispatch}
-      dynamicDispatch={dynamicDispatch}
-      delta={positionState.delta}
-      rect={rect}
-    ></ResizeBox>,
-  ];
+    );
+  });
+
   return (
     <div
       id="draggable"
       ref={divRef}
       style={{ position: 'relative', width: '100%' }}
       onMouseUp={(event) =>
-        onMouseUp(
-          event,
-          object,
-          rect,
-          objectState,
-          objectDispatch,
-          positionState,
-          positionDispatch,
-          dynamicState,
-          dynamicDispatch
-        )
+        dynamicDispatch({ type: 'onMouseUp', payload: event })
       }
       onMouseMove={(event) =>
-        onMouseMove(
-          event,
-          object,
-          rect,
-          positionState,
-          dynamicState,
-          positionDispatch
-        )
+        dynamicDispatch({ type: 'onMouseMove', payload: event })
       }
       onMouseDown={(event) =>
-        onMouseDown(event, positionDispatch, dynamicState, dynamicDispatch)
+        dynamicDispatch({ type: 'onMouseDown', payload: event })
       }
     >
-      <canvas ref={imageRef} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+      <canvas
+        ref={imageRef}
+        style={{ width: `${width}px`, height: `${height}px` }}
+      />
       {annotations !== undefined ? (
-        <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
-          {annotations}
+        <svg
+          style={{ width: `${width}px`, height: `${height}px` }}
+          className="svg"
+          viewBox={`0 0 ${width} ${height}`}
+        >
+          {[...annotations, resizeBox]}
         </svg>
       ) : null}
     </div>

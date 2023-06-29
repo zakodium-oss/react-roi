@@ -1,47 +1,23 @@
-import { DynamicAction, DynamicStateType } from '../../context/DynamicContext';
-import { DrawActions } from '../../context/EventReducer';
-import {
-  PositionAction,
-  PositionStateType,
-} from '../../context/PositionContext';
-import { DataObject } from '../../types/DataObject';
+import { DynamicActions } from '../../context/DynamicContext';
+import { DynamicStateType } from '../../types/DynamicStateType';
 import { dragRectangle } from '../../utilities/dragRectangle';
-import { getScaledRectangle } from '../../utilities/getScaledRectangle';
+import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseMove(
-  event: React.MouseEvent,
-  object: DataObject,
-  rect: { offsetLeft: number; offsetTop: number },
-  positionState: PositionStateType,
-  dynamicState: DynamicStateType,
-  positionDispatch: React.Dispatch<PositionAction>
-) {
-  if (dynamicState.isMouseDown) {
-    switch (dynamicState.action) {
-      case DrawActions.DRAG:
-        const scaledRectangle = getScaledRectangle(
-          object.rectangle,
-          positionState.delta,
-          rect
-        );
-        const position = dragRectangle(
-          scaledRectangle,
-          event,
-          dynamicState.delta || { dx: 0, dy: 0 }
-        );
-        positionDispatch({
-          type: 'setStartPoint',
-          payload: position.startPoint,
-        });
-        positionDispatch({ type: 'setEndPoint', payload: position.endPoint });
-        break;
-      case DrawActions.DRAW:
-      case DrawActions.RESIZE:
-        positionDispatch({
-          type: 'setEndPoint',
-          payload: { x: event.clientX, y: event.clientY },
-        });
-        break;
-    }
+export function onMouseMove(draft: DynamicStateType, event: React.MouseEvent) {
+  const point = getMousePosition(draft, event);
+  switch (draft.action) {
+    case DynamicActions.DRAG:
+      const { startPoint, endPoint } = dragRectangle(draft, point);
+      draft.startPoint = startPoint;
+      draft.endPoint = endPoint;
+      break;
+    case DynamicActions.DRAW:
+    case DynamicActions.RESIZE:
+      draft.endPoint = point;
+      break;
+    case DynamicActions.SLEEP:
+      break;
+    default:
+      break;
   }
 }
