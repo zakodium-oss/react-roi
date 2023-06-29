@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.2](https://github.com/zakodium-oss/react-roi/compare/v0.0.1...v0.0.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* remove private ([61c81cf](https://github.com/zakodium-oss/react-roi/commit/61c81cf774900963df6c285f047ecbbe8d76c5b3))
+
 ## 0.0.1 (2023-06-29)
 
 
