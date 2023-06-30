@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { ObjectInspector } from 'react-inspector';
+
 import { DynamicContext } from '../context/DynamicContext';
 
 export function StateObject() {

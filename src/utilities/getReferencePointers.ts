@@ -1,11 +1,12 @@
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
+
 import { getScaledRectangle } from './getScaledRectangle';
 
 export function getReferencePointers(
   rectangle: Rectangle,
   ratio: Ratio,
-  index: number
+  index: number,
 ): Pointers {
   const scaledRectangle = getScaledRectangle(rectangle, ratio);
   const { height, width, origin } = scaledRectangle;

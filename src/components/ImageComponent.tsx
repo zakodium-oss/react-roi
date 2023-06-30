@@ -1,14 +1,14 @@
-import { useContext, useEffect, useRef } from 'react';
-
 import { Image, writeCanvas } from 'image-js';
+import { useContext, useEffect, useRef } from 'react';
+import { useKbsGlobal } from 'react-kbs';
+
+import { DynamicActions, DynamicContext } from '../context/DynamicContext';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
-import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
 import './css/ImageComponent.css';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
-import { Ratio } from '../types/Ratio';
 
 type ImageComponentProps = {
   image: Image;
@@ -51,13 +51,25 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
         height,
       },
     });
-    return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image]);
 
-  const resizeBox = (
-    <ResizeBox key={`resize-box`} cursorSize={cursorSize}></ResizeBox>
-  );
-  const annotations = dynamicState.objects.map((obj, index) => {
+  useKbsGlobal([
+    {
+      shortcut: ['delete', 'backspace'],
+      handler: (event) => {
+        if (event.isTrusted && dynamicState.objectID) {
+          dynamicDispatch({
+            type: 'removeObject',
+            payload: dynamicState.objectID,
+          });
+        }
+      },
+    },
+  ]);
+
+  const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
+  const annotations = dynamicState.objects.map((obj) => {
     if (
       obj.id === dynamicState.objectID &&
       (dynamicState.action === DynamicActions.DRAG ||
@@ -68,11 +80,9 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
     return (
       <BoxAnnotation
         id={obj.id}
-        key={`annotation_${index}`}
-        rectangle={getScaledRectangle(
-          obj.rectangle,
-          dynamicState.ratio as Ratio
-        )}
+        key={obj.id}
+        rectangle={getScaledRectangle(obj.rectangle, dynamicState.ratio)}
+        options={obj.options}
       />
     );
   });

@@ -1,6 +1,6 @@
 import { DynamicStateType } from '../types/DynamicStateType';
 import { Point } from '../types/Point';
-import { Ratio } from '../types/Ratio';
+
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
@@ -10,7 +10,7 @@ export function updateObject(draft: DynamicStateType) {
   if (object) {
     object.rectangle = getRectangle(
       getRectangleFromPoints(startPoint as Point, endPoint as Point),
-      ratio as Ratio
+      ratio,
     );
     return object.id;
   }

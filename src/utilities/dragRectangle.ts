@@ -1,5 +1,6 @@
 import { DynamicStateType } from '../types/DynamicStateType';
 import { Point } from '../types/Point';
+
 import { getScaledRectangle } from './getScaledRectangle';
 
 /**
@@ -12,7 +13,7 @@ import { getScaledRectangle } from './getScaledRectangle';
 
 export function dragRectangle(
   draft: DynamicStateType,
-  origin: Point
+  origin: Point,
 ): {
   startPoint: Point;
   endPoint: Point;

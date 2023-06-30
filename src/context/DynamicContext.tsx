@@ -1,20 +1,21 @@
-import { Dispatch, ReactNode, createContext, useReducer } from 'react';
 import { produce } from 'immer';
+import { Dispatch, ReactNode, createContext, useReducer } from 'react';
+import { KbsProvider } from 'react-kbs';
 
+import { onMouseDown } from '../components/callbacks/onMouseDown';
+import { onMouseMove } from '../components/callbacks/onMouseMove';
+import { onMouseUp } from '../components/callbacks/onMouseUp';
 import { Delta } from '../types/Delta';
+import { DynamicStateType } from '../types/DynamicStateType';
+import { Offset } from '../types/Offset';
 import { Point } from '../types/Point';
 import { Ratio } from '../types/Ratio';
-import { Offset } from '../types/Offset';
+import { addObject } from '../utilities/addObject';
+import { dragRectangle } from '../utilities/dragRectangle';
 import { getRectangle } from '../utilities/getRectangle';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
-import { dragRectangle } from '../utilities/dragRectangle';
 import { getReferencePointers } from '../utilities/getReferencePointers';
-import { DynamicStateType } from '../types/DynamicStateType';
-import { addObject } from '../utilities/addObject';
-import { onMouseUp } from '../components/callbacks/onMouseUp';
-import { onMouseMove } from '../components/callbacks/onMouseMove';
-import { onMouseDown } from '../components/callbacks/onMouseDown';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 export const DynamicActions = Object.freeze({
   DRAG: 'drag',
@@ -23,7 +24,7 @@ export const DynamicActions = Object.freeze({
   SLEEP: 'sleep',
 });
 
-export type DynamicActions =
+export type DynamicAction =
   (typeof DynamicActions)[keyof typeof DynamicActions];
 
 const dynamicInitialState: DynamicStateType = {
@@ -41,6 +42,7 @@ const dynamicInitialState: DynamicStateType = {
     {
       id: '0.08787081976685629',
       rectangle: { origin: { row: 152, column: 369 }, width: 83, height: 15 },
+      options: { type: '', label: '', fill: [0, 0, 255, 0.8] },
     },
     {
       id: '0.5108332018722821',
@@ -57,8 +59,8 @@ const dynamicInitialState: DynamicStateType = {
   ],
 };
 
-export type DynamicAction =
-  | { type: 'setAction'; payload: DynamicActions }
+export type DynamicReducerAction =
+  | { type: 'setAction'; payload: DynamicAction }
   | { type: 'setDelta'; payload: Delta }
   | { type: 'setObjectID'; payload: string | undefined }
   | { type: 'setDynamicState'; payload: Partial<DynamicStateType> }
@@ -82,9 +84,9 @@ export type DynamicAction =
       payload: { id: string; event: React.MouseEvent };
     };
 
-export const dynamicReducer = (
+const dynamicReducer = (
   state: DynamicStateType,
-  action: DynamicAction
+  action: DynamicReducerAction,
 ) => {
   return produce(state, (draft) => {
     switch (action.type) {
@@ -131,7 +133,7 @@ export const dynamicReducer = (
 
       case 'removeObject': {
         const index = draft.objects.findIndex(
-          (object) => object.id === action.payload
+          (object) => object.id === action.payload,
         );
         draft.objects.splice(index, 1);
         draft.objectID = undefined;
@@ -149,7 +151,7 @@ export const dynamicReducer = (
         if (object) {
           object.rectangle = getRectangle(
             getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio as Ratio
+            ratio,
           );
         }
         break;
@@ -160,6 +162,7 @@ export const dynamicReducer = (
         const { startPoint, endPoint } = dragRectangle(draft, point);
         draft.startPoint = startPoint;
         draft.endPoint = endPoint;
+        break;
       }
 
       case 'updatePosition': {
@@ -168,8 +171,8 @@ export const dynamicReducer = (
         if (!object) return;
         const points = getReferencePointers(
           object.rectangle,
-          ratio as Ratio,
-          action.payload as number
+          ratio,
+          action.payload,
         );
         draft.startPoint = { x: points.p0.x, y: points.p0.y };
         draft.endPoint = { x: points.p1.x, y: points.p1.y };
@@ -212,17 +215,20 @@ export const dynamicReducer = (
         onMouseUp(draft, action.payload);
         break;
       }
+
+      default:
+        break;
     }
   });
 };
 
 type DynamicContextProps = {
   dynamicState: DynamicStateType;
-  dynamicDispatch: Dispatch<DynamicAction>;
+  dynamicDispatch: Dispatch<DynamicReducerAction>;
 };
 
 export const DynamicContext = createContext<DynamicContextProps>(
-  {} as DynamicContextProps
+  {} as DynamicContextProps,
 );
 
 type ObjectProviderProps = {
@@ -232,11 +238,13 @@ type ObjectProviderProps = {
 export const DynamicProvider = ({ children }: ObjectProviderProps) => {
   const [dynamicState, dynamicDispatch] = useReducer(
     dynamicReducer,
-    dynamicInitialState
+    dynamicInitialState,
   );
   return (
-    <DynamicContext.Provider value={{ dynamicState, dynamicDispatch }}>
-      {children}
-    </DynamicContext.Provider>
+    <KbsProvider>
+      <DynamicContext.Provider value={{ dynamicState, dynamicDispatch }}>
+        {children}
+      </DynamicContext.Provider>
+    </KbsProvider>
   );
 };

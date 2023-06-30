@@ -5,7 +5,7 @@ import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 export function selectObject(
   event: React.MouseEvent,
   dynamicState: DynamicStateType,
-  dynamicDispatch: React.Dispatch<DynamicAction>
+  dynamicDispatch: React.Dispatch<DynamicAction>,
 ) {
   const { objects, objectID, ratio } = dynamicState;
   const object = objects.find((obj) => obj.id === objectID);
@@ -20,11 +20,9 @@ export function selectObject(
         dx:
           event.clientX -
           scaledRectangle.origin.column -
-          (dynamicState.offset?.left as number),
+          dynamicState.offset?.left,
         dy:
-          event.clientY -
-          scaledRectangle.origin.row -
-          (dynamicState.offset?.top as number),
+          event.clientY - scaledRectangle.origin.row - dynamicState.offset?.top,
       },
     },
   });

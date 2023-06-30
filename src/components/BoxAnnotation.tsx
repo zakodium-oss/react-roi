@@ -1,10 +1,10 @@
 import { useContext } from 'react';
+
 import { DynamicContext } from '../context/DynamicContext';
 import { Rectangle } from '../types/Rectangle';
-import { useKbsGlobal } from 'react-kbs';
 
 type BoxAnnotationProps = {
-  id: number | string | undefined;
+  id?: number | string;
   rectangle: Rectangle;
   options?: BoxAnnotationOptions;
 };
@@ -12,51 +12,72 @@ type BoxAnnotationProps = {
 export function BoxAnnotation({
   id,
   rectangle,
-  options,
+  options = {},
 }: BoxAnnotationProps): JSX.Element {
-  const defaultOptions = {
-    strokeWidth: 1,
-    stroke: 'black',
-    fill: 'rgba(0,0,0,0.8)',
-    strokeDasharray: 0,
-    strokeDashoffset: 0,
-  };
-  const { dynamicDispatch, dynamicState } = useContext(DynamicContext);
+  const {
+    fill = [0, 0, 0, 0.5],
+    label,
+    stroke = 'black',
+    strokeWidth = 1,
+    strokeDasharray = 0,
+    strokeDashoffset = 0,
+    zIndex,
+  } = options;
+  const { dynamicDispatch } = useContext(DynamicContext);
   const { height, width, origin } = rectangle;
-  // useKbsGlobal([
-  //   {
-  //     shortcut: ['delete', 'backspace'],
-  //     handler: (event) => {
-  //       if (event.isTrusted) {
-  //         dynamicDispatch({ type: 'removeObject', payload: id as number });
-  //       }
-  //     },
-  //   },
-  // ]);
-
   return (
-    <rect
-      onMouseDownCapture={(event) => {
-        console.log('on mouse down capture', dynamicState.action);
-        dynamicDispatch({
-          type: 'selectBoxAnnotation',
-          payload: { id: id as string, event: event },
-        });
-      }}
-      x={origin.column}
-      y={origin.row}
-      width={width}
-      height={height}
-      style={{ ...defaultOptions, ...options }}
-    ></rect>
+    <>
+      <rect
+        cursor={'grab'}
+        x={origin.column}
+        y={origin.row}
+        width={width}
+        height={height}
+        style={{
+          fill: `rgba(${fill.join(',')})`,
+          stroke,
+          strokeWidth,
+          strokeDasharray,
+          strokeDashoffset,
+          zIndex,
+        }}
+        onMouseDownCapture={(event) => {
+          if (id) {
+            dynamicDispatch({
+              type: 'selectBoxAnnotation',
+              payload: { id: id as string, event },
+            });
+          }
+        }}
+      />
+      {label && (
+        <text
+          x={origin.column + width / 2}
+          y={origin.row + height / 2}
+          alignmentBaseline="middle"
+          textAnchor="middle"
+          stroke="none"
+          fill="black"
+          style={{
+            fontSize: Math.floor(width / 5),
+            fontWeight: 'bold',
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        >
+          {`${label}`}
+        </text>
+      )}
+    </>
   );
 }
 
 type BoxAnnotationOptions = {
-  strokeWidth?: number | string;
+  fill?: number[];
+  label?: string;
   stroke?: string;
-  fill?: string;
   strokeDasharray?: number | string;
   strokeDashoffset?: number | string;
+  strokeWidth?: number | string;
   zIndex?: number | undefined;
 };

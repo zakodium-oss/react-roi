@@ -5,9 +5,9 @@ import { getMousePosition } from '../../utilities/getMousePosition';
 
 export function onMouseDown(draft: DynamicStateType, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
+  const { startPoint, endPoint } = dragRectangle(draft, point);
   switch (draft.action) {
     case DynamicActions.DRAG:
-      const { startPoint, endPoint } = dragRectangle(draft, point);
       draft.startPoint = startPoint;
       draft.endPoint = endPoint;
       break;
