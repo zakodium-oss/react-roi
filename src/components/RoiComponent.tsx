@@ -2,7 +2,7 @@ import { Image, writeCanvas } from 'image-js';
 import { useContext, useEffect, useRef } from 'react';
 import { useKbsGlobal } from 'react-kbs';
 
-import { RoiActions, DynamicContext } from '../context/DynamicContext';
+import { RoiActions, RoiContext } from '../context/RoiContext';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 import { BoxAnnotation } from './BoxAnnotation';
@@ -20,7 +20,7 @@ type ImageComponentProps = {
 };
 
 export function RoiComponent({ image, options = {} }: ImageComponentProps) {
-  const { roiState, roiDispatch } = useContext(DynamicContext);
+  const { roiState, roiDispatch } = useContext(RoiContext);
   const {
     width = image.width,
     height = image.height,

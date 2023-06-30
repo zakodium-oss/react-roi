@@ -230,26 +230,24 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
   });
 };
 
-type DynamicContextProps = {
+type RoiContextProps = {
   roiState: RoiStateType;
   roiDispatch: Dispatch<RoiReducerAction>;
 };
 
-export const DynamicContext = createContext<DynamicContextProps>(
-  {} as DynamicContextProps,
-);
+export const RoiContext = createContext<RoiContextProps>({} as RoiContextProps);
 
 type ObjectProviderProps = {
   children: ReactNode;
 };
 
-export const DynamicProvider = ({ children }: ObjectProviderProps) => {
+export const RoiProvider = ({ children }: ObjectProviderProps) => {
   const [roiState, roiDispatch] = useReducer(roiReducer, roiInitialState);
   return (
     <KbsProvider>
-      <DynamicContext.Provider value={{ roiState, roiDispatch }}>
+      <RoiContext.Provider value={{ roiState, roiDispatch }}>
         {children}
-      </DynamicContext.Provider>
+      </RoiContext.Provider>
     </KbsProvider>
   );
 };

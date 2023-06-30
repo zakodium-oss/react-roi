@@ -1,4 +1,4 @@
-import { RoiActions } from '../../context/DynamicContext';
+import { RoiActions } from '../../context/RoiContext';
 import { RoiStateType } from '../../types/RoiStateType';
 import { addObject } from '../../utilities/addObject';
 import { checkRectangle } from '../../utilities/checkRectangle';

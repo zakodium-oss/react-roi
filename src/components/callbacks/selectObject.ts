@@ -1,11 +1,11 @@
-import { DynamicAction, RoiActions } from '../../context/DynamicContext';
+import { RoiAction, RoiActions } from '../../context/RoiContext';
 import { RoiStateType } from '../../types/RoiStateType';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
   event: React.MouseEvent,
   roiState: RoiStateType,
-  roiDispatch: React.Dispatch<DynamicAction>,
+  roiDispatch: React.Dispatch<RoiAction>,
 ) {
   const { rois, roiID, ratio } = roiState;
   const object = rois.find((obj) => obj.id === roiID);

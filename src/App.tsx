@@ -1,15 +1,15 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { DynamicProvider } from './context/DynamicContext';
+import { RoiProvider } from './context/RoiContext';
 import { HomePage } from './pages/HomePage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <DynamicProvider>
+      <RoiProvider>
         <HomePage />
-      </DynamicProvider>
+      </RoiProvider>
     ),
     children: [],
   },

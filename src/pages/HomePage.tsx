@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { RoiComponent } from '../components/RoiComponent';
-import { DynamicContext } from '../context/DynamicContext';
+import { RoiContext } from '../context/RoiContext';
 import './css/Pages.css';
 
 export function HomePage() {
-  const { roiState } = useContext(DynamicContext);
+  const { roiState } = useContext(RoiContext);
   const imageURL = new URL(`../../data/test.png`, import.meta.url);
   const [image, setImage] = useState<Image>(new Image(1, 1));
 

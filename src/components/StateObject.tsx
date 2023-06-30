@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
-import { DynamicContext } from '../context/DynamicContext';
+import { RoiContext } from '../context/RoiContext';
 
 export function StateObject() {
-  const { roiState } = useContext(DynamicContext);
+  const { roiState } = useContext(RoiContext);
   return (
     <div
       style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start' }}

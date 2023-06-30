@@ -1,4 +1,4 @@
-import { RoiAction } from '../context/DynamicContext';
+import { RoiAction } from '../context/RoiContext';
 
 import { Delta } from './Delta';
 import { Offset } from './Offset';
