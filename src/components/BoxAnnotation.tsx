@@ -15,7 +15,7 @@ export function BoxAnnotation({
   options = {},
 }: BoxAnnotationProps): JSX.Element {
   const {
-    fill = [0, 0, 0, 0.5],
+    rgba = [0, 0, 0, 0.5],
     label,
     stroke = 'black',
     strokeWidth = 1,
@@ -23,7 +23,7 @@ export function BoxAnnotation({
     strokeDashoffset = 0,
     zIndex,
   } = options;
-  const { dynamicDispatch } = useContext(DynamicContext);
+  const { roiDispatch } = useContext(DynamicContext);
   const { height, width, origin } = rectangle;
   return (
     <>
@@ -34,7 +34,7 @@ export function BoxAnnotation({
         width={width}
         height={height}
         style={{
-          fill: `rgba(${fill.join(',')})`,
+          fill: `rgba(${rgba.join(',')})`,
           stroke,
           strokeWidth,
           strokeDasharray,
@@ -43,7 +43,7 @@ export function BoxAnnotation({
         }}
         onMouseDownCapture={(event) => {
           if (id) {
-            dynamicDispatch({
+            roiDispatch({
               type: 'selectBoxAnnotation',
               payload: { id: id as string, event },
             });
@@ -73,7 +73,7 @@ export function BoxAnnotation({
 }
 
 type BoxAnnotationOptions = {
-  fill?: number[];
+  rgba?: number[];
   label?: string;
   stroke?: string;
   strokeDasharray?: number | string;

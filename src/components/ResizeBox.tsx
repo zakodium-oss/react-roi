@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 
 import {
-  DynamicActions,
+  RoiActions,
   DynamicContext,
-  DynamicReducerAction,
+  RoiReducerAction,
 } from '../context/DynamicContext';
-import { DataObject } from '../types/DataObject';
 import { Rectangle } from '../types/Rectangle';
+import { RoiObject } from '../types/RoiObject';
 import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import './css/ResizeBox.css';
@@ -15,36 +15,31 @@ import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { BoxAnnotation } from './BoxAnnotation';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
-  const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { ratio, objectID, action, startPoint, endPoint, objects } =
-    dynamicState;
+  const { roiState, roiDispatch } = useContext(DynamicContext);
+  const { ratio, roiID, action, startPoint, endPoint, rois } = roiState;
   const [rectangle, setRectangle] = useState<Rectangle | undefined>(undefined);
-  const [object, setObject] = useState<DataObject | undefined>(undefined);
+  const [object, setObject] = useState<RoiObject | undefined>(undefined);
   useEffect(() => {
-    const object = objects.find((obj) => obj.id === objectID);
+    const object = rois.find((obj) => obj.id === roiID);
     if (startPoint && endPoint) {
       setRectangle(getRectangleFromPoints(startPoint, endPoint));
     } else if (
       object &&
-      (action === DynamicActions.SLEEP || action === DynamicActions.DRAG)
+      (action === RoiActions.SLEEP || action === RoiActions.DRAG)
     ) {
       setRectangle(getScaledRectangle(object.rectangle, ratio));
     } else {
       setRectangle(undefined);
     }
-    if (
-      (object && action !== DynamicActions.SLEEP) ||
-      action !== DynamicActions.DRAG
-    ) {
+    if ((object && action !== RoiActions.SLEEP) || action !== RoiActions.DRAG) {
       setObject(object);
     } else {
       setObject(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [objectID, endPoint]);
+  }, [roiID, endPoint]);
 
-  const isActive =
-    action === DynamicActions.DRAG || action === DynamicActions.RESIZE;
+  const isActive = action === RoiActions.DRAG || action === RoiActions.RESIZE;
 
   return rectangle ? (
     <>
@@ -53,12 +48,10 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           id={object.id}
           rectangle={rectangle}
           options={{
-            ...object.options,
+            ...object.meta,
             label:
-              isActive || action === DynamicActions.SLEEP
-                ? object.options?.label
-                : '',
-            fill: isActive ? object.options?.fill : [0, 0, 0, 0],
+              isActive || action === RoiActions.SLEEP ? object.meta?.label : '',
+            rgba: isActive ? object.meta?.rgba : [0, 0, 0, 0],
           }}
         />
       ) : (
@@ -74,7 +67,7 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           height={cursorSize * 2}
           className="circle"
           onMouseDownCapture={() =>
-            onMouseDownCapture(pointer.position, dynamicDispatch)
+            onMouseDownCapture(pointer.position, roiDispatch)
           }
         />
       ))}
@@ -84,13 +77,13 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
 
 function onMouseDownCapture(
   index: number,
-  dynamicDispatch: React.Dispatch<DynamicReducerAction>,
+  roiDispatch: React.Dispatch<RoiReducerAction>,
 ) {
-  dynamicDispatch({ type: 'updatePosition', payload: index });
-  dynamicDispatch({
-    type: 'setDynamicState',
+  roiDispatch({ type: 'updatePosition', payload: index });
+  roiDispatch({
+    type: 'setRoiState',
     payload: {
-      action: DynamicActions.RESIZE,
+      action: RoiActions.RESIZE,
       pointerIndex: index,
     },
   });

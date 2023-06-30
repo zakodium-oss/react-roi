@@ -1,28 +1,28 @@
-import { DynamicAction, DynamicActions } from '../../context/DynamicContext';
-import { DynamicStateType } from '../../types/DynamicStateType';
+import { DynamicAction, RoiActions } from '../../context/DynamicContext';
+import { RoiStateType } from '../../types/RoiStateType';
 import { getScaledRectangle } from '../../utilities/getScaledRectangle';
 
 export function selectObject(
   event: React.MouseEvent,
-  dynamicState: DynamicStateType,
-  dynamicDispatch: React.Dispatch<DynamicAction>,
+  roiState: RoiStateType,
+  roiDispatch: React.Dispatch<DynamicAction>,
 ) {
-  const { objects, objectID, ratio } = dynamicState;
-  const object = objects.find((obj) => obj.id === objectID);
+  const { rois, roiID, ratio } = roiState;
+  const object = rois.find((obj) => obj.id === roiID);
   if (!object) return;
   const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
 
-  dynamicDispatch({
-    type: 'setDynamicState',
+  roiDispatch({
+    type: 'setRoiState',
     payload: {
-      action: DynamicActions.DRAG,
+      action: RoiActions.DRAG,
       delta: {
         dx:
           event.clientX -
           scaledRectangle.origin.column -
-          dynamicState.offset?.left,
+          roiState.offset?.left,
         dy:
-          event.clientY - scaledRectangle.origin.row - dynamicState.offset?.top,
+          event.clientY - scaledRectangle.origin.row - roiState.offset?.top,
       },
     },
   });

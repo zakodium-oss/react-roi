@@ -6,10 +6,11 @@ import { onMouseDown } from '../components/callbacks/onMouseDown';
 import { onMouseMove } from '../components/callbacks/onMouseMove';
 import { onMouseUp } from '../components/callbacks/onMouseUp';
 import { Delta } from '../types/Delta';
-import { DynamicStateType } from '../types/DynamicStateType';
 import { Offset } from '../types/Offset';
 import { Point } from '../types/Point';
 import { Ratio } from '../types/Ratio';
+import { RoiObject } from '../types/RoiObject';
+import { RoiStateType } from '../types/RoiStateType';
 import { addObject } from '../utilities/addObject';
 import { dragRectangle } from '../utilities/dragRectangle';
 import { getRectangle } from '../utilities/getRectangle';
@@ -17,77 +18,77 @@ import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
-export const DynamicActions = Object.freeze({
+export const RoiActions = Object.freeze({
   DRAG: 'drag',
   DRAW: 'draw',
   RESIZE: 'resize',
   SLEEP: 'sleep',
 });
 
-export type DynamicAction =
-  (typeof DynamicActions)[keyof typeof DynamicActions];
+export type RoiAction = (typeof RoiActions)[keyof typeof RoiActions];
 
-const dynamicInitialState: DynamicStateType = {
-  action: DynamicActions.SLEEP,
+const roiInitialState: RoiStateType = {
+  action: RoiActions.SLEEP,
   startPoint: undefined,
   endPoint: undefined,
   ratio: { x: 1, y: 1 },
   delta: undefined,
   offset: { top: 0, right: 0, left: 0, bottom: 0 },
   pointerIndex: undefined,
-  objectID: undefined,
+  roiID: undefined,
   width: 0,
   height: 0,
-  objects: [
+  rois: [
     {
-      id: '0.08787081976685629',
+      id: '33a6bf4a-27e5-4a5e-b0e7-f3d0ce5895fa',
       rectangle: { origin: { row: 152, column: 369 }, width: 83, height: 15 },
-      options: { type: '', label: '', fill: [0, 0, 255, 0.8] },
+      meta: { label: 'roi-1', rgba: [0, 0, 255, 1] },
     },
     {
-      id: '0.5108332018722821',
+      id: '76e12f71-c392-4a38-9fef-7fecf9ba3658',
       rectangle: { origin: { row: 193, column: 343 }, width: 34, height: 15 },
+      meta: { label: 'roi-2', rgba: [0, 255, 0, 1] },
     },
     {
-      id: '0.05981619466014365',
+      id: '25c827df-d1bb-4f40-b4af-106230c6f65d',
       rectangle: { origin: { row: 295, column: 346 }, width: 115, height: 32 },
+      meta: { label: 'roi-3', rgba: [255, 0, 0, 1] },
     },
     {
-      id: '0.3942252292733659',
+      id: '297af947-ea8d-4ec8-9359-32eac4f16806',
       rectangle: { origin: { row: 83, column: 685 }, width: 72, height: 33 },
+      meta: { label: 'roi-4', rgba: [0, 0, 0, 0.5] },
     },
   ],
 };
 
-export type DynamicReducerAction =
-  | { type: 'setAction'; payload: DynamicAction }
+export type RoiReducerAction =
+  | { type: 'setAction'; payload: RoiAction }
   | { type: 'setDelta'; payload: Delta }
-  | { type: 'setObjectID'; payload: string | undefined }
-  | { type: 'setDynamicState'; payload: Partial<DynamicStateType> }
+  | { type: 'setRoiID'; payload: string | undefined }
+  | { type: 'setRoiState'; payload: Partial<RoiStateType> }
   | { type: 'setStartPoint'; payload: Point }
   | { type: 'setEndPoint'; payload: Point }
   | { type: 'setRatio'; payload: Ratio }
   | { type: 'setOffset'; payload: Offset }
   | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } }
   | { type: 'setPointerIndex'; payload: number | undefined }
-  | { type: 'addObject'; payload: string }
-  | { type: 'removeObject'; payload: string }
+  | { type: 'addRoi'; payload: string }
+  | { type: 'addRois'; payload: Omit<RoiObject, 'id'>[] }
+  | { type: 'removeRoi'; payload: string }
   | { type: 'dragRectangle'; payload: { id?: string; point: Point } }
   | { type: 'updatePosition'; payload: number }
   | { type: 'updateRectangle' }
   | { type: 'onMouseDown'; payload: React.MouseEvent }
   | { type: 'onMouseMove'; payload: React.MouseEvent }
   | { type: 'onMouseUp'; payload: React.MouseEvent }
-  | { type: 'selectObject'; payload: React.MouseEvent }
+  | { type: 'selectRoi'; payload: React.MouseEvent }
   | {
       type: 'selectBoxAnnotation';
       payload: { id: string; event: React.MouseEvent };
     };
 
-const dynamicReducer = (
-  state: DynamicStateType,
-  action: DynamicReducerAction,
-) => {
+const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case 'setAction':
@@ -98,11 +99,11 @@ const dynamicReducer = (
         draft.delta = action.payload;
         break;
 
-      case 'setObjectID':
-        draft.objectID = action.payload;
+      case 'setRoiID':
+        draft.roiID = action.payload;
         break;
 
-      case 'setDynamicState':
+      case 'setRoiState':
         Object.assign(draft, action.payload);
         break;
 
@@ -131,23 +132,30 @@ const dynamicReducer = (
         draft.pointerIndex = action.payload;
         break;
 
-      case 'removeObject': {
-        const index = draft.objects.findIndex(
+      case 'removeRoi': {
+        const index = draft.rois.findIndex(
           (object) => object.id === action.payload,
         );
-        draft.objects.splice(index, 1);
-        draft.objectID = undefined;
+        draft.rois.splice(index, 1);
+        draft.roiID = undefined;
         return;
       }
 
-      case 'addObject': {
+      case 'addRoi': {
         addObject(draft, action.payload);
         break;
       }
 
+      case 'addRois': {
+        for (const roi of action.payload) {
+          draft.rois.push({ id: crypto.randomUUID(), ...roi });
+        }
+        break;
+      }
+
       case 'updateRectangle': {
-        const { startPoint, endPoint, ratio, objects, objectID } = draft;
-        const object = objects.find((obj) => obj.id === objectID);
+        const { startPoint, endPoint, ratio, rois, roiID } = draft;
+        const object = rois.find((obj) => obj.id === roiID);
         if (object) {
           object.rectangle = getRectangle(
             getRectangleFromPoints(startPoint as Point, endPoint as Point),
@@ -166,8 +174,8 @@ const dynamicReducer = (
       }
 
       case 'updatePosition': {
-        const { ratio, objects, objectID } = draft;
-        const object = objects.find((obj) => obj.id === objectID);
+        const { ratio, rois, roiID } = draft;
+        const object = rois.find((obj) => obj.id === roiID);
         if (!object) return;
         const points = getReferencePointers(
           object.rectangle,
@@ -181,9 +189,9 @@ const dynamicReducer = (
 
       case 'selectBoxAnnotation': {
         const { id, event } = action.payload;
-        draft.objectID = id;
-        const { ratio, offset, objects, objectID } = draft;
-        const object = objects.find((obj) => obj.id === objectID);
+        draft.roiID = id;
+        const { ratio, offset, rois, roiID } = draft;
+        const object = rois.find((obj) => obj.id === roiID);
         if (!object) return;
         const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
         const delta = {
@@ -194,7 +202,7 @@ const dynamicReducer = (
           x: scaledRectangle.origin.column + delta.dx,
           y: scaledRectangle.origin.row + delta.dy,
         });
-        draft.action = DynamicActions.DRAG;
+        draft.action = RoiActions.DRAG;
         draft.delta = delta;
         draft.startPoint = startPoint;
         draft.endPoint = endPoint;
@@ -223,8 +231,8 @@ const dynamicReducer = (
 };
 
 type DynamicContextProps = {
-  dynamicState: DynamicStateType;
-  dynamicDispatch: Dispatch<DynamicReducerAction>;
+  roiState: RoiStateType;
+  roiDispatch: Dispatch<RoiReducerAction>;
 };
 
 export const DynamicContext = createContext<DynamicContextProps>(
@@ -236,13 +244,10 @@ type ObjectProviderProps = {
 };
 
 export const DynamicProvider = ({ children }: ObjectProviderProps) => {
-  const [dynamicState, dynamicDispatch] = useReducer(
-    dynamicReducer,
-    dynamicInitialState,
-  );
+  const [roiState, roiDispatch] = useReducer(roiReducer, roiInitialState);
   return (
     <KbsProvider>
-      <DynamicContext.Provider value={{ dynamicState, dynamicDispatch }}>
+      <DynamicContext.Provider value={{ roiState, roiDispatch }}>
         {children}
       </DynamicContext.Provider>
     </KbsProvider>

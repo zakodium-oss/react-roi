@@ -1,7 +1,7 @@
-import { DynamicStateType } from '../types/DynamicStateType';
+import { RoiStateType } from '../types/RoiStateType';
 
 export function getMousePosition(
-  draft: DynamicStateType,
+  draft: RoiStateType,
   event: React.MouseEvent,
 ): {
   x: number;

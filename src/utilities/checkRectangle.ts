@@ -1,11 +1,11 @@
-import { DynamicStateType } from '../types/DynamicStateType';
 import { Point } from '../types/Point';
+import { RoiStateType } from '../types/RoiStateType';
 
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
 export function checkRectangle(
-  draft: DynamicStateType,
+  draft: RoiStateType,
   point: Point,
   options: { limit?: number } = {},
 ) {

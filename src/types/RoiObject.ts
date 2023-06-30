@@ -1,11 +1,10 @@
 import { Rectangle } from './Rectangle';
 
-export type DataObject = {
+export type RoiObject = {
   id: string | number;
   rectangle: Rectangle;
-  options?: {
-    type: string;
+  meta?: {
     label?: string;
-    fill?: number[];
+    rgba?: number[];
   };
 };
