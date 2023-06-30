@@ -11,7 +11,7 @@ import { Rectangle } from '../types/Rectangle';
 
 export function getScaledRectangle(
   rectangle: Rectangle,
-  ratio: Ratio
+  ratio: Ratio,
 ): Rectangle {
   const result: Rectangle = {
     origin: { row: 0, column: 0 },

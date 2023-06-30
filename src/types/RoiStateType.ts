@@ -1,15 +1,16 @@
-import { DynamicActions } from '../context/DynamicContext';
-import { DataObject } from './DataObject';
+import { RoiAction } from '../context/RoiContext';
+
 import { Delta } from './Delta';
 import { Offset } from './Offset';
 import { Point } from './Point';
 import { Ratio } from './Ratio';
+import { RoiObject } from './RoiObject';
 
-export type DynamicStateType = {
+export type RoiStateType = {
   /**
    * @param action Current action
    */
-  action: DynamicActions;
+  action: RoiAction;
 
   /**
    * @param delta offset from the point where the click was made to the top-left corner of the rectangle
@@ -17,9 +18,9 @@ export type DynamicStateType = {
   delta?: Delta;
 
   /**
-   * @param objectID Identification of the selected object
+   * @param roiID Identification of the selected object
    */
-  objectID?: string;
+  roiID?: string;
 
   /**
    * position object with the startPoint (top-left) and endPoint (bottom-right) of the rectangle
@@ -62,8 +63,8 @@ export type DynamicStateType = {
   height: number;
 
   /**
-   * @param objects
+   * @param rois
    */
 
-  objects: DataObject[];
+  rois: RoiObject[];
 };

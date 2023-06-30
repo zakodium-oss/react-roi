@@ -4,7 +4,7 @@ export function observeResizing(
   imageRef: React.RefObject<HTMLCanvasElement>,
   width: number,
   height: number,
-  positionDispatch: (value: PositionAction) => void
+  positionDispatch: (value: PositionAction) => void,
 ) {
   return new ResizeObserver((entries) => {
     for (let entry of entries) {

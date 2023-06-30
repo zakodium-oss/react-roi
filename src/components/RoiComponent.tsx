@@ -1,14 +1,14 @@
-import { useContext, useEffect, useRef } from 'react';
-
 import { Image, writeCanvas } from 'image-js';
+import { useContext, useEffect, useRef } from 'react';
+import { useKbsGlobal } from 'react-kbs';
+
+import { RoiActions, RoiContext } from '../context/RoiContext';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
-import { DynamicActions, DynamicContext } from '../context/DynamicContext';
 
 import './css/ImageComponent.css';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
-import { Ratio } from '../types/Ratio';
 
 type ImageComponentProps = {
   image: Image;
@@ -19,8 +19,8 @@ type ImageComponentProps = {
   };
 };
 
-export function ImageComponent({ image, options = {} }: ImageComponentProps) {
-  const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
+export function RoiComponent({ image, options = {} }: ImageComponentProps) {
+  const { roiState, roiDispatch } = useContext(RoiContext);
   const {
     width = image.width,
     height = image.height,
@@ -28,14 +28,11 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
   } = options;
   const divRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLCanvasElement>(null);
-
-  // TODO: implement boundaries when the box is outside of the component.
-
   useEffect(() => {
     if (!image) return;
     writeCanvas(image, imageRef.current as HTMLCanvasElement);
-    dynamicDispatch({
-      type: 'setDynamicState',
+    roiDispatch({
+      type: 'setRoiState',
       payload: {
         ratio: {
           x: (imageRef.current?.width as number) / width,
@@ -51,28 +48,38 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
         height,
       },
     });
-    return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image]);
 
-  const resizeBox = (
-    <ResizeBox key={`resize-box`} cursorSize={cursorSize}></ResizeBox>
-  );
-  const annotations = dynamicState.objects.map((obj, index) => {
+  useKbsGlobal([
+    {
+      shortcut: ['delete', 'backspace'],
+      handler: (event) => {
+        if (event.isTrusted && roiState.roiID) {
+          roiDispatch({
+            type: 'removeRoi',
+            payload: roiState.roiID,
+          });
+        }
+      },
+    },
+  ]);
+
+  const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
+  const annotations = roiState.rois.map((obj) => {
     if (
-      obj.id === dynamicState.objectID &&
-      (dynamicState.action === DynamicActions.DRAG ||
-        dynamicState.action === DynamicActions.RESIZE)
+      obj.id === roiState.roiID &&
+      (roiState.action === RoiActions.DRAG ||
+        roiState.action === RoiActions.RESIZE)
     ) {
       return null;
     }
     return (
       <BoxAnnotation
         id={obj.id}
-        key={`annotation_${index}`}
-        rectangle={getScaledRectangle(
-          obj.rectangle,
-          dynamicState.ratio as Ratio
-        )}
+        key={obj.id}
+        rectangle={getScaledRectangle(obj.rectangle, roiState.ratio)}
+        options={obj.meta}
       />
     );
   });
@@ -82,14 +89,12 @@ export function ImageComponent({ image, options = {} }: ImageComponentProps) {
       id="draggable"
       ref={divRef}
       style={{ position: 'relative', width: '100%' }}
-      onMouseUp={(event) =>
-        dynamicDispatch({ type: 'onMouseUp', payload: event })
-      }
+      onMouseUp={(event) => roiDispatch({ type: 'onMouseUp', payload: event })}
       onMouseMove={(event) =>
-        dynamicDispatch({ type: 'onMouseMove', payload: event })
+        roiDispatch({ type: 'onMouseMove', payload: event })
       }
       onMouseDown={(event) =>
-        dynamicDispatch({ type: 'onMouseDown', payload: event })
+        roiDispatch({ type: 'onMouseDown', payload: event })
       }
     >
       <canvas

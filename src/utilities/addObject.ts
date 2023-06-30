@@ -1,17 +1,17 @@
+import { Point } from '../types/Point';
+import { RoiStateType } from '../types/RoiStateType';
+
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
-import { Ratio } from '../types/Ratio';
-import { Point } from '../types/Point';
-import { DynamicStateType } from '../types/DynamicStateType';
 
-export function addObject(draft: DynamicStateType, id: string) {
+export function addObject(draft: RoiStateType, id: string) {
   const { startPoint, endPoint, ratio } = draft;
-  draft.objects.push({
+  draft.rois.push({
     id,
     rectangle: getRectangle(
       getRectangleFromPoints(startPoint as Point, endPoint as Point),
-      ratio as Ratio
+      ratio,
     ),
   });
-  draft.objectID = id;
+  draft.roiID = id;
 }

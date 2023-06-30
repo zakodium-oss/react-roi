@@ -1,5 +1,6 @@
-import { DynamicStateType } from '../types/DynamicStateType';
 import { Point } from '../types/Point';
+import { RoiStateType } from '../types/RoiStateType';
+
 import { getScaledRectangle } from './getScaledRectangle';
 
 /**
@@ -11,8 +12,8 @@ import { getScaledRectangle } from './getScaledRectangle';
  */
 
 export function dragRectangle(
-  draft: DynamicStateType,
-  origin: Point
+  draft: RoiStateType,
+  origin: Point,
 ): {
   startPoint: Point;
   endPoint: Point;
@@ -20,14 +21,14 @@ export function dragRectangle(
   const {
     delta,
     ratio,
-    objects,
-    objectID,
+    rois,
+    roiID,
     startPoint,
     endPoint,
     width,
     height,
   } = draft;
-  const object = objects.find((obj) => obj.id === objectID);
+  const object = rois.find((obj) => obj.id === roiID);
   if (!delta || !object) {
     return { startPoint: startPoint as Point, endPoint: endPoint as Point };
   }

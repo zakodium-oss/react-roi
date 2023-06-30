@@ -1,60 +1,62 @@
 import { useContext, useEffect, useState } from 'react';
 
 import {
-  DynamicAction,
-  DynamicActions,
-  DynamicContext,
-} from '../context/DynamicContext';
+  RoiActions,
+  RoiContext,
+  RoiReducerAction,
+} from '../context/RoiContext';
+import { Rectangle } from '../types/Rectangle';
+import { RoiObject } from '../types/RoiObject';
 import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { Rectangle } from '../types/Rectangle';
-import { Ratio } from '../types/Ratio';
-
 import './css/ResizeBox.css';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
+import { BoxAnnotation } from './BoxAnnotation';
+
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
-  const { dynamicState, dynamicDispatch } = useContext(DynamicContext);
-  const { ratio, objectID, action, startPoint, endPoint, objects } =
-    dynamicState;
+  const { roiState, roiDispatch } = useContext(RoiContext);
+  const { ratio, roiID, action, startPoint, endPoint, rois } = roiState;
   const [rectangle, setRectangle] = useState<Rectangle | undefined>(undefined);
+  const [object, setObject] = useState<RoiObject | undefined>(undefined);
   useEffect(() => {
-    const object = objects.find((obj) => obj.id === objectID);
+    const object = rois.find((obj) => obj.id === roiID);
     if (startPoint && endPoint) {
       setRectangle(getRectangleFromPoints(startPoint, endPoint));
     } else if (
       object &&
-      (action === DynamicActions.SLEEP || action === DynamicActions.DRAG)
+      (action === RoiActions.SLEEP || action === RoiActions.DRAG)
     ) {
-      setRectangle(getScaledRectangle(object.rectangle, ratio as Ratio));
+      setRectangle(getScaledRectangle(object.rectangle, ratio));
+    } else {
+      setRectangle(undefined);
     }
-  }, [objectID, endPoint]);
+    if ((object && action !== RoiActions.SLEEP) || action !== RoiActions.DRAG) {
+      setObject(object);
+    } else {
+      setObject(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roiID, endPoint]);
+
+  const isActive = action === RoiActions.DRAG || action === RoiActions.RESIZE;
 
   return rectangle ? (
     <>
-      <rect
-        cursor={'grab'}
-        x={rectangle.origin.column}
-        y={rectangle.origin.row}
-        width={rectangle.width}
-        height={rectangle.height}
-        style={{
-          padding: '10px',
-          fill:
-            action !== DynamicActions.SLEEP
-              ? 'rgba(0,0,0,0.4)'
-              : 'rgba(0,0,0,0.8)',
-          stroke: 'black',
-          strokeWidth: 2,
-        }}
-        onMouseDownCapture={(event) => {
-          dynamicDispatch({
-            type: 'selectBoxAnnotation',
-            payload: { id: objectID as string, event: event },
-          });
-        }}
-      ></rect>
-
+      {object ? (
+        <BoxAnnotation
+          id={object.id}
+          rectangle={rectangle}
+          options={{
+            ...object.meta,
+            label:
+              isActive || action === RoiActions.SLEEP ? object.meta?.label : '',
+            rgba: isActive ? object.meta?.rgba : [0, 0, 0, 0],
+          }}
+        />
+      ) : (
+        <BoxAnnotation rectangle={rectangle} />
+      )}
       {getPointers(rectangle).map((pointer) => (
         <rect
           key={`pointer-${pointer.position}`}
@@ -65,9 +67,9 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           height={cursorSize * 2}
           className="circle"
           onMouseDownCapture={() =>
-            onMouseDownCapture(pointer.position, dynamicDispatch)
+            onMouseDownCapture(pointer.position, roiDispatch)
           }
-        ></rect>
+        />
       ))}
     </>
   ) : null;
@@ -75,13 +77,13 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
 
 function onMouseDownCapture(
   index: number,
-  dynamicDispatch: React.Dispatch<DynamicAction>
+  roiDispatch: React.Dispatch<RoiReducerAction>,
 ) {
-  dynamicDispatch({ type: 'updatePosition', payload: index });
-  dynamicDispatch({
-    type: 'setDynamicState',
+  roiDispatch({ type: 'updatePosition', payload: index });
+  roiDispatch({
+    type: 'setRoiState',
     payload: {
-      action: DynamicActions.RESIZE,
+      action: RoiActions.RESIZE,
       pointerIndex: index,
     },
   });

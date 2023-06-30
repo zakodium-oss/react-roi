@@ -1,8 +1,8 @@
-import { DynamicStateType } from '../types/DynamicStateType';
+import { RoiStateType } from '../types/RoiStateType';
 
 export function getMousePosition(
-  draft: DynamicStateType,
-  event: React.MouseEvent
+  draft: RoiStateType,
+  event: React.MouseEvent,
 ): {
   x: number;
   y: number;
@@ -13,18 +13,18 @@ export function getMousePosition(
     case 5:
       return {
         x: endPoint?.x || 0,
-        y: event.clientY - (offset.top as number),
+        y: event.clientY - offset.top,
       };
     case 6:
     case 7:
       return {
-        x: event.clientX - (offset.left as number) || 0,
+        x: event.clientX - offset.left || 0,
         y: endPoint?.y || 0,
       };
     default:
       return {
-        x: event.clientX - (offset.left as number),
-        y: event.clientY - (offset.top as number),
+        x: event.clientX - offset.left,
+        y: event.clientY - offset.top,
       };
   }
 }

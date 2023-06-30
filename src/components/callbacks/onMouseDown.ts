@@ -1,22 +1,22 @@
-import { DynamicActions } from '../../context/DynamicContext';
-import { DynamicStateType } from '../../types/DynamicStateType';
+import { RoiActions } from '../../context/RoiContext';
+import { RoiStateType } from '../../types/RoiStateType';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseDown(draft: DynamicStateType, event: React.MouseEvent) {
+export function onMouseDown(draft: RoiStateType, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
+  const { startPoint, endPoint } = dragRectangle(draft, point);
   switch (draft.action) {
-    case DynamicActions.DRAG:
-      const { startPoint, endPoint } = dragRectangle(draft, point);
+    case RoiActions.DRAG:
       draft.startPoint = startPoint;
       draft.endPoint = endPoint;
       break;
 
-    case DynamicActions.DRAW:
-    case DynamicActions.RESIZE:
+    case RoiActions.DRAW:
+    case RoiActions.RESIZE:
       break;
-    case DynamicActions.SLEEP:
-      draft.action = DynamicActions.DRAW;
+    case RoiActions.SLEEP:
+      draft.action = RoiActions.DRAW;
       draft.startPoint = point;
       draft.endPoint = point;
       break;

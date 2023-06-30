@@ -12,26 +12,24 @@
     "dev": "vite"
   },
   "dependencies": {
-    "image-js": "^0.0.0-next-5076c621a0",
+    "image-js": "0.0.0-next-794486e4b9",
     "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-inspector": "^6.0.1",
+    "react-inspector": "^6.0.2",
     "react-kbs": "^2.1.1",
-    "react-moveable": "^0.50.4",
-    "react-router-dom": "^6.11.0"
-  },
-  "prettier": {
-    "singleQuote": true
+    "react-moveable": "^0.52.1",
+    "react-router-dom": "^6.14.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react": "^3.1.0",
-    "eslint": "^8.40.0",
-    "eslint-config-cheminfo-typescript": "^11.3.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@vitejs/plugin-react": "^4.0.1",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.43.0",
+    "eslint-config-zakodium": "^7.2.0",
     "prettier": "^2.8.8",
-    "typescript": "^4.9.3",
-    "vite": "^4.2.0"
+    "typescript": "^5.1.6",
+    "vite": "^4.3.9"
   }
 }
