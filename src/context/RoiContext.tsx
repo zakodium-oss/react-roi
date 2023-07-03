@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { Dispatch, ReactNode, createContext, useReducer } from 'react';
+import { Dispatch, ReactNode, createContext, useMemo, useReducer } from 'react';
 import { KbsProvider } from 'react-kbs';
 
 import { onMouseDown } from '../components/callbacks/onMouseDown';
@@ -230,23 +230,37 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
   });
 };
 
-type RoiContextProps = {
-  roiState: RoiStateType;
+type RoiStateProps = { roiState: RoiStateType };
+
+export const RoiContext = createContext<RoiStateProps>({} as RoiStateProps);
+
+type RoiDispatchProps = {
   roiDispatch: Dispatch<RoiReducerAction>;
 };
 
-export const RoiContext = createContext<RoiContextProps>({} as RoiContextProps);
+export const RoiDispatchContext = createContext<RoiDispatchProps>(
+  {} as RoiDispatchProps,
+);
 
 type ObjectProviderProps = {
   children: ReactNode;
 };
 
 export const RoiProvider = ({ children }: ObjectProviderProps) => {
-  const [roiState, roiDispatch] = useReducer(roiReducer, roiInitialState);
+  const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+  const roiState = useMemo(() => {
+    return { roiState: state };
+  }, [state]);
+
+  const roiDispatch = useMemo(() => {
+    return { roiDispatch: dispatch };
+  }, [dispatch]);
   return (
     <KbsProvider>
-      <RoiContext.Provider value={{ roiState, roiDispatch }}>
-        {children}
+      <RoiContext.Provider value={roiState}>
+        <RoiDispatchContext.Provider value={roiDispatch}>
+          {children}
+        </RoiDispatchContext.Provider>
       </RoiContext.Provider>
     </KbsProvider>
   );

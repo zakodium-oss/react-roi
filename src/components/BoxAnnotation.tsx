@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { RoiContext } from '../context/RoiContext';
+import { RoiDispatchContext } from '../context/RoiContext';
 import { Rectangle } from '../types/Rectangle';
 
 type BoxAnnotationProps = {
@@ -23,7 +23,7 @@ export function BoxAnnotation({
     strokeDashoffset = 0,
     zIndex,
   } = options;
-  const { roiDispatch } = useContext(RoiContext);
+  const { roiDispatch } = useContext(RoiDispatchContext);
   const { height, width, origin } = rectangle;
   return (
     <>

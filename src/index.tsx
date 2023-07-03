@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // </React.StrictMode>
 );
 
-export * from './components/RoiComponent';
-export type { RoiObject } from './types/RoiObject';
+export { RoiComponent } from './components/RoiComponent';
+export * from './types/index';

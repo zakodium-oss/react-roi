@@ -18,7 +18,7 @@ import { RoiComponent } from 'react-roi';
 function MyComponent() {
   return (
     <RoiComponent>
-      <div style={{ width: '500px', height: '500px' }} />
+      <div style={{ width: '500px', height: '5S00px' }} />
     </RoiComponent>
   );
 }
@@ -27,10 +27,26 @@ function MyComponent() {
 To use the component with images:
 
 ```js
+import { decode, Image } from 'image-js';
+import { useContext, useEffect, useState } from 'react';
 import { RoiComponent } from 'react-roi';
+const [image, setImage] = useState(null);
+
+useEffect(() => {
+  const fetchImage = async (url) => {
+    const response = await fetch(url.pathname);
+    const buffer = await response.arrayBuffer();
+    return decode(new Uint8Array(buffer));
+  };
+  fetchImage('your/url')
+    .then((image) => setImage(image))
+    .catch((error) => console.warn(error));
+}, []);
 
 function MyComponent() {
-  return <RoiComponent image={image} />;
+  return image ? (
+    <RoiComponent image={image} options={{ width: 700, height: 500 }} />
+  ) : null;
 }
 ```
 

@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import {
   RoiActions,
   RoiContext,
+  RoiDispatchContext,
   RoiReducerAction,
 } from '../context/RoiContext';
 import { Rectangle } from '../types/Rectangle';
@@ -15,7 +16,8 @@ import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { BoxAnnotation } from './BoxAnnotation';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
-  const { roiState, roiDispatch } = useContext(RoiContext);
+  const { roiState } = useContext(RoiContext);
+  const { roiDispatch } = useContext(RoiDispatchContext);
   const { ratio, roiID, action, startPoint, endPoint, rois } = roiState;
   const [rectangle, setRectangle] = useState<Rectangle | undefined>(undefined);
   const [object, setObject] = useState<RoiObject | undefined>(undefined);
