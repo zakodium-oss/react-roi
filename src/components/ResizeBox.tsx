@@ -4,13 +4,11 @@ import {
   RoiActions,
   RoiContext,
   RoiDispatchContext,
-  RoiReducerAction,
 } from '../context/RoiContext';
 import { Rectangle } from '../types/Rectangle';
 import { RoiObject } from '../types/RoiObject';
 import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import './css/ResizeBox.css';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 import { BoxAnnotation } from './BoxAnnotation';
@@ -38,8 +36,7 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
     } else {
       setObject(undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roiID, endPoint]);
+  }, [roiID, endPoint, rois, startPoint, action, ratio]);
 
   const isActive = action === RoiActions.DRAG || action === RoiActions.RESIZE;
 
@@ -57,36 +54,23 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           }}
         />
       ) : (
-        <BoxAnnotation rectangle={rectangle} />
+        <BoxAnnotation id="resize-box" rectangle={rectangle} />
       )}
       {getPointers(rectangle).map((pointer) => (
         <rect
+          id={`pointer-${pointer.position}`}
           key={`pointer-${pointer.position}`}
           x={pointer.cx - cursorSize}
           y={pointer.cy - cursorSize}
           cursor={pointer.cursor}
           width={cursorSize * 2}
           height={cursorSize * 2}
-          className="circle"
-          onMouseDownCapture={() =>
-            onMouseDownCapture(pointer.position, roiDispatch)
+          style={{ fill: '#44aaff', stroke: 'black' }}
+          onMouseDown={() =>
+            roiDispatch({ type: 'updatePosition', payload: pointer.position })
           }
         />
       ))}
     </>
   ) : null;
-}
-
-function onMouseDownCapture(
-  index: number,
-  roiDispatch: React.Dispatch<RoiReducerAction>,
-) {
-  roiDispatch({ type: 'updatePosition', payload: index });
-  roiDispatch({
-    type: 'setRoiState',
-    payload: {
-      action: RoiActions.RESIZE,
-      pointerIndex: index,
-    },
-  });
 }

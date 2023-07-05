@@ -4,7 +4,7 @@ import { RoiDispatchContext } from '../context/RoiContext';
 import { Rectangle } from '../types/Rectangle';
 
 type BoxAnnotationProps = {
-  id?: number | string;
+  id?: string;
   rectangle: Rectangle;
   options?: BoxAnnotationOptions;
 };
@@ -28,6 +28,7 @@ export function BoxAnnotation({
   return (
     <>
       <rect
+        id={id}
         cursor={'grab'}
         x={origin.column}
         y={origin.row}
@@ -41,11 +42,11 @@ export function BoxAnnotation({
           strokeDashoffset,
           zIndex,
         }}
-        onMouseDownCapture={(event) => {
+        onMouseDown={(event) => {
           if (id) {
             roiDispatch({
               type: 'selectBoxAnnotation',
-              payload: { id: id as string, event },
+              payload: { id, event },
             });
           }
         }}

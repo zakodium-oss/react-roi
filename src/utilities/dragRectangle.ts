@@ -20,6 +20,7 @@ export function dragRectangle(
 } {
   const { delta, ratio, rois, roiID, startPoint, endPoint, width, height } =
     draft;
+
   const object = rois.find((obj) => obj.id === roiID);
   if (!delta || !object) {
     return { startPoint: startPoint as Point, endPoint: endPoint as Point };

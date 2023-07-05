@@ -10,4 +10,3 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 );
 
 export { RoiComponent } from './components/RoiComponent';
-export * from './types/index';
