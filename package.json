@@ -31,10 +31,8 @@
     "image-js": "0.0.0-next-794486e4b9",
     "immer": "^10.0.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-inspector": "^6.0.2",
-    "react-kbs": "^2.1.1",
-    "react-router-dom": "^6.14.0"
+    "react-kbs": "^2.1.1"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
@@ -49,6 +47,8 @@
     "eslint-config-zakodium": "^7.2.0",
     "jsdom": "^22.1.0",
     "prettier": "^2.8.8",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.1",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
     "vite": "^4.3.9",

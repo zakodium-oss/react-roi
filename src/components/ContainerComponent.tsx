@@ -10,13 +10,11 @@ import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
 
-import './css/ContainerComponent.css';
-
 export function ContainerComponent({ element }: { element: JSX.Element }) {
   const { roiDispatch } = useContext(RoiDispatchContext);
   const { roiState } = useContext(RoiContext);
   // @ts-expect-error i know
-  const current = element.ref.current;
+  const current = element.ref.current as HTMLElement;
   const { width, height, top, left } = current
     ? current.getBoundingClientRect()
     : { width: 0, height: 0, top: 0, left: 0 };
@@ -52,7 +50,14 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
   return (
     <div
       id="container-component"
-      className="custom-container"
+      style={{
+        display: 'flex',
+        position: 'relative',
+        margin: 0,
+        padding: 0,
+        width: 'fit-content',
+        height: 'fit-content',
+      }}
       onMouseUp={(event) => roiDispatch({ type: 'onMouseUp', payload: event })}
       onMouseMove={(event) =>
         roiDispatch({ type: 'onMouseMove', payload: event })
@@ -64,14 +69,14 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
       {element}
       {annotations !== undefined ? (
         <svg
-          className="svg"
           style={{
-            margin: '0px',
-            padding: '0px',
-            width: `${width}px`,
-            height: `${height}px`,
+            position: 'absolute',
+            margin: 0,
+            padding: 0,
+            width,
+            height,
           }}
-          viewBox={`0 0 ${width ?? 0} ${height ?? 0}`}
+          viewBox={`0 0 ${width} ${height}`}
         >
           {[...annotations, resizeBox]}
         </svg>

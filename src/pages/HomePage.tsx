@@ -1,9 +1,10 @@
-import { decode, Image } from 'image-js';
-import { useContext, useEffect, useState } from 'react';
+import { Image } from 'image-js';
+import { useContext, useEffect } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { RoiComponent } from '../components/RoiComponent';
 import { RoiContext, RoiDispatchContext } from '../context/RoiContext';
+
 import './css/HomePage.css';
 
 const rois = [
@@ -25,29 +26,21 @@ const rois = [
   },
 ];
 
-const fetchImage = async (url: URL) => {
-  const response = await fetch(url.pathname);
-  const buffer = await response.arrayBuffer();
-  return decode(new Uint8Array(buffer));
-};
+const image = new Image(800, 600).fill(255);
+image.drawRectangle({
+  strokeColor: [0, 0, 0, 1],
+  out: image,
+});
 
 export function HomePage() {
   const { roiState } = useContext(RoiContext);
   const { roiDispatch } = useContext(RoiDispatchContext);
-  const [image, setImage] = useState<Image | null>(null);
-
   useEffect(() => {
-    fetchImage(new URL(`../../data/test.png`, import.meta.url))
-      .then((image) => setImage(image))
-      // eslint-disable-next-line no-console
-      .catch((error) => console.warn(error));
     roiDispatch({ type: 'addRois', payload: rois });
   }, [roiDispatch]);
   return (
     <div className="page">
-      {image ? (
-        <RoiComponent image={image} options={{ width: 700, height: 500 }} />
-      ) : null}
+      <RoiComponent image={image} options={{ width: 700, height: 500 }} />
       <ObjectInspector expandLevel={2} data={{ roiState }} />
     </div>
   );
