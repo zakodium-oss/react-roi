@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0](https://github.com/zakodium-oss/react-roi/compare/v0.0.2...v0.1.0) (2023-07-06)
+
+
+### Features
+
+* add preview github action ([ee66266](https://github.com/zakodium-oss/react-roi/commit/ee66266ec03ea795114680f38aa68c992c25ab5d))
+* allow to work with images and div elements close [#18](https://github.com/zakodium-oss/react-roi/issues/18) ([#19](https://github.com/zakodium-oss/react-roi/issues/19)) ([3cf310f](https://github.com/zakodium-oss/react-roi/commit/3cf310f0a28ecc15c28eadf72861b762d3a22270))
+
 ## [0.0.2](https://github.com/zakodium-oss/react-roi/compare/v0.0.1...v0.0.2) (2023-06-29)
 
 
