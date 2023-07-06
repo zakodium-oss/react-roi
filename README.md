@@ -1,5 +1,8 @@
 # react-roi
 
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
+
 React library to draw, move and resize rectangles.
 
 ## Installation
@@ -10,7 +13,7 @@ npm i react-roi
 
 ## Usage
 
-To use the component with elements:
+Components:
 
 ```js
 import { RoiComponent } from 'react-roi';
@@ -24,11 +27,11 @@ function MyComponent() {
 }
 ```
 
-To use the component with images:
+Images:
 
 ```js
-import { decode, Image } from 'image-js';
 import { useContext, useEffect, useState } from 'react';
+import { decode, Image } from 'image-js';
 import { RoiComponent } from 'react-roi';
 const [image, setImage] = useState(null);
 

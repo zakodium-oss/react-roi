@@ -23,7 +23,7 @@ export function ImageWrapper({
   const imageRef = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     if (!image) return;
-    writeCanvas(image, imageRef.current as HTMLCanvasElement);
+    writeCanvas(image, imageRef.current);
     roiDispatch({
       type: 'setRatio',
       payload: { x: image.width / width, y: image.height / height },

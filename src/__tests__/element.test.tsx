@@ -8,8 +8,7 @@ import {
 } from '@testing-library/react';
 import { test, expect, afterEach } from 'vitest';
 
-import { RoiComponent } from '../components/RoiComponent';
-import { RoiProvider, sharedRois } from '../context/RoiContext';
+import { RoiProvider, sharedRois, RoiComponent } from '../index';
 
 afterEach(cleanup);
 
@@ -42,9 +41,7 @@ test('Test roi component with a div element', async () => {
     });
   });
 
-  const roiComponent = document.getElementById(
-    'container-component',
-  ) as HTMLElement;
+  const roiComponent = document.getElementById('container-component');
 
   /** Drawing the first square */
   act(() => {
@@ -78,7 +75,7 @@ test('Test roi component with a div element', async () => {
    * Dragging the second square.
    * The column and row positions of the rectangle should increase by 10.
    */
-  const box = document.getElementById(`${sharedRois[1].id}`) as HTMLElement;
+  const box = document.getElementById(`${sharedRois[1].id}`);
   act(() => {
     fireEvent.mouseDown(box, { clientX: 35, clientY: 35 });
     fireEvent.mouseMove(box, { clientX: 45, clientY: 45 });
@@ -95,7 +92,7 @@ test('Test roi component with a div element', async () => {
    * Resizing the second square using the bottom-right pointer.
    * The width and height should increase by 10.
    */
-  const pointer2 = document.getElementById('pointer-2') as HTMLElement;
+  const pointer2 = document.getElementById('pointer-2');
 
   act(() => {
     fireEvent.mouseDown(pointer2, { clientX: 60, clientY: 60 });
@@ -113,7 +110,7 @@ test('Test roi component with a div element', async () => {
    * Resizing the second square using the top-middle pointer.
    * The height should increase by 10 while the width remains unaffected.
    */
-  const pointer4 = document.getElementById('pointer-4') as HTMLElement;
+  const pointer4 = document.getElementById('pointer-4');
 
   act(() => {
     fireEvent.mouseDown(pointer4, { clientX: 55, clientY: 40 });
@@ -156,9 +153,7 @@ test('Test roi component with a svg element', async () => {
     });
   });
 
-  const roiComponent = document.getElementById(
-    'container-component',
-  ) as HTMLElement;
+  const roiComponent = document.getElementById('container-component');
 
   /** Drawing the first square */
   act(() => {
@@ -192,7 +187,7 @@ test('Test roi component with a svg element', async () => {
    * Dragging the second square.
    * The column and row positions of the rectangle should increase by 10.
    */
-  const box = document.getElementById(`${sharedRois[1].id}`) as HTMLElement;
+  const box = document.getElementById(`${sharedRois[1].id}`);
   act(() => {
     fireEvent.mouseDown(box, { clientX: 35, clientY: 35 });
     fireEvent.mouseMove(box, { clientX: 45, clientY: 45 });
@@ -209,7 +204,7 @@ test('Test roi component with a svg element', async () => {
    * Resizing the second square using the bottom-right pointer.
    * The width and height should increase by 10.
    */
-  const pointer2 = document.getElementById('pointer-2') as HTMLElement;
+  const pointer2 = document.getElementById('pointer-2');
 
   act(() => {
     fireEvent.mouseDown(pointer2, { clientX: 60, clientY: 60 });
@@ -227,7 +222,7 @@ test('Test roi component with a svg element', async () => {
    * Resizing the second square using the top-middle pointer.
    * The height should increase by 10 while the width remains unaffected.
    */
-  const pointer4 = document.getElementById('pointer-4') as HTMLElement;
+  const pointer4 = document.getElementById('pointer-4');
 
   act(() => {
     fireEvent.mouseDown(pointer4, { clientX: 55, clientY: 40 });

@@ -11,7 +11,7 @@ export function checkRectangle(
 ) {
   const { limit = 10 } = options;
   const { startPoint, ratio } = draft;
-  const rectangle = getRectangleFromPoints(startPoint as Point, point);
+  const rectangle = getRectangleFromPoints(startPoint, point);
   const actualRectangle = getRectangle(rectangle, ratio);
   return actualRectangle.width >= limit && actualRectangle.height >= limit;
 }

@@ -23,7 +23,7 @@ export function dragRectangle(
 
   const object = rois.find((obj) => obj.id === roiID);
   if (!delta || !object) {
-    return { startPoint: startPoint as Point, endPoint: endPoint as Point };
+    return { startPoint, endPoint };
   }
   const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
   const minX = Math.max(origin.x - delta.dx, 0);

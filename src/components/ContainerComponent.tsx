@@ -20,9 +20,9 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
     : { width: 0, height: 0, top: 0, left: 0 };
   useEffect(() => {
     roiDispatch({
-      type: 'setRoiState',
+      type: 'setComponentPosition',
       payload: {
-        offset: { top, left, right: 0, bottom: 0 },
+        origin: { column: left, row: top },
         width,
         height,
       },

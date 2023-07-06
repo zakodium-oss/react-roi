@@ -13,7 +13,7 @@ export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
       const { startPoint, endPoint } = dragRectangle(draft, point);
       draft.startPoint = startPoint;
       draft.endPoint = endPoint;
-      draft.roiID = updateObject(draft) as string;
+      draft.roiID = updateObject(draft);
       break;
     }
 
@@ -27,7 +27,7 @@ export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
     }
 
     case RoiActions.RESIZE: {
-      draft.roiID = updateObject(draft) as string;
+      draft.roiID = updateObject(draft);
       draft.pointerIndex = undefined;
       break;
     }

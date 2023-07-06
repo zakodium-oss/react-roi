@@ -1,7 +1,6 @@
 import { RoiAction } from '../context/RoiContext';
 
 import { Delta } from './Delta';
-import { Offset } from './Offset';
 import { Point } from './Point';
 import { Ratio } from './Ratio';
 import { RoiObject } from './RoiObject';
@@ -43,9 +42,9 @@ export type RoiStateType = {
   ratio: Ratio;
 
   /**
-   * @param offset offset information for the SVG relative to the entire window
+   * @param origin of the SVG relative to the entire window
    */
-  offset: Offset;
+  origin: { row: number; column: number };
 
   /**
    * @param pointerIndex offset index of the selected pointer

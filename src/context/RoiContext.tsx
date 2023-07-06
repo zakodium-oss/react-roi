@@ -5,16 +5,8 @@ import { KbsProvider } from 'react-kbs';
 import { onMouseDown } from '../components/callbacks/onMouseDown';
 import { onMouseMove } from '../components/callbacks/onMouseMove';
 import { onMouseUp } from '../components/callbacks/onMouseUp';
-import { Delta } from '../types/Delta';
-import { Offset } from '../types/Offset';
-import { Point } from '../types/Point';
-import { Ratio } from '../types/Ratio';
-import { RoiObject } from '../types/RoiObject';
-import { RoiStateType } from '../types/RoiStateType';
-import { addObject } from '../utilities/addObject';
+import { Rectangle, Ratio, RoiObject, RoiStateType } from '../types';
 import { dragRectangle } from '../utilities/dragRectangle';
-import { getRectangle } from '../utilities/getRectangle';
-import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
@@ -33,7 +25,7 @@ const roiInitialState: RoiStateType = {
   endPoint: undefined,
   ratio: { x: 1, y: 1 },
   delta: undefined,
-  offset: { top: 0, right: 0, left: 0, bottom: 0 },
+  origin: { row: 0, column: 0 },
   pointerIndex: undefined,
   roiID: undefined,
   width: 0,
@@ -42,26 +34,14 @@ const roiInitialState: RoiStateType = {
 };
 
 export type RoiReducerAction =
-  | { type: 'setAction'; payload: RoiAction }
-  | { type: 'setDelta'; payload: Delta }
-  | { type: 'setRoiID'; payload: string | undefined }
-  | { type: 'setRoiState'; payload: Partial<RoiStateType> }
-  | { type: 'setStartPoint'; payload: Point }
-  | { type: 'setEndPoint'; payload: Point }
+  | { type: 'setComponentPosition'; payload: Rectangle }
   | { type: 'setRatio'; payload: Ratio }
-  | { type: 'setOffset'; payload: Offset }
-  | { type: 'setPosition'; payload: { startPoint: Point; endPoint: Point } }
-  | { type: 'setPointerIndex'; payload: number | undefined }
-  | { type: 'addRoi'; payload: string }
   | { type: 'addRois'; payload: Omit<RoiObject, 'id'>[] }
   | { type: 'removeRoi' }
-  | { type: 'dragRectangle'; payload: { id?: string; point: Point } }
-  | { type: 'updatePosition'; payload: number }
-  | { type: 'updateRectangle' }
+  | { type: 'resizeRoi'; payload: number }
   | { type: 'onMouseDown'; payload: React.MouseEvent }
   | { type: 'onMouseMove'; payload: React.MouseEvent }
   | { type: 'onMouseUp'; payload: React.MouseEvent }
-  | { type: 'selectRoi'; payload: React.MouseEvent }
   | {
       type: 'selectBoxAnnotation';
       payload: { id: string; event: React.MouseEvent };
@@ -70,45 +50,14 @@ export type RoiReducerAction =
 const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      case 'setAction':
-        draft.action = action.payload;
-        break;
-
-      case 'setDelta':
-        draft.delta = action.payload;
-        break;
-
-      case 'setRoiID':
-        draft.roiID = action.payload;
-        break;
-
-      case 'setRoiState':
-        Object.assign(draft, action.payload);
-        break;
-
-      case 'setPosition':
-        draft.startPoint = action.payload.startPoint;
-        draft.endPoint = action.payload.endPoint;
-        break;
-
-      case 'setStartPoint':
-        draft.startPoint = action.payload;
-        break;
-
-      case 'setEndPoint':
-        draft.endPoint = action.payload;
+      case 'setComponentPosition':
+        draft.origin = action.payload.origin;
+        draft.width = action.payload.width;
+        draft.height = action.payload.height;
         break;
 
       case 'setRatio':
         draft.ratio = action.payload;
-        break;
-
-      case 'setOffset':
-        draft.offset = action.payload;
-        break;
-
-      case 'setPointerIndex':
-        draft.pointerIndex = action.payload;
         break;
 
       case 'removeRoi': {
@@ -120,11 +69,6 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
         return;
       }
 
-      case 'addRoi': {
-        addObject(draft, action.payload);
-        break;
-      }
-
       case 'addRois': {
         for (const roi of action.payload) {
           draft.rois.push({ id: crypto.randomUUID(), ...roi });
@@ -132,32 +76,12 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
         break;
       }
 
-      case 'updateRectangle': {
-        const { startPoint, endPoint, ratio, rois, roiID } = draft;
-        const object = rois.find((obj) => obj.id === roiID);
-        if (object) {
-          object.rectangle = getRectangle(
-            getRectangleFromPoints(startPoint as Point, endPoint as Point),
-            ratio,
-          );
-        }
-        break;
-      }
-
-      case 'dragRectangle': {
-        const { point } = action.payload;
-        const { startPoint, endPoint } = dragRectangle(draft, point);
-        draft.startPoint = startPoint;
-        draft.endPoint = endPoint;
-        break;
-      }
-
-      case 'updatePosition': {
+      case 'resizeRoi': {
         const { ratio, rois, roiID } = draft;
-        const object = rois.find((obj) => obj.id === roiID);
-        if (!object) return;
+        const roi = rois.find((obj) => obj.id === roiID);
+        if (!roi) return;
         const points = getReferencePointers(
-          object.rectangle,
+          roi.rectangle,
           ratio,
           action.payload,
         );
@@ -171,13 +95,13 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
       case 'selectBoxAnnotation': {
         const { id, event } = action.payload;
         draft.roiID = id;
-        const { ratio, offset, rois, roiID } = draft;
+        const { ratio, origin, rois, roiID } = draft;
         const object = rois.find((obj) => obj.id === roiID);
         if (!object) return;
         const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
         const delta = {
-          dx: event.clientX - scaledRectangle.origin.column - offset.left,
-          dy: event.clientY - scaledRectangle.origin.row - offset.top,
+          dx: event.clientX - scaledRectangle.origin.column - origin.column,
+          dy: event.clientY - scaledRectangle.origin.row - origin.row,
         };
         const { startPoint, endPoint } = dragRectangle(draft, {
           x: scaledRectangle.origin.column + delta.dx,
@@ -215,17 +139,13 @@ type RoiStateProps = { roiState: RoiStateType };
 
 export const RoiContext = createContext<RoiStateProps>({} as RoiStateProps);
 
-type RoiDispatchProps = {
-  roiDispatch: Dispatch<RoiReducerAction>;
-};
+type RoiDispatchProps = { roiDispatch: Dispatch<RoiReducerAction> };
 
 export const RoiDispatchContext = createContext<RoiDispatchProps>(
   {} as RoiDispatchProps,
 );
 
-type ObjectProviderProps = {
-  children: ReactNode;
-};
+type ObjectProviderProps = { children: ReactNode };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export let sharedRois: RoiObject[] = [];
