@@ -1,9 +1,10 @@
 import { Rectangle } from './Rectangle';
 
 export type RoiObject = {
-  id: string | number;
+  id: string;
   rectangle: Rectangle;
   meta?: {
+    type?: string;
     label?: string;
     rgba?: number[];
   };

@@ -1,4 +1,3 @@
-import { Point } from '../types/Point';
 import { RoiStateType } from '../types/RoiStateType';
 
 import { getRectangle } from './getRectangle';
@@ -9,7 +8,7 @@ export function addObject(draft: RoiStateType, id: string) {
   draft.rois.push({
     id,
     rectangle: getRectangle(
-      getRectangleFromPoints(startPoint as Point, endPoint as Point),
+      getRectangleFromPoints(startPoint, endPoint),
       ratio,
     ),
   });
