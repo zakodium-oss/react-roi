@@ -1,4 +1,4 @@
-import { RoiActions } from '../../context/RoiContext';
+import { Modes } from '../../context/RoiContext';
 import { RoiStateType } from '../../types/RoiStateType';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
@@ -8,12 +8,12 @@ export function onMouseMove(draft: RoiStateType, event: React.MouseEvent) {
   const { mode, selectedRoi, rois } = draft;
   const currentRoi = rois.find((roi) => roi.id === selectedRoi);
   switch (mode) {
-    case RoiActions.DRAW:
+    case Modes.DRAW:
       if (draft.startPoint) {
         draft.endPoint = point;
       }
       break;
-    case RoiActions.SELECT:
+    case Modes.SELECT:
       if (currentRoi?.isResizing) {
         const point = getMousePosition(draft, event);
         draft.endPoint = point;

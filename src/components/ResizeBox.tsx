@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import {
   RoiAction,
-  RoiActions,
+  Modes,
   RoiContext,
   RoiDispatchContext,
 } from '../context/RoiContext';
@@ -81,7 +81,7 @@ function selectRectangle(
 ) {
   if (startPoint && endPoint) {
     setRectangle(getRectangleFromPoints(startPoint, endPoint));
-  } else if (roi && action === RoiActions.SELECT) {
+  } else if (roi && action === Modes.SELECT) {
     setRectangle(getScaledRectangle(roi, ratio));
   } else {
     setRectangle(undefined);

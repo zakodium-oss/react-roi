@@ -1,4 +1,4 @@
-import { RoiActions } from '../../context/RoiContext';
+import { Modes } from '../../context/RoiContext';
 import { RoiStateType } from '../../types/RoiStateType';
 import { addObject } from '../../utilities/addObject';
 import { checkRectangle } from '../../utilities/checkRectangle';
@@ -10,7 +10,7 @@ export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
   const { mode, selectedRoi, rois } = draft;
   const currentRoi = rois.find((roi) => roi.id === selectedRoi);
   switch (mode) {
-    case RoiActions.DRAW: {
+    case Modes.DRAW: {
       if (checkRectangle(draft, point)) {
         addObject(draft, crypto.randomUUID());
       } else {
@@ -19,11 +19,10 @@ export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
       break;
     }
 
-    case RoiActions.SELECT: {
+    case Modes.SELECT: {
       if (currentRoi?.isMoving || currentRoi?.isResizing) {
         draft.selectedRoi = updateObject(draft);
       }
-      draft.pointerIndex = undefined;
       break;
     }
     default:

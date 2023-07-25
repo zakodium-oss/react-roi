@@ -78,7 +78,6 @@ export function BoxAnnotation({
             payload: { id, event },
           });
         }
-        event.stopPropagation();
       }}
     />
   );

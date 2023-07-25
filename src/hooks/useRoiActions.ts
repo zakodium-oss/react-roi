@@ -4,14 +4,14 @@ import { RoiDispatchContext } from '../context/RoiContext';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
 
-interface RoiActionsType<T> {
+interface ModesType<T> {
   createRoi: (roi: Partial<CommittedRoi<T>> & { id: string }) => void;
   updateRoi: (selectedRoi: string, updatedData: Partial<Roi<T>>) => void;
   removeRoi: (selectedRoi: string, updatedData: Partial<Roi<T>>) => void;
   setMode: (mode: 'select' | 'draw') => void;
 }
 
-export function useRoiActions<T = unknown>(): RoiActionsType<T> {
+export function useRoiActions<T = unknown>(): ModesType<T> {
   const { roiDispatch } = useContext(RoiDispatchContext);
   return {
     createRoi: (roi: Partial<CommittedRoi<T>> & { id: string }) => roiDispatch({ type: 'addRoi', payload: roi }),

@@ -19,16 +19,15 @@ import { dragRectangle } from '../utilities/dragRectangle';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
-export const RoiActions = Object.freeze({
+export const Modes = Object.freeze({
   SELECT: 'select',
   DRAW: 'draw',
-  NONE: 'none',
 });
 
-export type RoiAction = (typeof RoiActions)[keyof typeof RoiActions];
+export type RoiAction = (typeof Modes)[keyof typeof Modes];
 
 const roiInitialState: RoiStateType = {
-  mode: RoiActions.SELECT,
+  mode: Modes.SELECT,
   startPoint: undefined,
   endPoint: undefined,
   ratio: { x: 1, y: 1 },
@@ -150,6 +149,11 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
 
       case 'selectBoxAnnotation': {
         const { id, event } = action.payload;
+        if (draft.mode === 'draw') {
+          draft.selectedRoi = undefined;
+          return;
+        }
+        event.stopPropagation();
         const { ratio, x, y, rois } = draft;
         draft.selectedRoi = id;
         const index = rois.findIndex((roi) => roi.id === id);
