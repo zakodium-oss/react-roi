@@ -1,4 +1,4 @@
-export type Delta = {
+export interface Delta {
   dx: number;
   dy: number;
-};
+}

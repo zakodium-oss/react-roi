@@ -20,7 +20,7 @@ image.drawRectangle({
   out: image,
 });
 
-const initialRois: CommittedRoi<RoiData>[] = [
+const initialRois: Array<CommittedRoi<RoiData>> = [
   {
     id: crypto.randomUUID(),
     x: 152,
@@ -185,7 +185,7 @@ function Toolbar() {
 
 function ImageWithRois() {
   // The type of rois is Roi<RoiData>[]
-  const { rois } = useRoiState<RoiData>() as { rois: Roi<RoiData>[] };
+  const { rois } = useRoiState<RoiData>() as { rois: Array<Roi<RoiData>> };
   return (
     // This component renders the target image and all the ROIs
     // it throws if rendered without an explicit provider on top of it

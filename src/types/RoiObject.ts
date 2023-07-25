@@ -1,6 +1,6 @@
 import { Rectangle } from './Rectangle';
 
-export type RoiObject = {
+export interface RoiObject {
   id: string;
   rectangle: Rectangle;
   meta?: {
@@ -8,4 +8,4 @@ export type RoiObject = {
     label?: string;
     rgba?: number[];
   };
-};
+}

@@ -191,20 +191,24 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
   });
 };
 
-export type RoiStateProps<T = any> = { roiState: RoiStateType<T> };
+export interface RoiStateProps<T = any> {
+  roiState: RoiStateType<T>;
+}
 
 export const RoiContext = createContext<RoiStateProps>({} as RoiStateProps);
 
-type RoiDispatchProps = { roiDispatch: Dispatch<RoiReducerAction> };
+interface RoiDispatchProps {
+  roiDispatch: Dispatch<RoiReducerAction>;
+}
 
 export const RoiDispatchContext = createContext<RoiDispatchProps>(
   {} as RoiDispatchProps,
 );
 
-type ObjectProviderProps<T> = {
+interface ObjectProviderProps<T> {
   children: ReactNode;
-  initialRois?: CommittedRoi<T>[];
-};
+  initialRois?: Array<CommittedRoi<T>>;
+}
 
 export function RoiProvider<T>({
   children,

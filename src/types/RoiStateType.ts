@@ -6,7 +6,7 @@ import { Point } from './Point';
 import { Ratio } from './Ratio';
 import { Roi } from './Roi';
 
-export type RoiStateType<T = unknown> = {
+export interface RoiStateType<T = unknown> {
   /**
  * @param mode Current mode
  */
@@ -70,5 +70,5 @@ export type RoiStateType<T = unknown> = {
   /**
    * @param rois
    */
-  rois: Roi<T>[];
-};
+  rois: Array<Roi<T>>;
+}

@@ -3,11 +3,11 @@ import { useContext, CSSProperties } from 'react';
 import { RoiDispatchContext } from '../context/RoiContext';
 import { Roi } from '../types/Roi';
 
-type RoiBoxProps = {
+interface RoiBoxProps {
   id?: string;
   roi: Roi;
   boxStyle?: CSSProperties;
-};
+}
 
 export function RoiBox({ roi, boxStyle }: RoiBoxProps): JSX.Element {
   const { id, height, width, x, y, isResizing, isMoving, style, editStyle } =

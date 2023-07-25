@@ -5,10 +5,10 @@ import { RoiDispatchContext } from '../context/RoiContext';
 
 import { ContainerComponent } from './ContainerComponent';
 
-type RoiComponentProps = {
+interface RoiComponentProps {
   children: JSX.Element[];
   target?: JSX.Element;
-};
+}
 
 export function RoiContainer({ children, target }: RoiComponentProps) {
   // console.log('-------------- roi container');
