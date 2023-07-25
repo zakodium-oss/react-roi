@@ -18,14 +18,13 @@ export function dragRectangle(
   startPoint: Point;
   endPoint: Point;
 } {
-  const { delta, ratio, rois, roiID, startPoint, endPoint, width, height } =
+  const { delta, ratio, selectedRoi, startPoint, endPoint, width, height, rois } =
     draft;
-
-  const object = rois.find((obj) => obj.id === roiID);
-  if (!delta || !object) {
+  const currentRoi = rois.find((roi) => roi.id === selectedRoi);
+  if (!delta || !selectedRoi) {
     return { startPoint, endPoint };
   }
-  const scaledRectangle = getScaledRectangle(object.rectangle, ratio);
+  const scaledRectangle = getScaledRectangle(currentRoi, ratio);
   const minX = Math.max(origin.x - delta.dx, 0);
   const minY = Math.max(origin.y - delta.dy, 0);
   const maxX = Math.min(minX, width - scaledRectangle.width);

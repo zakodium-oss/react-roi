@@ -5,12 +5,26 @@ import { getRectangleFromPoints } from './getRectangleFromPoints';
 
 export function addObject(draft: RoiStateType, id: string) {
   const { startPoint, endPoint, ratio } = draft;
+  const rectangle = getRectangle(
+    getRectangleFromPoints(startPoint, endPoint),
+    ratio,
+  )
   draft.rois.push({
     id,
-    rectangle: getRectangle(
-      getRectangleFromPoints(startPoint, endPoint),
-      ratio,
-    ),
+    x: rectangle.x,
+    y: rectangle.y,
+    width: rectangle.width,
+    height: rectangle.height,
+    isMoving: false,
+    isResizing: false,
+    style: {
+      backgroundColor: 'black',
+      opacity: 1,
+    },
+    editStyle: {
+      backgroundColor: 'black',
+      opacity: 0.5,
+    },
   });
-  draft.roiID = id;
+  draft.selectedRoi = draft.rois[draft.rois.length - 1].id
 }

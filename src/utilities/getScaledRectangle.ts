@@ -1,5 +1,6 @@
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
+import { Roi } from '../types/Roi';
 
 /**
  * This function returns a rectangle that is scaled to the size of the SVG, based on a rectangle that is scaled to the size of the image.
@@ -10,29 +11,53 @@ import { Rectangle } from '../types/Rectangle';
  */
 
 export function getScaledRectangle(
-  rectangle: Rectangle,
+  roi: Roi,
   ratio: Ratio,
 ): Rectangle {
-  const result: Rectangle = {
-    origin: { row: 0, column: 0 },
-    width: 0,
-    height: 0,
-  };
+  const result: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
 
-  if (rectangle.origin.column < rectangle.origin.column + rectangle.width) {
-    result.origin.column = rectangle.origin.column / ratio.x;
-    result.width = rectangle.width / ratio.x;
+  const { x, y, width, height } = roi;
+  if (x < x + width) {
+    result.x = x / ratio.x;
+    result.width = width / ratio.x;
   } else {
-    result.origin.column =
-      (rectangle.origin.column + rectangle.width) / ratio.x;
-    result.width = rectangle.width / ratio.x;
+    result.x = (x + width) / ratio.x;
+    result.width = width / ratio.x;
   }
-  if (rectangle.origin.row < rectangle.origin.row + rectangle.height) {
-    result.origin.row = rectangle.origin.row / ratio.y;
-    result.height = rectangle.height / ratio.y;
+  if (y < y + height) {
+    result.y = y / ratio.y;
+    result.height = height / ratio.y;
   } else {
-    result.origin.row = (rectangle.origin.row + rectangle.height) / ratio.y;
-    result.height = rectangle.height / ratio.y;
+    result.y = (y + height) / ratio.y;
+    result.height = height / ratio.y;
   }
   return result;
 }
+
+// export function getScaledRectangle(
+//   rectangle: Rectangle,
+//   ratio: Ratio,
+// ): Rectangle {
+//   const result: Rectangle = {
+//     origin: { row: 0, column: 0 },
+//     width: 0,
+//     height: 0,
+//   };
+
+//   if (rectangle.origin.column < rectangle.origin.column + rectangle.width) {
+//     result.origin.column = rectangle.origin.column / ratio.x;
+//     result.width = rectangle.width / ratio.x;
+//   } else {
+//     result.origin.column =
+//       (rectangle.origin.column + rectangle.width) / ratio.x;
+//     result.width = rectangle.width / ratio.x;
+//   }
+//   if (rectangle.origin.row < rectangle.origin.row + rectangle.height) {
+//     result.origin.row = rectangle.origin.row / ratio.y;
+//     result.height = rectangle.height / ratio.y;
+//   } else {
+//     result.origin.row = (rectangle.origin.row + rectangle.height) / ratio.y;
+//     result.height = rectangle.height / ratio.y;
+//   }
+//   return result;
+// }

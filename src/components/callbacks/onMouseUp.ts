@@ -2,41 +2,37 @@ import { RoiActions } from '../../context/RoiContext';
 import { RoiStateType } from '../../types/RoiStateType';
 import { addObject } from '../../utilities/addObject';
 import { checkRectangle } from '../../utilities/checkRectangle';
-import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { updateObject } from '../../utilities/updateObject';
 
 export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
-  switch (draft.action) {
-    case RoiActions.DRAG: {
-      const { startPoint, endPoint } = dragRectangle(draft, point);
-      draft.startPoint = startPoint;
-      draft.endPoint = endPoint;
-      draft.roiID = updateObject(draft);
-      break;
-    }
-
+  const { mode, selectedRoi, rois } = draft;
+  const currentRoi = rois.find((roi) => roi.id === selectedRoi);
+  switch (mode) {
     case RoiActions.DRAW: {
       if (checkRectangle(draft, point)) {
         addObject(draft, crypto.randomUUID());
       } else {
-        draft.roiID = undefined;
+        draft.selectedRoi = undefined;
       }
       break;
     }
 
-    case RoiActions.RESIZE: {
-      draft.roiID = updateObject(draft);
+    case RoiActions.SELECT: {
+      if (currentRoi?.isMoving || currentRoi?.isResizing) {
+        draft.selectedRoi = updateObject(draft);
+      }
       draft.pointerIndex = undefined;
       break;
     }
-    case RoiActions.SLEEP:
-      break;
     default:
       break;
   }
-  draft.action = RoiActions.SLEEP;
+  if (currentRoi) {
+    currentRoi.isMoving = false;
+    currentRoi.isResizing = false;
+  }
   draft.startPoint = undefined;
   draft.endPoint = undefined;
   draft.delta = undefined;

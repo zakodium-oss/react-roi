@@ -1,8 +1,6 @@
 export type Rectangle = {
+  x: number,
+  y: number,
   height: number;
-  origin: {
-    row: number;
-    column: number;
-  };
   width: number;
 };

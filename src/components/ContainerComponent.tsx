@@ -1,20 +1,19 @@
-import { useContext, useEffect } from 'react';
+import { cloneElement, useContext, useEffect, useRef } from 'react';
 
-import {
-  RoiActions,
-  RoiContext,
-  RoiDispatchContext,
-} from '../context/RoiContext';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { RoiDispatchContext } from '../context/RoiContext';
 
-import { BoxAnnotation } from './BoxAnnotation';
 import { ResizeBox } from './ResizeBox';
 
-export function ContainerComponent({ element }: { element: JSX.Element }) {
+interface ContainerProps {
+  target: JSX.Element;
+  children: JSX.Element[];
+}
+
+export function ContainerComponent({ target, children }: ContainerProps) {
   const { roiDispatch } = useContext(RoiDispatchContext);
-  const { roiState } = useContext(RoiContext);
-  // @ts-expect-error i know
-  const current = element.ref.current as HTMLElement;
+  const elementRef = useRef<HTMLElement | null>(null);
+  const element = cloneElement(target, { ref: elementRef });
+  const current = elementRef.current;
   const { width, height, top, left } = current
     ? current.getBoundingClientRect()
     : { width: 0, height: 0, top: 0, left: 0 };
@@ -22,31 +21,18 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
     roiDispatch({
       type: 'setComponentPosition',
       payload: {
-        origin: { column: left, row: top },
-        width,
-        height,
+        position: {
+          x: left,
+          y: top,
+          width,
+          height,
+        },
+        ratio: { x: 1, y: 1 },
       },
     });
   }, [width, height, top, left, roiDispatch]);
   const cursorSize = 3;
   const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
-  const annotations = roiState.rois.map((obj) => {
-    if (
-      obj.id === roiState.roiID &&
-      (roiState.action === RoiActions.DRAG ||
-        roiState.action === RoiActions.RESIZE)
-    ) {
-      return null;
-    }
-    return (
-      <BoxAnnotation
-        id={obj.id}
-        key={obj.id}
-        rectangle={getScaledRectangle(obj.rectangle, roiState.ratio)}
-        options={obj.meta}
-      />
-    );
-  });
   return (
     <div
       id="container-component"
@@ -62,12 +48,11 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
       onMouseMove={(event) =>
         roiDispatch({ type: 'onMouseMove', payload: event })
       }
-      onMouseDown={(event) =>
-        roiDispatch({ type: 'onMouseDown', payload: event })
-      }
+      onMouseDown={(event) => {
+        roiDispatch({ type: 'onMouseDown', payload: event });
+      }}
     >
-      {element}
-      {annotations !== undefined ? (
+      {children !== undefined ? (
         <svg
           style={{
             position: 'absolute',
@@ -78,9 +63,10 @@ export function ContainerComponent({ element }: { element: JSX.Element }) {
           }}
           viewBox={`0 0 ${width} ${height}`}
         >
-          {[...annotations, resizeBox]}
+          {[...children, resizeBox]}
         </svg>
       ) : null}
+      {element}
     </div>
   );
 }

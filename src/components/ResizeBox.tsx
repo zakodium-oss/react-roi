@@ -8,40 +8,48 @@ import {
 } from '../context/RoiContext';
 import { Point, Ratio } from '../types';
 import { Rectangle } from '../types/Rectangle';
-import { RoiObject } from '../types/RoiObject';
+import { Roi } from '../types/Roi';
 import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
-import { BoxAnnotation } from './BoxAnnotation';
+import { BoxAnnotation, RoiBox } from './RoiBox';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { roiState } = useContext(RoiContext);
   const { roiDispatch } = useContext(RoiDispatchContext);
-  const { ratio, roiID, action, startPoint, endPoint, rois } = roiState;
+  const { ratio, selectedRoi, mode, startPoint, endPoint, rois } = roiState;
   const [rectangle, setRectangle] = useState<Rectangle | undefined>(undefined);
-  const [roi, setRoi] = useState<RoiObject | undefined>(undefined);
+  const currentRoi = rois.find((roi) => roi.id === selectedRoi);
   useEffect(() => {
-    const roi = rois.find((obj) => obj.id === roiID);
-    selectRoi(roi, action, setRoi);
-    selectRectangle(roi, ratio, startPoint, endPoint, action, setRectangle);
-  }, [roiID, endPoint, rois, startPoint, action, ratio]);
+    selectRectangle(
+      currentRoi,
+      ratio,
+      startPoint,
+      endPoint,
+      mode,
+      setRectangle,
+    );
+  }, [endPoint, rois, startPoint, mode, ratio, currentRoi]);
 
-  const isActive = action === RoiActions.DRAG || action === RoiActions.RESIZE;
+  const isActive = currentRoi?.isMoving || currentRoi?.isResizing;
   return rectangle ? (
     <>
-      {roi ? (
-        <BoxAnnotation
-          id={roi.id}
-          rectangle={rectangle}
-          options={{
-            ...roi.meta,
-            label: isActive ? roi.meta?.label : '',
-            rgba: isActive ? roi.meta?.rgba : [0, 0, 0, 0],
-          }}
+      {selectedRoi ? (
+        <RoiBox
+          id={selectedRoi}
+          roi={currentRoi}
+          boxStyle={isActive ? currentRoi.editStyle : currentRoi.style}
         />
       ) : (
-        <BoxAnnotation id="resize-box" rectangle={rectangle} />
+        <BoxAnnotation
+          id={crypto.randomUUID()}
+          x={rectangle.x}
+          y={rectangle.y}
+          width={rectangle.width}
+          height={rectangle.height}
+          style={{ fill: 'blue', opacity: 0.5 }}
+        />
       )}
       {getPointers(rectangle).map((pointer) => (
         <rect
@@ -53,29 +61,18 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           width={cursorSize * 2}
           height={cursorSize * 2}
           style={{ fill: '#44aaff', stroke: 'black' }}
-          onMouseDown={() =>
-            roiDispatch({ type: 'resizeRoi', payload: pointer.position })
-          }
+          onMouseDown={(event) => {
+            event.stopPropagation();
+            roiDispatch({ type: 'resizeRoi', payload: pointer.position });
+          }}
         />
       ))}
     </>
   ) : null;
 }
 
-function selectRoi(
-  roi: RoiObject,
-  action: RoiAction,
-  setRoi: React.Dispatch<RoiObject>,
-) {
-  if ((roi && action !== RoiActions.SLEEP) || action !== RoiActions.DRAG) {
-    setRoi(roi);
-  } else {
-    setRoi(undefined);
-  }
-}
-
 function selectRectangle(
-  roi: RoiObject,
+  roi: Roi,
   ratio: Ratio,
   startPoint: Point,
   endPoint: Point,
@@ -84,11 +81,8 @@ function selectRectangle(
 ) {
   if (startPoint && endPoint) {
     setRectangle(getRectangleFromPoints(startPoint, endPoint));
-  } else if (
-    roi?.rectangle &&
-    (action === RoiActions.SLEEP || action === RoiActions.DRAG)
-  ) {
-    setRectangle(getScaledRectangle(roi.rectangle, ratio));
+  } else if (roi && action === RoiActions.SELECT) {
+    setRectangle(getScaledRectangle(roi, ratio));
   } else {
     setRectangle(undefined);
   }

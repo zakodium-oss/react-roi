@@ -1,15 +1,16 @@
+
 import { RoiAction } from '../context/RoiContext';
 
 import { Delta } from './Delta';
 import { Point } from './Point';
 import { Ratio } from './Ratio';
-import { RoiObject } from './RoiObject';
+import { Roi } from './Roi';
 
-export type RoiStateType = {
+export type RoiStateType<T = unknown> = {
   /**
-   * @param action Current action
-   */
-  action: RoiAction;
+ * @param mode Current mode
+ */
+  mode: RoiAction;
 
   /**
    * @param delta offset from the point where the click was made to the top-left corner of the rectangle
@@ -17,9 +18,9 @@ export type RoiStateType = {
   delta?: Delta;
 
   /**
-   * @param roiID Identification of the selected object
+   * @param selectedRoi Identification of the selected object
    */
-  roiID?: string;
+  selectedRoi?: string;
 
   /**
    * position object with the startPoint (top-left) and endPoint (bottom-right) of the rectangle
@@ -44,7 +45,12 @@ export type RoiStateType = {
   /**
    * @param origin of the SVG relative to the entire window
    */
-  origin: { row: number; column: number };
+  x: number;
+
+  /**
+   * @param origin of the SVG relative to the entire window
+   */
+  y: number;
 
   /**
    * @param pointerIndex offset index of the selected pointer
@@ -64,6 +70,5 @@ export type RoiStateType = {
   /**
    * @param rois
    */
-
-  rois: RoiObject[];
+  rois: Roi<T>[];
 };

@@ -1,3 +1,4 @@
+import { CommittedRoi } from '../types/CommittedRoi';
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
 
@@ -9,38 +10,33 @@ import { Rectangle } from '../types/Rectangle';
  * @returns
  */
 
-export function getRectangle(rectangle: Rectangle, ratio: Ratio): Rectangle {
-  const result: Rectangle = {
-    origin: { row: 0, column: 0 },
-    width: 0,
-    height: 0,
-  };
+export function getRectangle(rectangle: Rectangle, ratio: Ratio): Partial<CommittedRoi> {
+  const result: Partial<CommittedRoi> = { x: 0, y: 0, width: 0, height: 0 };
 
   const p0 = {
-    x: rectangle.origin.column,
-    y: rectangle.origin.row,
+    x: rectangle.x,
+    y: rectangle.y,
   };
 
   const p1 = {
-    x: rectangle.origin.column + rectangle.width,
-    y: rectangle.origin.row + rectangle.height,
+    x: rectangle.x + rectangle.width,
+    y: rectangle.y + rectangle.height,
   };
 
   if (p0.x < p1.x) {
-    result.origin.column = Math.ceil(p0.x * ratio.x);
+    result.x = Math.ceil(p0.x * ratio.x);
     result.width = Math.ceil((p1.x - p0.x) * ratio.x);
   } else {
-    result.origin.column = Math.ceil(p1.x * ratio.x);
+    result.x = Math.ceil(p1.x * ratio.x);
     result.width = Math.ceil((p0.x - p1.x) * ratio.x);
   }
 
   if (p0.y < p1.y) {
-    result.origin.row = Math.ceil(p0.y * ratio.y);
+    result.y = Math.ceil(p0.y * ratio.y);
     result.height = Math.ceil(p1.y - p0.y) * ratio.y;
   } else {
-    result.origin.row = Math.ceil(p1.y * ratio.y);
+    result.y = Math.ceil(p1.y * ratio.y);
     result.height = Math.ceil((p0.y - p1.y) * ratio.y);
   }
-
   return result;
 }
