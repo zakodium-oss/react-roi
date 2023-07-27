@@ -3,7 +3,6 @@ import { Rectangle } from '../types/Rectangle';
 
 export function getRectangleFromPoints(p0: Point, p1: Point): Rectangle {
   const result: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
-
   if (p0.x < p1.x) {
     result.x = p0.x;
     result.width = p1.x - p0.x;

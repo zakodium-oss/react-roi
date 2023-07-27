@@ -33,31 +33,3 @@ export function getScaledRectangle(
   }
   return result;
 }
-
-// export function getScaledRectangle(
-//   rectangle: Rectangle,
-//   ratio: Ratio,
-// ): Rectangle {
-//   const result: Rectangle = {
-//     origin: { row: 0, column: 0 },
-//     width: 0,
-//     height: 0,
-//   };
-
-//   if (rectangle.origin.column < rectangle.origin.column + rectangle.width) {
-//     result.origin.column = rectangle.origin.column / ratio.x;
-//     result.width = rectangle.width / ratio.x;
-//   } else {
-//     result.origin.column =
-//       (rectangle.origin.column + rectangle.width) / ratio.x;
-//     result.width = rectangle.width / ratio.x;
-//   }
-//   if (rectangle.origin.row < rectangle.origin.row + rectangle.height) {
-//     result.origin.row = rectangle.origin.row / ratio.y;
-//     result.height = rectangle.height / ratio.y;
-//   } else {
-//     result.origin.row = (rectangle.origin.row + rectangle.height) / ratio.y;
-//     result.height = rectangle.height / ratio.y;
-//   }
-//   return result;
-// }

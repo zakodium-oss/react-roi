@@ -11,7 +11,6 @@ interface RoiComponentProps {
 }
 
 export function RoiContainer({ children, target }: RoiComponentProps) {
-  // console.log('-------------- roi container');
   const { roiDispatch } = useContext(RoiDispatchContext);
   useKbsGlobal([
     {

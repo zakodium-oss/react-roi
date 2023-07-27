@@ -52,7 +52,7 @@ export type RoiReducerAction =
   | { type: 'setRatio'; payload: Ratio }
   | { type: 'addRoi'; payload: Partial<CommittedRoi> & { id: string } }
   | { type: 'updateRoi'; payload: { id: string; updatedData: Partial<Roi> } }
-  | { type: 'removeRoi'; payload: string | undefined }
+  | { type: 'removeRoi'; payload?: string }
   | { type: 'isMoving'; payload: boolean }
   | { type: 'resizeRoi'; payload: number }
   | { type: 'onMouseDown'; payload: React.MouseEvent }
