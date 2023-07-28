@@ -1,17 +1,18 @@
 import { useContext, CSSProperties } from 'react';
 
-import { RoiDispatchContext } from '../context/RoiContext';
+import { RoiContext, RoiDispatchContext } from '../context/RoiContext';
 import { Roi } from '../types/Roi';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 interface RoiBoxProps {
   id?: string;
   roi: Roi;
-  boxStyle?: CSSProperties;
 }
 
-export function RoiBox({ roi, boxStyle }: RoiBoxProps): JSX.Element {
-  const { id, height, width, x, y, isResizing, isMoving, style, editStyle } =
-    roi;
+export function RoiBox({ roi }: RoiBoxProps): JSX.Element {
+  const { roiState } = useContext(RoiContext);
+  const { id, isResizing, isMoving, style } = roi;
+  const { x, y, width, height } = getScaledRectangle(roi, roiState.ratio);
   return (
     <>
       {roi.label && (
@@ -38,7 +39,7 @@ export function RoiBox({ roi, boxStyle }: RoiBoxProps): JSX.Element {
         y={y}
         width={width}
         height={height}
-        style={boxStyle ? boxStyle : isMoving || isResizing ? editStyle : style}
+        style={isMoving || isResizing ? { opacity: 0 } : style}
       />
     </>
   );

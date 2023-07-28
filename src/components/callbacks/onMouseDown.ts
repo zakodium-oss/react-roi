@@ -6,6 +6,7 @@ export function onMouseDown(draft: RoiStateType, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
   switch (draft.mode) {
     case Modes.DRAW:
+      draft.selectedRoi = undefined;
       draft.startPoint = point;
       draft.endPoint = point;
       break;

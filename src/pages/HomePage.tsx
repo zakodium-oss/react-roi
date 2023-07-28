@@ -1,4 +1,5 @@
-import { Image } from 'image-js';
+import { Image, encode } from 'image-js';
+import { useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { RoiBox } from '../components/RoiBox';
@@ -13,12 +14,6 @@ import { Roi } from '../types/Roi';
 interface RoiData {
   blurMethod: 'pixelate' | 'blur' | 'fill';
 }
-
-const image = new Image(800, 600).fill(255);
-image.drawRectangle({
-  strokeColor: [0, 0, 0, 1],
-  out: image,
-});
 
 const initialRois: Array<CommittedRoi<RoiData>> = [
   {
@@ -48,7 +43,7 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
       opacity: 0.5,
     },
     editStyle: {
-      fill: 'blue',
+      fill: 'green',
       opacity: 0.5,
     },
     data: { blurMethod: 'fill' },
@@ -67,6 +62,7 @@ export function HomePage() {
 
 function MyComponent() {
   const state = useRoiState<RoiData>();
+  const [editing, setEditing] = useState<boolean>(true);
   return (
     <>
       <div
@@ -76,9 +72,16 @@ function MyComponent() {
           alignItems: 'center',
         }}
       >
-        <TransformedImage />
-        <ImageWithRois />
+        <button
+          type="button"
+          onClick={() => {
+            setEditing(!editing);
+          }}
+        >
+          {`Go to ${editing ? 'result' : 'edit'}`}
+        </button>
         <Toolbar />
+        {editing ? <ImageWithRois /> : <TransformedImage />}
       </div>
       <ObjectInspector expandLevel={2} data={state} />
     </>
@@ -88,7 +91,6 @@ function MyComponent() {
 function Toolbar() {
   const { mode, selectedRoi } = useRoiState<RoiData>();
   const { setMode, createRoi, updateRoi, removeRoi } = useRoiActions<RoiData>();
-
   return (
     <div
       style={{
@@ -186,21 +188,20 @@ function Toolbar() {
 function ImageWithRois() {
   // The type of rois is Roi<RoiData>[]
   const { rois } = useRoiState<RoiData>() as { rois: Array<Roi<RoiData>> };
+  const image = new Image(1000, 800).fill(255);
+  image.drawRectangle({ out: image });
+  image.drawCircle({ column: 500, row: 400 }, 400, { out: image });
+  const buffer = encode(image);
+  const blob = new Blob([buffer], { type: 'image/png' });
+  const url = URL.createObjectURL(blob);
   return (
     // This component renders the target image and all the ROIs
     // it throws if rendered without an explicit provider on top of it
     // And handles the mouse interactions to edit the rois
     // It's possible to disable edition interactions by setting the readOnly prop to true
     <RoiContainer
-      target={
-        <div
-          style={{
-            height: 600,
-            width: 800,
-            border: '1px solid black',
-          }}
-        />
-      }
+      target={<img src={url} style={{ width: 1000, height: 800 }} />}
+      options={{ containerWidth: 800, containerHeight: 500 }}
     >
       {rois.map((roi) => (
         <RoiBox key={roi.id} roi={roi} />
@@ -214,10 +215,23 @@ function TransformedImage() {
   // of an roi is finished (so when the user releases the mouse after moving or resizing)
   // The shape of the roi objects are the same which need to be fed as initial values to the RoiProvider
   // The type of commitedRois is CommitedRoi<RoiData>[]
-  // const { commitedRois } = useRoiState<RoiData>();
-
+  const image = new Image(1000, 800).fill(255);
+  image.drawRectangle({ out: image });
+  image.drawCircle({ column: 500, row: 400 }, 400, { out: image });
+  const { rois } = useRoiState<RoiData>();
+  for (const roi of rois) {
+    const { x, y, width, height } = roi;
+    image.drawRectangle({
+      origin: { row: y, column: x },
+      width,
+      height,
+      out: image,
+    });
+  }
+  const buffer = encode(image);
+  const blob = new Blob([buffer], { type: 'image/png' });
+  const url = URL.createObjectURL(blob);
   // e.g. create the pseudonymized image in an effect
-  return <img src="" />;
-
+  return <img src={url} style={{ width: 1000, height: 800 }} />;
   // the result of this hook can also be used to send the ROIs to the backend
 }

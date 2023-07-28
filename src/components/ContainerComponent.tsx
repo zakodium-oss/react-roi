@@ -7,16 +7,31 @@ import { ResizeBox } from './ResizeBox';
 interface ContainerProps {
   target: JSX.Element;
   children: JSX.Element[];
+  options?: { containerWidth?: number; containerHeight?: number };
 }
 
-export function ContainerComponent({ target, children }: ContainerProps) {
+export function ContainerComponent({
+  target,
+  children,
+  options,
+}: ContainerProps) {
   const { roiDispatch } = useContext(RoiDispatchContext);
+  const { containerWidth, containerHeight } = options;
   const elementRef = useRef<HTMLElement | null>(null);
-  const element = cloneElement(target, { ref: elementRef });
   const current = elementRef.current;
-  const { width, height, top, left } = current
+  const { width = 1, height = 1 } = target.props.style;
+  const { top, left } = current
     ? current.getBoundingClientRect()
-    : { width: 0, height: 0, top: 0, left: 0 };
+    : { top: 0, left: 0 };
+  const element = cloneElement(target, {
+    ref: elementRef,
+    style: {
+      ...target.props.style,
+      width: containerWidth,
+      height: containerHeight,
+    },
+  });
+
   useEffect(() => {
     roiDispatch({
       type: 'setComponentPosition',
@@ -27,10 +42,22 @@ export function ContainerComponent({ target, children }: ContainerProps) {
           width,
           height,
         },
-        ratio: { x: 1, y: 1 },
+        ratio: {
+          x: width / containerWidth,
+          y: height / containerHeight,
+        },
       },
     });
-  }, [width, height, top, left, roiDispatch]);
+  }, [
+    roiDispatch,
+    current,
+    left,
+    top,
+    width,
+    height,
+    containerWidth,
+    containerHeight,
+  ]);
   const cursorSize = 3;
   const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
   return (
@@ -58,10 +85,10 @@ export function ContainerComponent({ target, children }: ContainerProps) {
             position: 'absolute',
             margin: 0,
             padding: 0,
-            width,
-            height,
+            width: containerWidth,
+            height: containerHeight,
           }}
-          viewBox={`0 0 ${width} ${height}`}
+          viewBox={`0 0 ${containerWidth} ${containerHeight}`}
         >
           {[...children, resizeBox]}
         </svg>
