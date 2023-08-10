@@ -1,11 +1,11 @@
 import { Point } from '../types/Point';
-import { RoiStateType } from '../types/RoiStateType';
+import { RoiContainerState } from '../types/RoiContainerState';
 
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
 export function checkRectangle(
-  draft: RoiStateType,
+  draft: RoiContainerState,
   point: Point,
   options: { limit?: number } = {},
 ) {

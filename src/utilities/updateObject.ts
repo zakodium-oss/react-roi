@@ -1,9 +1,9 @@
-import { RoiStateType } from '../types/RoiStateType';
+import { RoiContainerState } from '../types/RoiContainerState';
 
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
-export function updateObject(draft: RoiStateType) {
+export function updateObject(draft: RoiContainerState) {
   const { startPoint, endPoint, ratio, selectedRoi, rois } = draft;
   const index = rois.findIndex((roi) => roi.id === selectedRoi);
   if (selectedRoi) {

@@ -14,13 +14,18 @@ interface ModesType<T> {
 export function useRoiActions<T = unknown>(): ModesType<T> {
   const { roiDispatch } = useContext(RoiDispatchContext);
   return {
-    createRoi: (roi: Partial<CommittedRoi<T>> & { id: string }) => roiDispatch({ type: 'addRoi', payload: roi }),
+    createRoi: (roi: Partial<CommittedRoi<T>> & { id: string }) =>
+      roiDispatch({ type: 'addRoi', payload: roi }),
     updateRoi: (selectedRoi: string, updatedData: Partial<Roi<T>>) => {
-      roiDispatch({ type: 'updateRoi', payload: { id: selectedRoi, updatedData } })
+      roiDispatch({
+        type: 'updateRoi',
+        payload: { id: selectedRoi, updatedData },
+      });
     },
     removeRoi: (selectedRoi: string) => {
-      roiDispatch({ type: 'removeRoi', payload: selectedRoi })
+      roiDispatch({ type: 'removeRoi', payload: selectedRoi });
     },
-    setMode: (mode: 'select' | 'draw') => roiDispatch({ type: 'setMode', payload: mode })
+    setMode: (mode: 'select' | 'draw') =>
+      roiDispatch({ type: 'setMode', payload: mode }),
   };
 }

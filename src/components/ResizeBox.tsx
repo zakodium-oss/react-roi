@@ -11,8 +11,10 @@ import { Rectangle } from '../types/Rectangle';
 import { Roi } from '../types/Roi';
 import { getPointers } from '../utilities/getPointers';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
+import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
-import { BoxAnnotation } from './RoiBox';
+import { BoxAnnotation } from './BoxAnnotation';
+import { Label } from './Label';
 
 export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   const { roiState } = useContext(RoiContext);
@@ -32,14 +34,20 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
   }, [endPoint, rois, startPoint, mode, ratio, currentRoi]);
 
   const isActive = currentRoi?.isMoving || currentRoi?.isResizing;
+  const { x, y, width, height } = rectangle ?? {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  };
   return rectangle ? (
     <>
       <BoxAnnotation
         id={selectedRoi ? selectedRoi : crypto.randomUUID()}
-        x={rectangle.x}
-        y={rectangle.y}
-        width={rectangle.width}
-        height={rectangle.height}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
         style={
           isActive
             ? currentRoi.editStyle
@@ -64,6 +72,14 @@ export function ResizeBox({ cursorSize }: { cursorSize: number }) {
           }}
         />
       ))}
+      {currentRoi?.label && (
+        <Label
+          label={currentRoi.label}
+          x={x + width / 2}
+          y={y + height / 2}
+          width={width / 6}
+        />
+      )}
     </>
   ) : null;
 }
@@ -79,7 +95,7 @@ function selectRectangle(
   if (startPoint && endPoint) {
     setRectangle(getRectangleFromPoints(startPoint, endPoint));
   } else if (roi && action === Modes.SELECT) {
-    // setRectangle(getScaledRectangle(roi, ratio));
+    setRectangle(getScaledRectangle(roi, ratio));
   } else {
     setRectangle(undefined);
   }

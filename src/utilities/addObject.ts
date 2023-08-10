@@ -1,14 +1,14 @@
-import { RoiStateType } from '../types/RoiStateType';
+import { RoiContainerState } from '../types/RoiContainerState';
 
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
-export function addObject(draft: RoiStateType, id: string) {
+export function addObject(draft: RoiContainerState, id: string) {
   const { startPoint, endPoint, ratio } = draft;
   const rectangle = getRectangle(
     getRectangleFromPoints(startPoint, endPoint),
     ratio,
-  )
+  );
   draft.rois.push({
     id,
     x: rectangle.x,
@@ -26,5 +26,5 @@ export function addObject(draft: RoiStateType, id: string) {
       opacity: 0.5,
     },
   });
-  draft.selectedRoi = draft.rois[draft.rois.length - 1].id
+  draft.selectedRoi = draft.rois[draft.rois.length - 1].id;
 }

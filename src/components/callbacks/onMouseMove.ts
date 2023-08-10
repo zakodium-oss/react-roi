@@ -1,9 +1,9 @@
 import { Modes } from '../../context/RoiContext';
-import { RoiStateType } from '../../types/RoiStateType';
+import { RoiContainerState } from '../../types/RoiContainerState';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseMove(draft: RoiStateType, event: React.MouseEvent) {
+export function onMouseMove(draft: RoiContainerState, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
   const { mode, selectedRoi, rois } = draft;
   const currentRoi = rois.find((roi) => roi.id === selectedRoi);

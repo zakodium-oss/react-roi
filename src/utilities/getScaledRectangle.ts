@@ -10,10 +10,7 @@ import { Roi } from '../types/Roi';
  * @returns
  */
 
-export function getScaledRectangle(
-  roi: Roi,
-  ratio: Ratio,
-): Rectangle {
+export function getScaledRectangle(roi: Roi, ratio: Ratio): Rectangle {
   const result: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
 
   const { x, y, width, height } = roi;

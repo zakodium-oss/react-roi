@@ -44,4 +44,7 @@ export function getReferencePointers(
   }
 }
 
-interface Pointers { p0: { x: number; y: number }; p1: { x: number; y: number } }
+interface Pointers {
+  p0: { x: number; y: number };
+  p1: { x: number; y: number };
+}

@@ -12,7 +12,7 @@ import { KbsProvider } from 'react-kbs';
 import { onMouseDown } from '../components/callbacks/onMouseDown';
 import { onMouseMove } from '../components/callbacks/onMouseMove';
 import { onMouseUp } from '../components/callbacks/onMouseUp';
-import { Rectangle, Ratio, RoiStateType } from '../types';
+import { Rectangle, Ratio, RoiContainerState } from '../types';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
 import { dragRectangle } from '../utilities/dragRectangle';
@@ -26,7 +26,7 @@ export const Modes = Object.freeze({
 
 export type RoiAction = (typeof Modes)[keyof typeof Modes];
 
-const roiInitialState: RoiStateType = {
+const roiInitialState: RoiContainerState = {
   mode: Modes.SELECT,
   startPoint: undefined,
   endPoint: undefined,
@@ -41,7 +41,7 @@ const roiInitialState: RoiStateType = {
   rois: [],
 };
 
-export type RoiState = Omit<RoiStateType, 'startPoint' | 'endPoint'>;
+export type RoiState = Omit<RoiContainerState, 'startPoint' | 'endPoint'>;
 
 export type RoiReducerAction =
   | {
@@ -63,7 +63,7 @@ export type RoiReducerAction =
       payload: { id: string; event: React.MouseEvent };
     };
 
-const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
+const roiReducer = (state: RoiContainerState, action: RoiReducerAction) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case 'setComponentPosition':
@@ -153,7 +153,6 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
           draft.selectedRoi = undefined;
           return;
         }
-        event.stopPropagation();
         const { ratio, x, y, rois } = draft;
         draft.selectedRoi = id;
         const index = rois.findIndex((roi) => roi.id === id);
@@ -196,7 +195,7 @@ const roiReducer = (state: RoiStateType, action: RoiReducerAction) => {
 };
 
 export interface RoiStateProps<T = any> {
-  roiState: RoiStateType<T>;
+  roiState: RoiContainerState<T>;
 }
 
 export const RoiContext = createContext<RoiStateProps>({} as RoiStateProps);

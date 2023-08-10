@@ -10,7 +10,10 @@ import { Rectangle } from '../types/Rectangle';
  * @returns
  */
 
-export function getRectangle(rectangle: Rectangle, ratio: Ratio): Partial<CommittedRoi> {
+export function getRectangle(
+  rectangle: Rectangle,
+  ratio: Ratio,
+): Partial<CommittedRoi> {
   const result: Partial<CommittedRoi> = { x: 0, y: 0, width: 0, height: 0 };
 
   const p0 = {

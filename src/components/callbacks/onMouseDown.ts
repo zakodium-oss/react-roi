@@ -1,8 +1,8 @@
 import { Modes } from '../../context/RoiContext';
-import { RoiStateType } from '../../types/RoiStateType';
+import { RoiContainerState } from '../../types/RoiContainerState';
 import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseDown(draft: RoiStateType, event: React.MouseEvent) {
+export function onMouseDown(draft: RoiContainerState, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
   switch (draft.mode) {
     case Modes.DRAW:
@@ -11,6 +11,7 @@ export function onMouseDown(draft: RoiStateType, event: React.MouseEvent) {
       draft.endPoint = point;
       break;
     case Modes.SELECT: {
+      draft.selectedRoi = undefined;
       break;
     }
     default:

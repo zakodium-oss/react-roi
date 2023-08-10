@@ -1,11 +1,11 @@
 import { Modes } from '../../context/RoiContext';
-import { RoiStateType } from '../../types/RoiStateType';
+import { RoiContainerState } from '../../types/RoiContainerState';
 import { addObject } from '../../utilities/addObject';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { updateObject } from '../../utilities/updateObject';
 
-export function onMouseUp(draft: RoiStateType, event: React.MouseEvent) {
+export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
   const point = getMousePosition(draft, event);
   const { mode, selectedRoi, rois } = draft;
   const currentRoi = rois.find((roi) => roi.id === selectedRoi);

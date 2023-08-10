@@ -1,7 +1,7 @@
-import { RoiStateType } from '../types/RoiStateType';
+import { RoiContainerState } from '../types/RoiContainerState';
 
 export function getMousePosition(
-  draft: RoiStateType,
+  draft: RoiContainerState,
   event: React.MouseEvent,
 ): {
   x: number;

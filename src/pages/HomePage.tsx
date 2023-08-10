@@ -200,7 +200,8 @@ function ImageWithRois() {
     // And handles the mouse interactions to edit the rois
     // It's possible to disable edition interactions by setting the readOnly prop to true
     <RoiContainer
-      target={<img src={url} style={{ width: 1000, height: 800 }} />}
+      target={<img src={url} />}
+      // target={<div style={{ width: 1000, height: 800, background: 'grey' }} />}
       options={{ containerWidth: 800, containerHeight: 500 }}
     >
       {rois.map((roi) => (

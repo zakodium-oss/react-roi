@@ -1,5 +1,5 @@
 import { Point } from '../types/Point';
-import { RoiStateType } from '../types/RoiStateType';
+import { RoiContainerState } from '../types/RoiContainerState';
 
 import { getScaledRectangle } from './getScaledRectangle';
 
@@ -12,14 +12,22 @@ import { getScaledRectangle } from './getScaledRectangle';
  */
 
 export function dragRectangle(
-  draft: RoiStateType,
+  draft: RoiContainerState,
   origin: Point,
 ): {
   startPoint: Point;
   endPoint: Point;
 } {
-  const { delta, ratio, selectedRoi, startPoint, endPoint, width, height, rois } =
-    draft;
+  const {
+    delta,
+    ratio,
+    selectedRoi,
+    startPoint,
+    endPoint,
+    width,
+    height,
+    rois,
+  } = draft;
   const currentRoi = rois.find((roi) => roi.id === selectedRoi);
   if (!delta || !selectedRoi) {
     return { startPoint, endPoint };

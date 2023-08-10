@@ -1,11 +1,18 @@
-import { cloneElement, useContext, useEffect, useRef } from 'react';
+import {
+  MutableRefObject,
+  cloneElement,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { RoiDispatchContext } from '../context/RoiContext';
 
 import { ResizeBox } from './ResizeBox';
 
 interface ContainerProps {
-  target: JSX.Element;
+  target: JSX.Element & { ref?: MutableRefObject<any> };
   children: JSX.Element[];
   options?: { containerWidth?: number; containerHeight?: number };
 }
@@ -17,21 +24,34 @@ export function ContainerComponent({
 }: ContainerProps) {
   const { roiDispatch } = useContext(RoiDispatchContext);
   const { containerWidth, containerHeight } = options;
-  const elementRef = useRef<HTMLElement | null>(null);
-  const current = elementRef.current;
-  const { width = 1, height = 1 } = target.props.style;
-  const { top, left } = current
-    ? current.getBoundingClientRect()
-    : { top: 0, left: 0 };
+  const elementRef = useRef(null);
+  const ref = target.ref ?? elementRef;
+  const current = ref.current;
+  const targetStyle = target.props.style;
   const element = cloneElement(target, {
-    ref: elementRef,
+    ref,
     style: {
-      ...target.props.style,
+      ...targetStyle,
       width: containerWidth,
       height: containerHeight,
     },
   });
+  const { top, left } = current
+    ? current.getBoundingClientRect()
+    : { top: 0, left: 0 };
+  const [size, setSize] = useState({
+    width: targetStyle?.width ?? 1,
+    height: targetStyle?.height ?? 1,
+  });
 
+  if (current) {
+    current.onload = () => {
+      setSize({
+        height: current.naturalHeight,
+        width: current.naturalWidth,
+      });
+    };
+  }
   useEffect(() => {
     roiDispatch({
       type: 'setComponentPosition',
@@ -39,12 +59,12 @@ export function ContainerComponent({
         position: {
           x: left,
           y: top,
-          width,
-          height,
+          width: size.width,
+          height: size.height,
         },
         ratio: {
-          x: width / containerWidth,
-          y: height / containerHeight,
+          x: size.width / containerWidth,
+          y: size.height / containerHeight,
         },
       },
     });
@@ -53,10 +73,10 @@ export function ContainerComponent({
     current,
     left,
     top,
-    width,
-    height,
     containerWidth,
     containerHeight,
+    size.width,
+    size.height,
   ]);
   const cursorSize = 3;
   const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
@@ -87,6 +107,7 @@ export function ContainerComponent({
             padding: 0,
             width: containerWidth,
             height: containerHeight,
+            userSelect: 'none',
           }}
           viewBox={`0 0 ${containerWidth} ${containerHeight}`}
         >

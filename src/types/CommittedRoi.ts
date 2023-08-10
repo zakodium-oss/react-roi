@@ -1,3 +1,4 @@
-import { Roi } from "./Roi";
+import { Roi } from './Roi';
 
-export interface CommittedRoi<TData = unknown> extends Omit<Roi<TData>, 'isMoving' | 'isResizing'> { }
+export interface CommittedRoi<TData = unknown>
+  extends Omit<Roi<TData>, 'isMoving' | 'isResizing'> {}
