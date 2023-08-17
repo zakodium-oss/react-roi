@@ -1,23 +1,17 @@
 import { produce } from 'immer';
-import {
-  Dispatch,
-  ReactNode,
-  createContext,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react';
+import { Dispatch, createContext, useMemo, useReducer } from 'react';
 import { KbsProvider } from 'react-kbs';
 
 import { onMouseDown } from '../components/callbacks/onMouseDown';
 import { onMouseMove } from '../components/callbacks/onMouseMove';
 import { onMouseUp } from '../components/callbacks/onMouseUp';
-import { Rectangle, Ratio, RoiContainerState } from '../types';
+import { Ratio, RoiContainerState } from '../types';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
-import { dragRectangle } from '../utilities/dragRectangle';
+import { commitedRoiTemplate } from '../utilities/commitedRoiTemplate';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { roiTemplate } from '../utilities/roiTemplate';
 
 export const Modes = Object.freeze({
   SELECT: 'select',
@@ -26,59 +20,66 @@ export const Modes = Object.freeze({
 
 export type RoiAction = (typeof Modes)[keyof typeof Modes];
 
-const roiInitialState: RoiContainerState = {
-  mode: Modes.SELECT,
-  startPoint: undefined,
-  endPoint: undefined,
-  ratio: { x: 1, y: 1 },
-  delta: undefined,
-  x: 0,
-  y: 0,
-  pointerIndex: undefined,
-  selectedRoi: undefined,
-  width: 0,
-  height: 0,
-  rois: [],
-};
+function createInitialState<T>(
+  commitedRois: Array<CommittedRoi<T>>,
+): RoiContainerState<T> {
+  const roiInitialState = {
+    mode: Modes.SELECT,
+    ratio: { x: 1, y: 1 },
+    selectedRoi: undefined,
+    commitedRois,
+    rois: commitedRois.map((roi) => ({
+      id: roi.id,
+      label: roi.label,
+      editStyle: roi.editStyle,
+      style: roi.style,
+      data: roi.data,
+      action: 'idle',
+      actionData: {
+        delta: undefined,
+        endPoint: undefined,
+        startPoint: undefined,
+        pointerIndex: undefined,
+      },
+    })) as Array<Roi<T>>,
+  };
+  return roiInitialState;
+}
 
 export type RoiState = Omit<RoiContainerState, 'startPoint' | 'endPoint'>;
 
-export type RoiReducerAction =
-  | {
-      type: 'setComponentPosition';
-      payload: { position: Rectangle; ratio: Ratio };
-    }
+export type RoiReducerAction<T> =
   | { type: 'setMode'; payload: 'select' | 'draw' }
   | { type: 'setRatio'; payload: Ratio }
-  | { type: 'addRoi'; payload: Partial<CommittedRoi> & { id: string } }
-  | { type: 'updateRoi'; payload: { id: string; updatedData: Partial<Roi> } }
+  | { type: 'addRoi'; payload: Partial<CommittedRoi<T>> & { id: string } }
+  | {
+      type: 'updateRoi';
+      payload: { id: string; updatedData: Partial<CommittedRoi<T>> };
+    }
   | { type: 'removeRoi'; payload?: string }
-  | { type: 'isMoving'; payload: boolean }
+  | { type: 'isMoving'; payload: 'moving' }
   | { type: 'resizeRoi'; payload: number }
   | { type: 'onMouseDown'; payload: React.MouseEvent }
   | { type: 'onMouseMove'; payload: React.MouseEvent }
   | { type: 'onMouseUp'; payload: React.MouseEvent }
+  | { type: 'cancelDrawing'; payload: React.KeyboardEvent }
   | {
       type: 'selectBoxAnnotation';
       payload: { id: string; event: React.MouseEvent };
     };
 
-const roiReducer = (state: RoiContainerState, action: RoiReducerAction) => {
+function roiReducer<T>(
+  state: RoiContainerState<T>,
+  action: RoiReducerAction<T>,
+): RoiContainerState<T> {
   return produce(state, (draft) => {
     switch (action.type) {
-      case 'setComponentPosition':
-        draft.x = action.payload.position.x;
-        draft.y = action.payload.position.y;
-        draft.width = action.payload.position.width;
-        draft.height = action.payload.position.height;
-        draft.ratio = action.payload.ratio;
-        break;
-
       case 'isMoving': {
         const { selectedRoi, rois } = draft;
         if (draft.selectedRoi) {
           const index = rois.findIndex((roi) => roi.id === selectedRoi);
-          draft.rois[index].isMoving = action.payload;
+          const roi = draft.rois[index];
+          roi.action = action.payload;
         }
         break;
       }
@@ -95,81 +96,123 @@ const roiReducer = (state: RoiContainerState, action: RoiReducerAction) => {
         const index = draft.rois.findIndex((roi) => roi.id === id);
         if (index === -1) return;
         draft.rois.splice(index, 1);
+        draft.commitedRois.splice(index, 1);
         draft.selectedRoi = undefined;
         return;
       }
 
       case 'addRoi': {
-        const { width: targetWidth, height: targetHeight } = draft;
-        const width = Math.round(targetWidth * 0.1);
-        const height = Math.round(targetHeight * 0.1);
-        const x = Math.round(targetWidth / 2 - width / 2);
-        const y = Math.round(targetHeight / 2 - height / 2);
-        draft.rois.push({
-          id: crypto.randomUUID(),
-          x,
-          y,
-          width,
-          height,
-          style: {
-            fill: 'black',
-            opacity: 0.5,
-          },
-          editStyle: {
-            fill: 'black',
-            opacity: 0.5,
-          },
+        const { width: targetWidth, height: targetHeight } = document
+          .getElementById('roi-container-svg')
+          .getBoundingClientRect();
+        const roiWidth = Math.round(targetWidth * 0.1);
+        const roiHeight = Math.round(targetHeight * 0.1);
+        const roiX = Math.round(targetWidth / 2 - roiWidth) * draft.ratio.x;
+        const roiY = Math.round(targetHeight / 2 - roiHeight) * draft.ratio.y;
+        const id = crypto.randomUUID();
+        draft.selectedRoi = id;
+        const commitedRoi = commitedRoiTemplate<T>(id, {
+          x: roiX,
+          y: roiY,
+          width: roiWidth,
+          height: roiHeight,
           ...action.payload,
-          isResizing: false,
-          isMoving: false,
         });
+        const { x, y, width, height, ...roi } = commitedRoi;
+        // @ts-expect-error need to check
+        draft.commitedRois.push(commitedRoi);
+        draft.rois.push(
+          // @ts-expect-error need to check
+          roiTemplate<T>(id, {
+            action: 'idle',
+            actionData: {
+              startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },
+              endPoint: {
+                x: (x + width) / draft.ratio.x,
+                y: (y + height) / draft.ratio.y,
+              },
+              delta: undefined,
+              pointerIndex: undefined,
+            },
+            ...roi,
+          }),
+        );
         break;
       }
 
       case 'updateRoi': {
-        const index = draft.rois.findIndex(
-          (roi) => roi.id === action.payload.id,
+        const { id, updatedData } = action.payload;
+        if (!id) return;
+        const index = draft.rois.findIndex((roi) => roi.id === id);
+        const commitedRoi = Object.assign(
+          draft.commitedRois[index],
+          updatedData,
         );
-        const roi = draft.rois[index];
-        draft.rois[index] = Object.assign(roi, action.payload.updatedData);
+        draft.commitedRois[index] = commitedRoi;
+        const { x, y, width, height, editStyle, style, data, label } =
+          commitedRoi;
+        draft.rois[index] = {
+          id,
+          label,
+          style,
+          editStyle,
+          data,
+          action: 'idle',
+          actionData: {
+            startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },
+            endPoint: {
+              x: (x + width) / draft.ratio.x,
+              y: (y + height) / draft.ratio.y,
+            },
+          },
+        };
         break;
       }
 
       case 'resizeRoi': {
-        const { ratio, selectedRoi, rois } = draft;
+        const { ratio, selectedRoi, rois, commitedRois } = draft;
         const index = rois.findIndex((roi) => roi.id === selectedRoi);
-        rois[index].isResizing = true;
+        const roi = draft.rois[index];
+        roi.action = 'resizing';
         if (!selectedRoi) return;
-        const points = getReferencePointers(rois[index], ratio, action.payload);
-        draft.pointerIndex = action.payload;
-        draft.startPoint = { x: points.p0.x, y: points.p0.y };
-        draft.endPoint = { x: points.p1.x, y: points.p1.y };
+        const points = getReferencePointers(
+          commitedRois[index],
+          ratio,
+          action.payload,
+        );
+        roi.actionData.pointerIndex = action.payload;
+        roi.actionData.startPoint = { x: points.p0.x, y: points.p0.y };
+        roi.actionData.endPoint = { x: points.p1.x, y: points.p1.y };
         break;
       }
 
       case 'selectBoxAnnotation': {
         const { id, event } = action.payload;
+        if (!id) return;
         if (draft.mode === 'draw') {
           draft.selectedRoi = undefined;
           return;
         }
-        const { ratio, x, y, rois } = draft;
+        const { ratio, rois } = draft;
+        const { x: svgX, y: svgY } = document
+          .getElementById('roi-container-svg')
+          .getBoundingClientRect();
         draft.selectedRoi = id;
         const index = rois.findIndex((roi) => roi.id === id);
-        draft.rois[index].isMoving = true;
+        const roi = draft.rois[index];
+        roi.action = 'moving';
         if (!draft.selectedRoi) return;
-        const scaledRectangle = getScaledRectangle(draft.rois[index], ratio);
-        const delta = {
-          dx: event.clientX - scaledRectangle.x - x,
-          dy: event.clientY - scaledRectangle.y - y,
+        const scaledRectangle = getScaledRectangle(
+          draft.commitedRois[index],
+          ratio,
+        );
+        const { x, y, width, height } = scaledRectangle;
+        roi.actionData.delta = {
+          x: event.clientX - x - svgX,
+          y: event.clientY - y - svgY,
         };
-        draft.delta = delta;
-        const { startPoint, endPoint } = dragRectangle(draft, {
-          x: scaledRectangle.x + delta.dx,
-          y: scaledRectangle.y + delta.dy,
-        });
-        draft.startPoint = startPoint;
-        draft.endPoint = endPoint;
+        roi.actionData.startPoint = { x, y };
+        roi.actionData.endPoint = { x: x + width, y: y + height };
         break;
       }
 
@@ -192,53 +235,63 @@ const roiReducer = (state: RoiContainerState, action: RoiReducerAction) => {
         break;
     }
   });
-};
-
-export interface RoiStateProps<T = any> {
-  roiState: RoiContainerState<T>;
 }
 
-export const RoiContext = createContext<RoiStateProps>({} as RoiStateProps);
+export const RoiStateContext = createContext<
+  Omit<RoiContainerState<any>, 'commitedRois' | 'rois'> | undefined
+>(undefined);
 
-interface RoiDispatchProps {
-  roiDispatch: Dispatch<RoiReducerAction>;
-}
+export const RoiDispatchContext = createContext<
+  Dispatch<RoiReducerAction<any>> | undefined
+>(undefined);
 
-export const RoiDispatchContext = createContext<RoiDispatchProps>(
-  {} as RoiDispatchProps,
+export const CommitedRoisContext = createContext<
+  Array<CommittedRoi<any>> | undefined
+>(undefined);
+
+export const RoisContext = createContext<Array<Roi<any>> | undefined>(
+  undefined,
 );
 
-interface ObjectProviderProps<T> {
-  children: ReactNode;
+interface RoiProviderProps<T> {
+  children: JSX.Element;
   initialRois?: Array<CommittedRoi<T>>;
 }
 
 export function RoiProvider<T>({
   children,
   initialRois = [],
-}: ObjectProviderProps<T>) {
-  useEffect(() => {
-    for (const roi of initialRois) {
-      roiInitialState.rois.push({ ...roi, isResizing: false, isMoving: false });
-    }
-  }, [initialRois]);
-
-  const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+}: RoiProviderProps<T>) {
+  const roiInitialState = createInitialState<T>(initialRois);
+  const [state, dispatch] = useReducer(roiReducer<T>, roiInitialState);
+  const { rois, commitedRois, ...remainingState } = state;
   const roiState = useMemo(() => {
-    return { roiState: state };
-  }, [state]);
+    return remainingState;
+  }, [remainingState]);
 
   const roiDispatch = useMemo(() => {
-    return { roiDispatch: dispatch };
+    return dispatch;
   }, [dispatch]);
+
+  const commitedRoisState = useMemo(() => {
+    return commitedRois;
+  }, [commitedRois]);
+
+  const roisState = useMemo(() => {
+    return rois;
+  }, [rois]);
 
   return (
     <KbsProvider>
-      <RoiContext.Provider value={roiState}>
-        <RoiDispatchContext.Provider value={roiDispatch}>
-          {children}
-        </RoiDispatchContext.Provider>
-      </RoiContext.Provider>
+      <RoiDispatchContext.Provider value={roiDispatch}>
+        <RoisContext.Provider value={roisState}>
+          <CommitedRoisContext.Provider value={commitedRoisState}>
+            <RoiStateContext.Provider value={roiState}>
+              {children}
+            </RoiStateContext.Provider>
+          </CommitedRoisContext.Provider>
+        </RoisContext.Provider>
+      </RoiDispatchContext.Provider>
     </KbsProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { RoiContext } from '../context/RoiContext';
-import { Roi } from '../types/Roi';
+import { RoiStateContext } from '../context/RoiContext';
+import { CommittedRoi } from '../types/CommittedRoi';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 
 import { BoxAnnotation } from './BoxAnnotation';
@@ -9,14 +9,14 @@ import { Label } from './Label';
 
 interface RoiBoxProps {
   id?: string;
-  roi: Roi;
+  roi: CommittedRoi;
 }
 
 export function RoiBox({ roi }: RoiBoxProps): JSX.Element {
-  const { roiState } = useContext(RoiContext);
-  const { id, isResizing, isMoving, style } = roi;
+  const roiState = useContext(RoiStateContext);
+  const { id, style } = roi;
   const { x, y, width, height } = getScaledRectangle(roi, roiState.ratio);
-  const isActive = isMoving || isResizing;
+  const isActive = id === roiState.selectedRoi;
   return (
     <>
       <BoxAnnotation
@@ -25,7 +25,7 @@ export function RoiBox({ roi }: RoiBoxProps): JSX.Element {
         y={y}
         width={width}
         height={height}
-        style={isActive ? { opacity: 0 } : style}
+        style={isActive && roiState.mode === 'select' ? { opacity: 0 } : style}
       />
       {roi.label && !isActive && (
         <Label

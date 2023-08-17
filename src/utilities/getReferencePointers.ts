@@ -1,10 +1,10 @@
+import { CommittedRoi } from '../types/CommittedRoi';
 import { Ratio } from '../types/Ratio';
-import { Roi } from '../types/Roi';
 
 import { getScaledRectangle } from './getScaledRectangle';
 
 export function getReferencePointers(
-  roi: Roi,
+  roi: CommittedRoi,
   ratio: Ratio,
   index: number,
 ): Pointers {

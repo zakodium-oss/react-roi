@@ -1,9 +1,14 @@
 import { useContext } from 'react';
 
-import { RoiContext, RoiStateProps } from '../context/RoiContext';
-import { RoiStateType } from '../types';
+import { RoiStateContext } from '../context/RoiContext';
+import { RoiContainerState } from '../types';
 
-export function useRoiState<T>(): RoiStateType<T> {
-  const { roiState } = useContext<RoiStateProps<T>>(RoiContext);
-  return roiState;
+export function useRoiState<T>(): RoiContainerState<T> {
+  /**
+   * selected roi
+   * ratio
+   * mode
+   */
+  const state = useContext<RoiContainerState<T>>(RoiStateContext);
+  return state;
 }

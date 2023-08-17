@@ -1,17 +1,10 @@
-import { Point } from '../types/Point';
-import { RoiContainerState } from '../types/RoiContainerState';
-
-import { getRectangle } from './getRectangle';
-import { getRectangleFromPoints } from './getRectangleFromPoints';
+import { Rectangle } from '../types';
 
 export function checkRectangle(
-  draft: RoiContainerState,
-  point: Point,
+  rectangle: Rectangle,
   options: { limit?: number } = {},
 ) {
   const { limit = 10 } = options;
-  const { startPoint, ratio } = draft;
-  const rectangle = getRectangleFromPoints(startPoint, point);
-  const actualRectangle = getRectangle(rectangle, ratio);
-  return actualRectangle.width >= limit && actualRectangle.height >= limit;
+  if (rectangle === undefined) return false;
+  return rectangle.width >= limit && rectangle.height >= limit;
 }

@@ -7,13 +7,17 @@ import {
   useState,
 } from 'react';
 
-import { RoiDispatchContext } from '../context/RoiContext';
+import {
+  Modes,
+  RoiStateContext,
+  RoiDispatchContext,
+} from '../context/RoiContext';
 
 import { ResizeBox } from './ResizeBox';
 
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<any> };
-  children: JSX.Element[];
+  children: JSX.Element;
   options?: { containerWidth?: number; containerHeight?: number };
 }
 
@@ -22,7 +26,8 @@ export function ContainerComponent({
   children,
   options,
 }: ContainerProps) {
-  const { roiDispatch } = useContext(RoiDispatchContext);
+  const roiDispatch = useContext(RoiDispatchContext);
+  const roiState = useContext(RoiStateContext);
   const { containerWidth, containerHeight } = options;
   const elementRef = useRef(null);
   const ref = target.ref ?? elementRef;
@@ -36,9 +41,6 @@ export function ContainerComponent({
       height: containerHeight,
     },
   });
-  const { top, left } = current
-    ? current.getBoundingClientRect()
-    : { top: 0, left: 0 };
   const [size, setSize] = useState({
     width: targetStyle?.width ?? 1,
     height: targetStyle?.height ?? 1,
@@ -54,32 +56,21 @@ export function ContainerComponent({
   }
   useEffect(() => {
     roiDispatch({
-      type: 'setComponentPosition',
+      type: 'setRatio',
       payload: {
-        position: {
-          x: left,
-          y: top,
-          width: size.width,
-          height: size.height,
-        },
-        ratio: {
-          x: size.width / containerWidth,
-          y: size.height / containerHeight,
-        },
+        x: size.width / containerWidth,
+        y: size.height / containerHeight,
       },
     });
   }, [
     roiDispatch,
     current,
-    left,
-    top,
     containerWidth,
     containerHeight,
     size.width,
     size.height,
   ]);
   const cursorSize = 3;
-  const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
   return (
     <div
       id="container-component"
@@ -90,30 +81,35 @@ export function ContainerComponent({
         padding: 0,
         width: 'fit-content',
         height: 'fit-content',
-      }}
-      onMouseUp={(event) => roiDispatch({ type: 'onMouseUp', payload: event })}
-      onMouseMove={(event) =>
-        roiDispatch({ type: 'onMouseMove', payload: event })
-      }
-      onMouseDown={(event) => {
-        roiDispatch({ type: 'onMouseDown', payload: event });
+        cursor: roiState.mode === Modes.DRAW ? 'crosshair' : 'default',
       }}
     >
-      {children !== undefined ? (
-        <svg
-          style={{
-            position: 'absolute',
-            margin: 0,
-            padding: 0,
-            width: containerWidth,
-            height: containerHeight,
-            userSelect: 'none',
-          }}
-          viewBox={`0 0 ${containerWidth} ${containerHeight}`}
-        >
-          {[...children, resizeBox]}
-        </svg>
-      ) : null}
+      <svg
+        id="roi-container-svg"
+        style={{
+          position: 'absolute',
+          margin: 0,
+          padding: 0,
+          width: containerWidth,
+          height: containerHeight,
+          userSelect: 'none',
+        }}
+        viewBox={`0 0 ${containerWidth} ${containerHeight}`}
+        onMouseUp={(event) => {
+          roiDispatch({ type: 'onMouseUp', payload: event });
+        }}
+        onMouseMove={(event) => {
+          // event.stopPropagation();
+          if (event.buttons === 0) return;
+          roiDispatch({ type: 'onMouseMove', payload: event });
+        }}
+        onMouseDown={(event) => {
+          roiDispatch({ type: 'onMouseDown', payload: event });
+        }}
+      >
+        {children}
+        <ResizeBox key={`resize-box`} cursorSize={cursorSize} />
+      </svg>
       {element}
     </div>
   );

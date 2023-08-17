@@ -1,13 +1,13 @@
-import { RoiContainerState } from '../types/RoiContainerState';
+import { Point } from '../types';
 
 export function getMousePosition(
-  draft: RoiContainerState,
   event: React.MouseEvent,
-): {
-  x: number;
-  y: number;
-} {
-  const { pointerIndex, x, y, endPoint } = draft;
+  endPoint: Point,
+  pointerIndex: number,
+): Point {
+  const { x, y } = document
+    .getElementById('roi-container-svg')
+    .getBoundingClientRect();
   switch (pointerIndex) {
     case 4:
     case 5:

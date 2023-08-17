@@ -1,6 +1,10 @@
 import { CSSProperties, useContext } from 'react';
 
-import { RoiDispatchContext, RoiContext, Modes } from '../context/RoiContext';
+import {
+  RoiDispatchContext,
+  RoiStateContext,
+  Modes,
+} from '../context/RoiContext';
 
 interface BoxAnnotationProps {
   id: string;
@@ -19,8 +23,8 @@ export function BoxAnnotation({
   height,
   style,
 }: BoxAnnotationProps): JSX.Element {
-  const { roiDispatch } = useContext(RoiDispatchContext);
-  const { roiState } = useContext(RoiContext);
+  const roiDispatch = useContext(RoiDispatchContext);
+  const roiState = useContext(RoiStateContext);
   return (
     <rect
       id={id}
@@ -31,13 +35,11 @@ export function BoxAnnotation({
       height={height}
       style={style}
       onMouseDown={(event) => {
-        if (id) {
-          roiDispatch({
-            type: 'selectBoxAnnotation',
-            payload: { id, event },
-          });
-          if (roiState.mode === Modes.SELECT) event.stopPropagation();
-        }
+        roiDispatch({
+          type: 'selectBoxAnnotation',
+          payload: { id, event },
+        });
+        if (roiState.mode === Modes.SELECT) event.stopPropagation();
       }}
     />
   );

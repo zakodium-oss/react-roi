@@ -4,17 +4,20 @@ import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
 export function updateObject(draft: RoiContainerState) {
-  const { startPoint, endPoint, ratio, selectedRoi, rois } = draft;
+  const { ratio, selectedRoi, rois, commitedRois } = draft;
   const index = rois.findIndex((roi) => roi.id === selectedRoi);
+  const roi = rois[index];
+  const commitedRoi = commitedRois[index];
+  const { startPoint, endPoint } = roi.actionData;
   if (selectedRoi) {
     const rectangle = getRectangle(
       getRectangleFromPoints(startPoint, endPoint),
       ratio,
     );
-    rois[index].x = rectangle.x;
-    rois[index].y = rectangle.y;
-    rois[index].width = rectangle.width;
-    rois[index].height = rectangle.height;
+    commitedRoi.x = Math.round(rectangle.x);
+    commitedRoi.y = Math.round(rectangle.y);
+    commitedRoi.width = Math.round(rectangle.width);
+    commitedRoi.height = Math.round(rectangle.height);
   }
-  return rois[index].id;
+  return roi.id;
 }

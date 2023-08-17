@@ -1,26 +1,44 @@
 import { Modes } from '../../context/RoiContext';
 import { RoiContainerState } from '../../types/RoiContainerState';
-import { addObject } from '../../utilities/addObject';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
+import { getRectangle } from '../../utilities/getRectangle';
+import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
 import { updateObject } from '../../utilities/updateObject';
 
 export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
-  const point = getMousePosition(draft, event);
-  const { mode, selectedRoi, rois } = draft;
-  const currentRoi = rois.find((roi) => roi.id === selectedRoi);
+  const { mode, ratio, selectedRoi, rois, commitedRois } = draft;
+  const index = rois.findIndex((roi) => roi.id === selectedRoi);
+  if (index === -1) return;
+  const roi = rois[index];
+  const commitedRoi = commitedRois[index];
+  const point = getMousePosition(
+    event,
+    roi.actionData.endPoint,
+    roi.actionData.pointerIndex,
+  );
   switch (mode) {
     case Modes.DRAW: {
-      if (checkRectangle(draft, point)) {
-        addObject(draft, crypto.randomUUID());
+      const { startPoint } = roi.actionData;
+      const rectangle = getRectangle(
+        getRectangleFromPoints(startPoint, point),
+        ratio,
+      );
+      if (checkRectangle(rectangle)) {
+        commitedRoi.x = Math.round(rectangle.x);
+        commitedRoi.y = Math.round(rectangle.y);
+        commitedRoi.width = Math.round(rectangle.width);
+        commitedRoi.height = Math.round(rectangle.height);
+        draft.selectedRoi = roi.id;
       } else {
+        draft.rois.splice(index, 1);
         draft.selectedRoi = undefined;
       }
       break;
     }
 
     case Modes.SELECT: {
-      if (currentRoi?.isMoving || currentRoi?.isResizing) {
+      if (roi.action !== 'idle') {
         draft.selectedRoi = updateObject(draft);
       }
       break;
@@ -28,11 +46,10 @@ export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
     default:
       break;
   }
-  if (currentRoi) {
-    currentRoi.isMoving = false;
-    currentRoi.isResizing = false;
+  if (roi) {
+    roi.action = 'idle';
   }
-  draft.startPoint = undefined;
-  draft.endPoint = undefined;
-  draft.delta = undefined;
+  roi.actionData.startPoint = undefined;
+  roi.actionData.endPoint = undefined;
+  roi.actionData.delta = undefined;
 }

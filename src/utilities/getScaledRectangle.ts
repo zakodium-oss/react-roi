@@ -1,6 +1,6 @@
+import { CommittedRoi } from '../types/CommittedRoi';
 import { Ratio } from '../types/Ratio';
 import { Rectangle } from '../types/Rectangle';
-import { Roi } from '../types/Roi';
 
 /**
  * This function returns a rectangle that is scaled to the size of the SVG, based on a rectangle that is scaled to the size of the image.
@@ -10,9 +10,8 @@ import { Roi } from '../types/Roi';
  * @returns
  */
 
-export function getScaledRectangle(roi: Roi, ratio: Ratio): Rectangle {
+export function getScaledRectangle(roi: CommittedRoi, ratio: Ratio): Rectangle {
   const result: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
-
   const { x, y, width, height } = roi;
   if (x < x + width) {
     result.x = x / ratio.x;

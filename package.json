@@ -28,7 +28,7 @@
     "tsc-esm": "tsc --project tsconfig.esm.json"
   },
   "dependencies": {
-    "image-js": "0.0.0-next-794486e4b9",
+    "image-js": "^0.0.0-next-74561455b0",
     "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-inspector": "^6.0.2",
