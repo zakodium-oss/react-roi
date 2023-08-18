@@ -1,7 +1,7 @@
 import { Point } from '../types/Point';
 import { RoiContainerState } from '../types/RoiContainerState';
 
-import { getScaledRectangle } from './getScaledRectangle';
+import { getRectangleFromPoints } from './getRectangleFromPoints';
 
 /**
  * This function returns the new coordinates of the rectangle on the SVG
@@ -18,8 +18,8 @@ export function dragRectangle(
   startPoint: Point;
   endPoint: Point;
 } {
-  const { ratio, selectedRoi, commitedRois, rois } = draft;
-  const { height, width } = document
+  const { selectedRoi, rois } = draft;
+  const { height: windowHeight, width: windowWidth } = document
     .getElementById('roi-container-svg')
     .getBoundingClientRect();
   const index = rois.findIndex((roi) => roi.id === selectedRoi);
@@ -28,17 +28,17 @@ export function dragRectangle(
   if (!delta || !selectedRoi) {
     return { startPoint, endPoint };
   }
-  const scaledRectangle = getScaledRectangle(commitedRois[index], ratio);
+  const { width, height } = getRectangleFromPoints(startPoint, endPoint);
   const minX = Math.max(point.x - delta.x, 0);
   const minY = Math.max(point.y - delta.y, 0);
-  const maxX = Math.min(minX, width - scaledRectangle.width);
-  const maxY = Math.min(minY, height - scaledRectangle.height);
+  const maxX = Math.min(minX, windowWidth - width);
+  const maxY = Math.min(minY, windowHeight - height);
   const start = { x: maxX, y: maxY };
   return {
     startPoint: start,
     endPoint: {
-      x: start.x + scaledRectangle.width,
-      y: start.y + scaledRectangle.height,
+      x: start.x + width,
+      y: start.y + height,
     },
   };
 }

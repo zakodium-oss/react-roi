@@ -9,22 +9,16 @@ import { Ratio, RoiContainerState } from '../types';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
 import { commitedRoiTemplate } from '../utilities/commitedRoiTemplate';
+import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { roiTemplate } from '../utilities/roiTemplate';
-
-export const Modes = Object.freeze({
-  SELECT: 'select',
-  DRAW: 'draw',
-});
-
-export type RoiAction = (typeof Modes)[keyof typeof Modes];
 
 function createInitialState<T>(
   commitedRois: Array<CommittedRoi<T>>,
 ): RoiContainerState<T> {
   const roiInitialState = {
-    mode: Modes.SELECT,
+    mode: 'select',
     ratio: { x: 1, y: 1 },
     selectedRoi: undefined,
     commitedRois,
@@ -37,8 +31,8 @@ function createInitialState<T>(
       action: 'idle',
       actionData: {
         delta: undefined,
-        endPoint: undefined,
-        startPoint: undefined,
+        endPoint: { x: roi.x + roi.width, y: roi.y + roi.height },
+        startPoint: { x: roi.x, y: roi.y },
         pointerIndex: undefined,
       },
     })) as Array<Roi<T>>,
@@ -57,7 +51,6 @@ export type RoiReducerAction<T> =
       payload: { id: string; updatedData: Partial<CommittedRoi<T>> };
     }
   | { type: 'removeRoi'; payload?: string }
-  | { type: 'isMoving'; payload: 'moving' }
   | { type: 'resizeRoi'; payload: number }
   | { type: 'onMouseDown'; payload: React.MouseEvent }
   | { type: 'onMouseMove'; payload: React.MouseEvent }
@@ -74,21 +67,25 @@ function roiReducer<T>(
 ): RoiContainerState<T> {
   return produce(state, (draft) => {
     switch (action.type) {
-      case 'isMoving': {
-        const { selectedRoi, rois } = draft;
-        if (draft.selectedRoi) {
-          const index = rois.findIndex((roi) => roi.id === selectedRoi);
-          const roi = draft.rois[index];
-          roi.action = action.payload;
-        }
-        break;
-      }
       case 'setMode':
         draft.mode = action.payload;
         break;
 
       case 'setRatio':
         draft.ratio = action.payload;
+        for (const commitedRoi of draft.commitedRois) {
+          const index = draft.rois.findIndex(
+            (roi) => roi.id === commitedRoi.id,
+          );
+          const { x, y, height, width } = getScaledRectangle(
+            commitedRoi,
+            action.payload,
+          );
+          draft.rois[index].actionData = {
+            startPoint: { x, y },
+            endPoint: { x: x + width, y: y + height },
+          };
+        }
         break;
 
       case 'removeRoi': {
@@ -109,9 +106,7 @@ function roiReducer<T>(
         const roiHeight = Math.round(targetHeight * 0.1);
         const roiX = Math.round(targetWidth / 2 - roiWidth) * draft.ratio.x;
         const roiY = Math.round(targetHeight / 2 - roiHeight) * draft.ratio.y;
-        const id = crypto.randomUUID();
-        draft.selectedRoi = id;
-        const commitedRoi = commitedRoiTemplate<T>(id, {
+        const commitedRoi = commitedRoiTemplate<T>(crypto.randomUUID(), {
           x: roiX,
           y: roiY,
           width: roiWidth,
@@ -119,11 +114,12 @@ function roiReducer<T>(
           ...action.payload,
         });
         const { x, y, width, height, ...roi } = commitedRoi;
+        // TODO: check those errors
         // @ts-expect-error need to check
         draft.commitedRois.push(commitedRoi);
         draft.rois.push(
           // @ts-expect-error need to check
-          roiTemplate<T>(id, {
+          roiTemplate<T>(commitedRoi.id, {
             action: 'idle',
             actionData: {
               startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },
@@ -137,6 +133,7 @@ function roiReducer<T>(
             ...roi,
           }),
         );
+        draft.selectedRoi = commitedRoi.id;
         break;
       }
 
@@ -193,26 +190,21 @@ function roiReducer<T>(
           draft.selectedRoi = undefined;
           return;
         }
-        const { ratio, rois } = draft;
+        const { rois } = draft;
         const { x: svgX, y: svgY } = document
           .getElementById('roi-container-svg')
           .getBoundingClientRect();
         draft.selectedRoi = id;
-        const index = rois.findIndex((roi) => roi.id === id);
-        const roi = draft.rois[index];
+        const roi = rois.find((roi) => roi.id === id);
         roi.action = 'moving';
         if (!draft.selectedRoi) return;
-        const scaledRectangle = getScaledRectangle(
-          draft.commitedRois[index],
-          ratio,
-        );
-        const { x, y, width, height } = scaledRectangle;
+        const { startPoint, endPoint } = roi.actionData;
+        const rectangle = getRectangleFromPoints(startPoint, endPoint);
+        const { x, y } = rectangle;
         roi.actionData.delta = {
           x: event.clientX - x - svgX,
           y: event.clientY - y - svgY,
         };
-        roi.actionData.startPoint = { x, y };
-        roi.actionData.endPoint = { x: x + width, y: y + height };
         break;
       }
 

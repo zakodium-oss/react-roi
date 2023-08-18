@@ -1,33 +1,38 @@
 import { useContext } from 'react';
 
-import { RoiStateContext } from '../context/RoiContext';
+import { RoiDispatchContext, RoiStateContext } from '../context/RoiContext';
+import { useRois } from '../hooks/useRois';
 import { CommittedRoi } from '../types/CommittedRoi';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { getPointers } from '../utilities/getPointers';
+import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 
 import { BoxAnnotation } from './BoxAnnotation';
 import { Label } from './Label';
 
 interface RoiBoxProps {
-  id?: string;
   roi: CommittedRoi;
 }
 
 export function RoiBox({ roi }: RoiBoxProps): JSX.Element {
   const roiState = useContext(RoiStateContext);
-  const { id, style } = roi;
-  const { x, y, width, height } = getScaledRectangle(roi, roiState.ratio);
-  const isActive = id === roiState.selectedRoi;
+  const roiDispatch = useContext(RoiDispatchContext);
+  const currentRoi = useRois([roi.id])[0];
+  const { style, editStyle, actionData } = currentRoi;
+  const { startPoint, endPoint } = actionData;
+  const { x, y, width, height } = getRectangleFromPoints(startPoint, endPoint);
+  const isActive = roi.id === roiState.selectedRoi;
+  const cursorSize = 3;
   return (
     <>
       <BoxAnnotation
-        id={id}
+        id={roi.id}
         x={x}
         y={y}
         width={width}
         height={height}
-        style={isActive && roiState.mode === 'select' ? { opacity: 0 } : style}
+        style={isActive ? editStyle : style}
       />
-      {roi.label && !isActive && (
+      {roi.label && (
         <Label
           label={roi.label}
           x={x + width / 2}
@@ -35,6 +40,24 @@ export function RoiBox({ roi }: RoiBoxProps): JSX.Element {
           width={width / 6}
         />
       )}
+      {roiState.mode === 'select' &&
+        isActive &&
+        getPointers(startPoint, endPoint).map((pointer) => (
+          <rect
+            id={`pointer-${pointer.position}`}
+            key={`pointer-${pointer.position}`}
+            x={pointer.cx - cursorSize}
+            y={pointer.cy - cursorSize}
+            cursor={pointer.cursor}
+            width={cursorSize * 2}
+            height={cursorSize * 2}
+            style={{ fill: '#44aaff', stroke: 'black' }}
+            onMouseDown={(event) => {
+              event.stopPropagation();
+              roiDispatch({ type: 'resizeRoi', payload: pointer.position });
+            }}
+          />
+        ))}
     </>
   );
 }

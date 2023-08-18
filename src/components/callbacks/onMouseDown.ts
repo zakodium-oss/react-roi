@@ -1,4 +1,3 @@
-import { Modes } from '../../context/RoiContext';
 import { Roi } from '../../types/Roi';
 import { RoiContainerState } from '../../types/RoiContainerState';
 import { commitedRoiTemplate } from '../../utilities/commitedRoiTemplate';
@@ -24,12 +23,12 @@ export function onMouseDown(draft: RoiContainerState, event: React.MouseEvent) {
   };
 
   switch (draft.mode) {
-    case Modes.DRAW:
+    case 'draw':
       draft.selectedRoi = commitedRoi.id;
       draft.rois.push(roi);
       draft.commitedRois.push(commitedRoi);
       break;
-    case Modes.SELECT: {
+    case 'select': {
       draft.selectedRoi = undefined;
       break;
     }

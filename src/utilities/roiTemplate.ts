@@ -1,6 +1,9 @@
 import { Roi } from '../types/Roi';
 
-export function roiTemplate<T>(id: string, options: Omit<Partial<Roi<T>>, 'id'> = {}): Roi<T> {
+export function roiTemplate<T>(
+  id: string,
+  options: Omit<Partial<Roi<T>>, 'id'> = {},
+): Roi<T> {
   return {
     id,
     style: {
@@ -18,6 +21,7 @@ export function roiTemplate<T>(id: string, options: Omit<Partial<Roi<T>>, 'id'> 
       delta: undefined,
       pointerIndex: undefined,
     },
+    // TODO: check error
     // @ts-expect-error need to check
     data: { blurMethod: 'fill' },
     ...options,

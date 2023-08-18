@@ -10,7 +10,10 @@ import { Rectangle } from '../types/Rectangle';
  * @returns
  */
 
-export function getScaledRectangle(roi: CommittedRoi, ratio: Ratio): Rectangle {
+export function getScaledRectangle(
+  roi: CommittedRoi | Rectangle,
+  ratio: Ratio,
+): Rectangle {
   const result: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
   const { x, y, width, height } = roi;
   if (x < x + width) {

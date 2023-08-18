@@ -1,7 +1,12 @@
-import { Rectangle } from '../types/Rectangle';
+import { Point } from '../types';
 
-export function getPointers(rectangle: Rectangle) {
-  const { height = 0, width = 0, x, y } = rectangle;
+import { sortPoints } from './sortPoints';
+
+export function getPointers(startPoint: Point, endPoint: Point) {
+  const { p0, p1 } = sortPoints(startPoint, endPoint);
+  const { x, y } = p0;
+  const width = p1.x - x;
+  const height = p1.y - y;
   return [
     {
       position: 0,

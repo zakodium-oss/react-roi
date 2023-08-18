@@ -1,11 +1,10 @@
 import { Image, encode } from 'image-js';
-import { useState } from 'react';
 import { ObjectInspector } from 'react-inspector';
 
 import { RoiBox } from '../components/RoiBox';
 import { RoiContainer } from '../components/RoiContainer';
 import './css/HomePage.css';
-import { RoiAction, RoiProvider } from '../context/RoiContext';
+import { RoiProvider } from '../context/RoiContext';
 import { useRoiState } from '../hooks';
 import { useCommitedRois } from '../hooks/useCommitedRois';
 import { useRoiActions } from '../hooks/useRoiActions';
@@ -62,7 +61,6 @@ export function HomePage() {
 
 function MyComponent() {
   const state = useRoiState<RoiData>();
-  const [editing, setEditing] = useState<boolean>(true);
   return (
     <>
       <div
@@ -72,14 +70,6 @@ function MyComponent() {
           alignItems: 'center',
         }}
       >
-        <button
-          type="button"
-          onClick={() => {
-            setEditing(!editing);
-          }}
-        >
-          {`Go to ${editing ? 'result' : 'edit'}`}
-        </button>
         <Toolbar mode={state.mode} selectedRoi={state.selectedRoi} />
         <div
           style={{
@@ -102,7 +92,7 @@ function Toolbar({
   mode,
   selectedRoi,
 }: {
-  mode: RoiAction;
+  mode: 'select' | 'draw';
   selectedRoi: string;
 }) {
   const { setMode, createRoi, updateRoi, removeRoi } = useRoiActions<RoiData>();

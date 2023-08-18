@@ -1,10 +1,6 @@
 import { CSSProperties, useContext } from 'react';
 
-import {
-  RoiDispatchContext,
-  RoiStateContext,
-  Modes,
-} from '../context/RoiContext';
+import { RoiDispatchContext, RoiStateContext } from '../context/RoiContext';
 
 interface BoxAnnotationProps {
   id: string;
@@ -28,7 +24,7 @@ export function BoxAnnotation({
   return (
     <rect
       id={id}
-      cursor={roiState.mode === Modes.DRAW ? 'crosshair' : 'grab'}
+      cursor={roiState.mode === 'draw' ? 'crosshair' : 'grab'}
       x={x}
       y={y}
       width={width}
@@ -39,7 +35,7 @@ export function BoxAnnotation({
           type: 'selectBoxAnnotation',
           payload: { id, event },
         });
-        if (roiState.mode === Modes.SELECT) event.stopPropagation();
+        if (roiState.mode === 'select') event.stopPropagation();
       }}
     />
   );

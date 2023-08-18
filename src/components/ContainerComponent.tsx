@@ -7,13 +7,7 @@ import {
   useState,
 } from 'react';
 
-import {
-  Modes,
-  RoiStateContext,
-  RoiDispatchContext,
-} from '../context/RoiContext';
-
-import { ResizeBox } from './ResizeBox';
+import { RoiStateContext, RoiDispatchContext } from '../context/RoiContext';
 
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<any> };
@@ -70,7 +64,6 @@ export function ContainerComponent({
     size.width,
     size.height,
   ]);
-  const cursorSize = 3;
   return (
     <div
       id="container-component"
@@ -81,9 +74,10 @@ export function ContainerComponent({
         padding: 0,
         width: 'fit-content',
         height: 'fit-content',
-        cursor: roiState.mode === Modes.DRAW ? 'crosshair' : 'default',
+        cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
       }}
     >
+      {element}
       <svg
         id="roi-container-svg"
         style={{
@@ -99,7 +93,6 @@ export function ContainerComponent({
           roiDispatch({ type: 'onMouseUp', payload: event });
         }}
         onMouseMove={(event) => {
-          // event.stopPropagation();
           if (event.buttons === 0) return;
           roiDispatch({ type: 'onMouseMove', payload: event });
         }}
@@ -108,9 +101,7 @@ export function ContainerComponent({
         }}
       >
         {children}
-        <ResizeBox key={`resize-box`} cursorSize={cursorSize} />
       </svg>
-      {element}
     </div>
   );
 }

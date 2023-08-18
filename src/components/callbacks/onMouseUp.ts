@@ -1,4 +1,3 @@
-import { Modes } from '../../context/RoiContext';
 import { RoiContainerState } from '../../types/RoiContainerState';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
@@ -18,7 +17,7 @@ export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
     roi.actionData.pointerIndex,
   );
   switch (mode) {
-    case Modes.DRAW: {
+    case 'draw': {
       const { startPoint } = roi.actionData;
       const rectangle = getRectangle(
         getRectangleFromPoints(startPoint, point),
@@ -37,7 +36,7 @@ export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
       break;
     }
 
-    case Modes.SELECT: {
+    case 'select': {
       if (roi.action !== 'idle') {
         draft.selectedRoi = updateObject(draft);
       }
@@ -49,7 +48,5 @@ export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
   if (roi) {
     roi.action = 'idle';
   }
-  roi.actionData.startPoint = undefined;
-  roi.actionData.endPoint = undefined;
   roi.actionData.delta = undefined;
 }
