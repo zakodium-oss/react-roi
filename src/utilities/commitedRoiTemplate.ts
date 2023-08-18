@@ -2,7 +2,7 @@ import { CommittedRoi } from '../types/CommittedRoi';
 
 export function commitedRoiTemplate<T>(
   id: string,
-  options: Omit<Partial<CommittedRoi>, 'id'> = {},
+  options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
 ): CommittedRoi<T> {
   return {
     id,
@@ -19,9 +19,6 @@ export function commitedRoiTemplate<T>(
       fill: 'blue',
       opacity: 0.5,
     },
-    // TODO: check error
-    // @ts-expect-error need to check
-    data: { blurMethod: 'fill' },
     ...options,
   };
 }

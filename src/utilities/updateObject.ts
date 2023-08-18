@@ -1,9 +1,9 @@
-import { RoiContainerState } from '../types/RoiContainerState';
+import { ReactRoiState } from '../context/roiReducer';
 
 import { getRectangle } from './getRectangle';
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
-export function updateObject(draft: RoiContainerState) {
+export function updateObject(draft: ReactRoiState) {
   const { ratio, selectedRoi, rois, commitedRois } = draft;
   const index = rois.findIndex((roi) => roi.id === selectedRoi);
   const roi = rois[index];

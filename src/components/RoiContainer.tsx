@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useKbsGlobal } from 'react-kbs';
 
-import { RoiDispatchContext } from '../context/RoiContext';
+import { roiDispatchContext } from '../context/contexts';
 
 import { ContainerComponent } from './ContainerComponent';
 
@@ -16,7 +16,7 @@ export function RoiContainer({
   children,
   options = {},
 }: RoiComponentProps) {
-  const roiDispatch = useContext(RoiDispatchContext);
+  const roiDispatch = useContext(roiDispatchContext);
   useKbsGlobal([
     {
       shortcut: ['delete', 'backspace'],

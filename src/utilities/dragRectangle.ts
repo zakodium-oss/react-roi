@@ -1,5 +1,5 @@
+import { ReactRoiState } from '../context/roiReducer';
 import { Point } from '../types/Point';
-import { RoiContainerState } from '../types/RoiContainerState';
 
 import { getRectangleFromPoints } from './getRectangleFromPoints';
 
@@ -12,7 +12,7 @@ import { getRectangleFromPoints } from './getRectangleFromPoints';
  */
 
 export function dragRectangle(
-  draft: RoiContainerState,
+  draft: ReactRoiState,
   point: Point,
 ): {
   startPoint: Point;

@@ -4,10 +4,11 @@ import { ObjectInspector } from 'react-inspector';
 import { RoiBox } from '../components/RoiBox';
 import { RoiContainer } from '../components/RoiContainer';
 import './css/HomePage.css';
-import { RoiProvider } from '../context/RoiContext';
+import { RoiProvider } from '../context/RoiProvider';
 import { useRoiState } from '../hooks';
 import { useCommitedRois } from '../hooks/useCommitedRois';
 import { useRoiActions } from '../hooks/useRoiActions';
+import { useRois } from '../hooks/useRois';
 import { CommittedRoi } from '../types/CommittedRoi';
 
 interface RoiData {
@@ -203,7 +204,7 @@ function ImageWithRois() {
 }
 
 function RoiList() {
-  const rois = useCommitedRois<RoiData>();
+  const rois = useRois<RoiData>();
   return (
     <>
       {rois.map((roi) => (

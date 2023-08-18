@@ -1,13 +1,13 @@
 import {
   MutableRefObject,
   cloneElement,
-  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
-import { RoiStateContext, RoiDispatchContext } from '../context/RoiContext';
+import { useRoiState } from '../hooks';
+import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<any> };
@@ -20,8 +20,8 @@ export function ContainerComponent({
   children,
   options,
 }: ContainerProps) {
-  const roiDispatch = useContext(RoiDispatchContext);
-  const roiState = useContext(RoiStateContext);
+  const roiDispatch = useRoiDispatch();
+  const roiState = useRoiState();
   const { containerWidth, containerHeight } = options;
   const elementRef = useRef(null);
   const ref = target.ref ?? elementRef;

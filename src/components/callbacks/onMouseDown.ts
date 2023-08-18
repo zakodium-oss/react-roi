@@ -1,9 +1,9 @@
+import { ReactRoiState } from '../../context/roiReducer';
 import { Roi } from '../../types/Roi';
-import { RoiContainerState } from '../../types/RoiContainerState';
 import { commitedRoiTemplate } from '../../utilities/commitedRoiTemplate';
 import { getMousePosition } from '../../utilities/getMousePosition';
 
-export function onMouseDown(draft: RoiContainerState, event: React.MouseEvent) {
+export function onMouseDown(draft: ReactRoiState, event: React.MouseEvent) {
   const commitedRoi = commitedRoiTemplate(crypto.randomUUID());
   const { x, y, width, height, ...obj } = commitedRoi;
   const point = getMousePosition(

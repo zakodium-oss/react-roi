@@ -1,6 +1,6 @@
 import { Roi } from './Roi';
 
-export interface CommittedRoi<TData = unknown>
+export interface CommittedRoi<TData = any>
   extends Omit<Roi<TData>, 'action' | 'actionData'> {
   x: number;
   y: number;

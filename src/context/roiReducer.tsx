@@ -1,11 +1,9 @@
 import { produce } from 'immer';
-import { Dispatch, createContext, useMemo, useReducer } from 'react';
-import { KbsProvider } from 'react-kbs';
 
 import { onMouseDown } from '../components/callbacks/onMouseDown';
 import { onMouseMove } from '../components/callbacks/onMouseMove';
 import { onMouseUp } from '../components/callbacks/onMouseUp';
-import { Ratio, RoiContainerState } from '../types';
+import { Ratio } from '../types';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
 import { commitedRoiTemplate } from '../utilities/commitedRoiTemplate';
@@ -14,36 +12,39 @@ import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { roiTemplate } from '../utilities/roiTemplate';
 
-function createInitialState<T>(
-  commitedRois: Array<CommittedRoi<T>>,
-): RoiContainerState<T> {
-  const roiInitialState = {
-    mode: 'select',
-    ratio: { x: 1, y: 1 },
-    selectedRoi: undefined,
-    commitedRois,
-    rois: commitedRois.map((roi) => ({
-      id: roi.id,
-      label: roi.label,
-      editStyle: roi.editStyle,
-      style: roi.style,
-      data: roi.data,
-      action: 'idle',
-      actionData: {
-        delta: undefined,
-        endPoint: { x: roi.x + roi.width, y: roi.y + roi.height },
-        startPoint: { x: roi.x, y: roi.y },
-        pointerIndex: undefined,
-      },
-    })) as Array<Roi<T>>,
-  };
-  return roiInitialState;
+export interface ReactRoiState<T = unknown> {
+  /**
+   * Current mode
+   */
+  mode: RoiMode;
+
+  /**
+   * Identification of the selected object
+   */
+  selectedRoi?: string;
+
+  /**
+   * The ratio of the width to the height of the original object is in relation to the target width and height, and it is measured in pixels.
+   */
+  ratio: Ratio;
+
+  /**
+   * rois
+   */
+  rois: Array<Roi<T>>;
+
+  /**
+   * commited rois
+   */
+  commitedRois: Array<CommittedRoi<T>>;
 }
 
-export type RoiState = Omit<RoiContainerState, 'startPoint' | 'endPoint'>;
+export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
-export type RoiReducerAction<T> =
-  | { type: 'setMode'; payload: 'select' | 'draw' }
+export type RoiMode = 'select' | 'draw';
+
+export type RoiReducerAction<T = unknown> =
+  | { type: 'setMode'; payload: RoiMode }
   | { type: 'setRatio'; payload: Ratio }
   | { type: 'addRoi'; payload: Partial<CommittedRoi<T>> & { id: string } }
   | {
@@ -61,10 +62,10 @@ export type RoiReducerAction<T> =
       payload: { id: string; event: React.MouseEvent };
     };
 
-function roiReducer<T>(
-  state: RoiContainerState<T>,
+export function roiReducer<T>(
+  state: ReactRoiState<T>,
   action: RoiReducerAction<T>,
-): RoiContainerState<T> {
+): ReactRoiState<T> {
   return produce(state, (draft) => {
     switch (action.type) {
       case 'setMode':
@@ -227,63 +228,4 @@ function roiReducer<T>(
         break;
     }
   });
-}
-
-export const RoiStateContext = createContext<
-  Omit<RoiContainerState<any>, 'commitedRois' | 'rois'> | undefined
->(undefined);
-
-export const RoiDispatchContext = createContext<
-  Dispatch<RoiReducerAction<any>> | undefined
->(undefined);
-
-export const CommitedRoisContext = createContext<
-  Array<CommittedRoi<any>> | undefined
->(undefined);
-
-export const RoisContext = createContext<Array<Roi<any>> | undefined>(
-  undefined,
-);
-
-interface RoiProviderProps<T> {
-  children: JSX.Element;
-  initialRois?: Array<CommittedRoi<T>>;
-}
-
-export function RoiProvider<T>({
-  children,
-  initialRois = [],
-}: RoiProviderProps<T>) {
-  const roiInitialState = createInitialState<T>(initialRois);
-  const [state, dispatch] = useReducer(roiReducer<T>, roiInitialState);
-  const { rois, commitedRois, ...remainingState } = state;
-  const roiState = useMemo(() => {
-    return remainingState;
-  }, [remainingState]);
-
-  const roiDispatch = useMemo(() => {
-    return dispatch;
-  }, [dispatch]);
-
-  const commitedRoisState = useMemo(() => {
-    return commitedRois;
-  }, [commitedRois]);
-
-  const roisState = useMemo(() => {
-    return rois;
-  }, [rois]);
-
-  return (
-    <KbsProvider>
-      <RoiDispatchContext.Provider value={roiDispatch}>
-        <RoisContext.Provider value={roisState}>
-          <CommitedRoisContext.Provider value={commitedRoisState}>
-            <RoiStateContext.Provider value={roiState}>
-              {children}
-            </RoiStateContext.Provider>
-          </CommitedRoisContext.Provider>
-        </RoisContext.Provider>
-      </RoiDispatchContext.Provider>
-    </KbsProvider>
-  );
 }

@@ -1,9 +1,9 @@
-import { RoiContainerState } from '../../types/RoiContainerState';
+import { ReactRoiState } from '../../context/roiReducer';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { sortPoints } from '../../utilities/sortPoints';
 
-export function onMouseMove(draft: RoiContainerState, event: React.MouseEvent) {
+export function onMouseMove(draft: ReactRoiState, event: React.MouseEvent) {
   const { x, y } = document
     .getElementById('roi-container-svg')
     .getBoundingClientRect();

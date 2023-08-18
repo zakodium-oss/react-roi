@@ -1,6 +1,7 @@
-import { CSSProperties, useContext } from 'react';
+import { CSSProperties } from 'react';
 
-import { RoiDispatchContext, RoiStateContext } from '../context/RoiContext';
+import { useRoiState } from '../hooks';
+import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
 interface BoxAnnotationProps {
   id: string;
@@ -19,8 +20,8 @@ export function BoxAnnotation({
   height,
   style,
 }: BoxAnnotationProps): JSX.Element {
-  const roiDispatch = useContext(RoiDispatchContext);
-  const roiState = useContext(RoiStateContext);
+  const roiDispatch = useRoiDispatch();
+  const roiState = useRoiState();
   return (
     <rect
       id={id}

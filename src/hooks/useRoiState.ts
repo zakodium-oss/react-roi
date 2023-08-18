@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { RoiStateContext } from '../context/RoiContext';
+import { roiStateContext } from '../context/contexts';
 import { RoiContainerState } from '../types';
 
 export function useRoiState<T>() {
@@ -11,7 +11,7 @@ export function useRoiState<T>() {
    */
   const state =
     useContext<Omit<RoiContainerState<T>, 'commitedRois' | 'rois'>>(
-      RoiStateContext,
+      roiStateContext,
     );
   return state;
 }

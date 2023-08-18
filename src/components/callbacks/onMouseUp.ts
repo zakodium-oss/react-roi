@@ -1,11 +1,11 @@
-import { RoiContainerState } from '../../types/RoiContainerState';
+import { ReactRoiState } from '../../context/roiReducer';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { getRectangle } from '../../utilities/getRectangle';
 import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
 import { updateObject } from '../../utilities/updateObject';
 
-export function onMouseUp(draft: RoiContainerState, event: React.MouseEvent) {
+export function onMouseUp(draft: ReactRoiState, event: React.MouseEvent) {
   const { mode, ratio, selectedRoi, rois, commitedRois } = draft;
   const index = rois.findIndex((roi) => roi.id === selectedRoi);
   if (index === -1) return;
