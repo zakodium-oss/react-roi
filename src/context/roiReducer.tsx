@@ -43,13 +43,13 @@ export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
 export type RoiMode = 'select' | 'draw';
 
-export type RoiReducerAction<T = unknown> =
+export type RoiReducerAction =
   | { type: 'setMode'; payload: RoiMode }
   | { type: 'setRatio'; payload: Ratio }
-  | { type: 'addRoi'; payload: Partial<CommittedRoi<T>> & { id: string } }
+  | { type: 'addRoi'; payload: Partial<CommittedRoi> & { id: string } }
   | {
       type: 'updateRoi';
-      payload: { id: string; updatedData: Partial<CommittedRoi<T>> };
+      payload: { id: string; updatedData: Partial<CommittedRoi> };
     }
   | { type: 'removeRoi'; payload?: string }
   | { type: 'resizeRoi'; payload: number }
@@ -62,10 +62,10 @@ export type RoiReducerAction<T = unknown> =
       payload: { id: string; event: React.MouseEvent };
     };
 
-export function roiReducer<T>(
-  state: ReactRoiState<T>,
-  action: RoiReducerAction<T>,
-): ReactRoiState<T> {
+export function roiReducer(
+  state: ReactRoiState,
+  action: RoiReducerAction,
+): ReactRoiState {
   return produce(state, (draft) => {
     switch (action.type) {
       case 'setMode':
@@ -107,7 +107,7 @@ export function roiReducer<T>(
         const roiHeight = Math.round(targetHeight * 0.1);
         const roiX = Math.round(targetWidth / 2 - roiWidth) * draft.ratio.x;
         const roiY = Math.round(targetHeight / 2 - roiHeight) * draft.ratio.y;
-        const commitedRoi = commitedRoiTemplate<T>(crypto.randomUUID(), {
+        const commitedRoi = commitedRoiTemplate(crypto.randomUUID(), {
           x: roiX,
           y: roiY,
           width: roiWidth,
@@ -115,12 +115,9 @@ export function roiReducer<T>(
           ...action.payload,
         });
         const { x, y, width, height, ...roi } = commitedRoi;
-        // TODO: check those errors
-        // @ts-expect-error need to check
         draft.commitedRois.push(commitedRoi);
         draft.rois.push(
-          // @ts-expect-error need to check
-          roiTemplate<T>(commitedRoi.id, {
+          roiTemplate(commitedRoi.id, {
             action: 'idle',
             actionData: {
               startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },

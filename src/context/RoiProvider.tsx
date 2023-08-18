@@ -47,7 +47,7 @@ export function RoiProvider<T>({
   initialRois = [],
 }: RoiProviderProps<T>) {
   const roiInitialState = createInitialState<T>(initialRois);
-  const [state, dispatch] = useReducer(roiReducer<T>, roiInitialState);
+  const [state, dispatch] = useReducer(roiReducer, roiInitialState);
   const { rois, commitedRois, mode, ratio, selectedRoi } = state;
   const roiState = useMemo(() => {
     return {

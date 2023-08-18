@@ -1,9 +1,9 @@
 import { Roi } from '../types/Roi';
 
-export function roiTemplate<T>(
+export function roiTemplate(
   id: string,
-  options: Omit<Partial<Roi<T>>, 'id'> = {},
-): Roi<T> {
+  options: Omit<Partial<Roi>, 'id'> = {},
+): Roi {
   return {
     id,
     style: {
