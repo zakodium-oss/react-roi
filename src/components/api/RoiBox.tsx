@@ -1,13 +1,12 @@
 import { memo } from 'react';
 
-import { useRoiState } from '../hooks';
-import { useRoiDispatch } from '../hooks/useRoiDispatch';
-import { Roi } from '../types/Roi';
-import { getPointers } from '../utilities/getPointers';
-import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-
-import { BoxAnnotation } from './BoxAnnotation';
-import { Label } from './Label';
+import { useRoiState } from '../../hooks';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { Roi } from '../../types/Roi';
+import { getPointers } from '../../utilities/getPointers';
+import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
+import { BoxAnnotation } from '../BoxAnnotation';
+import { Label } from '../Label';
 
 interface RoiBoxProps {
   roi: Roi;

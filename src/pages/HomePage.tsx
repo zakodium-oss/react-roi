@@ -1,14 +1,17 @@
 import { Image, encode } from 'image-js';
 import { ObjectInspector } from 'react-inspector';
 
-import { RoiBox } from '../components/RoiBox';
-import { RoiContainer } from '../components/RoiContainer';
 import './css/HomePage.css';
-import { RoiProvider } from '../context/RoiProvider';
-import { useRoiState } from '../hooks';
-import { useCommitedRois } from '../hooks/useCommitedRois';
-import { useRoiActions } from '../hooks/useRoiActions';
-import { useRois } from '../hooks/useRois';
+
+import {
+  RoiProvider,
+  useRoiState,
+  useRoiActions,
+  useRois,
+  useCommitedRois,
+  RoiContainer,
+  RoiBox,
+} from '../index';
 import { CommittedRoi } from '../types/CommittedRoi';
 
 interface RoiData {

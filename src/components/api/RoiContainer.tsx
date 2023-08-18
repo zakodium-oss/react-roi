@@ -1,8 +1,7 @@
 import { useKbsGlobal } from 'react-kbs';
 
-import { useRoiDispatch } from '../hooks/useRoiDispatch';
-
-import { ContainerComponent } from './ContainerComponent';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { ContainerComponent } from '../ContainerComponent';
 
 interface RoiComponentProps {
   target?: JSX.Element;
