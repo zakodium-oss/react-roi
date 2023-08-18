@@ -188,13 +188,8 @@ function ImageWithRois() {
   const blob = new Blob([buffer], { type: 'image/png' });
   const url = URL.createObjectURL(blob);
   return (
-    // This component renders the target image and all the ROIs
-    // it throws if rendered without an explicit provider on top of it
-    // And handles the mouse interactions to edit the rois
-    // It's possible to disable edition interactions by setting the readOnly prop to true
     <RoiContainer
       target={<img src={url} />}
-      // target={<div style={{ width: 1000, height: 800, background: 'grey' }} />}
       options={{ containerWidth: 800, containerHeight: 500 }}
     >
       <RoiList />

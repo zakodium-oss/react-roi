@@ -3,11 +3,11 @@ import { Ratio } from '../types/Ratio';
 
 import { getScaledRectangle } from './getScaledRectangle';
 
-export function getReferencePointers(
+export function getReferenceCorners(
   roi: CommittedRoi,
   ratio: Ratio,
   index: number,
-): Pointers {
+): Corners {
   const scaledRectangle = getScaledRectangle(roi, ratio);
   const { height, width, x, y } = scaledRectangle;
   switch (index) {
@@ -44,7 +44,7 @@ export function getReferencePointers(
   }
 }
 
-interface Pointers {
+interface Corners {
   p0: { x: number; y: number };
   p1: { x: number; y: number };
 }

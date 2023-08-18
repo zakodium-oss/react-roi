@@ -5,7 +5,7 @@ import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
 import { commitedRoiTemplate } from '../utilities/commitedRoiTemplate';
 import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { getReferencePointers } from '../utilities/getReferencePointers';
+import { getReferenceCorners } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { roiTemplate } from '../utilities/roiTemplate';
 
@@ -171,7 +171,7 @@ export function roiReducer(
         const roi = draft.rois[index];
         roi.action = 'resizing';
         if (!selectedRoi) return;
-        const points = getReferencePointers(
+        const points = getReferenceCorners(
           commitedRois[index],
           ratio,
           action.payload,
