@@ -21,9 +21,6 @@ export function roiTemplate<T>(
       delta: undefined,
       pointerIndex: undefined,
     },
-    // TODO: check error
-    // @ts-expect-error need to check
-    data: { blurMethod: 'fill' },
     ...options,
   };
 }

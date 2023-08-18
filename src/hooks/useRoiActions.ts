@@ -1,13 +1,14 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { roiDispatchContext } from '../context/contexts';
 import { CommittedRoi } from '../types/CommittedRoi';
 
+import { useRoiDispatch } from './useRoiDispatch';
+
 export function useRoiActions<T = unknown>() {
-  const roiDispatch = useContext(roiDispatchContext);
+  const roiDispatch = useRoiDispatch();
   const actions = useMemo(() => {
     return {
-      createRoi: (roi: CommittedRoi<T> & { id: string }) =>
+      createRoi: (roi: CommittedRoi<T>) =>
         roiDispatch({ type: 'addRoi', payload: roi }),
       updateRoi: (
         selectedRoi: string,

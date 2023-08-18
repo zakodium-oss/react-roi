@@ -1,4 +1,4 @@
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 
 import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';

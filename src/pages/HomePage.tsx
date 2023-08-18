@@ -61,7 +61,6 @@ export function HomePage() {
 }
 
 function MyComponent() {
-  const state = useRoiState<RoiData>();
   return (
     <>
       <div
@@ -71,7 +70,7 @@ function MyComponent() {
           alignItems: 'center',
         }}
       >
-        <Toolbar mode={state.mode} selectedRoi={state.selectedRoi} />
+        <Toolbar />
         <div
           style={{
             display: 'flex',
@@ -84,18 +83,18 @@ function MyComponent() {
           <TransformedImage />
         </div>
       </div>
-      <ObjectInspector expandLevel={2} data={state} />
+      <RoiStateObjectInspector />
     </>
   );
 }
 
-function Toolbar({
-  mode,
-  selectedRoi,
-}: {
-  mode: 'select' | 'draw';
-  selectedRoi: string;
-}) {
+function RoiStateObjectInspector() {
+  const state = useRoiState();
+  return <ObjectInspector expandLevel={2} data={state} />;
+}
+
+function Toolbar() {
+  const { mode, selectedRoi } = useRoiState();
   const { setMode, createRoi, updateRoi, removeRoi } = useRoiActions<RoiData>();
   return (
     <div
@@ -148,9 +147,6 @@ function Toolbar({
       <button
         type="button"
         onClick={() => {
-          // Update the color of the selected ROI
-          // First argument: roi to update (string)
-          // Second argument: update data (Partial<CommitedRoi<RoiData>>)
           updateRoi(selectedRoi, {
             y: 10,
             style: {

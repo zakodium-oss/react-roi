@@ -2,7 +2,7 @@ import { RoiMode } from '../context/roiReducer';
 
 import { Ratio } from './Ratio';
 
-export interface RoiContainerState<T = unknown> {
+export interface RoiContainerState {
   /**
    * Current mode
    */
