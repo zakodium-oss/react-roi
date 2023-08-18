@@ -1,8 +1,5 @@
 import { produce } from 'immer';
 
-import { onMouseDown } from '../components/callbacks/onMouseDown';
-import { onMouseMove } from '../components/callbacks/onMouseMove';
-import { onMouseUp } from '../components/callbacks/onMouseUp';
 import { Ratio } from '../types';
 import { CommittedRoi } from '../types/CommittedRoi';
 import { Roi } from '../types/Roi';
@@ -11,6 +8,10 @@ import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
 import { getReferencePointers } from '../utilities/getReferencePointers';
 import { getScaledRectangle } from '../utilities/getScaledRectangle';
 import { roiTemplate } from '../utilities/roiTemplate';
+
+import { onMouseDown } from './updaters/onMouseDown';
+import { onMouseMove } from './updaters/onMouseMove';
+import { onMouseUp } from './updaters/onMouseUp';
 
 export interface ReactRoiState<T = unknown> {
   /**

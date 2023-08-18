@@ -1,4 +1,4 @@
-import { ReactRoiState } from '../../context/roiReducer';
+import { ReactRoiState } from '../roiReducer';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { getRectangle } from '../../utilities/getRectangle';

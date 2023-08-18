@@ -1,7 +1,7 @@
-import { ReactRoiState } from '../../context/roiReducer';
 import { dragRectangle } from '../../utilities/dragRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { sortPoints } from '../../utilities/sortPoints';
+import { ReactRoiState } from '../roiReducer';
 
 export function onMouseMove(draft: ReactRoiState, event: React.MouseEvent) {
   const { x, y } = document
