@@ -1,9 +1,9 @@
-import { ReactRoiState } from '../roiReducer';
 import { checkRectangle } from '../../utilities/checkRectangle';
 import { getMousePosition } from '../../utilities/getMousePosition';
 import { getRectangle } from '../../utilities/getRectangle';
 import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
 import { updateObject } from '../../utilities/updateObject';
+import { ReactRoiState } from '../roiReducer';
 
 export function onMouseUp(draft: ReactRoiState, event: React.MouseEvent) {
   const { mode, ratio, selectedRoi, rois, commitedRois } = draft;

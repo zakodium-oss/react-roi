@@ -15,4 +15,4 @@ export const roiDispatchContext =
 
 export const commitedRoisContext = createContext<CommittedRoi[] | null>(null);
 
-export const roisContext = createContext<Array<Roi<any>> | null>(null);
+export const roisContext = createContext<Roi[] | null>(null);

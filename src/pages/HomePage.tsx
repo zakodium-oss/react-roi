@@ -120,7 +120,6 @@ function Toolbar() {
       <button
         type="button"
         onClick={() =>
-          // Takes a new CommitedRoi<RoiData> as argument
           createRoi({
             id: crypto.randomUUID(),
             // All the following roi properties are optional
@@ -168,8 +167,6 @@ function Toolbar() {
       <button
         type="button"
         onClick={() => {
-          // Update the color of the selected ROI
-          // First argument: roi to update (string)
           removeRoi(selectedRoi);
         }}
       >
@@ -209,10 +206,6 @@ function RoiList() {
 }
 
 function TransformedImage() {
-  // The api provides a different list of ROIs, which only changes when the movement
-  // of an roi is finished (so when the user releases the mouse after moving or resizing)
-  // The shape of the roi objects are the same which need to be fed as initial values to the RoiProvider
-  // The type of commitedRois is CommitedRoi<RoiData>[]
   const image = new Image(500, 400).fill(255);
   image.drawRectangle({ out: image });
   image.drawCircle({ column: 250, row: 200 }, 200, { out: image });
@@ -229,7 +222,5 @@ function TransformedImage() {
   const buffer = encode(image);
   const blob = new Blob([buffer], { type: 'image/png' });
   const url = URL.createObjectURL(blob);
-  // e.g. create the pseudonymized image in an effect
   return <img src={url} style={{ width: 500, height: 400, padding: '10px' }} />;
-  // the result of this hook can also be used to send the ROIs to the backend
 }

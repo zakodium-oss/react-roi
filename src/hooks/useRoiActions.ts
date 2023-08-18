@@ -12,11 +12,11 @@ export function useRoiActions<T = unknown>() {
         roiDispatch({ type: 'addRoi', payload: roi }),
       updateRoi: (
         selectedRoi: string,
-        updatedData: Partial<CommittedRoi<T>>,
+        updatedData: Partial<Omit<CommittedRoi<T>, 'id'>>,
       ) => {
         roiDispatch({
           type: 'updateRoi',
-          payload: { id: selectedRoi, updatedData },
+          payload: { ...updatedData, id: selectedRoi },
         });
       },
       removeRoi: (selectedRoi: string) => {

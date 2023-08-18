@@ -44,13 +44,15 @@ export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
 export type RoiMode = 'select' | 'draw';
 
+export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
+
 export type RoiReducerAction =
   | { type: 'setMode'; payload: RoiMode }
   | { type: 'setRatio'; payload: Ratio }
-  | { type: 'addRoi'; payload: Partial<CommittedRoi> & { id: string } }
+  | { type: 'addRoi'; payload: CreateUpdateRoiPayload }
   | {
       type: 'updateRoi';
-      payload: { id: string; updatedData: Partial<CommittedRoi> };
+      payload: CreateUpdateRoiPayload;
     }
   | { type: 'removeRoi'; payload?: string }
   | { type: 'resizeRoi'; payload: number }
@@ -137,7 +139,7 @@ export function roiReducer(
       }
 
       case 'updateRoi': {
-        const { id, updatedData } = action.payload;
+        const { id, ...updatedData } = action.payload;
         if (!id) return;
         const index = draft.rois.findIndex((roi) => roi.id === id);
         const commitedRoi = Object.assign(
