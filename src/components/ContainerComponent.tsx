@@ -10,7 +10,7 @@ import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
 interface ContainerProps {
-  target: JSX.Element & { ref?: MutableRefObject<any> };
+  target: JSX.Element & { ref?: MutableRefObject<unknown> };
   children: JSX.Element;
   options?: { containerWidth?: number; containerHeight?: number };
 }
