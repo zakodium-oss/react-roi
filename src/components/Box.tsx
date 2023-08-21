@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
@@ -10,7 +10,7 @@ interface BoxAnnotationProps {
   width: number;
   height: number;
   style?: CSSProperties;
-  label?: string;
+  label?: ReactNode;
 }
 
 export function Box({

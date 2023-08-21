@@ -24,7 +24,7 @@ export function createCommitedRoi<T>(
       backgroundColor: 'black',
       opacity: 0.5,
     },
-    editStyle: {
+    selectedStyle: {
       backgroundColor: 'blue',
       opacity: 0.5,
     },

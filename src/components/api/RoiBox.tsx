@@ -13,7 +13,7 @@ interface RoiBoxProps {
 function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
   const roiState = useRoiState();
   const roiDispatch = useRoiDispatch();
-  const { style, editStyle, x, y, width, height } = roi;
+  const { style, selectedStyle: editStyle, x, y, width, height } = roi;
   const isActive = roi.id === roiState.selectedRoi;
   const cursorSize = 4;
   return (

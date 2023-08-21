@@ -30,7 +30,7 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
       backgroundColor: 'black',
       opacity: 0.5,
     },
-    editStyle: {
+    selectedStyle: {
       backgroundColor: 'blue',
       opacity: 0.5,
     },
@@ -46,7 +46,7 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
       backgroundColor: 'black',
       opacity: 0.5,
     },
-    editStyle: {
+    selectedStyle: {
       backgroundColor: 'green',
       opacity: 0.5,
     },
@@ -130,7 +130,7 @@ function Toolbar() {
               backgroundColor: '#ff5500',
               opacity: 0.6,
             },
-            editStyle: {
+            selectedStyle: {
               backgroundColor: '#ffaa00',
               opacity: 0.4,
             },
@@ -151,7 +151,7 @@ function Toolbar() {
               backgroundColor: 'green',
               opacity: 0.6,
             },
-            editStyle: {
+            selectedStyle: {
               backgroundColor: 'lightgreen',
               opacity: 0.4,
             },
