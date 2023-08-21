@@ -43,7 +43,11 @@ export function Box({
             id,
           },
         });
-        if (roiState.mode === 'select') event.stopPropagation();
+        if (roiState.mode === 'select') {
+          // By preventing the event to fire on the container, we prevent
+          // the drawing of a new ROI to start.
+          event.stopPropagation();
+        }
       }}
     >
       {label}
