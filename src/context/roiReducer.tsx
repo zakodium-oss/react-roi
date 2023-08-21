@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { Box } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
-import { assert } from '../utilities/assert';
+import { assert, assertUnreachable } from '../utilities/assert';
 import { XAxisCorner, YAxisCorner } from '../utilities/coordinates';
 import {
   createCommitedRoi,
@@ -10,6 +10,7 @@ import {
   renormalizeRoiPosition,
 } from '../utilities/rois';
 
+import { cancelAction } from './updaters/cancelAction';
 import { onMouseDown } from './updaters/onMouseDown';
 import { onMouseMove } from './updaters/onMouseMove';
 import { onMouseUp } from './updaters/onMouseUp';
@@ -104,7 +105,8 @@ export function roiReducer(
   action: RoiReducerAction,
 ): ReactRoiState {
   return produce(state, (draft) => {
-    switch (action.type) {
+    const type = action.type;
+    switch (type) {
       case 'SET_MODE':
         draft.mode = action.payload;
         break;
@@ -205,8 +207,12 @@ export function roiReducer(
         break;
       }
 
-      default:
+      case 'CANCEL_ACTION': {
+        cancelAction(draft);
         break;
+      }
+      default:
+        assertUnreachable(type);
     }
   });
 }
