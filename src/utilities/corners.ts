@@ -6,7 +6,7 @@ import { Roi } from '../types/Roi';
 import { assertUnreachable } from './assert';
 import { XAxisCorner, YAxisCorner } from './coordinates';
 
-interface CornerData {
+export interface CornerData {
   xAxis: XAxisCorner;
   yAxis: YAxisCorner;
   cursor: CSSProperties['cursor'];

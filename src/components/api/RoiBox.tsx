@@ -1,10 +1,10 @@
 import { memo } from 'react';
 
 import { useRoiState } from '../../hooks';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 import { Box } from '../Box';
+import { RoiBoxCorner } from '../RoiBoxCorner';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -12,10 +12,8 @@ interface RoiBoxProps {
 
 function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
   const roiState = useRoiState();
-  const roiDispatch = useRoiDispatch();
   const { style, selectedStyle: editStyle, x, y, width, height } = roi;
   const isActive = roi.id === roiState.selectedRoi;
-  const cursorSize = 4;
   return (
     <>
       <Box
@@ -30,30 +28,10 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
       {roiState.mode === 'select' &&
         isActive &&
         getAllCorners(roi).map((pointer) => (
-          <div
-            id={`pointer-${pointer.xAxis}-${pointer.yAxis}`}
+          <RoiBoxCorner
+            pointer={pointer}
+            roiId={roi.id}
             key={`pointer-${pointer.xAxis}-${pointer.yAxis}`}
-            style={{
-              backgroundColor: '#44aaff',
-              stroke: 'black',
-              position: 'absolute',
-              top: pointer.cy - cursorSize,
-              left: pointer.cx - cursorSize,
-              width: cursorSize * 2,
-              height: cursorSize * 2,
-              cursor: pointer.cursor,
-            }}
-            onMouseDown={(event) => {
-              event.stopPropagation();
-              roiDispatch({
-                type: 'START_RESIZE',
-                payload: {
-                  id: roi.id,
-                  xAxisCorner: pointer.xAxis,
-                  yAxisCorner: pointer.yAxis,
-                },
-              });
-            }}
           />
         ))}
     </>

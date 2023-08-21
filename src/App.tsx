@@ -56,36 +56,31 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
 
 export default function App() {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      <RoiProvider initialRois={initialRois}>
-        <MyComponent />
-      </RoiProvider>
-    </div>
-  );
-}
-
-function MyComponent() {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <Toolbar />
+    <RoiProvider initialRois={initialRois}>
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
+          flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <ImageWithRois />
-        <TransformedImage />
+        <Toolbar />
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'start',
+            width: '100%',
+          }}
+        >
+          <div style={{ flexGrow: 1 }}>
+            <ImageWithRois />
+          </div>
+
+          <TransformedImage />
+        </div>
       </div>
-    </div>
+    </RoiProvider>
   );
 }
 
@@ -175,7 +170,9 @@ function ImageWithRois() {
   const blob = new Blob([buffer], { type: 'image/png' });
   const url = URL.createObjectURL(blob);
   return (
-    <RoiContainer target={<img src={url} style={{ display: 'block' }} />}>
+    <RoiContainer
+      target={<img src={url} style={{ display: 'block', width: '100%' }} />}
+    >
       <RoiList />
     </RoiContainer>
   );
@@ -207,12 +204,7 @@ function TransformedImage() {
   const buffer = encode(image);
   const blob = new Blob([buffer], { type: 'image/png' });
   const url = URL.createObjectURL(blob);
-  return (
-    <img
-      src={url}
-      style={{ width: imageWidth, height: imageHeight, padding: '10px' }}
-    />
-  );
+  return <img src={url} />;
 }
 
 function createBaseImage() {
