@@ -1,4 +1,4 @@
-export { RoiComponent } from './components/RoiComponent';
-export { RoiProvider, sharedRois } from './context/RoiContext';
+export * from './components/api/index';
+export * from './context/index';
 export * from './types/index';
-export * from './hooks';
+export * from './hooks/index';

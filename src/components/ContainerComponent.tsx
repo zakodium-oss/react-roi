@@ -1,86 +1,86 @@
-import { useContext, useEffect } from 'react';
+import useResizeObserver from '@react-hook/resize-observer';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
-import {
-  RoiActions,
-  RoiContext,
-  RoiDispatchContext,
-} from '../context/RoiContext';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
+import { roiContainerRefContext } from '../context/contexts';
+import { useRoiState } from '../hooks';
+import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
-import { BoxAnnotation } from './BoxAnnotation';
-import { ResizeBox } from './ResizeBox';
+interface ContainerProps {
+  target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
+  children: JSX.Element;
+}
 
-export function ContainerComponent({ element }: { element: JSX.Element }) {
-  const { roiDispatch } = useContext(RoiDispatchContext);
-  const { roiState } = useContext(RoiContext);
-  // @ts-expect-error i know
-  const current = element.ref.current as HTMLElement;
-  const { width, height, top, left } = current
-    ? current.getBoundingClientRect()
-    : { width: 0, height: 0, top: 0, left: 0 };
-  useEffect(() => {
+export function ContainerComponent({ target, children }: ContainerProps) {
+  const roiDispatch = useRoiDispatch();
+  const roiState = useRoiState();
+  const ref = useRef<HTMLDivElement>(null);
+  useResizeObserver(ref, (entry) => {
     roiDispatch({
-      type: 'setComponentPosition',
+      type: 'SET_SIZE',
       payload: {
-        origin: { column: left, row: top },
-        width,
-        height,
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
       },
     });
-  }, [width, height, top, left, roiDispatch]);
-  const cursorSize = 3;
-  const resizeBox = <ResizeBox key={`resize-box`} cursorSize={cursorSize} />;
-  const annotations = roiState.rois.map((obj) => {
-    if (
-      obj.id === roiState.roiID &&
-      (roiState.action === RoiActions.DRAG ||
-        roiState.action === RoiActions.RESIZE)
-    ) {
-      return null;
-    }
-    return (
-      <BoxAnnotation
-        id={obj.id}
-        key={obj.id}
-        rectangle={getScaledRectangle(obj.rectangle, roiState.ratio)}
-        options={obj.meta}
-      />
-    );
   });
+
+  useEffect(() => {
+    function onMouseMove(event: MouseEvent) {
+      roiDispatch({
+        type: 'MOUSE_MOVE',
+        payload: event,
+      });
+    }
+
+    function onMouseUp() {
+      roiDispatch({
+        type: 'END_ACTION',
+      });
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  });
+
   return (
-    <div
-      id="container-component"
-      style={{
-        display: 'flex',
-        position: 'relative',
-        margin: 0,
-        padding: 0,
-        width: 'fit-content',
-        height: 'fit-content',
-      }}
-      onMouseUp={(event) => roiDispatch({ type: 'onMouseUp', payload: event })}
-      onMouseMove={(event) =>
-        roiDispatch({ type: 'onMouseMove', payload: event })
-      }
-      onMouseDown={(event) =>
-        roiDispatch({ type: 'onMouseDown', payload: event })
-      }
-    >
-      {element}
-      {annotations !== undefined ? (
-        <svg
+    <roiContainerRefContext.Provider value={ref}>
+      <div
+        ref={ref}
+        style={{
+          position: 'relative',
+          margin: 0,
+          padding: 0,
+          cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
+        }}
+      >
+        {target}
+
+        <div
           style={{
+            userSelect: 'none',
+            width: '100%',
+            height: '100%',
             position: 'absolute',
             margin: 0,
             padding: 0,
-            width,
-            height,
+            top: 0,
+            left: 0,
           }}
-          viewBox={`0 0 ${width} ${height}`}
+          onMouseDown={(event) => {
+            const containerBoundingRect = ref.current.getBoundingClientRect();
+            roiDispatch({
+              type: 'START_DRAW',
+              payload: { event, containerBoundingRect },
+            });
+          }}
         >
-          {[...annotations, resizeBox]}
-        </svg>
-      ) : null}
-    </div>
+          {children}
+        </div>
+      </div>
+    </roiContainerRefContext.Provider>
   );
 }

@@ -1,7 +1,7 @@
 html,
 body {
   margin: 0;
-  display: flex;
+  width: 100%;
 }
 #root {
   height: 100%;
