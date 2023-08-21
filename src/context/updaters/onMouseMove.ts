@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
 import { Point } from '../../types';
-import { CommittedRoi, Roi } from '../../types/Roi';
+import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 

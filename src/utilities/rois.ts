@@ -1,7 +1,7 @@
 import { Box, Size } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 
-import { denormalizeBox, normalizeBox, normalizeValue } from './coordinates';
+import { denormalizeBox, normalizeValue } from './coordinates';
 
 function createInitialBox(): Box {
   return {

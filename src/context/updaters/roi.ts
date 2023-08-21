@@ -1,4 +1,4 @@
-import { Draft, original } from 'immer';
+import { Draft } from 'immer';
 
 import { Box, Size } from '../../types';
 import { CommittedRoi, Roi } from '../../types/Roi';
