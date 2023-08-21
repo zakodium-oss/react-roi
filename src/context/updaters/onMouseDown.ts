@@ -1,33 +1,38 @@
 import { Roi } from '../../types/Roi';
-import { commitedRoiTemplate } from '../../utilities/commitedRoiTemplate';
-import { getMousePosition } from '../../utilities/getMousePosition';
-import { ReactRoiState } from '../roiReducer';
+import { normalizeClientPoint } from '../../utilities/coordinates';
+import { createRoi } from '../../utilities/rois';
+import { MouseEventPayload, ReactRoiState } from '../roiReducer';
 
-export function onMouseDown(draft: ReactRoiState, event: React.MouseEvent) {
-  const commitedRoi = commitedRoiTemplate(crypto.randomUUID());
-  const { x, y, width, height, ...obj } = commitedRoi;
-  const point = getMousePosition(
-    event,
-    { x: event.clientX, y: event.clientY },
-    2,
-  );
-  const roi: Roi = {
-    ...obj,
-    action: 'drawing',
-    actionData: {
-      startPoint: point,
-      endPoint: point,
-      delta: undefined,
-      pointerIndex: undefined,
-    },
-  };
+export function onMouseDown(draft: ReactRoiState, payload: MouseEventPayload) {
+  const { event, containerBoundingRect } = payload;
+  const emptyRoi = createRoi(crypto.randomUUID(), draft.size);
 
   switch (draft.mode) {
-    case 'draw':
-      draft.selectedRoi = commitedRoi.id;
+    case 'draw': {
+      const point = normalizeClientPoint(
+        { x: event.clientX, y: event.clientY },
+        containerBoundingRect,
+      );
+      const roi: Roi = {
+        ...emptyRoi,
+        action: {
+          type: 'drawing',
+          xAxisCorner: 'left',
+          yAxisCorner: 'top',
+        },
+
+        x: point.x,
+        y: point.y,
+        width: 0,
+        height: 0,
+
+        // TODO: allow to set a default data
+        data: undefined,
+      };
+      draft.selectedRoi = roi.id;
       draft.rois.push(roi);
-      draft.commitedRois.push(commitedRoi);
       break;
+    }
     case 'select': {
       draft.selectedRoi = undefined;
       break;

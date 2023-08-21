@@ -1,18 +1,23 @@
 import { produce } from 'immer';
 
-import { Ratio } from '../types';
-import { CommittedRoi } from '../types/CommittedRoi';
-import { Roi } from '../types/Roi';
-import { commitedRoiTemplate } from '../utilities/commitedRoiTemplate';
-import { getRectangleFromPoints } from '../utilities/getRectangleFromPoints';
-import { getReferenceCorners } from '../utilities/getReferencePointers';
-import { getScaledRectangle } from '../utilities/getScaledRectangle';
-import { roiTemplate } from '../utilities/roiTemplate';
+import { Box } from '../types';
+import { CommittedRoi, Roi } from '../types/Roi';
+import { assert } from '../utilities/assert';
+import { XAxisCorner, YAxisCorner } from '../utilities/coordinates';
+import {
+  createCommitedRoi,
+  createRoi,
+  renormalizeRoiPosition,
+} from '../utilities/rois';
 
 import { onMouseDown } from './updaters/onMouseDown';
 import { onMouseMove } from './updaters/onMouseMove';
 import { onMouseUp } from './updaters/onMouseUp';
 
+interface Size {
+  width: number;
+  height: number;
+}
 export interface ReactRoiState<T = unknown> {
   /**
    * Current mode
@@ -25,11 +30,6 @@ export interface ReactRoiState<T = unknown> {
   selectedRoi?: string;
 
   /**
-   * The ratio of the width to the height of the original object is in relation to the target width and height, and it is measured in pixels.
-   */
-  ratio: Ratio;
-
-  /**
    * rois
    */
   rois: Array<Roi<T>>;
@@ -37,32 +37,70 @@ export interface ReactRoiState<T = unknown> {
   /**
    * commited rois
    */
-  commitedRois: Array<CommittedRoi<T>>;
+  committedRois: Array<CommittedRoi<T>>;
+
+  /**
+   * Size of the container used to normalize coordinates
+   */
+  size: Size;
 }
 
 export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
 export type RoiMode = 'select' | 'draw';
 
-export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
+export type UpdateRoiPayload = Partial<CommittedRoi> & { id: string };
+
+export interface CreateRoiPayload {
+  roi: Partial<CommittedRoi> & { id: string };
+}
+
+export interface MouseEventPayload {
+  event: MouseEvent | React.MouseEvent;
+  containerBoundingRect: DOMRect;
+}
 
 export type RoiReducerAction =
   | { type: 'setMode'; payload: RoiMode }
-  | { type: 'setRatio'; payload: Ratio }
-  | { type: 'addRoi'; payload: CreateUpdateRoiPayload }
+  | {
+      type: 'addRoi';
+      payload: CreateRoiPayload;
+    }
+  | {
+      type: 'setSize';
+      payload: {
+        width: number;
+        height: number;
+      };
+    }
   | {
       type: 'updateRoi';
-      payload: CreateUpdateRoiPayload;
+      payload: UpdateRoiPayload;
     }
   | { type: 'removeRoi'; payload?: string }
-  | { type: 'resizeRoi'; payload: number }
-  | { type: 'onMouseDown'; payload: React.MouseEvent }
-  | { type: 'onMouseMove'; payload: React.MouseEvent }
-  | { type: 'onMouseUp'; payload: React.MouseEvent }
+  | {
+      type: 'resizeRoi';
+      payload: {
+        id: string;
+        xAxisCorner: XAxisCorner;
+        yAxisCorner: YAxisCorner;
+      };
+    }
+  | {
+      type: 'onMouseDown';
+      payload: MouseEventPayload;
+    }
+  | {
+      type: 'onMouseMove';
+      payload: MouseEvent;
+    }
+  | {
+      type: 'onMouseUp';
+    }
   | { type: 'cancelDrawing'; payload: React.KeyboardEvent }
   | {
       type: 'selectBoxAnnotation';
-      payload: { id: string; event: React.MouseEvent };
+      payload: { id: string };
     };
 
 export function roiReducer(
@@ -74,66 +112,35 @@ export function roiReducer(
       case 'setMode':
         draft.mode = action.payload;
         break;
+      case 'setSize': {
+        // Ignore if size is 0
+        if (action.payload.width === 0 || action.payload.height === 0) return;
 
-      case 'setRatio':
-        draft.ratio = action.payload;
-        for (const commitedRoi of draft.commitedRois) {
-          const index = draft.rois.findIndex(
-            (roi) => roi.id === commitedRoi.id,
+        // Update absolute positions
+        draft.rois.forEach((roi) => {
+          Object.assign<Roi, Box>(
+            roi,
+            renormalizeRoiPosition(roi, draft.size, action.payload),
           );
-          const { x, y, height, width } = getScaledRectangle(
-            commitedRoi,
-            action.payload,
-          );
-          draft.rois[index].actionData = {
-            startPoint: { x, y },
-            endPoint: { x: x + width, y: y + height },
-          };
-        }
+        });
+        draft.size = action.payload;
         break;
-
+      }
       case 'removeRoi': {
         const id = action.payload ?? draft.selectedRoi;
         const index = draft.rois.findIndex((roi) => roi.id === id);
         if (index === -1) return;
         draft.rois.splice(index, 1);
-        draft.commitedRois.splice(index, 1);
+        draft.committedRois.splice(index, 1);
         draft.selectedRoi = undefined;
         return;
       }
 
       case 'addRoi': {
-        const { width: targetWidth, height: targetHeight } = document
-          .getElementById('roi-container-svg')
-          .getBoundingClientRect();
-        const roiWidth = Math.round(targetWidth * 0.1);
-        const roiHeight = Math.round(targetHeight * 0.1);
-        const roiX = Math.round(targetWidth / 2 - roiWidth) * draft.ratio.x;
-        const roiY = Math.round(targetHeight / 2 - roiHeight) * draft.ratio.y;
-        const commitedRoi = commitedRoiTemplate(crypto.randomUUID(), {
-          x: roiX,
-          y: roiY,
-          width: roiWidth,
-          height: roiHeight,
-          ...action.payload,
-        });
-        const { x, y, width, height, ...roi } = commitedRoi;
-        draft.commitedRois.push(commitedRoi);
-        draft.rois.push(
-          roiTemplate(commitedRoi.id, {
-            action: 'idle',
-            actionData: {
-              startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },
-              endPoint: {
-                x: (x + width) / draft.ratio.x,
-                y: (y + height) / draft.ratio.y,
-              },
-              delta: undefined,
-              pointerIndex: undefined,
-            },
-            ...roi,
-          }),
-        );
+        const { id, ...otherRoiProps } = action.payload.roi;
+        const commitedRoi = createCommitedRoi(id, otherRoiProps);
+        draft.committedRois.push(commitedRoi);
+        draft.rois.push(createRoi(id, draft.size, otherRoiProps));
         draft.selectedRoi = commitedRoi.id;
         break;
       }
@@ -141,70 +148,48 @@ export function roiReducer(
       case 'updateRoi': {
         const { id, ...updatedData } = action.payload;
         if (!id) return;
-        const index = draft.rois.findIndex((roi) => roi.id === id);
-        const commitedRoi = Object.assign(
-          draft.commitedRois[index],
+        const commitedRoi = draft.committedRois.find((roi) => roi.id === id);
+        const roi = draft.rois.find((roi) => roi.id === id);
+
+        assert(roi, 'ROI not found');
+        assert(commitedRoi, 'Commited ROI not found');
+
+        Object.assign<CommittedRoi, Partial<CommittedRoi>>(
+          commitedRoi,
           updatedData,
         );
-        draft.commitedRois[index] = commitedRoi;
-        const { x, y, width, height, editStyle, style, data, label } =
-          commitedRoi;
-        draft.rois[index] = {
-          id,
-          label,
-          style,
-          editStyle,
-          data,
-          action: 'idle',
-          actionData: {
-            startPoint: { x: x / draft.ratio.x, y: y / draft.ratio.y },
-            endPoint: {
-              x: (x + width) / draft.ratio.x,
-              y: (y + height) / draft.ratio.y,
-            },
-          },
-        };
+        Object.assign<Roi, Partial<Roi>>(roi, updatedData);
         break;
       }
 
       case 'resizeRoi': {
-        const { ratio, selectedRoi, rois, commitedRois } = draft;
-        const index = rois.findIndex((roi) => roi.id === selectedRoi);
-        const roi = draft.rois[index];
-        roi.action = 'resizing';
-        if (!selectedRoi) return;
-        const points = getReferenceCorners(
-          commitedRois[index],
-          ratio,
-          action.payload,
-        );
-        roi.actionData.pointerIndex = action.payload;
-        roi.actionData.startPoint = { x: points.p0.x, y: points.p0.y };
-        roi.actionData.endPoint = { x: points.p1.x, y: points.p1.y };
+        const { id, xAxisCorner, yAxisCorner } = action.payload;
+        const { rois } = draft;
+        const roi = rois.find((roi) => roi.id === id);
+        assert(roi, 'ROI not found');
+
+        roi.action = {
+          type: 'resizing',
+          xAxisCorner,
+          yAxisCorner,
+        };
         break;
       }
 
       case 'selectBoxAnnotation': {
-        const { id, event } = action.payload;
+        const { id } = action.payload;
         if (!id) return;
         if (draft.mode === 'draw') {
           draft.selectedRoi = undefined;
           return;
         }
         const { rois } = draft;
-        const { x: svgX, y: svgY } = document
-          .getElementById('roi-container-svg')
-          .getBoundingClientRect();
         draft.selectedRoi = id;
         const roi = rois.find((roi) => roi.id === id);
-        roi.action = 'moving';
-        if (!draft.selectedRoi) return;
-        const { startPoint, endPoint } = roi.actionData;
-        const rectangle = getRectangleFromPoints(startPoint, endPoint);
-        const { x, y } = rectangle;
-        roi.actionData.delta = {
-          x: event.clientX - x - svgX,
-          y: event.clientY - y - svgY,
+        assert(roi, 'ROI not found');
+
+        roi.action = {
+          type: 'moving',
         };
         break;
       }
@@ -220,7 +205,7 @@ export function roiReducer(
       }
 
       case 'onMouseUp': {
-        onMouseUp(draft, action.payload);
+        onMouseUp(draft);
         break;
       }
 

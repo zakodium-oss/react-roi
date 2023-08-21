@@ -1,107 +1,86 @@
-import {
-  MutableRefObject,
-  cloneElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import useResizeObserver from '@react-hook/resize-observer';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
+import { roiContainerRefContext } from '../context/contexts';
 import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
 interface ContainerProps {
-  target: JSX.Element & { ref?: MutableRefObject<unknown> };
+  target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
   children: JSX.Element;
-  options?: { containerWidth?: number; containerHeight?: number };
 }
 
-export function ContainerComponent({
-  target,
-  children,
-  options,
-}: ContainerProps) {
+export function ContainerComponent({ target, children }: ContainerProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
-  const { containerWidth, containerHeight } = options;
-  const elementRef = useRef(null);
-  const ref = target.ref ?? elementRef;
-  const current = ref.current;
-  const targetStyle = target.props.style;
-  const element = cloneElement(target, {
-    ref,
-    style: {
-      ...targetStyle,
-      width: containerWidth,
-      height: containerHeight,
-    },
-  });
-  const [size, setSize] = useState({
-    width: targetStyle?.width ?? 1,
-    height: targetStyle?.height ?? 1,
-  });
-
-  if (current) {
-    current.onload = () => {
-      setSize({
-        height: current.naturalHeight,
-        width: current.naturalWidth,
-      });
-    };
-  }
-  useEffect(() => {
+  const ref = useRef<HTMLDivElement>(null);
+  useResizeObserver(ref, (entry) => {
     roiDispatch({
-      type: 'setRatio',
+      type: 'setSize',
       payload: {
-        x: size.width / containerWidth,
-        y: size.height / containerHeight,
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
       },
     });
-  }, [
-    roiDispatch,
-    current,
-    containerWidth,
-    containerHeight,
-    size.width,
-    size.height,
-  ]);
+  });
+
+  useEffect(() => {
+    function onMouseMove(event: MouseEvent) {
+      roiDispatch({
+        type: 'onMouseMove',
+        payload: event,
+      });
+    }
+
+    function onMouseUp() {
+      roiDispatch({
+        type: 'onMouseUp',
+      });
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  });
+
   return (
-    <div
-      id="container-component"
-      style={{
-        display: 'flex',
-        position: 'relative',
-        margin: 0,
-        padding: 0,
-        width: 'fit-content',
-        height: 'fit-content',
-        cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
-      }}
-    >
-      {element}
-      <svg
-        id="roi-container-svg"
+    <roiContainerRefContext.Provider value={ref}>
+      <div
+        ref={ref}
         style={{
-          position: 'absolute',
+          position: 'relative',
           margin: 0,
           padding: 0,
-          width: containerWidth,
-          height: containerHeight,
-          userSelect: 'none',
-        }}
-        viewBox={`0 0 ${containerWidth} ${containerHeight}`}
-        onMouseUp={(event) => {
-          roiDispatch({ type: 'onMouseUp', payload: event });
-        }}
-        onMouseMove={(event) => {
-          if (event.buttons === 0) return;
-          roiDispatch({ type: 'onMouseMove', payload: event });
-        }}
-        onMouseDown={(event) => {
-          roiDispatch({ type: 'onMouseDown', payload: event });
+          cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
         }}
       >
-        {children}
-      </svg>
-    </div>
+        {target}
+
+        <div
+          style={{
+            userSelect: 'none',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            margin: 0,
+            padding: 0,
+            top: 0,
+            left: 0,
+          }}
+          onMouseDown={(event) => {
+            const containerBoundingRect = ref.current.getBoundingClientRect();
+            roiDispatch({
+              type: 'onMouseDown',
+              payload: { event, containerBoundingRect },
+            });
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    </roiContainerRefContext.Provider>
   );
 }

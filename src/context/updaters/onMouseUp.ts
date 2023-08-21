@@ -1,52 +1,28 @@
-import { checkRectangle } from '../../utilities/checkRectangle';
-import { getMousePosition } from '../../utilities/getMousePosition';
-import { getRectangle } from '../../utilities/getRectangle';
-import { getRectangleFromPoints } from '../../utilities/getRectangleFromPoints';
-import { updateObject } from '../../utilities/updateObject';
+import { assert } from '../../utilities/assert';
+import { createCommitedRoiFromRoi } from '../../utilities/rois';
 import { ReactRoiState } from '../roiReducer';
 
-export function onMouseUp(draft: ReactRoiState, event: React.MouseEvent) {
-  const { mode, ratio, selectedRoi, rois, commitedRois } = draft;
-  const index = rois.findIndex((roi) => roi.id === selectedRoi);
-  if (index === -1) return;
-  const roi = rois[index];
-  const commitedRoi = commitedRois[index];
-  const point = getMousePosition(
-    event,
-    roi.actionData.endPoint,
-    roi.actionData.pointerIndex,
-  );
-  switch (mode) {
-    case 'draw': {
-      const { startPoint } = roi.actionData;
-      const rectangle = getRectangle(
-        getRectangleFromPoints(startPoint, point),
-        ratio,
-      );
-      if (checkRectangle(rectangle)) {
-        commitedRoi.x = Math.round(rectangle.x);
-        commitedRoi.y = Math.round(rectangle.y);
-        commitedRoi.width = Math.round(rectangle.width);
-        commitedRoi.height = Math.round(rectangle.height);
-        draft.selectedRoi = roi.id;
-      } else {
-        draft.rois.splice(index, 1);
-        draft.selectedRoi = undefined;
-      }
-      break;
-    }
+import { updateCommitedRoiPosition } from './roi';
 
-    case 'select': {
-      if (roi.action !== 'idle') {
-        draft.selectedRoi = updateObject(draft);
-      }
-      break;
-    }
-    default:
-      break;
+export function onMouseUp(draft: ReactRoiState) {
+  const { selectedRoi, rois, committedRois } = draft;
+  if (!selectedRoi) return;
+  const roi = rois.find((roi) => roi.id === selectedRoi);
+  const commitedRoi = committedRois.find((roi) => roi.id === selectedRoi);
+  assert(roi, 'Selected ROI not found');
+
+  if (!roi) return;
+
+  if (commitedRoi) {
+    assert(roi.action.type !== 'drawing', 'Drawing ROI should not be commited');
+    updateCommitedRoiPosition(commitedRoi, roi, draft.size);
+  } else {
+    assert(roi.action.type === 'drawing');
+    const newCommitedRoi = createCommitedRoiFromRoi(roi, draft.size);
+    updateCommitedRoiPosition(newCommitedRoi, roi, draft.size);
+    draft.committedRois.push(newCommitedRoi);
   }
-  if (roi) {
-    roi.action = 'idle';
-  }
-  roi.actionData.delta = undefined;
+  roi.action = {
+    type: 'idle',
+  };
 }

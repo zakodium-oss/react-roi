@@ -10,34 +10,43 @@ interface BoxAnnotationProps {
   width: number;
   height: number;
   style?: CSSProperties;
+  label?: string;
 }
 
-export function BoxAnnotation({
+export function Box({
   id,
   x,
   y,
   width,
   height,
   style,
+  label,
 }: BoxAnnotationProps): JSX.Element {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   return (
-    <rect
+    <div
       id={id}
-      cursor={roiState.mode === 'draw' ? 'crosshair' : 'grab'}
-      x={x}
-      y={y}
-      width={width}
-      height={height}
-      style={style}
+      style={{
+        position: 'absolute',
+        left: x,
+        top: y,
+        width,
+        height,
+        cursor: roiState.mode === 'draw' ? 'crosshair' : 'grab',
+        ...style,
+      }}
       onMouseDown={(event) => {
         roiDispatch({
           type: 'selectBoxAnnotation',
-          payload: { id, event },
+          payload: {
+            id,
+          },
         });
         if (roiState.mode === 'select') event.stopPropagation();
       }}
-    />
+    >
+      {label}
+    </div>
   );
 }

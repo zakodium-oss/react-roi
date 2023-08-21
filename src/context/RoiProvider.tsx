@@ -1,12 +1,13 @@
 import { useMemo, useReducer } from 'react';
 import { KbsProvider } from 'react-kbs';
 
-import { CommittedRoi } from '../types/CommittedRoi';
+import { CommittedRoi } from '../types/Roi';
+import { createRoiFromCommittedRoi } from '../utilities/rois';
 
 import {
   roisContext,
   roiDispatchContext,
-  commitedRoisContext,
+  committedRoisContext,
   roiStateContext,
 } from './contexts';
 import { ReactRoiState, roiReducer } from './roiReducer';
@@ -17,27 +18,17 @@ interface RoiProviderProps<T> {
 }
 
 function createInitialState<T>(
-  commitedRois: Array<CommittedRoi<T>>,
+  committedRois: Array<CommittedRoi<T>>,
 ): ReactRoiState<T> {
+  const size = { width: 1, height: 1 };
   const roiInitialState: ReactRoiState<T> = {
     mode: 'select',
-    ratio: { x: 1, y: 1 },
+    size,
     selectedRoi: undefined,
-    commitedRois,
-    rois: commitedRois.map((roi) => ({
-      id: roi.id,
-      label: roi.label,
-      editStyle: roi.editStyle,
-      style: roi.style,
-      data: roi.data,
-      action: 'idle',
-      actionData: {
-        delta: undefined,
-        endPoint: { x: roi.x + roi.width, y: roi.y + roi.height },
-        startPoint: { x: roi.x, y: roi.y },
-        pointerIndex: undefined,
-      },
-    })),
+    committedRois,
+    rois: committedRois.map((committedRoi) =>
+      createRoiFromCommittedRoi(committedRoi, size),
+    ),
   };
   return roiInitialState;
 }
@@ -48,14 +39,13 @@ export function RoiProvider<T>({
 }: RoiProviderProps<T>) {
   const roiInitialState = createInitialState<T>(initialRois);
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
-  const { rois, commitedRois, mode, ratio, selectedRoi } = state;
+  const { rois, committedRois: commitedRois, mode, selectedRoi } = state;
   const roiState = useMemo(() => {
     return {
       mode,
-      ratio,
       selectedRoi,
     };
-  }, [mode, ratio, selectedRoi]);
+  }, [mode, selectedRoi]);
 
   const roiDispatch = useMemo(() => {
     return dispatch;
@@ -73,11 +63,11 @@ export function RoiProvider<T>({
     <KbsProvider>
       <roiDispatchContext.Provider value={roiDispatch}>
         <roisContext.Provider value={roisState}>
-          <commitedRoisContext.Provider value={commitedRoisState}>
+          <committedRoisContext.Provider value={commitedRoisState}>
             <roiStateContext.Provider value={roiState}>
               {children}
             </roiStateContext.Provider>
-          </commitedRoisContext.Provider>
+          </committedRoisContext.Provider>
         </roisContext.Provider>
       </roiDispatchContext.Provider>
     </KbsProvider>
