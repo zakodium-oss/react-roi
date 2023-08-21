@@ -11,8 +11,8 @@ export function useRoiActions<T = unknown>() {
     return {
       createRoi: (roi: CommittedRoi<T>) => {
         roiDispatch({
-          type: 'addRoi',
-          payload: { roi },
+          type: 'CREATE_ROI',
+          payload: roi,
         });
       },
       updateRoi: (
@@ -20,15 +20,15 @@ export function useRoiActions<T = unknown>() {
         updatedData: Partial<Omit<CommittedRoi<T>, 'id'>>,
       ) => {
         roiDispatch({
-          type: 'updateRoi',
+          type: 'UPDATE_ROI',
           payload: { ...updatedData, id: selectedRoi },
         });
       },
       removeRoi: (selectedRoi: string) => {
-        roiDispatch({ type: 'removeRoi', payload: selectedRoi });
+        roiDispatch({ type: 'REMOVE_ROI', payload: selectedRoi });
       },
       setMode: (mode: 'select' | 'draw') =>
-        roiDispatch({ type: 'setMode', payload: mode }),
+        roiDispatch({ type: 'SET_MODE', payload: mode }),
     };
   }, [roiDispatch]);
   return actions;

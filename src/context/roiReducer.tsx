@@ -49,11 +49,7 @@ export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
 export type RoiMode = 'select' | 'draw';
 
-export type UpdateRoiPayload = Partial<CommittedRoi> & { id: string };
-
-export interface CreateRoiPayload {
-  roi: Partial<CommittedRoi> & { id: string };
-}
+export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
 
 export interface MouseEventPayload {
   event: MouseEvent | React.MouseEvent;
@@ -61,25 +57,25 @@ export interface MouseEventPayload {
 }
 
 export type RoiReducerAction =
-  | { type: 'setMode'; payload: RoiMode }
+  | { type: 'SET_MODE'; payload: RoiMode }
   | {
-      type: 'addRoi';
-      payload: CreateRoiPayload;
+      type: 'CREATE_ROI';
+      payload: CreateUpdateRoiPayload;
     }
   | {
-      type: 'setSize';
+      type: 'SET_SIZE';
       payload: {
         width: number;
         height: number;
       };
     }
   | {
-      type: 'updateRoi';
-      payload: UpdateRoiPayload;
+      type: 'UPDATE_ROI';
+      payload: CreateUpdateRoiPayload;
     }
-  | { type: 'removeRoi'; payload?: string }
+  | { type: 'REMOVE_ROI'; payload?: string }
   | {
-      type: 'resizeRoi';
+      type: 'START_RESIZE';
       payload: {
         id: string;
         xAxisCorner: XAxisCorner;
@@ -87,19 +83,19 @@ export type RoiReducerAction =
       };
     }
   | {
-      type: 'onMouseDown';
+      type: 'START_DRAW';
       payload: MouseEventPayload;
     }
   | {
-      type: 'onMouseMove';
+      type: 'MOUSE_MOVE';
       payload: MouseEvent;
     }
   | {
-      type: 'onMouseUp';
+      type: 'END_ACTION';
     }
-  | { type: 'cancelDrawing'; payload: React.KeyboardEvent }
+  | { type: 'CANCEL_ACTION'; payload: React.KeyboardEvent }
   | {
-      type: 'selectBoxAnnotation';
+      type: 'SELECT_BOX_AND_START_MOVE';
       payload: { id: string };
     };
 
@@ -109,10 +105,10 @@ export function roiReducer(
 ): ReactRoiState {
   return produce(state, (draft) => {
     switch (action.type) {
-      case 'setMode':
+      case 'SET_MODE':
         draft.mode = action.payload;
         break;
-      case 'setSize': {
+      case 'SET_SIZE': {
         // Ignore if size is 0
         if (action.payload.width === 0 || action.payload.height === 0) return;
 
@@ -126,7 +122,7 @@ export function roiReducer(
         draft.size = action.payload;
         break;
       }
-      case 'removeRoi': {
+      case 'REMOVE_ROI': {
         const id = action.payload ?? draft.selectedRoi;
         const index = draft.rois.findIndex((roi) => roi.id === id);
         if (index === -1) return;
@@ -136,8 +132,8 @@ export function roiReducer(
         return;
       }
 
-      case 'addRoi': {
-        const { id, ...otherRoiProps } = action.payload.roi;
+      case 'CREATE_ROI': {
+        const { id, ...otherRoiProps } = action.payload;
         const commitedRoi = createCommitedRoi(id, otherRoiProps);
         draft.committedRois.push(commitedRoi);
         draft.rois.push(createRoi(id, draft.size, otherRoiProps));
@@ -145,7 +141,7 @@ export function roiReducer(
         break;
       }
 
-      case 'updateRoi': {
+      case 'UPDATE_ROI': {
         const { id, ...updatedData } = action.payload;
         if (!id) return;
         const commitedRoi = draft.committedRois.find((roi) => roi.id === id);
@@ -162,7 +158,7 @@ export function roiReducer(
         break;
       }
 
-      case 'resizeRoi': {
+      case 'START_RESIZE': {
         const { id, xAxisCorner, yAxisCorner } = action.payload;
         const { rois } = draft;
         const roi = rois.find((roi) => roi.id === id);
@@ -176,7 +172,7 @@ export function roiReducer(
         break;
       }
 
-      case 'selectBoxAnnotation': {
+      case 'SELECT_BOX_AND_START_MOVE': {
         const { id } = action.payload;
         if (!id) return;
         if (draft.mode === 'draw') {
@@ -194,17 +190,17 @@ export function roiReducer(
         break;
       }
 
-      case 'onMouseDown': {
+      case 'START_DRAW': {
         onMouseDown(draft, action.payload);
         break;
       }
 
-      case 'onMouseMove': {
+      case 'MOUSE_MOVE': {
         onMouseMove(draft, action.payload);
         break;
       }
 
-      case 'onMouseUp': {
+      case 'END_ACTION': {
         onMouseUp(draft);
         break;
       }

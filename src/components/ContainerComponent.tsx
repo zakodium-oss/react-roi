@@ -16,7 +16,7 @@ export function ContainerComponent({ target, children }: ContainerProps) {
   const ref = useRef<HTMLDivElement>(null);
   useResizeObserver(ref, (entry) => {
     roiDispatch({
-      type: 'setSize',
+      type: 'SET_SIZE',
       payload: {
         width: entry.contentRect.width,
         height: entry.contentRect.height,
@@ -27,14 +27,14 @@ export function ContainerComponent({ target, children }: ContainerProps) {
   useEffect(() => {
     function onMouseMove(event: MouseEvent) {
       roiDispatch({
-        type: 'onMouseMove',
+        type: 'MOUSE_MOVE',
         payload: event,
       });
     }
 
     function onMouseUp() {
       roiDispatch({
-        type: 'onMouseUp',
+        type: 'END_ACTION',
       });
     }
 
@@ -73,7 +73,7 @@ export function ContainerComponent({ target, children }: ContainerProps) {
           onMouseDown={(event) => {
             const containerBoundingRect = ref.current.getBoundingClientRect();
             roiDispatch({
-              type: 'onMouseDown',
+              type: 'START_DRAW',
               payload: { event, containerBoundingRect },
             });
           }}

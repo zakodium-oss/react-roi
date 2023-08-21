@@ -46,7 +46,7 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
             onMouseDown={(event) => {
               event.stopPropagation();
               roiDispatch({
-                type: 'resizeRoi',
+                type: 'START_RESIZE',
                 payload: {
                   id: roi.id,
                   xAxisCorner: pointer.xAxis,

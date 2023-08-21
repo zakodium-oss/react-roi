@@ -38,7 +38,7 @@ export function Box({
       }}
       onMouseDown={(event) => {
         roiDispatch({
-          type: 'selectBoxAnnotation',
+          type: 'SELECT_BOX_AND_START_MOVE',
           payload: {
             id,
           },

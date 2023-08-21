@@ -15,7 +15,7 @@ export function RoiContainer({ target, children }: RoiComponentProps) {
       shortcut: ['delete', 'backspace'],
       handler: (event) => {
         if (event.isTrusted) {
-          roiDispatch({ type: 'removeRoi', payload: undefined });
+          roiDispatch({ type: 'REMOVE_ROI', payload: undefined });
         }
       },
     },
@@ -25,7 +25,7 @@ export function RoiContainer({ target, children }: RoiComponentProps) {
         event.preventDefault();
         if (event.isTrusted) {
           roiDispatch({
-            type: 'cancelDrawing',
+            type: 'CANCEL_ACTION',
             payload: event as React.KeyboardEvent,
           });
         }
