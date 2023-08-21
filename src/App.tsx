@@ -56,14 +56,11 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
 
 export default function App() {
   return (
-    <>
-      <div style={{ height: 2000 }}>Hi!</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <RoiProvider initialRois={initialRois}>
-          <MyComponent />
-        </RoiProvider>
-      </div>
-    </>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <RoiProvider initialRois={initialRois}>
+        <MyComponent />
+      </RoiProvider>
+    </div>
   );
 }
 
@@ -173,10 +170,7 @@ function Toolbar() {
 }
 
 function ImageWithRois() {
-  // The type of rois is Roi<RoiData>[]
-  const image = new Image(imageWidth, imageHeight).fill(255);
-  image.drawRectangle({ out: image });
-  image.drawCircle({ column: 250, row: 200 }, 200, { out: image });
+  const image = createBaseImage();
   const buffer = encode(image);
   const blob = new Blob([buffer], { type: 'image/png' });
   const url = URL.createObjectURL(blob);
@@ -199,16 +193,14 @@ function RoiList() {
 }
 
 function TransformedImage() {
-  const image = new Image(500, 400).fill(255);
-  image.drawRectangle({ out: image });
-  image.drawCircle({ column: 250, row: 200 }, 200, { out: image });
+  const image = createBaseImage();
   const rois = useCommitedRois<RoiData>();
   for (const roi of rois) {
     const { x, y, width, height } = roi;
     image.drawRectangle({
       origin: { row: y * imageHeight, column: x * imageWidth },
-      width,
-      height,
+      width: width * imageWidth,
+      height: height * imageHeight,
       out: image,
     });
   }
@@ -221,4 +213,11 @@ function TransformedImage() {
       style={{ width: imageWidth, height: imageHeight, padding: '10px' }}
     />
   );
+}
+
+function createBaseImage() {
+  const image = new Image(imageWidth, imageHeight).fill(255);
+  image.drawRectangle({ out: image });
+  image.drawCircle({ column: 250, row: 200 }, 200, { out: image });
+  return image;
 }

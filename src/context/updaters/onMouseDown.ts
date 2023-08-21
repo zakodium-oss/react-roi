@@ -26,7 +26,6 @@ export function onMouseDown(draft: ReactRoiState, payload: MouseEventPayload) {
         width: 0,
         height: 0,
 
-        // TODO: allow to set a default data
         data: undefined,
       };
       draft.selectedRoi = roi.id;
