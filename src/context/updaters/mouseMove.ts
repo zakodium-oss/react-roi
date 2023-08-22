@@ -5,7 +5,7 @@ import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 
-export function onMouseMove(draft: ReactRoiState, event: MouseEvent) {
+export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
   const { selectedRoi, rois } = draft;
   const roi = rois.find((roi) => roi.id === selectedRoi);
   if (!roi) return;

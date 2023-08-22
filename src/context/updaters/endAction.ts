@@ -4,7 +4,7 @@ import { ReactRoiState } from '../roiReducer';
 
 import { updateCommitedRoiPosition } from './roi';
 
-export function onMouseUp(draft: ReactRoiState) {
+export function endAction(draft: ReactRoiState) {
   const { selectedRoi, rois, committedRois } = draft;
   if (!selectedRoi) return;
   const roi = rois.find((roi) => roi.id === selectedRoi);

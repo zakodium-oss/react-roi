@@ -3,7 +3,7 @@ import { normalizeClientPoint } from '../../utilities/coordinates';
 import { createRoi } from '../../utilities/rois';
 import { MouseEventPayload, ReactRoiState } from '../roiReducer';
 
-export function onMouseDown(draft: ReactRoiState, payload: MouseEventPayload) {
+export function startDraw(draft: ReactRoiState, payload: MouseEventPayload) {
   const { event, containerBoundingRect } = payload;
   const emptyRoi = createRoi(crypto.randomUUID(), draft.size);
 

@@ -4,9 +4,9 @@ import { Box } from '../../types';
 import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
 import { denormalizeBox } from '../../utilities/coordinates';
-import { RoiState } from '../roiReducer';
+import { ReactRoiState } from '../roiReducer';
 
-export function cancelAction(draft: Draft<RoiState>) {
+export function cancelAction(draft: Draft<ReactRoiState>) {
   const rois = draft.rois.filter((roi) => roi.action.type !== 'idle');
 
   if (rois.length === 0) {

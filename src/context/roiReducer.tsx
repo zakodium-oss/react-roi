@@ -11,9 +11,9 @@ import {
 } from '../utilities/rois';
 
 import { cancelAction } from './updaters/cancelAction';
-import { onMouseDown } from './updaters/onMouseDown';
-import { onMouseMove } from './updaters/onMouseMove';
-import { onMouseUp } from './updaters/onMouseUp';
+import { endAction } from './updaters/endAction';
+import { mouseMove } from './updaters/mouseMove';
+import { startDraw } from './updaters/startDraw';
 
 interface Size {
   width: number;
@@ -45,8 +45,6 @@ export interface ReactRoiState<T = unknown> {
    */
   size: Size;
 }
-
-export type RoiState = Omit<ReactRoiState, 'startPoint' | 'endPoint'>;
 
 export type RoiMode = 'select' | 'draw';
 
@@ -193,17 +191,17 @@ export function roiReducer(
       }
 
       case 'START_DRAW': {
-        onMouseDown(draft, action.payload);
+        startDraw(draft, action.payload);
         break;
       }
 
       case 'MOUSE_MOVE': {
-        onMouseMove(draft, action.payload);
+        mouseMove(draft, action.payload);
         break;
       }
 
       case 'END_ACTION': {
-        onMouseUp(draft);
+        endAction(draft);
         break;
       }
 
