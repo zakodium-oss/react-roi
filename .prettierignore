@@ -1,0 +1,11 @@
+CHANGELOG.md
+
+coverage
+
+node_modules
+lib/
+lib-esm/
+dist
+dist-ssr
+*.local
+.eslintcache
