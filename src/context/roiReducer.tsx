@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { Box } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
-import { XAxisCorner, YAxisCorner } from '../utilities/coordinates';
+import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 import {
   createCommitedRoi,
   createRoi,
@@ -77,8 +77,8 @@ export type RoiReducerAction =
       type: 'START_RESIZE';
       payload: {
         id: string;
-        xAxisCorner: XAxisCorner;
-        yAxisCorner: YAxisCorner;
+        xAxisCorner: XCornerPosition;
+        yAxisCorner: YCornerPosition;
       };
     }
   | {

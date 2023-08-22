@@ -4,27 +4,27 @@ import { CornerData } from '../utilities/corners';
 const cursorSize = 4;
 
 export function RoiBoxCorner({
-  pointer,
+  corner,
   roiId,
 }: {
-  pointer: CornerData;
+  corner: CornerData;
   roiId: string;
 }) {
   const roiDispatch = useRoiDispatch();
 
   return (
     <div
-      id={`pointer-${pointer.xAxis}-${pointer.yAxis}`}
+      id={`corner-${corner.xPosition}-${corner.yPosition}`}
       style={{
         backgroundColor: '#44aaff',
         opacity: 0.5,
         stroke: 'black',
         position: 'absolute',
-        top: pointer.cy - cursorSize,
-        left: pointer.cx - cursorSize,
+        top: corner.cy - cursorSize,
+        left: corner.cx - cursorSize,
         width: cursorSize * 2,
         height: cursorSize * 2,
-        cursor: pointer.cursor,
+        cursor: corner.cursor,
       }}
       onMouseDown={(event) => {
         event.stopPropagation();
@@ -32,8 +32,8 @@ export function RoiBoxCorner({
           type: 'START_RESIZE',
           payload: {
             id: roiId,
-            xAxisCorner: pointer.xAxis,
-            yAxisCorner: pointer.yAxis,
+            xAxisCorner: corner.xPosition,
+            yAxisCorner: corner.yPosition,
           },
         });
       }}

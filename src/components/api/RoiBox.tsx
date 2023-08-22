@@ -27,11 +27,11 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
       />
       {roiState.mode === 'select' &&
         isActive &&
-        getAllCorners(roi).map((pointer) => (
+        getAllCorners(roi).map((corner) => (
           <RoiBoxCorner
-            pointer={pointer}
+            corner={corner}
             roiId={roi.id}
-            key={`pointer-${pointer.xAxis}-${pointer.yAxis}`}
+            key={`corner-${corner.xPosition}-${corner.yPosition}`}
           />
         ))}
     </>

@@ -4,11 +4,11 @@ import { Point } from '../types';
 import { Roi } from '../types/Roi';
 
 import { assertUnreachable } from './assert';
-import { XAxisCorner, YAxisCorner } from './coordinates';
+import { XCornerPosition, YCornerPosition } from './coordinates';
 
 export interface CornerData {
-  xAxis: XAxisCorner;
-  yAxis: YAxisCorner;
+  xPosition: XCornerPosition;
+  yPosition: YCornerPosition;
   cursor: CSSProperties['cursor'];
   cx: number;
   cy: number;
@@ -18,57 +18,57 @@ export function getAllCorners(roi: Roi): CornerData[] {
   const { x, y, width, height } = roi;
   return [
     {
-      xAxis: 'left',
-      yAxis: 'top',
+      xPosition: 'left',
+      yPosition: 'top',
       cursor: 'nwse-resize',
       cx: x,
       cy: y,
     },
     {
-      xAxis: 'left',
-      yAxis: 'bottom',
+      xPosition: 'left',
+      yPosition: 'bottom',
       cursor: 'nesw-resize',
       cx: x,
       cy: y + height,
     },
     {
-      xAxis: 'right',
-      yAxis: 'bottom',
+      xPosition: 'right',
+      yPosition: 'bottom',
       cursor: 'nwse-resize',
       cx: x + width,
       cy: y + height,
     },
     {
       cursor: 'nesw-resize',
-      xAxis: 'right',
-      yAxis: 'top',
+      xPosition: 'right',
+      yPosition: 'top',
       cx: x + width,
       cy: y,
     },
     {
-      xAxis: 'middle',
-      yAxis: 'top',
+      xPosition: 'middle',
+      yPosition: 'top',
       cursor: 'ns-resize',
       cx: x + width / 2,
       cy: y,
     },
     {
-      xAxis: 'middle',
-      yAxis: 'bottom',
+      xPosition: 'middle',
+      yPosition: 'bottom',
       cursor: 'ns-resize',
       cx: x + width / 2,
       cy: y + height,
     },
     {
-      xAxis: 'left',
-      yAxis: 'middle',
+      xPosition: 'left',
+      yPosition: 'middle',
       cursor: 'ew-resize',
       cx: x,
       cy: y + height / 2,
     },
     {
-      xAxis: 'right',
-      yAxis: 'middle',
+      xPosition: 'right',
+      yPosition: 'middle',
       cursor: 'ew-resize',
       cx: x + width,
       cy: y + height / 2,
@@ -78,8 +78,8 @@ export function getAllCorners(roi: Roi): CornerData[] {
 
 export function getCornerPoint(
   roi: Roi,
-  xAxisCorner: XAxisCorner,
-  yAxisCorner: YAxisCorner,
+  xAxisCorner: XCornerPosition,
+  yAxisCorner: YCornerPosition,
 ): Point {
   return {
     x: getXCornerValue(roi, xAxisCorner),
@@ -87,7 +87,7 @@ export function getCornerPoint(
   };
 }
 
-function getXCornerValue(roi: Roi, xAxisCorner: XAxisCorner) {
+function getXCornerValue(roi: Roi, xAxisCorner: XCornerPosition) {
   switch (xAxisCorner) {
     case 'left':
       return roi.x;
@@ -101,7 +101,7 @@ function getXCornerValue(roi: Roi, xAxisCorner: XAxisCorner) {
   }
 }
 
-function getYCornerValue(roi: Roi, yAxisCorner: YAxisCorner) {
+function getYCornerValue(roi: Roi, yAxisCorner: YCornerPosition) {
   switch (yAxisCorner) {
     case 'top':
       return roi.y;

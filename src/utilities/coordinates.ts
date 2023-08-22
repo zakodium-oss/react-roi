@@ -1,7 +1,7 @@
 import { Box, Point, Size } from '../types';
 
-export type XAxisCorner = 'left' | 'right' | 'middle';
-export type YAxisCorner = 'top' | 'bottom' | 'middle';
+export type XCornerPosition = 'left' | 'right' | 'middle';
+export type YCornerPosition = 'top' | 'bottom' | 'middle';
 
 export function normalizeClientPoint(point: Point, ref: DOMRect) {
   return {

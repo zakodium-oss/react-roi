@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode } from 'react';
 
-import { XAxisCorner, YAxisCorner } from '../utilities/coordinates';
+import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 
 import { Box } from './utils';
 
@@ -14,11 +14,11 @@ export interface ResizeAction {
   /**
    * Position of the corner actioned along the x axis.
    */
-  xAxisCorner: XAxisCorner;
+  xAxisCorner: XCornerPosition;
   /**
    * Position of the corner actioned along the y axis.
    */
-  yAxisCorner: YAxisCorner;
+  yAxisCorner: YCornerPosition;
 }
 
 export interface MoveAction {
