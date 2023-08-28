@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/zakodium-oss/react-roi/compare/v0.1.0...v0.2.0) (2023-08-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* add API implementation close #20 ([#21](https://github.com/zakodium-oss/react-roi/issues/21))
+
+### Code Refactoring
+
+* add API implementation close [#20](https://github.com/zakodium-oss/react-roi/issues/20) ([#21](https://github.com/zakodium-oss/react-roi/issues/21)) ([7265658](https://github.com/zakodium-oss/react-roi/commit/72656588223ea42ad025c3a69e51176dfa4745fe))
+
 ## [0.1.0](https://github.com/zakodium-oss/react-roi/compare/v0.0.2...v0.1.0) (2023-07-06)
 
 
