@@ -1,4 +1,5 @@
-import { Image, encode } from 'image-js';
+import { decode, writeCanvas } from 'image-js';
+import { useEffect, useRef } from 'react';
 
 import { CommittedRoi } from './types/Roi';
 
@@ -16,8 +17,7 @@ interface RoiData {
   blurMethod: 'pixelate' | 'blur' | 'fill';
 }
 
-const imageWidth = 600;
-const imageHeight = 400;
+const imgUrl = '/barbara.jpg';
 
 const initialRois: Array<CommittedRoi<RoiData>> = [
   {
@@ -39,8 +39,8 @@ const initialRois: Array<CommittedRoi<RoiData>> = [
     ),
     x: 0,
     y: 0,
-    width: 0.2,
-    height: 0.2,
+    width: 0.5,
+    height: 0.5,
     style: {
       backgroundColor: 'black',
       opacity: 0.5,
@@ -180,16 +180,12 @@ function Toolbar() {
 }
 
 function ImageWithRois() {
-  const image = createBaseImage();
-  const buffer = encode(image);
-  const blob = new Blob([buffer], { type: 'image/png' });
-  const url = URL.createObjectURL(blob);
   return (
-    <RoiContainer
-      target={<img src={url} style={{ display: 'block', width: '100%' }} />}
-    >
-      <RoiList />
-    </RoiContainer>
+    <div style={{ maxWidth: 800, border: 'solid 5px gray' }}>
+      <RoiContainer target={<ImageSource />}>
+        <RoiList />
+      </RoiContainer>
+    </div>
   );
 }
 
@@ -205,29 +201,50 @@ function RoiList() {
 }
 
 function TransformedImage() {
-  const image = createBaseImage();
+  const ref = useRef();
   const rois = useCommitedRois<RoiData>();
-  for (const roi of rois) {
-    const { x, y, width, height } = roi;
-    image.drawRectangle({
-      origin: {
-        row: Math.round(y * imageHeight),
-        column: Math.round(x * imageWidth),
-      },
-      width: width * imageWidth,
-      height: height * imageHeight,
-      out: image,
-    });
-  }
-  const buffer = encode(image);
-  const blob = new Blob([buffer], { type: 'image/png' });
-  const url = URL.createObjectURL(blob);
-  return <img src={url} />;
+  useEffect(() => {
+    fetch(imgUrl)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        const image = decode(new DataView(buffer));
+        // image.convertColor('RGBA', { out: image });
+        for (const roi of rois) {
+          image.drawRectangle({
+            strokeColor: [255, 255, 255],
+            origin: {
+              column: Math.round(roi.x * image.width),
+              row: Math.round(roi.y * image.height),
+            },
+            width: Math.round(roi.width * image.width),
+            height: Math.round(roi.height * image.height),
+            out: image,
+          });
+        }
+        writeCanvas(image, ref.current);
+      })
+      .catch((error) => {
+        reportError(error);
+      });
+  }, [rois]);
+
+  return <canvas ref={ref} id="transformed-image" />;
 }
 
-function createBaseImage() {
-  const image = new Image(imageWidth, imageHeight).fill(255);
-  image.drawRectangle({ out: image });
-  image.drawCircle({ column: 250, row: 200 }, 200, { out: image });
-  return image;
+function ImageSource() {
+  const ref = useRef();
+
+  useEffect(() => {
+    fetch('/barbara.jpg')
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        const image = decode(new DataView(buffer));
+        writeCanvas(image, ref.current);
+      })
+      .catch((error) => {
+        reportError(error);
+      });
+  }, []);
+
+  return <canvas ref={ref} style={{ width: '100%', display: 'block' }} />;
 }

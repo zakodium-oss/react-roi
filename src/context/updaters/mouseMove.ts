@@ -6,43 +6,65 @@ import { assert, assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 
 export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
-  const { selectedRoi, rois } = draft;
-  const roi = rois.find((roi) => roi.id === selectedRoi);
-  if (!roi) return;
-  updateRoiBox(roi, { x: event.movementX, y: event.movementY });
+  switch (draft.action) {
+    case 'idle':
+      return;
+    case 'panning':
+      draft.panZoom.translation[0] += event.movementX;
+      draft.panZoom.translation[1] += event.movementY;
+      return;
+    case 'moving':
+    case 'drawing':
+    case 'resizing': {
+      const { selectedRoi, rois } = draft;
+      const roi = rois.find((roi) => roi.id === selectedRoi);
+      assert(roi);
+      updateRoiBox(draft, roi, { x: event.movementX, y: event.movementY });
+      return;
+    }
+    default:
+      assertUnreachable(draft.action, 'Invalid action type');
+  }
 }
 
-export function updateRoiBox(roi: Draft<Roi>, movement: Point) {
+export function updateRoiBox(
+  draft: Draft<ReactRoiState>,
+  roi: Draft<Roi>,
+  movement: Point,
+) {
+  const movementX = movement.x / draft.panZoom.scale;
+  const movementY = movement.y / draft.panZoom.scale;
   switch (roi.action.type) {
     case 'idle':
       return;
     case 'moving':
-      roi.x += movement.x;
-      roi.y += movement.y;
+      roi.x += movementX;
+      roi.y += movementY;
       break;
     case 'resizing': {
-      resize(roi, movement);
+      resize(draft, roi, movement);
       break;
     }
     case 'drawing':
-      resize(roi, movement);
+      resize(draft, roi, movement);
       break;
     default:
       assertUnreachable(roi.action, 'Invalid action type');
   }
 }
 
-function resize(roi: Draft<Roi>, movement: Point) {
+function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
-
+  const movementX = movement.x / draft.panZoom.scale;
+  const movementY = movement.y / draft.panZoom.scale;
   const xAxisCorner = roi.action.xAxisCorner;
   // Handle X axis
   switch (xAxisCorner) {
     case 'left': {
-      const newX = roi.x + movement.x;
+      const newX = roi.x + movementX;
       if (newX <= roi.x + roi.width) {
         roi.x = newX;
-        roi.width -= movement.x;
+        roi.width -= movementX;
       } else {
         roi.x = roi.x + roi.width;
         roi.width = newX - roi.x;
@@ -51,7 +73,7 @@ function resize(roi: Draft<Roi>, movement: Point) {
       break;
     }
     case 'right': {
-      const newWidth = roi.width + movement.x;
+      const newWidth = roi.width + movementX;
       if (newWidth >= 0) {
         roi.width = newWidth;
       } else {
@@ -72,10 +94,10 @@ function resize(roi: Draft<Roi>, movement: Point) {
   const yAxisCorner = roi.action.yAxisCorner;
   switch (yAxisCorner) {
     case 'top': {
-      const newX = roi.y + movement.y;
+      const newX = roi.y + movementY;
       if (newX <= roi.y + roi.height) {
         roi.y = newX;
-        roi.height -= movement.y;
+        roi.height -= movementY;
       } else {
         roi.y = roi.y + roi.height;
         roi.height = newX - roi.y;
@@ -84,7 +106,7 @@ function resize(roi: Draft<Roi>, movement: Point) {
       break;
     }
     case 'bottom': {
-      const newWidth = roi.height + movement.y;
+      const newWidth = roi.height + movementY;
       if (newWidth >= 0) {
         roi.height = newWidth;
       } else {

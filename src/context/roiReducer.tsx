@@ -10,10 +10,12 @@ import {
   renormalizeRoiPosition,
 } from '../utilities/rois';
 
+import { PanZoomContext } from './contexts';
 import { cancelAction } from './updaters/cancelAction';
 import { endAction } from './updaters/endAction';
 import { mouseMove } from './updaters/mouseMove';
 import { startDraw } from './updaters/startDraw';
+import { resetZoomAction, zoomAction } from './updaters/zoom';
 
 interface Size {
   width: number;
@@ -31,6 +33,11 @@ export interface ReactRoiState<T = unknown> {
   selectedRoi?: string;
 
   /**
+   * Current action being performed
+   */
+  action: 'idle' | 'moving' | 'drawing' | 'panning' | 'resizing';
+
+  /**
    * rois
    */
   rois: Array<Roi<T>>;
@@ -44,15 +51,28 @@ export interface ReactRoiState<T = unknown> {
    * Size of the container used to normalize coordinates
    */
   size: Size;
+
+  /**
+   * Defines the current affine transformation being applied to the container
+   */
+  panZoom: PanZoomContext;
 }
 
 export type RoiMode = 'select' | 'draw';
 
 export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
 
-export interface MouseEventPayload {
+export interface ZoomPayload {
+  scale: number;
+  refBoundingClientRect: DOMRect;
+  clientX: number;
+  clientY: number;
+}
+
+export interface StartDrawPayload {
   event: MouseEvent | React.MouseEvent;
   containerBoundingRect: DOMRect;
+  isPanZooming: boolean;
 }
 
 export type RoiReducerAction =
@@ -83,7 +103,7 @@ export type RoiReducerAction =
     }
   | {
       type: 'START_DRAW';
-      payload: MouseEventPayload;
+      payload: StartDrawPayload;
     }
   | {
       type: 'MOUSE_MOVE';
@@ -96,6 +116,13 @@ export type RoiReducerAction =
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
       payload: { id: string };
+    }
+  | {
+      type: 'ZOOM';
+      payload: ZoomPayload;
+    }
+  | {
+      type: 'RESET_ZOOM';
     };
 
 export function roiReducer(
@@ -163,7 +190,7 @@ export function roiReducer(
         const { rois } = draft;
         const roi = rois.find((roi) => roi.id === id);
         assert(roi, 'ROI not found');
-
+        draft.action = 'resizing';
         roi.action = {
           type: 'resizing',
           xAxisCorner,
@@ -183,7 +210,7 @@ export function roiReducer(
         draft.selectedRoi = id;
         const roi = rois.find((roi) => roi.id === id);
         assert(roi, 'ROI not found');
-
+        draft.action = 'moving';
         roi.action = {
           type: 'moving',
         };
@@ -209,6 +236,12 @@ export function roiReducer(
         cancelAction(draft);
         break;
       }
+      case 'ZOOM':
+        zoomAction(draft, action.payload);
+        break;
+      case 'RESET_ZOOM':
+        resetZoomAction(draft);
+        break;
       default:
         assertUnreachable(type);
     }

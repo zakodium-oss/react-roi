@@ -27,6 +27,9 @@ export function RoiBoxCorner({
         cursor: corner.cursor,
       }}
       onMouseDown={(event) => {
+        if (event.altKey) {
+          return;
+        }
         event.stopPropagation();
         roiDispatch({
           type: 'START_RESIZE',

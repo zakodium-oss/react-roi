@@ -24,6 +24,7 @@ export function cancelAction(draft: Draft<ReactRoiState>) {
     assert(committedRoi);
     Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
   }
+  draft.action = 'idle';
   roi.action = {
     type: 'idle',
   };

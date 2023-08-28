@@ -4,9 +4,9 @@ import { CommittedRoi, Roi } from '../types/Roi';
 
 import type { ReactRoiState, RoiReducerAction } from './roiReducer';
 
-export const roiStateContext = createContext<Omit<
+export const roiStateContext = createContext<Pick<
   ReactRoiState,
-  'committedRois' | 'rois' | 'size'
+  'mode' | 'selectedRoi'
 > | null>(null);
 
 export const roiDispatchContext =
@@ -18,3 +18,12 @@ export const roisContext = createContext<Roi[] | null>(null);
 
 export const roiContainerRefContext =
   createContext<MutableRefObject<HTMLDivElement> | null>(null);
+
+export interface PanZoomContext {
+  scale: number;
+  translation: [number, number];
+}
+export const panZoomContext = createContext<PanZoomContext>({
+  scale: 1.5,
+  translation: [0, 0],
+});

@@ -37,6 +37,9 @@ export function Box({
         ...style,
       }}
       onMouseDown={(event) => {
+        if (event.altKey) {
+          return;
+        }
         roiDispatch({
           type: 'SELECT_BOX_AND_START_MOVE',
           payload: {
