@@ -9,6 +9,7 @@ import {
   roiDispatchContext,
   committedRoisContext,
   roiStateContext,
+  panZoomContext,
 } from './contexts';
 import { ReactRoiState, roiReducer } from './roiReducer';
 
@@ -23,12 +24,17 @@ function createInitialState<T>(
   const size = { width: 1, height: 1 };
   const roiInitialState: ReactRoiState<T> = {
     mode: 'select',
+    action: 'idle',
     size,
     selectedRoi: undefined,
     committedRois,
     rois: committedRois.map((committedRoi) =>
       createRoiFromCommittedRoi(committedRoi, size),
     ),
+    panZoom: {
+      scale: 1,
+      translation: [0, 0],
+    },
   };
   return roiInitialState;
 }
@@ -39,7 +45,7 @@ export function RoiProvider<T>({
 }: RoiProviderProps<T>) {
   const roiInitialState = createInitialState<T>(initialRois);
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
-  const { rois, committedRois, mode, selectedRoi } = state;
+  const { rois, committedRois, mode, selectedRoi, panZoom } = state;
   const roiState = useMemo(() => {
     return {
       mode,
@@ -49,15 +55,17 @@ export function RoiProvider<T>({
 
   return (
     <KbsProvider>
-      <roiDispatchContext.Provider value={dispatch}>
-        <roisContext.Provider value={rois}>
-          <committedRoisContext.Provider value={committedRois}>
-            <roiStateContext.Provider value={roiState}>
-              {children}
-            </roiStateContext.Provider>
-          </committedRoisContext.Provider>
-        </roisContext.Provider>
-      </roiDispatchContext.Provider>
+      <panZoomContext.Provider value={panZoom}>
+        <roiDispatchContext.Provider value={dispatch}>
+          <roisContext.Provider value={rois}>
+            <committedRoisContext.Provider value={committedRois}>
+              <roiStateContext.Provider value={roiState}>
+                {children}
+              </roiStateContext.Provider>
+            </committedRoisContext.Provider>
+          </roisContext.Provider>
+        </roiDispatchContext.Provider>
+      </panZoomContext.Provider>
     </KbsProvider>
   );
 }

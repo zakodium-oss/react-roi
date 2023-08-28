@@ -1,8 +1,9 @@
 import { Draft } from 'immer';
 
-import { Box, Size } from '../../types';
+import { Box } from '../../types';
 import { CommittedRoi, Roi } from '../../types/Roi';
 import { denormalizeBox, normalizeBox } from '../../utilities/coordinates';
+import { ReactRoiState } from '../roiReducer';
 
 function boundRoi<T extends Box>(
   roi: T,
@@ -52,16 +53,19 @@ function boundRoi<T extends Box>(
 }
 
 export function updateCommitedRoiPosition(
+  draft: ReactRoiState,
   committedRoi: Draft<CommittedRoi>,
   roi: Draft<Roi>,
-  size: Size,
 ) {
-  const normalizedBox = boundRoi(normalizeBox(roi, size), roi.action.type);
+  const normalizedBox = boundRoi(
+    normalizeBox(roi, draft.size),
+    roi.action.type,
+  );
   if (normalizedBox.height === 0 || normalizedBox.width === 0) {
     // Revert changes since the ROI is no longer visible
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, size));
+    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
   } else {
     Object.assign<CommittedRoi, Box>(committedRoi, normalizedBox);
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, size));
+    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
   }
 }
