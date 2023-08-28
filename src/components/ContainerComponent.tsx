@@ -52,6 +52,7 @@ export function ContainerComponent({ target, children }: ContainerProps) {
         ref={ref}
         style={{
           position: 'relative',
+          overflow: 'hidden',
           margin: 0,
           padding: 0,
           cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
