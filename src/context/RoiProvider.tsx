@@ -39,7 +39,7 @@ export function RoiProvider<T>({
 }: RoiProviderProps<T>) {
   const roiInitialState = createInitialState<T>(initialRois);
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
-  const { rois, committedRois: commitedRois, mode, selectedRoi } = state;
+  const { rois, committedRois, mode, selectedRoi } = state;
   const roiState = useMemo(() => {
     return {
       mode,
@@ -47,23 +47,11 @@ export function RoiProvider<T>({
     };
   }, [mode, selectedRoi]);
 
-  const roiDispatch = useMemo(() => {
-    return dispatch;
-  }, [dispatch]);
-
-  const commitedRoisState = useMemo(() => {
-    return commitedRois;
-  }, [commitedRois]);
-
-  const roisState = useMemo(() => {
-    return rois;
-  }, [rois]);
-
   return (
     <KbsProvider>
-      <roiDispatchContext.Provider value={roiDispatch}>
-        <roisContext.Provider value={roisState}>
-          <committedRoisContext.Provider value={commitedRoisState}>
+      <roiDispatchContext.Provider value={dispatch}>
+        <roisContext.Provider value={rois}>
+          <committedRoisContext.Provider value={committedRois}>
             <roiStateContext.Provider value={roiState}>
               {children}
             </roiStateContext.Provider>
