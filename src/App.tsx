@@ -22,6 +22,21 @@ const imageHeight = 400;
 const initialRois: Array<CommittedRoi<RoiData>> = [
   {
     id: crypto.randomUUID(),
+    label: (
+      <div
+        style={{
+          color: 'white',
+          backgroundColor: 'transparent',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          justifyItems: 'center',
+          fontSize: '12px',
+        }}
+      >
+        Styled label
+      </div>
+    ),
     x: 0,
     y: 0,
     width: 0.2,
@@ -195,7 +210,10 @@ function TransformedImage() {
   for (const roi of rois) {
     const { x, y, width, height } = roi;
     image.drawRectangle({
-      origin: { row: y * imageHeight, column: x * imageWidth },
+      origin: {
+        row: Math.round(y * imageHeight),
+        column: Math.round(x * imageWidth),
+      },
       width: width * imageWidth,
       height: height * imageHeight,
       out: image,
