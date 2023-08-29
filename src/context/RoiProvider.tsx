@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from 'react';
+import { ReactNode, useMemo, useReducer } from 'react';
 import { KbsProvider } from 'react-kbs';
 
 import { CommittedRoi } from '../types/Roi';
@@ -14,7 +14,7 @@ import {
 import { ReactRoiState, roiReducer } from './roiReducer';
 
 interface RoiProviderProps<T> {
-  children: JSX.Element;
+  children: ReactNode;
   initialRois?: Array<CommittedRoi<T>>;
 }
 
