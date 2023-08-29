@@ -208,7 +208,6 @@ function TransformedImage() {
       .then((response) => response.arrayBuffer())
       .then((buffer) => {
         const image = decode(new DataView(buffer));
-        // image.convertColor('RGBA', { out: image });
         for (const roi of rois) {
           image.drawRectangle({
             strokeColor: [255, 255, 255],
