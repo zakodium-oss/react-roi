@@ -9,5 +9,6 @@
     "strict": false,
     "target": "ES2022"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "exclude": ["./src/__tests__/**/*"]
 }
