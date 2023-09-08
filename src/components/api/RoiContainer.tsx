@@ -6,9 +6,10 @@ import { ContainerComponent } from '../ContainerComponent';
 interface RoiComponentProps {
   target?: JSX.Element;
   children?: JSX.Element;
+  id?: string;
 }
 
-export function RoiContainer({ target, children }: RoiComponentProps) {
+export function RoiContainer({ target, children, id }: RoiComponentProps) {
   const roiDispatch = useRoiDispatch();
   useKbsGlobal([
     {
@@ -32,5 +33,9 @@ export function RoiContainer({ target, children }: RoiComponentProps) {
       },
     },
   ]);
-  return <ContainerComponent target={target}>{children}</ContainerComponent>;
+  return (
+    <ContainerComponent id={id} target={target}>
+      {children}
+    </ContainerComponent>
+  );
 }

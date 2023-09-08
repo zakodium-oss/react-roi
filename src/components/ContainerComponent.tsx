@@ -16,9 +16,10 @@ import { throttle } from '../utilities/throttle';
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
   children: JSX.Element;
+  id?: string;
 }
 
-export function ContainerComponent({ target, children }: ContainerProps) {
+export function ContainerComponent({ target, children, id }: ContainerProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
@@ -74,6 +75,7 @@ export function ContainerComponent({ target, children }: ContainerProps) {
   return (
     <roiContainerRefContext.Provider value={ref}>
       <div
+        id={id}
         ref={ref}
         style={{
           position: 'relative',
