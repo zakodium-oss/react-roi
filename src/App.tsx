@@ -7,10 +7,9 @@ import {
   RoiProvider,
   useRoiState,
   useRoiActions,
-  useRois,
   useCommitedRois,
   RoiContainer,
-  RoiBox,
+  RoiList,
 } from './index';
 
 interface RoiData {
@@ -186,17 +185,6 @@ function ImageWithRois() {
         <RoiList />
       </RoiContainer>
     </div>
-  );
-}
-
-function RoiList() {
-  const rois = useRois<RoiData>();
-  return (
-    <>
-      {rois.map((roi) => (
-        <RoiBox key={roi.id} roi={roi} />
-      ))}
-    </>
   );
 }
 
