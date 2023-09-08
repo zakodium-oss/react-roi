@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/zakodium-oss/react-roi/compare/v0.2.0...v0.3.0) (2023-09-08)
+
+
+### Features
+
+* add panZoom feature ([c1b6710](https://github.com/zakodium-oss/react-roi/commit/c1b6710a1f5135f44b75ad062d8e8ad61a8653c9))
+* add RoiList component ([59e380d](https://github.com/zakodium-oss/react-roi/commit/59e380d0e948f6fec3d56dede1d4b04333758994))
+
+
+### Bug Fixes
+
+* hide content overflowing the container ([c99f839](https://github.com/zakodium-oss/react-roi/commit/c99f8397c10758f0e96ce9fa9865ce5305749915))
+
+
+### Documentation
+
+* intiated roi with styled label ([bdbdd3b](https://github.com/zakodium-oss/react-roi/commit/bdbdd3b0a2fa04616108cbf8f1b13288592e1f9c))
+
 ## [0.2.0](https://github.com/zakodium-oss/react-roi/compare/v0.1.0...v0.2.0) (2023-08-28)
 
 
