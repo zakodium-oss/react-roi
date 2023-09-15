@@ -1,14 +1,31 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
     "outDir": "lib",
     "sourceMap": true,
     "strict": false,
-    "target": "ES2022"
+    "target": "ES2022",
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/__tests__/**/*"]
+  "include": [
+    "./src/**/*",
+    "./playwright",
+    "playwright-*.ts",
+    "./tests",
+  ],
+  "exclude": [
+    "./src/__tests__/**/*",
+    "node_modules"
+  ]
 }

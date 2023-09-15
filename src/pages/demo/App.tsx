@@ -1,8 +1,6 @@
 import { decode, writeCanvas } from 'image-js';
 import { useEffect, useRef } from 'react';
 
-import { CommittedRoi } from './types/Roi';
-
 import {
   RoiProvider,
   useRoiState,
@@ -10,7 +8,8 @@ import {
   useCommitedRois,
   RoiContainer,
   RoiList,
-} from './index';
+} from '../../index';
+import { CommittedRoi } from '../../types/Roi';
 
 interface RoiData {
   blurMethod: 'pixelate' | 'blur' | 'fill';
@@ -90,7 +89,6 @@ export default function App() {
           <div style={{ flexGrow: 1 }}>
             <ImageWithRois />
           </div>
-
           <TransformedImage />
         </div>
       </div>
