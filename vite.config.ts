@@ -25,6 +25,7 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     rollupOptions,
+    sourcemap: true,
   },
   plugins,
   test: {
