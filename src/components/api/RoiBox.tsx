@@ -12,25 +12,34 @@ interface RoiBoxProps {
 
 function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
   const roiState = useRoiState();
-  const { style, selectedStyle: editStyle, x, y, width, height } = roi;
-  const isActive = roi.id === roiState.selectedRoi;
+  const {
+    style,
+    selectedStyle: editStyle,
+    x,
+    y,
+    width,
+    height,
+    id,
+    label,
+  } = roi;
+  const isActive = id === roiState.selectedRoi;
   return (
     <>
       <Box
-        id={roi.id}
+        id={id}
         x={x}
         y={y}
         width={width}
         height={height}
         style={isActive ? editStyle : style}
-        label={roi.label}
+        label={label}
       />
       {roiState.mode === 'select' &&
         isActive &&
         getAllCorners(roi).map((corner) => (
           <RoiBoxCorner
             corner={corner}
-            roiId={roi.id}
+            roiId={id}
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
           />
         ))}
