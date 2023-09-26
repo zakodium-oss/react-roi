@@ -5,6 +5,6 @@
     "declarationMap": true,
     "outDir": "lib-esm",
     "module": "ES2022",
-    "sourceMap": true,
+    "sourceMap": true
   }
 }

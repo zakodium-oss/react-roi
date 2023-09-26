@@ -1,3 +1,4 @@
+import { defineConfig } from '@playwright/test';
 import config from './playwright-base.config';
 
 config.testDir = './tests/app/';
@@ -7,4 +8,4 @@ config.webServer = {
   reuseExistingServer: true,
 };
 
-export default config;
+export default defineConfig(config);

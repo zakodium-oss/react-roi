@@ -3,15 +3,27 @@ import { RoiContainer, RoiProvider, RoiList } from '../src/index';
 export function TestComponent() {
   return (
     <RoiProvider initialRois={initialRois()}>
-      <RoiContainer
-        target={
-          <div style={{ width: '500px', height: '500px' }}>
-            <div id="label">Label</div>
-          </div>
-        }
+      <div
+        style={{
+          width: '500px',
+          height: '500px',
+          backgroundColor: 'lightgreen',
+        }}
       >
-        <RoiList />
-      </RoiContainer>
+        <RoiContainer
+          target={
+            <div
+              style={{
+                width: '500px',
+                height: '500px',
+                backgroundColor: 'lightblue',
+              }}
+            />
+          }
+        >
+          <RoiList />
+        </RoiContainer>
+      </div>
     </RoiProvider>
   );
 }

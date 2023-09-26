@@ -14,7 +14,7 @@
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
     "dev": "vite",
-    "dev-app": "vite --open /pages/demo.html",
+    "dev-app": "vite --open /index.html",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "playwright": "npm run playwright-ct -- --project chromium && npm run playwright-e2e -- --project chromium",
@@ -24,8 +24,7 @@
     "prettier": "prettier --check ./",
     "prettier-write": "prettier --write ./",
     "preview": "vite preview",
-    "test": "npm run playwright && npm run test-only && npm run eslint && npm run prettier && npm run check-types",
-    "test-only": "vitest run --coverage",
+    "test": "npm run playwright && npm run eslint && npm run prettier && npm run check-types",
     "tsc": "npm run clean && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc --project tsconfig.cjs.json",
     "tsc-esm": "tsc --project tsconfig.esm.json"
@@ -57,7 +56,6 @@
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
-    "vite": "^4.4.9",
-    "vitest": "^0.34.2"
+    "vite": "^4.4.9"
   }
 }

@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 
 import react from '@vitejs/plugin-react';
@@ -7,28 +6,23 @@ import { defineConfig } from 'vitest/config';
 
 const plugins = [react(), splitVendorChunkPlugin()];
 
-const pages = fs.readdirSync(path.join(__dirname, 'pages'));
-
-const rollupOptions = {
-  input: {
-    index: path.join(__dirname, 'index.html'),
-    ...Object.fromEntries(
-      pages.map((page) => [page, path.join(__dirname, 'pages', page)]),
-    ),
-  },
-};
-
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
   build: {
     target: 'esnext',
     minify: false,
-    rollupOptions,
     sourcemap: true,
+    rollupOptions: {
+      input: {
+        index: path.join(__dirname, 'index.html'),
+      },
+    },
   },
   plugins,
-  test: {
-    include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  },
 });

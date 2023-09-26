@@ -8,11 +8,6 @@ const config: PlaywrightTestConfig = {
   reporter: process.env.CI ? 'github' : 'list',
   use: {
     headless: true,
-    ignoreHTTPSErrors: true,
-    // video: 'on-first-retry',
-    launchOptions: {
-      // slowMo: 250,
-    },
     contextOptions: {
       strictSelectors: true,
     },

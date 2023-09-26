@@ -5,8 +5,5 @@
     "declaration": true,
     "declarationMap": true
   },
-  "exclude": [
-    "./src/**/__tests__",
-    "vite.config.ts"
-  ]
+  "exclude": ["./src/**/__tests__", "vite.config.ts"]
 }

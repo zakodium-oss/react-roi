@@ -6,18 +6,16 @@ test('load initial rois', async ({ mount }) => {
   const component = await mount(<TestComponent />);
   const box1 = component.locator('_react=Box[id="box-1"]');
   const box2 = component.locator('_react=Box[id="box-2"]');
-  expect(await box1.innerText()).toStrictEqual('box1');
-  expect(await box2.innerText()).toStrictEqual('box2');
-  expect(await box1.boundingBox()).toStrictEqual({
-    height: 250,
-    width: 640,
-    x: 0,
-    y: 0,
-  });
-  expect(await box2.boundingBox()).toStrictEqual({
-    height: 150,
-    width: 384,
-    x: 896,
-    y: 350,
-  });
+  // box 1
+  await expect(box1).toHaveText('box1');
+  await expect(box1).toHaveCSS('top', '0px');
+  await expect(box1).toHaveCSS('left', '0px');
+  await expect(box1).toHaveCSS('height', '250px');
+  await expect(box1).toHaveCSS('width', '250px');
+  // box 2
+  await expect(box2).toHaveText('box2');
+  await expect(box2).toHaveCSS('top', '350px');
+  await expect(box2).toHaveCSS('left', '350px');
+  await expect(box2).toHaveCSS('height', '150px');
+  await expect(box2).toHaveCSS('width', '150px');
 });

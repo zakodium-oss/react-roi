@@ -8,8 +8,8 @@ import {
   useCommitedRois,
   RoiContainer,
   RoiList,
-} from '../../index';
-import { CommittedRoi } from '../../types/Roi';
+} from '../index';
+import { CommittedRoi } from '../types/Roi';
 
 interface RoiData {
   blurMethod: 'pixelate' | 'blur' | 'fill';
