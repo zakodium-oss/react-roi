@@ -7,9 +7,13 @@ const plugins = [react(), splitVendorChunkPlugin()];
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
   build: {
     target: 'esnext',
-    minify: false,
     sourcemap: true,
   },
   plugins,
