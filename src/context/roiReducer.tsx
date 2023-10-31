@@ -172,20 +172,17 @@ export function roiReducer(
       case 'UPDATE_ROI': {
         const { id, ...updatedData } = action.payload;
         if (!id) return;
-        const commitedRoi = draft.committedRois.find((roi) => roi.id === id);
-        const roi = draft.rois.find((roi) => roi.id === id);
+        const index = draft.rois.findIndex((roi) => roi.id === id);
+        const commitedRoi = draft.committedRois[index];
 
-        assert(roi, 'ROI not found');
+        assert(index !== -1, 'ROI not found');
         assert(commitedRoi, 'Commited ROI not found');
 
         Object.assign<CommittedRoi, Partial<CommittedRoi>>(
           commitedRoi,
           updatedData,
         );
-        Object.assign<Roi, Partial<Roi>>(
-          roi,
-          createRoiFromCommittedRoi(commitedRoi, draft.size),
-        );
+        draft.rois[index] = createRoiFromCommittedRoi(commitedRoi, draft.size);
         break;
       }
 
