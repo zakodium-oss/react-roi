@@ -7,6 +7,7 @@ import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 import {
   createCommitedRoi,
   createRoi,
+  createRoiFromCommittedRoi,
   renormalizeRoiPosition,
 } from '../utilities/rois';
 
@@ -181,7 +182,10 @@ export function roiReducer(
           commitedRoi,
           updatedData,
         );
-        Object.assign<Roi, Partial<Roi>>(roi, updatedData);
+        Object.assign<Roi, Partial<Roi>>(
+          roi,
+          createRoiFromCommittedRoi(commitedRoi, draft.size),
+        );
         break;
       }
 
