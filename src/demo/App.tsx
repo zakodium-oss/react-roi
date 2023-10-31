@@ -152,9 +152,8 @@ function Toolbar() {
               width: 0.2,
               height: 0.2,
               label: 'My new roi',
-              // All styles are optional and created randomly if not provided
-              className: 'red',
-              selectedClassname: 'orange',
+              className: 'yellow',
+              selectedClassname: 'green',
               data: {
                 blurMethod: 'pixelate',
               },
