@@ -16,17 +16,21 @@ export function createCommitedRoi<T>(
   id: string,
   options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
 ): CommittedRoi<T> {
+  const hasClassNames = options.className !== undefined || options.selectedClassname !== undefined
+
   return {
     id,
     label: '',
     ...createInitialBox(),
-    style: {
-      backgroundColor: 'black',
-      opacity: 0.5,
-    },
-    selectedStyle: {
-      backgroundColor: 'blue',
-      opacity: 0.5,
+    ...!hasClassNames && {
+      style: {
+        backgroundColor: 'black',
+        opacity: 0.5,
+      },
+      selectedStyle: {
+        backgroundColor: 'blue',
+        opacity: 0.5,
+      },
     },
     ...options,
   };

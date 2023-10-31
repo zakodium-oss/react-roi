@@ -15,6 +15,7 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
   const {
     style,
     selectedStyle: editStyle,
+    className, selectedClassname: editClassname,
     x,
     y,
     width,
@@ -32,6 +33,7 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
         width={width}
         height={height}
         style={isActive ? editStyle : style}
+        className={isActive ? editClassname : className}
         label={label}
       />
       {roiState.mode === 'select' &&

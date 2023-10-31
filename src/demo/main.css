@@ -14,3 +14,13 @@ body {
   font-family: monospace;
   font-size: 16px;
 }
+
+.orange {
+  background-color: #A2FF3A;
+  opacity: 0.4;
+}
+
+.red {
+  background-color: #FCEB56;
+  opacity: 0.6;
+}

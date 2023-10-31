@@ -104,74 +104,101 @@ function Toolbar() {
       style={{
         width: 'fit-content',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         margin: '10px',
       }}
     >
-      <div>Mode: {mode}</div>
-      <button type="button" onClick={() => setMode('select')}>
-        Select
-      </button>
-      <button type="button" onClick={() => setMode('draw')}>
-        Draw
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          createRoi({
-            id: crypto.randomUUID(),
-            // All the following roi properties are optional
-            // When creating a new ROI, the default position is the center, reasonably sized based on the size of the target
-            x: 0.4,
-            y: 0.4,
-            width: 0.2,
-            height: 0.2,
-            label: 'My new roi',
-            // All styles are optional and created randomly if not provided
-            style: {
-              backgroundColor: '#ff5500',
-              opacity: 0.6,
-            },
-            selectedStyle: {
-              backgroundColor: '#ffaa00',
-              opacity: 0.4,
-            },
-            data: {
-              blurMethod: 'pixelate',
-            },
-          })
-        }
-      >
-        Create ROI
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          updateRoi(selectedRoi, {
-            y: 0.1,
-            style: {
-              backgroundColor: 'green',
-              opacity: 0.6,
-            },
-            selectedStyle: {
-              backgroundColor: 'lightgreen',
-              opacity: 0.4,
-            },
-          });
-        }}
-      >
-        Update
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          removeRoi(selectedRoi);
-        }}
-      >
-        Remove
-      </button>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
+        <button
+          type="button"
+          onClick={() =>
+            createRoi({
+              id: crypto.randomUUID(),
+              // All the following roi properties are optional
+              // When creating a new ROI, the default position is the center, reasonably sized based on the size of the target
+              x: 0.4,
+              y: 0.4,
+              width: 0.2,
+              height: 0.2,
+              label: 'My new roi',
+              // All styles are optional and created randomly if not provided
+              style: {
+                backgroundColor: '#ff5500',
+                opacity: 0.6,
+              },
+              selectedStyle: {
+                backgroundColor: '#ffaa00',
+                opacity: 0.4,
+              },
+              data: {
+                blurMethod: 'pixelate',
+              },
+            })
+          }
+        >
+          Create ROI
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            createRoi({
+              id: crypto.randomUUID(),
+              // All the following roi properties are optional
+              // When creating a new ROI, the default position is the center, reasonably sized based on the size of the target
+              x: 0.4,
+              y: 0.4,
+              width: 0.2,
+              height: 0.2,
+              label: 'My new roi',
+              // All styles are optional and created randomly if not provided
+              className: 'red',
+              selectedClassname: 'orange',
+              data: {
+                blurMethod: 'pixelate',
+              },
+            })
+          }
+        >
+          Create ROI with Classnames
+        </button>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
+        <div>Mode: {mode}</div>
+        <button type="button" onClick={() => setMode('select')}>
+          Select
+        </button>
+        <button type="button" onClick={() => setMode('draw')}>
+          Draw
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            updateRoi(selectedRoi, {
+              y: 0.1,
+              style: {
+                backgroundColor: 'green',
+                opacity: 0.6,
+              },
+              selectedStyle: {
+                backgroundColor: 'lightgreen',
+                opacity: 0.4,
+              },
+            });
+          }}
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            removeRoi(selectedRoi);
+          }}
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 }

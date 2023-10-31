@@ -10,6 +10,7 @@ interface BoxAnnotationProps {
   width: number;
   height: number;
   style?: CSSProperties;
+  className?: string;
   label?: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export function Box({
   height,
   style,
   label,
+  className
 }: BoxAnnotationProps): JSX.Element {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
@@ -36,6 +38,7 @@ export function Box({
         cursor: roiState.mode === 'draw' ? 'crosshair' : 'grab',
         ...style,
       }}
+      className={className}
       onMouseDown={(event) => {
         if (event.altKey) {
           return;

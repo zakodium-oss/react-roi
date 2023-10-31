@@ -57,11 +57,13 @@ export interface Roi<TData = unknown> extends Box {
   /**
    * Style of the ROI box when not being selected or edited.
    */
-  style: CSSProperties;
+  style?: CSSProperties;
+  className?: string;
   /**
    * Style applied to the ROI box when being selected.
    */
-  selectedStyle: CSSProperties;
+  selectedStyle?: CSSProperties;
+  selectedClassname?: string;
   /**
    * Metadata of any kind associated with the ROI.
    */
