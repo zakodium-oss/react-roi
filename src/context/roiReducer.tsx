@@ -206,14 +206,15 @@ export function roiReducer(
           draft.selectedRoi = undefined;
           return;
         }
-        const { rois } = draft;
+        const index = draft.rois.findIndex((roi) => roi.id === id);
+        assert(index !== -1, 'ROI not found');
+        const roi = draft.rois.splice(index, 1)[0];
+        const commitedRoi = draft.committedRois.splice(index, 1)[0];
         draft.selectedRoi = id;
-        const roi = rois.find((roi) => roi.id === id);
-        assert(roi, 'ROI not found');
         draft.action = 'moving';
-        roi.action = {
-          type: 'moving',
-        };
+        roi.action = { type: 'moving' };
+        draft.rois.push(roi);
+        draft.committedRois.push(commitedRoi);
         break;
       }
 
