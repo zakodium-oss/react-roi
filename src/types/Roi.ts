@@ -69,7 +69,7 @@ export interface Roi<TData = unknown> extends Box {
   /**
    * Classname applied to the ROI box when being selected
    */
-  selectedClassname?: string;
+  selectedClassName?: string;
   /**
    * Metadata of any kind associated with the ROI.
    */
