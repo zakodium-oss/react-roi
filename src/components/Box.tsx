@@ -3,7 +3,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
-interface BoxAnnotationProps {
+export interface BoxAnnotationProps {
   id: string;
   x: number;
   y: number;
