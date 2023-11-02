@@ -1,9 +1,8 @@
-import { Meta } from '@storybook/react';
 import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../src';
-import { CSSProperties } from 'react';
+import { Meta } from '@storybook/react';
 
 export default {
-  title: 'Actions',
+  title: 'Tests',
   decorators: [
     (Story) => (
       <RoiProvider>
@@ -23,12 +22,7 @@ function Target() {
   return <img src="/barbara.jpg" style={{ display: 'block', width: '100%' }} />;
 }
 
-interface AddWithStyleProps {
-  style: CSSProperties;
-  selectedStyle: CSSProperties;
-}
-
-export function AddWithStyle(props: AddWithStyleProps) {
+export function AddWithOnlySelectedCallName() {
   const { createRoi } = useRoiActions();
 
   function onClick() {
@@ -38,28 +32,14 @@ export function AddWithStyle(props: AddWithStyleProps) {
       y: 0,
       width: 0.2,
       height: 0.2,
-      ...props,
+      selectedClassName: 'darkorange',
     });
   }
 
   return <button onClick={onClick}>Add a new ROI</button>;
 }
 
-AddWithStyle.args = {
-  style: {
-    backgroundColor: 'green',
-  },
-  selectedStyle: {
-    backgroundColor: 'darkgreen',
-  },
-} as AddWithStyleProps;
-
-interface AddWithClassNameProps {
-  className: string;
-  selectedClassName: string;
-}
-
-export function AddWithClassName(props: AddWithClassNameProps) {
+export function AddWithoutStyle() {
   const { createRoi } = useRoiActions();
 
   function onClick() {
@@ -69,14 +49,8 @@ export function AddWithClassName(props: AddWithClassNameProps) {
       y: 0,
       width: 0.2,
       height: 0.2,
-      ...props,
     });
   }
 
   return <button onClick={onClick}>Add a new ROI</button>;
 }
-
-AddWithClassName.args = {
-  className: 'orange',
-  selectedClassName: 'darkorange',
-} as AddWithClassNameProps;

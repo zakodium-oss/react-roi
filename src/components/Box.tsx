@@ -26,6 +26,9 @@ export function Box({
 }: BoxAnnotationProps): JSX.Element {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
+
+  console.log('style in box', style, className);
+
   return (
     <div
       id={id}

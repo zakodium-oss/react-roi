@@ -1,4 +1,4 @@
-import { useRoiState, useRois } from '../../hooks';
+import { useRois, useRoiState } from '../../hooks';
 import { assert } from '../../utilities/assert';
 
 import { RoiBox } from './RoiBox';
@@ -12,6 +12,7 @@ export function RoiList() {
     const roi = rois.splice(index, 1)[0];
     rois.push(roi);
   }
+
   return (
     <>
       {rois.map((roi) => (
