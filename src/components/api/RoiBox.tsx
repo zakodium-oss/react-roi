@@ -16,7 +16,7 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
     style,
     selectedStyle: editStyle,
     className,
-    selectedClassname: editClassname,
+    selectedClassName: editClassname,
     x,
     y,
     width,

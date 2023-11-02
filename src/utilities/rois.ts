@@ -17,7 +17,7 @@ export function createCommitedRoi<T>(
   options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
 ): CommittedRoi<T> {
   const hasClassNames =
-    options.className !== undefined || options.selectedClassname !== undefined;
+    options.className !== undefined || options.selectedClassName !== undefined;
 
   return {
     id,

@@ -153,7 +153,7 @@ function Toolbar() {
               height: 0.2,
               label: 'My new roi',
               className: 'yellow',
-              selectedClassname: 'green',
+              selectedClassName: 'green',
               data: {
                 blurMethod: 'pixelate',
               },
