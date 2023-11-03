@@ -17,11 +17,11 @@ interface StyleProperties {
 }
 
 export interface RoiListProps<TData = unknown> {
-  getStyle: (roi: Roi<TData>, selected: boolean) => StyleProperties;
+  getStyle?: (roi: Roi<TData>, selected: boolean) => StyleProperties;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
-  const { getStyle } = props;
+  const { getStyle = defaultGetStyle } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
   if (selectedRoi) {
@@ -38,4 +38,16 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
       ))}
     </>
   );
+}
+
+function defaultGetStyle<TData = unknown>(
+  _: Roi<TData>,
+  selected: boolean,
+): StyleProperties {
+  return {
+    style: {
+      backgroundColor: 'black',
+      opacity: selected ? 0.2 : 0.5,
+    },
+  };
 }

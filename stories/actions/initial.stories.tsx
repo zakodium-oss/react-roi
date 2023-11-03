@@ -53,3 +53,15 @@ export function Initial() {
     </RoiProvider>
   );
 }
+
+export function WithDefaultStyle() {
+  return (
+    <RoiProvider initialRois={initialRois}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <RoiContainer target={<Target />}>
+          <RoiList />
+        </RoiContainer>
+      </div>
+    </RoiProvider>
+  );
+}
