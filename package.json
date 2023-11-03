@@ -10,12 +10,10 @@
   "main": "./lib/index.js",
   "module": "./lib-esm/index.js",
   "scripts": {
-    "storybook": "storybook dev -p 6006",
     "build": "tsc && vite build",
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
-    "dev": "vite",
-    "dev-app": "vite --open /index.html",
+    "dev": "storybook dev -p 6006",
     "eslint": "eslint src --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "playwright": "npm run playwright-ct -- --project chromium && npm run playwright-e2e -- --project chromium",
