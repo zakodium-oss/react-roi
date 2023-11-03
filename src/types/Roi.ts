@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 
@@ -54,22 +54,6 @@ export interface Roi<TData = unknown> extends Box {
    * Action being currently performed on the ROI box.
    */
   action: RoiAction;
-  /**
-   * Style of the ROI box when not being selected or edited.
-   */
-  style?: CSSProperties;
-  /**
-   * Classname of the ROI box when not being selected or edited
-   */
-  className?: string;
-  /**
-   * Style applied to the ROI box when being selected.
-   */
-  selectedStyle?: CSSProperties;
-  /**
-   * Classname applied to the ROI box when being selected
-   */
-  selectedClassName?: string;
   /**
    * Metadata of any kind associated with the ROI.
    */

@@ -2,8 +2,26 @@ import { useRois, useRoiState } from '../../hooks';
 import { assert } from '../../utilities/assert';
 
 import { RoiBox } from './RoiBox';
+import { Roi } from '../../types/Roi';
+import { CSSProperties } from 'react';
 
-export function RoiList() {
+interface StyleProperties {
+  /**
+   * Classname of the ROI box when not being selected or edited
+   */
+  className?: string;
+  /**
+   * Style of the ROI box when not being selected or edited.
+   */
+  style?: CSSProperties;
+}
+
+export interface RoiListProps<TData = unknown> {
+  getStyle: (roi: Roi<TData>, selected: boolean) => StyleProperties;
+}
+
+export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
+  const { getStyle } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
   if (selectedRoi) {
@@ -16,7 +34,7 @@ export function RoiList() {
   return (
     <>
       {rois.map((roi) => (
-        <RoiBox key={roi.id} roi={roi} />
+        <RoiBox key={roi.id} roi={roi} getStyle={getStyle} />
       ))}
     </>
   );

@@ -16,38 +16,12 @@ export function createCommitedRoi<T>(
   id: string,
   options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
 ): CommittedRoi<T> {
-  const {
-    selectedClassName,
-    className,
-    selectedStyle,
-    style,
-    ...otherOptions
-  } = options;
-
-  const hasClassNames = options.className !== undefined;
-  const hasSelectedClassNames = options.selectedClassName !== undefined;
-
-  let baseObject: any = {
+  return {
     id,
     label: '',
     ...createInitialBox(),
-    ...otherOptions,
+    ...options,
   };
-
-  if (hasClassNames) {
-    baseObject.className = options.className;
-  } else {
-    baseObject.style = options.style;
-  }
-
-  if (hasSelectedClassNames) {
-    baseObject.selectedClassName = options.selectedClassName;
-  } else {
-    baseObject.selectedStyle = options.selectedStyle;
-  }
-
-  console.log(hasClassNames, hasSelectedClassNames, baseObject);
-  return baseObject;
 }
 
 export function createRoi(
