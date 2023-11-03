@@ -21,7 +21,6 @@
     "prepack": "npm run tsc",
     "prettier": "prettier --check ./",
     "prettier-write": "prettier --write ./",
-    "preview": "vite preview",
     "test": "npm run playwright && npm run eslint && npm run prettier && npm run check-types",
     "tsc": "npm run clean && npm run tsc-cjs && npm run tsc-esm",
     "tsc-cjs": "tsc --project tsconfig.cjs.json",
