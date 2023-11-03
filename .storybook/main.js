@@ -5,7 +5,7 @@ module.exports = {
     name: '@storybook/react-vite',
     options: {
       fastRefresh: true,
-      strictMode: false
-    }
-  }
-}
+      strictMode: false,
+    },
+  },
+};
