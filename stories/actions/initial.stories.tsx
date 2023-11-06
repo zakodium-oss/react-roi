@@ -1,6 +1,8 @@
 import { Meta } from '@storybook/react';
 import { RoiContainer, RoiList, RoiProvider } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
+import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
 
 export default {
   title: 'Actions',
@@ -31,37 +33,37 @@ const initialRois: Array<CommittedRoi> = [
   },
 ];
 
-function Target() {
-  return <img src="/barbara.jpg" style={{ display: 'block', width: '100%' }} />;
-}
-
 export function Initial() {
   return (
-    <RoiProvider initialRois={initialRois}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <RoiContainer target={<Target />}>
-          <RoiList
-            getStyle={(roi, selected) => ({
-              style: {
-                backgroundColor: selected ? 'green' : 'darkgreen',
-                opacity: selected ? 0.4 : 0.6,
-              },
-            })}
-          />
-        </RoiContainer>
-      </div>
-    </RoiProvider>
+    <Layout>
+      <RoiProvider initialRois={initialRois}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <RoiContainer target={<Image />}>
+            <RoiList
+              getStyle={(roi, selected) => ({
+                style: {
+                  backgroundColor: selected ? 'green' : 'darkgreen',
+                  opacity: selected ? 0.4 : 0.6,
+                },
+              })}
+            />
+          </RoiContainer>
+        </div>
+      </RoiProvider>
+    </Layout>
   );
 }
 
 export function WithDefaultStyle() {
   return (
-    <RoiProvider initialRois={initialRois}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <RoiContainer target={<Target />}>
-          <RoiList />
-        </RoiContainer>
-      </div>
-    </RoiProvider>
+    <Layout>
+      <RoiProvider initialRois={initialRois}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <RoiContainer target={<Image />}>
+            <RoiList />
+          </RoiContainer>
+        </div>
+      </RoiProvider>
+    </Layout>
   );
 }

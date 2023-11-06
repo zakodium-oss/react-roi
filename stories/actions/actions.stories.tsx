@@ -8,6 +8,8 @@ import {
 } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
 import { useEffect } from 'react';
+import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
 
 const initialRois: Array<CommittedRoi> = [
   {
@@ -23,29 +25,27 @@ export default {
   title: 'Actions',
   decorators: [
     (Story) => (
-      <RoiProvider initialRois={initialRois}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Story />
+      <Layout>
+        <RoiProvider initialRois={initialRois}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            <Story />
 
-          <RoiContainer target={<Target />}>
-            <RoiList
-              getStyle={(roi, selected) => ({
-                style: {
-                  backgroundColor: selected ? 'green' : 'darkgreen',
-                  opacity: selected ? 0.4 : 0.6,
-                },
-              })}
-            />
-          </RoiContainer>
-        </div>
-      </RoiProvider>
+            <RoiContainer target={<Image />}>
+              <RoiList
+                getStyle={(roi, selected) => ({
+                  style: {
+                    backgroundColor: selected ? 'green' : 'darkgreen',
+                    opacity: selected ? 0.4 : 0.6,
+                  },
+                })}
+              />
+            </RoiContainer>
+          </div>
+        </RoiProvider>
+      </Layout>
     ),
   ],
 } as Meta;
-
-function Target() {
-  return <img src="/barbara.jpg" style={{ display: 'block', width: '100%' }} />;
-}
 
 export function Add() {
   const { createRoi } = useRoiActions();
@@ -84,24 +84,13 @@ export function Update() {
 
 export function Mode(props: { type: 'draw' | 'select' }) {
   const { type } = props;
-  const { createRoi, setMode } = useRoiActions();
-  const { mode } = useRoiState();
+  const { setMode } = useRoiActions();
 
   useEffect(() => {
     setMode(type);
   }, [type]);
 
-  function onClick() {
-    createRoi({
-      id: 'abcd-efgh-ijkl-mnop',
-      x: 0,
-      y: 0,
-      width: 0.2,
-      height: 0.2,
-    });
-  }
-
-  return <button onClick={onClick}>Add a new ROI with mode: {mode}</button>;
+  return <></>;
 }
 
 Mode.argTypes = {
