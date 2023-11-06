@@ -10,7 +10,6 @@ export function endAction(draft: ReactRoiState) {
   if (!selectedRoi) return;
   const roi = rois.find((roi) => roi.id === selectedRoi);
   const commitedRoi = committedRois.find((roi) => roi.id === selectedRoi);
-  assert(roi, 'Selected ROI not found');
 
   if (!roi) return;
 
