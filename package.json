@@ -10,7 +10,7 @@
   "main": "./lib/index.js",
   "module": "./lib-esm/index.js",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "storybook build",
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
     "dev": "storybook dev -p 6006",

@@ -28,6 +28,8 @@ dist-ssr
 *.sln
 *.sw?
 .cache
+
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/storybook-static
