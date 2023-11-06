@@ -27,6 +27,7 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
 
   const onWheel = useMemo(() => {
     return throttle((event: WheelEvent) => {
+      document.body.style.overflow = event.altKey ? 'hidden' : 'auto';
       if (!event.altKey) return;
       event.stopPropagation();
       roiDispatch({
