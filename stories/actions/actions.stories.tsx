@@ -57,6 +57,7 @@ export function Add() {
       y: 0,
       width: 0.2,
       height: 0.2,
+      label: 'My new roi',
     });
   }
 
