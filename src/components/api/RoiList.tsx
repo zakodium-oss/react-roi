@@ -1,4 +1,5 @@
-import { useRois, useRoiState } from '../../hooks';
+import { useRoiState } from '../../hooks';
+import { useRois } from '../../hooks/useRois';
 import { assert } from '../../utilities/assert';
 
 import { RoiBox } from './RoiBox';
@@ -46,6 +47,7 @@ function defaultGetStyle<TData = unknown>(
 ): StyleProperties {
   return {
     style: {
+      color: 'white',
       backgroundColor: 'black',
       opacity: selected ? 0.2 : 0.5,
     },
