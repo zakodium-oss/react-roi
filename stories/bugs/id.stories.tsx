@@ -38,8 +38,14 @@ function Internal() {
   }
 
   return (
-    <button onClick={onClick}>
-      Add a new ROI with id: 0000-0000-0000-0000
-    </button>
+    <>
+      <p>
+        warning: this stories should throw an error if you add two time a ROI
+        with the button.
+      </p>
+      <button onClick={onClick}>
+        Add a new ROI with id: 0000-0000-0000-0000
+      </button>
+    </>
   );
 }
