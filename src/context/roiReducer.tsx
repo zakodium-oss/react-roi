@@ -162,6 +162,11 @@ export function roiReducer(
 
       case 'CREATE_ROI': {
         const { id, ...otherRoiProps } = action.payload;
+
+        if (draft.committedRois.some((d) => d.id === id)) {
+          throw new Error('This id already exists on the draft.');
+        }
+
         const commitedRoi = createCommitedRoi(id, otherRoiProps);
         draft.committedRois.push(commitedRoi);
         draft.rois.push(createRoi(id, draft.size, otherRoiProps));
