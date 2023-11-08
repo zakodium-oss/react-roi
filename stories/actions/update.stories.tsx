@@ -4,7 +4,7 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
-  useCommitedRois,
+  useCommittedRois,
   useRoiActions,
   useRoiState,
 } from '../../src';
@@ -33,11 +33,11 @@ export function Update() {
 
 function Internal() {
   const { selectedRoi } = useRoiState();
-  const commitedRois = useCommitedRois();
+  const committedRois = useCommittedRois();
   const { updateRoi } = useRoiActions();
 
   function onClick(type: 'start' | 'end') {
-    const selected = commitedRois.find((r) => r.id === selectedRoi);
+    const selected = committedRois.find((r) => r.id === selectedRoi);
     if (!selected) return;
 
     updateRoi(selectedRoi, { x: type === 'start' ? 0 : 1 - selected.width });

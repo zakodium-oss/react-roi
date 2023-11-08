@@ -1,5 +1,10 @@
 import { Meta } from '@storybook/react';
-import { RoiContainer, RoiList, RoiProvider, useCommitedRois } from '../../src';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  useCommittedRois,
+} from '../../src';
 import { Image } from '../utils/Image';
 import { useEffect, useRef } from 'react';
 import { decode, writeCanvas } from 'image-js';
@@ -33,7 +38,7 @@ export default {
 
 export function WithCommittedRoi() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const rois = useCommitedRois();
+  const rois = useCommittedRois();
 
   useEffect(() => {
     fetch('/barbara.jpg')
