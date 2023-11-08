@@ -1,5 +1,5 @@
 import { assert } from '../../utilities/assert';
-import { createCommitedRoiFromRoi } from '../../utilities/rois';
+import { createCommittedRoiFromRoi } from '../../utilities/rois';
 import { ReactRoiState } from '../roiReducer';
 
 import { updateCommitedRoiPosition } from './roi';
@@ -18,7 +18,7 @@ export function endAction(draft: ReactRoiState) {
     updateCommitedRoiPosition(draft, commitedRoi, roi);
   } else {
     assert(roi.action.type === 'drawing');
-    const newCommitedRoi = createCommitedRoiFromRoi(roi, draft.size);
+    const newCommitedRoi = createCommittedRoiFromRoi(roi, draft.size);
     updateCommitedRoiPosition(draft, newCommitedRoi, roi);
     draft.committedRois.push(newCommitedRoi);
   }

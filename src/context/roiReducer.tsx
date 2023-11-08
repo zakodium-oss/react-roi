@@ -5,7 +5,7 @@ import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 import {
-  createCommitedRoi,
+  createCommittedRoi,
   createRoi,
   createRoiFromCommittedRoi,
   renormalizeRoiPosition,
@@ -167,10 +167,10 @@ export function roiReducer(
           throw new Error('This id already exists on the draft.');
         }
 
-        const commitedRoi = createCommitedRoi(id, otherRoiProps);
-        draft.committedRois.push(commitedRoi);
+        const committedRoi = createCommittedRoi(id, otherRoiProps);
+        draft.committedRois.push(committedRoi);
         draft.rois.push(createRoi(id, draft.size, otherRoiProps));
-        draft.selectedRoi = commitedRoi.id;
+        draft.selectedRoi = committedRoi.id;
         break;
       }
 
@@ -178,16 +178,19 @@ export function roiReducer(
         const { id, ...updatedData } = action.payload;
         if (!id) return;
         const index = draft.rois.findIndex((roi) => roi.id === id);
-        const commitedRoi = draft.committedRois[index];
+        const committedRois = draft.committedRois[index];
 
         assert(index !== -1, 'ROI not found');
-        assert(commitedRoi, 'Commited ROI not found');
+        assert(committedRois, 'Committed ROI not found');
 
         Object.assign<CommittedRoi, Partial<CommittedRoi>>(
-          commitedRoi,
+          committedRois,
           updatedData,
         );
-        draft.rois[index] = createRoiFromCommittedRoi(commitedRoi, draft.size);
+        draft.rois[index] = createRoiFromCommittedRoi(
+          committedRois,
+          draft.size,
+        );
         break;
       }
 

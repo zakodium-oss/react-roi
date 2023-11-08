@@ -12,7 +12,7 @@ function createInitialBox(): Box {
   };
 }
 
-export function createCommitedRoi<T>(
+export function createCommittedRoi<T>(
   id: string,
   options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
 ): CommittedRoi<T> {
@@ -29,7 +29,7 @@ export function createRoi(
   size: Size,
   options: Omit<Partial<Roi>, 'id'> = {},
 ): Roi {
-  const committedRoi = createCommitedRoi(id, options);
+  const committedRoi = createCommittedRoi(id, options);
   return {
     ...committedRoi,
     action: {
@@ -40,7 +40,7 @@ export function createRoi(
   };
 }
 
-export function createCommitedRoiFromRoi<T>(
+export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
   size: Size,
 ): CommittedRoi<T> {
