@@ -8,7 +8,6 @@ export const initialRois: Array<CommittedRoi> = [
     width: 0.2,
     height: 0.2,
     label: 'A',
-    data: {},
   },
   {
     id: '1111-2222-3333-4444',

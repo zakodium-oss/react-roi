@@ -1,7 +1,7 @@
-.orange {
+.not-selected {
   background-color: orange;
 }
 
-.darkorange {
+.selected {
   background-color: darkorange;
 }

@@ -63,6 +63,29 @@ const initialRois: Array<CommittedRoi<CustomColorData>> = [
   },
 ];
 
+export function OverrideDefaultStyleWithClassname() {
+  return (
+    <Layout>
+      <RoiProvider initialRois={initialRois}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <Internal />
+
+          <RoiContainer target={<Image />}>
+            <RoiList<CustomColorData>
+              getStyle={(roi, selected) => ({
+                style: {
+                  opacity: selected ? 0.4 : 0.6,
+                },
+                className: selected ? 'selected' : 'not-selected',
+              })}
+            />
+          </RoiContainer>
+        </div>
+      </RoiProvider>
+    </Layout>
+  );
+}
+
 export function OverrideDefaultStyle() {
   return (
     <Layout>
@@ -99,7 +122,7 @@ function Internal() {
   const { selectedRoi } = useRoiState();
   const { updateRoi } = useRoiActions<CustomColorData>();
 
-  function onClick(type: 'start' | 'end') {
+  function onClick() {
     updateRoi(selectedRoi, {
       data: {
         textColor: 'white',
@@ -109,7 +132,5 @@ function Internal() {
     });
   }
 
-  return (
-    <button onClick={() => onClick('start')}>Change color to yellow</button>
-  );
+  return <button onClick={onClick}>Change color to yellow</button>;
 }
