@@ -1,48 +1,37 @@
 import { Meta } from '@storybook/react';
-import { RoiContainer, RoiList, RoiProvider, useCommitedRois } from '../src';
-import { CommittedRoi } from '../src/types/Roi';
-import { Image } from './utils/Image';
-import { Layout } from './utils/Layout';
+import { RoiContainer, RoiList, RoiProvider, useCommitedRois } from '../../src';
+import { Image } from '../utils/Image';
 import { useEffect, useRef } from 'react';
 import { decode, writeCanvas } from 'image-js';
-
-const initialRois: Array<CommittedRoi> = [
-  {
-    id: '0000-1111-2222-3333',
-    x: 0,
-    y: 0,
-    width: 0.2,
-    height: 0.2,
-  },
-];
+import { initialRois } from '../actions/utils';
+import { Layout } from '../utils/Layout';
 
 export default {
-  title: 'Example/CommitedRoi',
+  title: 'Example/CommittedRoi',
   decorators: [
     (Story) => (
-      <Layout>
-        <RoiProvider initialRois={initialRois}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <Story />
-
+      <RoiProvider initialRois={initialRois}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 5,
+            alignItems: 'start',
+            width: '100%',
+          }}
+        >
+          <Layout>
             <RoiContainer target={<Image />}>
-              <RoiList
-                getStyle={(roi, selected) => ({
-                  style: {
-                    backgroundColor: selected ? 'green' : 'darkgreen',
-                    opacity: selected ? 0.4 : 0.6,
-                  },
-                })}
-              />
+              <RoiList />
             </RoiContainer>
-          </div>
-        </RoiProvider>
-      </Layout>
+          </Layout>
+          <Story />
+        </div>
+      </RoiProvider>
     ),
   ],
 } as Meta;
 
-export function WithCommitedRoi() {
+export function WithCommittedRoi() {
   const ref = useRef<HTMLCanvasElement>(null);
   const rois = useCommitedRois();
 
@@ -69,5 +58,5 @@ export function WithCommitedRoi() {
       });
   }, [rois]);
 
-  return <canvas ref={ref} id="transformed-image" />;
+  return <canvas ref={ref} id="transformed-image" style={{ maxWidth: 300 }} />;
 }
