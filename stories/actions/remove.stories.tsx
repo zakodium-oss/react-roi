@@ -19,7 +19,7 @@ export function Remove() {
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <RemoveButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -30,7 +30,7 @@ export function Remove() {
   );
 }
 
-function Internal() {
+function RemoveButton() {
   const { selectedRoi } = useRoiState();
   const { removeRoi } = useRoiActions();
 

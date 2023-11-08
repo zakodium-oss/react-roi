@@ -4,7 +4,7 @@ import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../../src';
 import { Image } from '../utils/Image';
 
 export default {
-  title: 'Bugs',
+  title: 'SpecificFeatures',
 } as Meta;
 
 export function SameId() {
@@ -12,7 +12,7 @@ export function SameId() {
     <Layout>
       <RoiProvider>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <CreateButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -23,7 +23,7 @@ export function SameId() {
   );
 }
 
-function Internal() {
+function CreateButton() {
   const { createRoi } = useRoiActions();
 
   function onClick() {

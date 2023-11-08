@@ -68,8 +68,6 @@ export function OverrideDefaultStyleWithClassname() {
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
-
           <RoiContainer target={<Image />}>
             <RoiList<CustomColorData>
               getStyle={(roi, selected) => ({
@@ -91,7 +89,7 @@ export function OverrideDefaultStyle() {
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <UpdateStyleButton />
 
           <RoiContainer target={<Image />}>
             <RoiList<CustomColorData>
@@ -118,7 +116,7 @@ export function OverrideDefaultStyle() {
   );
 }
 
-function Internal() {
+function UpdateStyleButton() {
   const { selectedRoi } = useRoiState();
   const { updateRoi } = useRoiActions<CustomColorData>();
 

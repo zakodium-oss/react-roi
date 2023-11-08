@@ -12,7 +12,7 @@ export function Add() {
     <Layout>
       <RoiProvider>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <CreateButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -23,7 +23,7 @@ export function Add() {
   );
 }
 
-function Internal() {
+function CreateButton() {
   const { createRoi } = useRoiActions();
 
   function onClick() {

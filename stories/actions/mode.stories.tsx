@@ -13,7 +13,7 @@ export function Mode() {
     <Layout>
       <RoiProvider>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <ChangeModeButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -24,7 +24,7 @@ export function Mode() {
   );
 }
 
-function Internal() {
+function ChangeModeButton() {
   const ref = useRef<HTMLSelectElement>(null);
   const { setMode } = useRoiActions();
 

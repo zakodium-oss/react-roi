@@ -20,7 +20,7 @@ export function Update() {
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <Internal />
+          <UpdateXPositionButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -31,7 +31,7 @@ export function Update() {
   );
 }
 
-function Internal() {
+function UpdateXPositionButton() {
   const { selectedRoi } = useRoiState();
   const committedRois = useCommittedRois();
   const { updateRoi } = useRoiActions();
