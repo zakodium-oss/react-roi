@@ -1,11 +1,5 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import {
-  MutableRefObject,
-  WheelEvent,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
 import { roiContainerRefContext } from '../context/contexts';
 import { useRoiState } from '../hooks';
@@ -25,21 +19,6 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
   const panZoomTransform = usePanZoomTransform();
   const ref = useRef<HTMLDivElement>(null);
 
-  const onWheel = useMemo(() => {
-    return throttle((event: WheelEvent) => {
-      if (!event.altKey) return;
-      event.stopPropagation();
-      roiDispatch({
-        type: 'ZOOM',
-        payload: {
-          scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          refBoundingClientRect: ref.current.getBoundingClientRect(),
-        },
-      });
-    }, 25);
-  }, [roiDispatch]);
   useResizeObserver(ref, (entry) => {
     roiDispatch({
       type: 'SET_SIZE',
@@ -64,13 +43,34 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
       });
     }
 
+    const onZoom = throttle((event: WheelEvent) => {
+      roiDispatch({
+        type: 'ZOOM',
+        payload: {
+          scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          refBoundingClientRect: ref.current.getBoundingClientRect(),
+        },
+      });
+    }, 25);
+
+    function onWheel(event: WheelEvent) {
+      if (!event.altKey) return;
+      event.preventDefault();
+      event.stopPropagation();
+      onZoom(event);
+    }
+
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+    ref.current.addEventListener('wheel', onWheel, { passive: false });
     return () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('wheel', onWheel);
     };
-  });
+  }, [roiDispatch]);
 
   return (
     <roiContainerRefContext.Provider value={ref}>
@@ -88,7 +88,6 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
         onDoubleClick={() => {
           roiDispatch({ type: 'RESET_ZOOM' });
         }}
-        onWheel={onWheel}
         onMouseDown={(event) => {
           const containerBoundingRect = ref.current.getBoundingClientRect();
           roiDispatch({
