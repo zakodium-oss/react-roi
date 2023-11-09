@@ -8,6 +8,33 @@ export default {
 } as Meta;
 
 export function SameId() {
+  function CreateButton() {
+    const { createRoi } = useRoiActions();
+
+    function onClick() {
+      createRoi({
+        id: '0000-0000-0000-0000',
+        x: 0,
+        y: 0,
+        width: 0.2,
+        height: 0.2,
+        label: 'toto',
+      });
+    }
+
+    return (
+      <>
+        <p>
+          warning: this stories should throw an error if you add two time a ROI
+          with the button.
+        </p>
+        <button onClick={onClick}>
+          Add a new ROI with id: 0000-0000-0000-0000
+        </button>
+      </>
+    );
+  }
+
   return (
     <Layout>
       <RoiProvider>
@@ -20,32 +47,5 @@ export function SameId() {
         </div>
       </RoiProvider>
     </Layout>
-  );
-}
-
-function CreateButton() {
-  const { createRoi } = useRoiActions();
-
-  function onClick() {
-    createRoi({
-      id: '0000-0000-0000-0000',
-      x: 0,
-      y: 0,
-      width: 0.2,
-      height: 0.2,
-      label: 'toto',
-    });
-  }
-
-  return (
-    <>
-      <p>
-        warning: this stories should throw an error if you add two time a ROI
-        with the button.
-      </p>
-      <button onClick={onClick}>
-        Add a new ROI with id: 0000-0000-0000-0000
-      </button>
-    </>
   );
 }

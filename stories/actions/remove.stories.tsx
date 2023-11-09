@@ -15,6 +15,13 @@ export default {
 } as Meta;
 
 export function Remove() {
+  function RemoveButton() {
+    const { selectedRoi } = useRoiState();
+    const { removeRoi } = useRoiActions();
+
+    return <button onClick={() => removeRoi(selectedRoi)}>Remove ROI</button>;
+  }
+
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
@@ -28,11 +35,4 @@ export function Remove() {
       </RoiProvider>
     </Layout>
   );
-}
-
-function RemoveButton() {
-  const { selectedRoi } = useRoiState();
-  const { removeRoi } = useRoiActions();
-
-  return <button onClick={() => removeRoi(selectedRoi)}>Remove ROI</button>;
 }

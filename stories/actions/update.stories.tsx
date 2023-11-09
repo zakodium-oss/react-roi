@@ -4,7 +4,6 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
-  useCommittedRois,
   useRoiActions,
   useRoiState,
 } from '../../src';
@@ -16,11 +15,34 @@ export default {
 } as Meta;
 
 export function Update() {
+  function UpdateXYPositionButton() {
+    const { selectedRoi } = useRoiState();
+    const { updateRoi } = useRoiActions();
+
+    function onClick(type: 'start' | 'top') {
+      let updated: any = {};
+      if (type === 'start') {
+        updated.x = 0;
+      } else {
+        updated.y = 0;
+      }
+
+      updateRoi(selectedRoi, updated);
+    }
+
+    return (
+      <div style={{ display: 'flex', gap: 5 }}>
+        <button onClick={() => onClick('start')}>Move ROI to start</button>
+        <button onClick={() => onClick('top')}>Move ROI to the top</button>
+      </div>
+    );
+  }
+
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <UpdateXPositionButton />
+          <UpdateXYPositionButton />
 
           <RoiContainer target={<Image />}>
             <RoiList />
@@ -28,25 +50,5 @@ export function Update() {
         </div>
       </RoiProvider>
     </Layout>
-  );
-}
-
-function UpdateXPositionButton() {
-  const { selectedRoi } = useRoiState();
-  const committedRois = useCommittedRois();
-  const { updateRoi } = useRoiActions();
-
-  function onClick(type: 'start' | 'end') {
-    const selected = committedRois.find((r) => r.id === selectedRoi);
-    if (!selected) return;
-
-    updateRoi(selectedRoi, { x: type === 'start' ? 0 : 1 - selected.width });
-  }
-
-  return (
-    <div style={{ display: 'flex', gap: 5 }}>
-      <button onClick={() => onClick('start')}>Move ROI to start</button>
-      <button onClick={() => onClick('end')}>Move ROI to end</button>
-    </div>
   );
 }

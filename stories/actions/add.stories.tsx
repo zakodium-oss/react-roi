@@ -8,6 +8,23 @@ export default {
 } as Meta;
 
 export function Add() {
+  function CreateButton() {
+    const { createRoi } = useRoiActions();
+
+    function onClick() {
+      createRoi({
+        id: Math.random().toString(36),
+        x: 0,
+        y: 0,
+        width: 0.2,
+        height: 0.2,
+        label: 'Hello, World!',
+      });
+    }
+
+    return <button onClick={onClick}>Add a new ROI</button>;
+  }
+
   return (
     <Layout>
       <RoiProvider>
@@ -21,21 +38,4 @@ export function Add() {
       </RoiProvider>
     </Layout>
   );
-}
-
-function CreateButton() {
-  const { createRoi } = useRoiActions();
-
-  function onClick() {
-    createRoi({
-      id: Math.random().toString(36),
-      x: 0,
-      y: 0,
-      width: 0.2,
-      height: 0.2,
-      label: 'Hello, World!',
-    });
-  }
-
-  return <button onClick={onClick}>Add a new ROI</button>;
 }

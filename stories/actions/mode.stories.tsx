@@ -9,6 +9,30 @@ export default {
 } as Meta;
 
 export function Mode() {
+  function ChangeModeButton() {
+    const ref = useRef<HTMLSelectElement>(null);
+    const { setMode } = useRoiActions();
+
+    useEffect(() => {
+      setMode('draw');
+    }, []);
+
+    function onChange() {
+      if (!ref.current) return;
+
+      // @ts-expect-error value does not exist
+      const value = ref.current.value;
+      setMode(value);
+    }
+
+    return (
+      <select ref={ref} name="select-mode" onChange={onChange}>
+        <option value="draw">Draw</option>
+        <option value="select">Select</option>
+      </select>
+    );
+  }
+
   return (
     <Layout>
       <RoiProvider>
@@ -21,29 +45,5 @@ export function Mode() {
         </div>
       </RoiProvider>
     </Layout>
-  );
-}
-
-function ChangeModeButton() {
-  const ref = useRef<HTMLSelectElement>(null);
-  const { setMode } = useRoiActions();
-
-  useEffect(() => {
-    setMode('draw');
-  }, []);
-
-  function onChange() {
-    if (!ref.current) return;
-
-    // @ts-expect-error value does not exist
-    const value = ref.current.value;
-    setMode(value);
-  }
-
-  return (
-    <select ref={ref} name="select-mode" onChange={onChange}>
-      <option value="draw">Draw</option>
-      <option value="select">Select</option>
-    </select>
   );
 }
