@@ -50,7 +50,7 @@ function defaultGetStyle<TData = unknown>(
     style: {
       color: 'white',
       backgroundColor: 'black',
-      opacity: selected ? 0.2 : 0.5,
+      opacity: selected ? 0.5 : 0.3,
     },
   };
 }
