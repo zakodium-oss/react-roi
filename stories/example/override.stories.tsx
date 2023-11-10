@@ -130,5 +130,9 @@ function UpdateStyleButton() {
     });
   }
 
-  return <button onClick={onClick}>Change color to yellow</button>;
+  return (
+    <button type="button" onClick={onClick}>
+      Change color to yellow
+    </button>
+  );
 }

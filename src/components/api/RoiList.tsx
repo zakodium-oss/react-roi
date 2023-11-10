@@ -1,10 +1,11 @@
+import { CSSProperties } from 'react';
+
 import { useRoiState } from '../../hooks';
 import { useRois } from '../../hooks/useRois';
+import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
 
 import { RoiBox } from './RoiBox';
-import { Roi } from '../../types/Roi';
-import { CSSProperties } from 'react';
 
 interface StyleProperties {
   /**
