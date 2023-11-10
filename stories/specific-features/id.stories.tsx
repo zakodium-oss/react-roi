@@ -9,7 +9,6 @@ export default {
 } as Meta;
 
 export function SameId() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function CreateButton() {
     const { createRoi } = useRoiActions();
 

@@ -16,7 +16,6 @@ export default {
 } as Meta;
 
 export function Mode() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function ChangeModeButton() {
     const { setMode } = useRoiActions();
 
