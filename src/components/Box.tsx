@@ -3,13 +3,14 @@ import { CSSProperties, ReactNode } from 'react';
 import { useRoiState } from '../hooks';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 
-interface BoxAnnotationProps {
+export interface BoxAnnotationProps {
   id: string;
   x: number;
   y: number;
   width: number;
   height: number;
   style?: CSSProperties;
+  className?: string;
   label?: ReactNode;
 }
 
@@ -21,9 +22,11 @@ export function Box({
   height,
   style,
   label,
-}: BoxAnnotationProps): JSX.Element {
+  className,
+}: BoxAnnotationProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
+
   return (
     <div
       id={id}
@@ -36,6 +39,7 @@ export function Box({
         cursor: roiState.mode === 'draw' ? 'crosshair' : 'grab',
         ...style,
       }}
+      className={className}
       onMouseDown={(event) => {
         if (event.altKey) {
           return;

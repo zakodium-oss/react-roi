@@ -1,4 +1,4 @@
-import { RoiContainer, RoiProvider, RoiList } from '../src/index';
+import { RoiContainer, RoiList, RoiProvider } from '../src/index';
 
 export function TestComponent() {
   return (
@@ -21,7 +21,25 @@ export function TestComponent() {
             />
           }
         >
-          <RoiList />
+          <RoiList
+            getStyle={(roi, selected) => {
+              if (roi.id === 'box-1') {
+                return {
+                  style: {
+                    backgroundColor: selected ? 'blue' : 'black',
+                    opacity: 0.5,
+                  },
+                };
+              }
+
+              return {
+                style: {
+                  backgroundColor: selected ? 'green' : 'black',
+                  opacity: 0.5,
+                },
+              };
+            }}
+          />
         </RoiContainer>
       </div>
     </RoiProvider>
@@ -51,14 +69,6 @@ function initialRois() {
       y: 0,
       width: 0.5,
       height: 0.5,
-      style: {
-        backgroundColor: 'black',
-        opacity: 0.5,
-      },
-      selectedStyle: {
-        backgroundColor: 'blue',
-        opacity: 0.5,
-      },
       data: { blurMethod: 'fill' },
     },
     {
@@ -67,14 +77,6 @@ function initialRois() {
       width: 0.3,
       y: 0.7,
       height: 0.3,
-      style: {
-        backgroundColor: 'black',
-        opacity: 0.5,
-      },
-      selectedStyle: {
-        backgroundColor: 'green',
-        opacity: 0.5,
-      },
       data: { blurMethod: 'fill' },
       label: 'box2',
     },

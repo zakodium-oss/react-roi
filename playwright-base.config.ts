@@ -1,6 +1,4 @@
-import { PlaywrightTestConfig, devices } from '@playwright/test';
-
-import viteConfig from './vite.config';
+import { devices, PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
@@ -11,8 +9,6 @@ const config: PlaywrightTestConfig = {
     contextOptions: {
       strictSelectors: true,
     },
-    // @ts-expect-error not yet official
-    ctViteConfig: viteConfig,
   },
   projects: [
     {

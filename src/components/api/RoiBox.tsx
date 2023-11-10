@@ -6,23 +6,20 @@ import { getAllCorners } from '../../utilities/corners';
 import { Box } from '../Box';
 import { RoiBoxCorner } from '../RoiBoxCorner';
 
+import { RoiListProps } from './RoiList';
+
 interface RoiBoxProps {
   roi: Roi;
+  getStyle: RoiListProps['getStyle'];
 }
 
-function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
+function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
+  const { roi, getStyle } = props;
   const roiState = useRoiState();
-  const {
-    style,
-    selectedStyle: editStyle,
-    x,
-    y,
-    width,
-    height,
-    id,
-    label,
-  } = roi;
+
+  const { x, y, width, height, id, label } = roi;
   const isActive = id === roiState.selectedRoi;
+
   return (
     <>
       <Box
@@ -31,8 +28,8 @@ function RoiBoxInternal({ roi }: RoiBoxProps): JSX.Element {
         y={y}
         width={width}
         height={height}
-        style={isActive ? editStyle : style}
         label={label}
+        {...getStyle(roi, isActive)}
       />
       {roiState.mode === 'select' &&
         isActive &&

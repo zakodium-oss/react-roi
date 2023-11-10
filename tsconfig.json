@@ -8,8 +8,8 @@
     "sourceMap": true,
     "strict": false,
     "target": "ES2022",
-    "types": ["vite/client"]
+    "types": ["vite/client", "node"]
   },
-  "include": ["./src", "./tests"],
+  "include": ["./src", "./tests", "./stories"],
   "exclude": ["node_modules"]
 }

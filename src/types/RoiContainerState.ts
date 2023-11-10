@@ -1,4 +1,4 @@
-import { RoiMode } from '../context/roiReducer';
+import { RoiMode } from './utils';
 
 export interface RoiContainerState {
   /**

@@ -1,11 +1,11 @@
 import { produce } from 'immer';
 
-import { Box } from '../types';
+import { Box, RoiMode } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 import {
-  createCommitedRoi,
+  createCommittedRoi,
   createRoi,
   createRoiFromCommittedRoi,
   renormalizeRoiPosition,
@@ -58,8 +58,6 @@ export interface ReactRoiState<T = unknown> {
    */
   panZoom: PanZoomContext;
 }
-
-export type RoiMode = 'select' | 'draw';
 
 export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
 
@@ -162,10 +160,15 @@ export function roiReducer(
 
       case 'CREATE_ROI': {
         const { id, ...otherRoiProps } = action.payload;
-        const commitedRoi = createCommitedRoi(id, otherRoiProps);
-        draft.committedRois.push(commitedRoi);
+
+        if (draft.committedRois.some((d) => d.id === id)) {
+          throw new Error('This id already exists on the draft.');
+        }
+
+        const committedRoi = createCommittedRoi(id, otherRoiProps);
+        draft.committedRois.push(committedRoi);
         draft.rois.push(createRoi(id, draft.size, otherRoiProps));
-        draft.selectedRoi = commitedRoi.id;
+        draft.selectedRoi = committedRoi.id;
         break;
       }
 
@@ -173,16 +176,19 @@ export function roiReducer(
         const { id, ...updatedData } = action.payload;
         if (!id) return;
         const index = draft.rois.findIndex((roi) => roi.id === id);
-        const commitedRoi = draft.committedRois[index];
+        const committedRois = draft.committedRois[index];
 
         assert(index !== -1, 'ROI not found');
-        assert(commitedRoi, 'Commited ROI not found');
+        assert(committedRois, 'Committed ROI not found');
 
         Object.assign<CommittedRoi, Partial<CommittedRoi>>(
-          commitedRoi,
+          committedRois,
           updatedData,
         );
-        draft.rois[index] = createRoiFromCommittedRoi(commitedRoi, draft.size);
+        draft.rois[index] = createRoiFromCommittedRoi(
+          committedRois,
+          draft.size,
+        );
         break;
       }
 
