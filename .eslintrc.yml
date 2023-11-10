@@ -4,4 +4,3 @@ extends:
   - 'zakodium/ts'
   # TODO: enable these rules.
   # - 'zakodium/unicorn'
-
