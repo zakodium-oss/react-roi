@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { useEffect, useRef } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 
 import {
   RoiContainer,
@@ -18,22 +18,18 @@ export default {
 export function Mode() {
   // eslint-disable-next-line react/no-unstable-nested-components
   function ChangeModeButton() {
-    const ref = useRef<HTMLSelectElement>(null);
     const { setMode } = useRoiActions();
 
     useEffect(() => {
       setMode('draw');
     }, [setMode]);
 
-    function onChange() {
-      if (!ref.current) return;
-
-      const value = ref.current.value;
-      setMode(value as RoiMode);
+    function onChange(event: ChangeEvent<HTMLSelectElement>) {
+      setMode(event.target.value as RoiMode);
     }
 
     return (
-      <select ref={ref} name="select-mode" onChange={onChange}>
+      <select name="select-mode" onChange={onChange}>
         <option value="draw">Draw</option>
         <option value="select">Select</option>
       </select>

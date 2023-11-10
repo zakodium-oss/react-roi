@@ -23,7 +23,7 @@ export function Box({
   style,
   label,
   className,
-}: BoxAnnotationProps): JSX.Element {
+}: BoxAnnotationProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
 
