@@ -1,6 +1,6 @@
 import { CommittedRoi } from '../../src/types/Roi';
 
-export const initialRois: Array<CommittedRoi> = [
+export const initialRois: CommittedRoi[] = [
   {
     id: '0000-1111-2222-3333',
     x: 0,

@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { Layout } from '../utils/Layout';
+
 import {
   RoiContainer,
   RoiList,
@@ -8,6 +8,8 @@ import {
   useRoiState,
 } from '../../src';
 import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
+
 import { initialRois } from './utils';
 
 export default {
@@ -15,11 +17,16 @@ export default {
 } as Meta;
 
 export function Remove() {
+  // eslint-disable-next-line react/no-unstable-nested-components
   function RemoveButton() {
     const { selectedRoi } = useRoiState();
     const { removeRoi } = useRoiActions();
 
-    return <button onClick={() => removeRoi(selectedRoi)}>Remove ROI</button>;
+    return (
+      <button type="button" onClick={() => removeRoi(selectedRoi)}>
+        Remove ROI
+      </button>
+    );
   }
 
   return (

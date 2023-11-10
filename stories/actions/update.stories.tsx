@@ -1,13 +1,16 @@
 import { Meta } from '@storybook/react';
-import { Layout } from '../utils/Layout';
+
 import {
   RoiContainer,
   RoiList,
   RoiProvider,
+  UpdateData,
   useRoiActions,
   useRoiState,
 } from '../../src';
 import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
+
 import { initialRois } from './utils';
 
 export default {
@@ -15,12 +18,13 @@ export default {
 } as Meta;
 
 export function Update() {
+  // eslint-disable-next-line react/no-unstable-nested-components
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useRoiActions();
 
     function onClick(type: 'start' | 'top') {
-      let updated: any = {};
+      const updated: UpdateData = {};
       if (type === 'start') {
         updated.x = 0;
       } else {
@@ -32,8 +36,12 @@ export function Update() {
 
     return (
       <div style={{ display: 'flex', gap: 5 }}>
-        <button onClick={() => onClick('start')}>Move ROI to start</button>
-        <button onClick={() => onClick('top')}>Move ROI to the top</button>
+        <button type="button" onClick={() => onClick('start')}>
+          Move ROI to start
+        </button>
+        <button type="button" onClick={() => onClick('top')}>
+          Move ROI to the top
+        </button>
       </div>
     );
   }

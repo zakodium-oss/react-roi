@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Box } from '../types';
+import { Box, RoiMode } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -58,8 +58,6 @@ export interface ReactRoiState<T = unknown> {
    */
   panZoom: PanZoomContext;
 }
-
-export type RoiMode = 'select' | 'draw';
 
 export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
 

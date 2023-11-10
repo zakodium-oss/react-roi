@@ -1,13 +1,15 @@
 import { Meta } from '@storybook/react';
-import { Layout } from '../utils/Layout';
+
 import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../../src';
 import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
 
 export default {
-  title: 'SpecificFeatures',
+  title: 'Specific features',
 } as Meta;
 
 export function SameId() {
+  // eslint-disable-next-line react/no-unstable-nested-components
   function CreateButton() {
     const { createRoi } = useRoiActions();
 
@@ -28,7 +30,7 @@ export function SameId() {
           warning: this stories should throw an error if you add two time a ROI
           with the button.
         </p>
-        <button onClick={onClick}>
+        <button type="button" onClick={onClick}>
           Add a new ROI with id: 0000-0000-0000-0000
         </button>
       </>

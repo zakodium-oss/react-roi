@@ -1,4 +1,6 @@
 import { Meta } from '@storybook/react';
+import { CSSProperties } from 'react';
+
 import {
   RoiContainer,
   RoiList,
@@ -6,10 +8,9 @@ import {
   useRoiActions,
   useRoiState,
 } from '../../src';
+import { CommittedRoi } from '../../src/types/Roi';
 import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
-import { CSSProperties } from 'react';
-import { CommittedRoi } from '../../src/types/Roi';
 
 export default {
   title: 'Example/Override',
@@ -85,6 +86,27 @@ export function OverrideDefaultStyleWithClassname() {
 }
 
 export function OverrideDefaultStyle() {
+  // eslint-disable-next-line react/no-unstable-nested-components
+  function UpdateStyleButton() {
+    const { selectedRoi } = useRoiState();
+    const { updateRoi } = useRoiActions<CustomColorData>();
+
+    function onClick() {
+      updateRoi(selectedRoi, {
+        data: {
+          textColor: 'white',
+          selectedBackgroundColor: 'yellowgreen',
+          backgroundColor: 'yellow',
+        },
+      });
+    }
+
+    return (
+      <button type="button" onClick={onClick}>
+        Change color to yellow
+      </button>
+    );
+  }
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
@@ -113,26 +135,5 @@ export function OverrideDefaultStyle() {
         </div>
       </RoiProvider>
     </Layout>
-  );
-}
-
-function UpdateStyleButton() {
-  const { selectedRoi } = useRoiState();
-  const { updateRoi } = useRoiActions<CustomColorData>();
-
-  function onClick() {
-    updateRoi(selectedRoi, {
-      data: {
-        textColor: 'white',
-        selectedBackgroundColor: 'yellowgreen',
-        backgroundColor: 'yellow',
-      },
-    });
-  }
-
-  return (
-    <button type="button" onClick={onClick}>
-      Change color to yellow
-    </button>
   );
 }

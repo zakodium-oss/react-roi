@@ -1,28 +1,35 @@
 import { Meta } from '@storybook/react';
-import { Layout } from '../utils/Layout';
-import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../../src';
-import { Image } from '../utils/Image';
 import { useEffect, useRef } from 'react';
+
+import {
+  RoiContainer,
+  RoiList,
+  RoiMode,
+  RoiProvider,
+  useRoiActions,
+} from '../../src';
+import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
 
 export default {
   title: 'Actions',
 } as Meta;
 
 export function Mode() {
+  // eslint-disable-next-line react/no-unstable-nested-components
   function ChangeModeButton() {
     const ref = useRef<HTMLSelectElement>(null);
     const { setMode } = useRoiActions();
 
     useEffect(() => {
       setMode('draw');
-    }, []);
+    }, [setMode]);
 
     function onChange() {
       if (!ref.current) return;
 
-      // @ts-expect-error value does not exist
       const value = ref.current.value;
-      setMode(value);
+      setMode(value as RoiMode);
     }
 
     return (

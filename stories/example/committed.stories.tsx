@@ -1,14 +1,15 @@
 import { Meta } from '@storybook/react';
+import { decode, writeCanvas } from 'image-js';
+import { useEffect, useRef } from 'react';
+
 import {
   RoiContainer,
   RoiList,
   RoiProvider,
   useCommittedRois,
 } from '../../src';
-import { Image } from '../utils/Image';
-import { useEffect, useRef } from 'react';
-import { decode, writeCanvas } from 'image-js';
 import { initialRois } from '../actions/utils';
+import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 
 export default {
@@ -41,7 +42,7 @@ export function WithCommittedRoi() {
   const rois = useCommittedRois();
 
   useEffect(() => {
-    fetch('/barbara.jpg')
+    void fetch('/barbara.jpg')
       .then((response) => response.arrayBuffer())
       .then((buffer) => {
         const image = decode(new DataView(buffer));

@@ -14,7 +14,7 @@
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
     "dev": "storybook dev -p 6006",
-    "eslint": "eslint src --cache",
+    "eslint": "eslint src stories --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "playwright": "npm run playwright-ct -- --project chromium",
     "playwright-ct": "playwright test -c playwright-ct.config.ts",

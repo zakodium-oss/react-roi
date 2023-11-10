@@ -4,10 +4,11 @@ import { CommittedRoi } from '../types/Roi';
 
 import { useRoiDispatch } from './useRoiDispatch';
 
+export type UpdateData<T = unknown> = Partial<Omit<CommittedRoi<T>, 'id'>>;
 export function useRoiActions<T = unknown>() {
   const roiDispatch = useRoiDispatch();
 
-  const actions = useMemo(() => {
+  return useMemo(() => {
     return {
       createRoi: (roi: CommittedRoi<T>) => {
         roiDispatch({
@@ -15,10 +16,7 @@ export function useRoiActions<T = unknown>() {
           payload: roi,
         });
       },
-      updateRoi: (
-        selectedRoi: string,
-        updatedData: Partial<Omit<CommittedRoi<T>, 'id'>>,
-      ) => {
+      updateRoi: (selectedRoi: string, updatedData: UpdateData<T>) => {
         roiDispatch({
           type: 'UPDATE_ROI',
           payload: { ...updatedData, id: selectedRoi },
@@ -31,5 +29,4 @@ export function useRoiActions<T = unknown>() {
         roiDispatch({ type: 'SET_MODE', payload: mode }),
     };
   }, [roiDispatch]);
-  return actions;
 }

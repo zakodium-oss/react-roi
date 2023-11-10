@@ -1,13 +1,15 @@
 import { Meta } from '@storybook/react';
-import { Layout } from '../utils/Layout';
+
 import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../../src';
 import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
 
 export default {
   title: 'Actions',
 } as Meta;
 
 export function Add() {
+  // eslint-disable-next-line react/no-unstable-nested-components
   function CreateButton() {
     const { createRoi } = useRoiActions();
 
@@ -22,7 +24,11 @@ export function Add() {
       });
     }
 
-    return <button onClick={onClick}>Add a new ROI</button>;
+    return (
+      <button type="button" onClick={onClick}>
+        Add a new ROI
+      </button>
+    );
   }
 
   return (
