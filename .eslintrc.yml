@@ -4,3 +4,7 @@ extends:
   - 'zakodium/ts'
   # TODO: enable these rules.
   # - 'zakodium/unicorn'
+overrides:
+  - files: ['stories/**/*.tsx']
+    rules:
+      react/no-unstable-nested-components: 0

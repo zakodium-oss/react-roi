@@ -86,7 +86,6 @@ export function OverrideDefaultStyleWithClassname() {
 }
 
 export function OverrideDefaultStyle() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useRoiActions<CustomColorData>();

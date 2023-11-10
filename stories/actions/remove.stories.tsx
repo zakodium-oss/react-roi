@@ -17,7 +17,6 @@ export default {
 } as Meta;
 
 export function Remove() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function RemoveButton() {
     const { selectedRoi } = useRoiState();
     const { removeRoi } = useRoiActions();

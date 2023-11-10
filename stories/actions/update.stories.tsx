@@ -18,7 +18,6 @@ export default {
 } as Meta;
 
 export function Update() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useRoiActions();
