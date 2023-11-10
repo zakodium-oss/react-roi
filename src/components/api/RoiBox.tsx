@@ -11,10 +11,11 @@ import { RoiListProps } from './RoiList';
 interface RoiBoxProps {
   roi: Roi;
   getStyle: RoiListProps['getStyle'];
+  getReadOnly: RoiListProps['getReadOnly'];
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
-  const { roi, getStyle } = props;
+  const { roi, getStyle, getReadOnly } = props;
   const roiState = useRoiState();
 
   const { x, y, width, height, id, label } = roi;
@@ -29,6 +30,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
         width={width}
         height={height}
         label={label}
+        readOnly={getReadOnly(roi)}
         {...getStyle(roi, isActive)}
       />
       {roiState.mode === 'select' &&

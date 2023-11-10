@@ -20,10 +20,11 @@ interface StyleProperties {
 
 export interface RoiListProps<TData = unknown> {
   getStyle?: (roi: Roi<TData>, selected: boolean) => StyleProperties;
+  getReadOnly?: (roi: Roi<TData>) => boolean;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
-  const { getStyle = defaultGetStyle } = props;
+  const { getStyle = defaultGetStyle, getReadOnly = () => false } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
   if (selectedRoi) {
@@ -36,7 +37,12 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   return (
     <>
       {rois.map((roi) => (
-        <RoiBox key={roi.id} roi={roi} getStyle={getStyle} />
+        <RoiBox
+          key={roi.id}
+          roi={roi}
+          getStyle={getStyle}
+          getReadOnly={getReadOnly}
+        />
       ))}
     </>
   );
