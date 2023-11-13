@@ -111,7 +111,7 @@ export type RoiReducerAction =
   | {
       type: 'END_ACTION';
     }
-  | { type: 'CANCEL_ACTION'; payload: React.KeyboardEvent }
+  | { type: 'CANCEL_ACTION' }
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
       payload: { id: string };
@@ -122,7 +122,8 @@ export type RoiReducerAction =
     }
   | {
       type: 'RESET_ZOOM';
-    };
+    }
+  | { type: 'UNSELECT_ROI'; payload: string };
 
 export function roiReducer(
   state: ReactRoiState,
@@ -154,6 +155,15 @@ export function roiReducer(
         if (index === -1) return;
         draft.rois.splice(index, 1);
         draft.committedRois.splice(index, 1);
+        draft.selectedRoi = undefined;
+        return;
+      }
+
+      case 'UNSELECT_ROI': {
+        const id = action.payload;
+        const index = draft.rois.findIndex((roi) => roi.id === id);
+        if (index === -1) return;
+
         draft.selectedRoi = undefined;
         return;
       }

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 import { useRoiState } from '../../hooks';
 import { Roi } from '../../types/Roi';
@@ -7,6 +7,7 @@ import { Box } from '../Box';
 import { RoiBoxCorner } from '../RoiBoxCorner';
 
 import { RoiListProps } from './RoiList';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -19,7 +20,17 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const roiState = useRoiState();
 
   const { x, y, width, height, id, label } = roi;
-  const isActive = id === roiState.selectedRoi;
+  const isSelected = id === roiState.selectedRoi;
+  const readOnly = getReadOnly(roi);
+
+  const roiDispatch = useRoiDispatch();
+
+  useEffect(() => {
+    if (readOnly) {
+      roiDispatch({ type: 'CANCEL_ACTION' });
+      roiDispatch({ type: 'UNSELECT_ROI', payload: id });
+    }
+  }, [id, readOnly, roiDispatch]);
 
   return (
     <>
@@ -30,11 +41,12 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
         width={width}
         height={height}
         label={label}
-        readOnly={getReadOnly(roi)}
-        {...getStyle(roi, isActive)}
+        readOnly={readOnly}
+        {...getStyle(roi, isSelected)}
       />
       {roiState.mode === 'select' &&
-        isActive &&
+        isSelected &&
+        !readOnly &&
         getAllCorners(roi).map((corner) => (
           <RoiBoxCorner
             corner={corner}
