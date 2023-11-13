@@ -4,8 +4,8 @@ export function assertUnreachable(x: never, message?: string): never {
       message
         ? message
         : typeof x === 'string'
-        ? x
-        : 'reached assertUnreachable'
+          ? x
+          : 'reached assertUnreachable'
     }`,
   );
 }
