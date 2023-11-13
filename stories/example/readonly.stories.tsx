@@ -15,7 +15,6 @@ export function ReadOnly() {
   const [state, setState] = useState<string | null>(null);
 
   function getReadOnly(roi: CommittedRoi) {
-    // make the first roi readOnly
     return roi.id === state;
   }
 
