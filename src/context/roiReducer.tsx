@@ -161,10 +161,12 @@ export function roiReducer(
 
       case 'UNSELECT_ROI': {
         const id = action.payload;
-        const index = draft.rois.findIndex((roi) => roi.id === id);
-        if (index === -1) return;
 
-        draft.selectedRoi = undefined;
+        if (draft.selectedRoi === id) {
+          cancelAction(draft);
+          draft.selectedRoi = undefined;
+        }
+
         return;
       }
 

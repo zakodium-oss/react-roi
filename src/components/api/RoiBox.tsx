@@ -27,7 +27,6 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
 
   useEffect(() => {
     if (readOnly) {
-      roiDispatch({ type: 'CANCEL_ACTION' });
       roiDispatch({ type: 'UNSELECT_ROI', payload: id });
     }
   }, [id, readOnly, roiDispatch]);
