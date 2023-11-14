@@ -16,7 +16,6 @@ export default {
 } as Meta;
 
 export function UpdateLabel() {
-  // eslint-disable-next-line react/no-unstable-nested-components
   function UpdateLabelButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions();
