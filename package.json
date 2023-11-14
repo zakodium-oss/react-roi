@@ -43,11 +43,11 @@
     "autoprefixer": "^10.4.15",
     "eslint": "^8.47.0",
     "eslint-config-zakodium": "^8.0.2",
-    "prettier": "^3.0.2",
+    "image-js": "0.0.0-next-74561455b0",
+    "prettier": "^3.1.0",
     "rimraf": "^5.0.1",
     "storybook": "^7.5.2",
     "typescript": "^5.1.6",
-    "vite": "^4.4.9",
-    "image-js": "0.0.0-next-74561455b0"
+    "vite": "^4.4.9"
   }
 }

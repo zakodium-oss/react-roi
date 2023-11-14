@@ -27,7 +27,6 @@ export function RoiContainer({ target, children, id }: RoiComponentProps) {
         if (event.isTrusted) {
           roiDispatch({
             type: 'CANCEL_ACTION',
-            payload: event as React.KeyboardEvent,
           });
         }
       },
