@@ -6,7 +6,7 @@ import {
   RoiList,
   RoiMode,
   RoiProvider,
-  useRoiActions,
+  useActions,
 } from '../../src';
 import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
@@ -17,7 +17,7 @@ export default {
 
 export function Mode() {
   function ChangeModeButton() {
-    const { setMode } = useRoiActions();
+    const { setMode } = useActions();
 
     useEffect(() => {
       setMode('draw');

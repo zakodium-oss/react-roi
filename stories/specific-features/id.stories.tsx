@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, useRoiActions } from '../../src';
+import { RoiContainer, RoiList, RoiProvider, useActions } from '../../src';
 import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 
@@ -10,7 +10,7 @@ export default {
 
 export function SameId() {
   function CreateButton() {
-    const { createRoi } = useRoiActions();
+    const { createRoi } = useActions();
 
     function onClick() {
       createRoi({

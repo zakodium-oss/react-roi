@@ -3,13 +3,29 @@ import { useMemo } from 'react';
 import { CommittedRoi } from '../types/Roi';
 
 import { useRoiDispatch } from './useRoiDispatch';
+import { useRoiContainerRef } from './useRoiContainerRef';
 
 export type UpdateData<T = unknown> = Partial<Omit<CommittedRoi<T>, 'id'>>;
-export function useRoiActions<T = unknown>() {
+export function useActions<T = unknown>() {
   const roiDispatch = useRoiDispatch();
+  const ref = useRoiContainerRef();
 
   return useMemo(() => {
     return {
+      zoom: (factor: number) => {
+        if (!ref.current) return;
+        const refBound = ref.current.getBoundingClientRect();
+
+        roiDispatch({
+          type: 'ZOOM',
+          payload: {
+            clientX: refBound.width / 2,
+            clientY: refBound.height / 2,
+            scale: factor,
+            refBoundingClientRect: refBound,
+          },
+        });
+      },
       createRoi: (roi: CommittedRoi<T>) => {
         roiDispatch({
           type: 'CREATE_ROI',

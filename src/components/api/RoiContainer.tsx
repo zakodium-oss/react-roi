@@ -2,10 +2,11 @@ import { useKbsGlobal } from 'react-kbs';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { ContainerComponent } from '../ContainerComponent';
+import { ReactNode } from 'react';
 
 interface RoiComponentProps {
   target?: JSX.Element;
-  children?: JSX.Element;
+  children?: ReactNode;
   id?: string;
 }
 

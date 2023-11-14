@@ -1,5 +1,5 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { MutableRefObject, ReactNode, useEffect, useRef } from 'react';
 
 import { roiContainerRefContext } from '../context/contexts';
 import { useRoiState } from '../hooks';
@@ -9,7 +9,7 @@ import { throttle } from '../utilities/throttle';
 
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
-  children: JSX.Element;
+  children: ReactNode;
   id?: string;
 }
 

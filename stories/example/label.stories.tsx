@@ -4,7 +4,7 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
-  useRoiActions,
+  useActions,
   useRoiState,
 } from '../../src';
 import { initialRois } from '../actions/utils';
@@ -19,7 +19,7 @@ export function UpdateLabel() {
   // eslint-disable-next-line react/no-unstable-nested-components
   function UpdateLabelButton() {
     const { selectedRoi } = useRoiState();
-    const { updateRoi } = useRoiActions();
+    const { updateRoi } = useActions();
 
     function onClick() {
       updateRoi(selectedRoi, { label: 'Hello, World!' });
