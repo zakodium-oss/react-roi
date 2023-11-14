@@ -150,6 +150,8 @@ export function roiReducer(
         break;
       }
       case 'REMOVE_ROI': {
+        cancelAction(draft);
+
         const id = action.payload ?? draft.selectedRoi;
         const index = draft.rois.findIndex((roi) => roi.id === id);
         if (index === -1) return;
