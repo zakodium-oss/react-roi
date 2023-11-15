@@ -22,6 +22,12 @@ interface Size {
   width: number;
   height: number;
 }
+
+interface ZoomLevel {
+  min: number;
+  max: number;
+}
+
 export interface ReactRoiState<T = unknown> {
   /**
    * Current mode
@@ -57,6 +63,11 @@ export interface ReactRoiState<T = unknown> {
    * Defines the current affine transformation being applied to the container
    */
   panZoom: PanZoomContext;
+
+  /**
+   * Zoom level min and max
+   */
+  zoom: ZoomLevel;
 }
 
 export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };

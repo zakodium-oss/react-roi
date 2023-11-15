@@ -62,7 +62,7 @@ export function Zoom() {
   }
 
   return (
-    <RoiProvider initialRois={initialRois}>
+    <RoiProvider minZoom={1} maxZoom={20} initialRois={initialRois}>
       <Layout>
         <ZoomButton />
         <RoiContainer target={<Image />}>
