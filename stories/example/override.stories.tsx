@@ -5,7 +5,7 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
-  useRoiActions,
+  useActions,
   useRoiState,
 } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
@@ -88,7 +88,7 @@ export function OverrideDefaultStyleWithClassname() {
 export function OverrideDefaultStyle() {
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
-    const { updateRoi } = useRoiActions<CustomColorData>();
+    const { updateRoi } = useActions<CustomColorData>();
 
     function onClick() {
       updateRoi(selectedRoi, {

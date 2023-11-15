@@ -5,7 +5,7 @@ import {
   RoiList,
   RoiProvider,
   UpdateData,
-  useRoiActions,
+  useActions,
   useRoiState,
 } from '../../src';
 import { Image } from '../utils/Image';
@@ -20,7 +20,7 @@ export default {
 export function Update() {
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
-    const { updateRoi } = useRoiActions();
+    const { updateRoi } = useActions();
 
     function onClick(type: 'start' | 'top') {
       const updated: UpdateData = {};

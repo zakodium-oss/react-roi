@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useKbsGlobal } from 'react-kbs';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
@@ -5,12 +6,13 @@ import { ContainerComponent } from '../ContainerComponent';
 
 interface RoiComponentProps {
   target?: JSX.Element;
-  children?: JSX.Element;
+  children?: ReactNode;
   id?: string;
 }
 
 export function RoiContainer({ target, children, id }: RoiComponentProps) {
   const roiDispatch = useRoiDispatch();
+
   useKbsGlobal([
     {
       shortcut: ['delete', 'backspace'],
@@ -32,6 +34,7 @@ export function RoiContainer({ target, children, id }: RoiComponentProps) {
       },
     },
   ]);
+
   return (
     <ContainerComponent id={id} target={target}>
       {children}

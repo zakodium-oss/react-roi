@@ -4,7 +4,7 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
-  useRoiActions,
+  useActions,
   useRoiState,
 } from '../../src';
 import { Image } from '../utils/Image';
@@ -19,7 +19,7 @@ export default {
 export function Remove() {
   function RemoveButton() {
     const { selectedRoi } = useRoiState();
-    const { removeRoi } = useRoiActions();
+    const { removeRoi } = useActions();
 
     return (
       <button type="button" onClick={() => removeRoi(selectedRoi)}>
