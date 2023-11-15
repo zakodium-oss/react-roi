@@ -1,9 +1,9 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import { MutableRefObject, ReactNode, useEffect, useRef } from 'react';
+import { MutableRefObject, ReactNode, useEffect } from 'react';
 
-import { roiContainerRefContext } from '../context/contexts';
 import { useRoiState } from '../hooks';
 import { usePanZoomTransform } from '../hooks/usePanZoom';
+import { useRoiContainerRef } from '../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 import { throttle } from '../utilities/throttle';
 
@@ -17,7 +17,7 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRoiContainerRef();
 
   useResizeObserver(ref, (entry) => {
     roiDispatch({
@@ -70,60 +70,58 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('wheel', onWheel);
     };
-  }, [roiDispatch]);
+  }, [roiDispatch, ref]);
 
   return (
-    <roiContainerRefContext.Provider value={ref}>
+    <div
+      id={id}
+      ref={ref}
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        margin: 0,
+        padding: 0,
+        cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
+        userSelect: 'none',
+      }}
+      onDoubleClick={() => {
+        roiDispatch({ type: 'RESET_ZOOM' });
+      }}
+      onMouseDown={(event) => {
+        const containerBoundingRect = ref.current.getBoundingClientRect();
+        roiDispatch({
+          type: 'START_DRAW',
+          payload: {
+            event,
+            containerBoundingRect,
+            isPanZooming: event.altKey,
+          },
+        });
+      }}
+    >
       <div
-        id={id}
-        ref={ref}
         style={{
-          position: 'relative',
-          overflow: 'hidden',
-          margin: 0,
-          padding: 0,
-          cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
-          userSelect: 'none',
-        }}
-        onDoubleClick={() => {
-          roiDispatch({ type: 'RESET_ZOOM' });
-        }}
-        onMouseDown={(event) => {
-          const containerBoundingRect = ref.current.getBoundingClientRect();
-          roiDispatch({
-            type: 'START_DRAW',
-            payload: {
-              event,
-              containerBoundingRect,
-              isPanZooming: event.altKey,
-            },
-          });
+          transform: panZoomTransform,
+          transformOrigin: '0 0',
         }}
       >
+        {target}
+
         <div
           style={{
-            transform: panZoomTransform,
-            transformOrigin: '0 0',
+            userSelect: 'none',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            margin: 0,
+            padding: 0,
+            top: 0,
+            left: 0,
           }}
         >
-          {target}
-
-          <div
-            style={{
-              userSelect: 'none',
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              margin: 0,
-              padding: 0,
-              top: 0,
-              left: 0,
-            }}
-          >
-            {children}
-          </div>
+          {children}
         </div>
       </div>
-    </roiContainerRefContext.Provider>
+    </div>
   );
 }

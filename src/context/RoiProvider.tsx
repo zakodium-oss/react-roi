@@ -1,15 +1,16 @@
-import { ReactNode, useMemo, useReducer } from 'react';
+import { ReactNode, useMemo, useReducer, useRef } from 'react';
 import { KbsProvider } from 'react-kbs';
 
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 
 import {
-  roisContext,
-  roiDispatchContext,
   committedRoisContext,
-  roiStateContext,
   panZoomContext,
+  roiContainerRefContext,
+  roiDispatchContext,
+  roisContext,
+  roiStateContext,
 } from './contexts';
 import { ReactRoiState, roiReducer } from './roiReducer';
 
@@ -22,7 +23,8 @@ function createInitialState<T>(
   committedRois: Array<CommittedRoi<T>>,
 ): ReactRoiState<T> {
   const size = { width: 1, height: 1 };
-  const roiInitialState: ReactRoiState<T> = {
+
+  return {
     mode: 'select',
     action: 'idle',
     size,
@@ -36,7 +38,6 @@ function createInitialState<T>(
       translation: [0, 0],
     },
   };
-  return roiInitialState;
 }
 
 export function RoiProvider<T>({
@@ -45,6 +46,8 @@ export function RoiProvider<T>({
 }: RoiProviderProps<T>) {
   const roiInitialState = createInitialState<T>(initialRois);
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const { rois, committedRois, mode, selectedRoi, panZoom } = state;
   const roiState = useMemo(() => {
     return {
@@ -55,17 +58,19 @@ export function RoiProvider<T>({
 
   return (
     <KbsProvider>
-      <panZoomContext.Provider value={panZoom}>
-        <roiDispatchContext.Provider value={dispatch}>
-          <roisContext.Provider value={rois}>
-            <committedRoisContext.Provider value={committedRois}>
-              <roiStateContext.Provider value={roiState}>
-                {children}
-              </roiStateContext.Provider>
-            </committedRoisContext.Provider>
-          </roisContext.Provider>
-        </roiDispatchContext.Provider>
-      </panZoomContext.Provider>
+      <roiContainerRefContext.Provider value={containerRef}>
+        <panZoomContext.Provider value={panZoom}>
+          <roiDispatchContext.Provider value={dispatch}>
+            <roisContext.Provider value={rois}>
+              <committedRoisContext.Provider value={committedRois}>
+                <roiStateContext.Provider value={roiState}>
+                  {children}
+                </roiStateContext.Provider>
+              </committedRoisContext.Provider>
+            </roisContext.Provider>
+          </roiDispatchContext.Provider>
+        </panZoomContext.Provider>
+      </roiContainerRefContext.Provider>
     </KbsProvider>
   );
 }

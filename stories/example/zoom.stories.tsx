@@ -27,6 +27,7 @@ export function Zoom() {
           position: 'absolute',
           right: 0,
           bottom: 0,
+          zIndex: 1,
         }}
       >
         <button
@@ -63,8 +64,8 @@ export function Zoom() {
   return (
     <RoiProvider initialRois={initialRois}>
       <Layout>
+        <ZoomButton />
         <RoiContainer target={<Image />}>
-          <ZoomButton />
           <RoiList />
         </RoiContainer>
       </Layout>

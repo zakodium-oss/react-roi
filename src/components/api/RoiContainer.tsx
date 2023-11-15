@@ -12,6 +12,7 @@ interface RoiComponentProps {
 
 export function RoiContainer({ target, children, id }: RoiComponentProps) {
   const roiDispatch = useRoiDispatch();
+
   useKbsGlobal([
     {
       shortcut: ['delete', 'backspace'],
@@ -34,6 +35,7 @@ export function RoiContainer({ target, children, id }: RoiComponentProps) {
       },
     },
   ]);
+
   return (
     <ContainerComponent id={id} target={target}>
       {children}
