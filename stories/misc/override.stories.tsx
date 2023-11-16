@@ -13,7 +13,7 @@ import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 
 export default {
-  title: 'Example/Override',
+  title: 'Misc/Style customization',
 } as Meta;
 
 interface CustomColorData {
@@ -64,7 +64,7 @@ const initialRois: Array<CommittedRoi<CustomColorData>> = [
   },
 ];
 
-export function OverrideDefaultStyleWithClassname() {
+export function WithClassname() {
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
@@ -85,7 +85,7 @@ export function OverrideDefaultStyleWithClassname() {
   );
 }
 
-export function OverrideDefaultStyle() {
+export function WithStyle() {
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions<CustomColorData>();

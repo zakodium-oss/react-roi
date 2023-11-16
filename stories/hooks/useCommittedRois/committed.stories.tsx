@@ -7,13 +7,13 @@ import {
   RoiList,
   RoiProvider,
   useCommittedRois,
-} from '../../src';
-import { initialRois } from '../actions/utils';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
+} from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
+import { initialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'Example/CommittedRoi',
+  title: 'hooks/useCommittedRois',
   decorators: [
     (Story) => (
       <RoiProvider initialRois={initialRois}>
@@ -37,7 +37,7 @@ export default {
   ],
 } as Meta;
 
-export function WithCommittedRoi() {
+export function DisplayCommitedRois() {
   const ref = useRef<HTMLCanvasElement>(null);
   const rois = useCommittedRois();
 

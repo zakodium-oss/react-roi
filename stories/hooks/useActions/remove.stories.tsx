@@ -6,17 +6,16 @@ import {
   RoiProvider,
   useActions,
   useRoiState,
-} from '../../src';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
-
-import { initialRois } from './utils';
+} from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
+import { initialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'Actions',
+  title: 'hooks/useActions',
 } as Meta;
 
-export function Remove() {
+export function RemoveROI() {
   function RemoveButton() {
     const { selectedRoi } = useRoiState();
     const { removeRoi } = useActions();

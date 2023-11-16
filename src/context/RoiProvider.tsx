@@ -17,10 +17,13 @@ import { ReactRoiState, roiReducer } from './roiReducer';
 interface RoiProviderProps<T> {
   children: ReactNode;
   initialRois?: Array<CommittedRoi<T>>;
+  minZoom?: number;
+  maxZoom?: number;
 }
 
 function createInitialState<T>(
   committedRois: Array<CommittedRoi<T>>,
+  zoom: { min: number; max: number },
 ): ReactRoiState<T> {
   const size = { width: 1, height: 1 };
 
@@ -37,14 +40,18 @@ function createInitialState<T>(
       scale: 1,
       translation: [0, 0],
     },
+    zoomDomain: zoom,
   };
 }
 
-export function RoiProvider<T>({
-  children,
-  initialRois = [],
-}: RoiProviderProps<T>) {
-  const roiInitialState = createInitialState<T>(initialRois);
+export function RoiProvider<T>(props: RoiProviderProps<T>) {
+  const { children, initialRois = [], minZoom = 1, maxZoom = 10 } = props;
+
+  const roiInitialState = createInitialState<T>(initialRois, {
+    min: minZoom,
+    max: maxZoom,
+  });
+
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
   const containerRef = useRef<HTMLDivElement>(null);
 

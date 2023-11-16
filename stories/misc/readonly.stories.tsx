@@ -1,14 +1,14 @@
 import { Meta } from '@storybook/react';
-
-import { RoiContainer, RoiList, RoiProvider } from '../../src';
-import { initialRois } from '../actions/utils';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
-import { CommittedRoi } from '../../src/types/Roi';
 import { useState } from 'react';
 
+import { RoiContainer, RoiList, RoiProvider } from '../../src';
+import { CommittedRoi } from '../../src/types/Roi';
+import { Image } from '../utils/Image';
+import { Layout } from '../utils/Layout';
+import { initialRois } from '../utils/initialRois';
+
 export default {
-  title: 'Example',
+  title: 'Misc',
 } as Meta;
 
 export function ReadOnly() {
@@ -18,7 +18,6 @@ export function ReadOnly() {
     return roi.id === state;
   }
 
-  // eslint-disable-next-line react/no-unstable-nested-components
   function ReadOnlyButton(props: { onClick: () => void }) {
     return (
       <button type="button" onClick={props.onClick}>
