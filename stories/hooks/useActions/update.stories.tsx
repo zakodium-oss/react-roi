@@ -7,17 +7,16 @@ import {
   UpdateData,
   useActions,
   useRoiState,
-} from '../../src';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
-
-import { initialRois } from './utils';
+} from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
+import { initialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'Actions',
+  title: 'hooks/useActions/Update ROI',
 } as Meta;
 
-export function Update() {
+export function Position() {
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions();
@@ -57,5 +56,35 @@ export function Update() {
         </div>
       </RoiProvider>
     </Layout>
+  );
+}
+
+export function Label() {
+  function UpdateLabelButton() {
+    const { selectedRoi } = useRoiState();
+    const { updateRoi } = useActions();
+
+    function onClick() {
+      updateRoi(selectedRoi, { label: 'Hello, World!' });
+    }
+
+    return (
+      <button type="button" onClick={onClick}>
+        Update label
+      </button>
+    );
+  }
+
+  return (
+    <RoiProvider initialRois={initialRois}>
+      <Layout>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <UpdateLabelButton />
+          <RoiContainer target={<Image />}>
+            <RoiList />
+          </RoiContainer>
+        </div>
+      </Layout>
+    </RoiProvider>
   );
 }

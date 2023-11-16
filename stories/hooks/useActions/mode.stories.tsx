@@ -7,15 +7,15 @@ import {
   RoiMode,
   RoiProvider,
   useActions,
-} from '../../src';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
+} from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
 
 export default {
-  title: 'Actions',
+  title: 'hooks/useActions',
 } as Meta;
 
-export function Mode() {
+export function ChangeMode() {
   function ChangeModeButton() {
     const { setMode } = useActions();
 

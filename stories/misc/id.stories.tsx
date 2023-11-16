@@ -5,28 +5,34 @@ import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 
 export default {
-  title: 'Actions',
+  title: 'Misc',
 } as Meta;
 
-export function Add() {
+export function CrashWithSameId() {
   function CreateButton() {
     const { createRoi } = useActions();
 
     function onClick() {
       createRoi({
-        id: Math.random().toString(36),
+        id: '0000-0000-0000-0000',
         x: 0,
         y: 0,
         width: 0.2,
         height: 0.2,
-        label: 'Hello, World!',
+        label: 'toto',
       });
     }
 
     return (
-      <button type="button" onClick={onClick}>
-        Add a new ROI
-      </button>
+      <>
+        <p>
+          warning: this stories should throw an error if you add two time a ROI
+          with the button.
+        </p>
+        <button type="button" onClick={onClick}>
+          Add a new ROI with id: 0000-0000-0000-0000
+        </button>
+      </>
     );
   }
 

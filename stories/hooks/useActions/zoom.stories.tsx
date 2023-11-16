@@ -1,12 +1,12 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, useActions } from '../../src';
-import { initialRois } from '../actions/utils';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
+import { RoiContainer, RoiList, RoiProvider, useActions } from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
+import { initialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'Example',
+  title: 'hooks/useActions',
 } as Meta;
 
 export function Zoom() {

@@ -1,38 +1,32 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, useActions } from '../../src';
-import { Image } from '../utils/Image';
-import { Layout } from '../utils/Layout';
+import { RoiContainer, RoiList, RoiProvider, useActions } from '../../../src';
+import { Image } from '../../utils/Image';
+import { Layout } from '../../utils/Layout';
 
 export default {
-  title: 'Specific features',
+  title: 'hooks/useActions',
 } as Meta;
 
-export function SameId() {
+export function AddROI() {
   function CreateButton() {
     const { createRoi } = useActions();
 
     function onClick() {
       createRoi({
-        id: '0000-0000-0000-0000',
+        id: Math.random().toString(36),
         x: 0,
         y: 0,
         width: 0.2,
         height: 0.2,
-        label: 'toto',
+        label: 'Hello, World!',
       });
     }
 
     return (
-      <>
-        <p>
-          warning: this stories should throw an error if you add two time a ROI
-          with the button.
-        </p>
-        <button type="button" onClick={onClick}>
-          Add a new ROI with id: 0000-0000-0000-0000
-        </button>
-      </>
+      <button type="button" onClick={onClick}>
+        Add a new ROI
+      </button>
     );
   }
 

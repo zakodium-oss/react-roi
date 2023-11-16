@@ -1,12 +1,12 @@
 import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider } from '../../src';
-import { initialRois } from '../actions/utils';
 import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
+import { initialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Example',
+  title: 'Misc',
 } as Meta;
 
 export function Scroll() {
