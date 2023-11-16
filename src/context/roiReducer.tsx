@@ -23,7 +23,7 @@ interface Size {
   height: number;
 }
 
-interface ZoomLevel {
+interface ZoomDomain {
   min: number;
   max: number;
 }
@@ -67,7 +67,7 @@ export interface ReactRoiState<T = unknown> {
   /**
    * Zoom level min and max
    */
-  zoom: ZoomLevel;
+  zoomDomain: ZoomDomain;
 }
 
 export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };

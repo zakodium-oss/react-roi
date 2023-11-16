@@ -40,7 +40,7 @@ function createInitialState<T>(
       scale: 1,
       translation: [0, 0],
     },
-    zoom,
+    zoomDomain: zoom,
   };
 }
 

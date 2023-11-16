@@ -2,7 +2,7 @@ import { applyInverseX, applyInverseY } from '../../utilities/panZoom';
 import { ReactRoiState, ZoomPayload } from '../roiReducer';
 
 export function zoomAction(draft: ReactRoiState, zoom: ZoomPayload) {
-  const { min: minZoom, max: maxZoom } = draft.zoom;
+  const { min: minZoom, max: maxZoom } = draft.zoomDomain;
   const { scale: zoomScale, refBoundingClientRect, clientX, clientY } = zoom;
   const { scale, translation } = draft.panZoom;
   const scaleNew = Math.max(minZoom, Math.min(scale * zoomScale, maxZoom));
