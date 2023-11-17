@@ -1,3 +1,4 @@
+import { usePanZoom } from '../hooks/usePanZoom';
 import { useRoiDispatch } from '../hooks/useRoiDispatch';
 import { CornerData } from '../utilities/corners';
 
@@ -11,6 +12,9 @@ export function RoiBoxCorner({
   roiId: string;
 }) {
   const roiDispatch = useRoiDispatch();
+  const panZoom = usePanZoom();
+  const normalizedSize =
+    cursorSize / (panZoom.panZoom.scale * panZoom.initialPanZoom.scale);
 
   return (
     <div
@@ -20,10 +24,10 @@ export function RoiBoxCorner({
         opacity: 0.5,
         stroke: 'black',
         position: 'absolute',
-        top: corner.cy - cursorSize,
-        left: corner.cx - cursorSize,
-        width: cursorSize * 2,
-        height: cursorSize * 2,
+        top: corner.cy - normalizedSize,
+        left: corner.cx - normalizedSize,
+        width: normalizedSize * 2,
+        height: normalizedSize * 2,
         cursor: corner.cursor,
       }}
       onMouseDown={(event) => {

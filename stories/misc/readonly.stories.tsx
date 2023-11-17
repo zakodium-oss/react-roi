@@ -30,7 +30,7 @@ export function ReadOnly() {
     <RoiProvider initialRois={initialRois}>
       <Layout>
         <ReadOnlyButton onClick={() => setState(initialRois[0].id)} />
-        <RoiContainer target={<Image />}>
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
           <RoiList getReadOnly={getReadOnly} />
         </RoiContainer>
       </Layout>

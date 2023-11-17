@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider, useActions } from '../../../src';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
@@ -62,12 +63,13 @@ export function Zoom() {
   }
 
   return (
-    <RoiProvider minZoom={1} maxZoom={20} initialRois={initialRois}>
+    <RoiProvider minZoom={0.2} maxZoom={20} initialRois={initialRois}>
       <Layout>
         <ZoomButton />
-        <RoiContainer target={<Image />}>
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
+        <CommittedRoisButton />
       </Layout>
     </RoiProvider>
   );

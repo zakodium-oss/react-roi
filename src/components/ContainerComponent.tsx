@@ -1,5 +1,5 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import { MutableRefObject, ReactNode, useEffect } from 'react';
+import { CSSProperties, MutableRefObject, ReactNode, useEffect } from 'react';
 
 import { useRoiState } from '../hooks';
 import { usePanZoomTransform } from '../hooks/usePanZoom';
@@ -10,10 +10,18 @@ import { throttle } from '../utilities/throttle';
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
   children: ReactNode;
+  style?: CSSProperties;
+  className?: string;
   id?: string;
 }
 
-export function ContainerComponent({ target, children, id }: ContainerProps) {
+export function ContainerComponent({
+  target,
+  children,
+  style,
+  className,
+  id,
+}: ContainerProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
@@ -21,7 +29,7 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
 
   useResizeObserver(ref, (entry) => {
     roiDispatch({
-      type: 'SET_SIZE',
+      type: 'SET_CONTAINER_SIZE',
       payload: {
         width: entry.contentRect.width,
         height: entry.contentRect.height,
@@ -77,6 +85,7 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
       id={id}
       ref={ref}
       style={{
+        ...style,
         position: 'relative',
         overflow: 'hidden',
         margin: 0,
@@ -84,6 +93,7 @@ export function ContainerComponent({ target, children, id }: ContainerProps) {
         cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
         userSelect: 'none',
       }}
+      className={className}
       onDoubleClick={() => {
         roiDispatch({ type: 'RESET_ZOOM' });
       }}

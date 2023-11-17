@@ -58,14 +58,20 @@ export function updateCommitedRoiPosition(
   roi: Draft<Roi>,
 ) {
   const normalizedBox = boundRoi(
-    normalizeBox(roi, draft.size),
+    normalizeBox(roi, draft.targetSize),
     roi.action.type,
   );
   if (normalizedBox.height === 0 || normalizedBox.width === 0) {
     // Revert changes since the ROI is no longer visible
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
+    Object.assign<Roi, Box>(
+      roi,
+      denormalizeBox(committedRoi, draft.targetSize),
+    );
   } else {
     Object.assign<CommittedRoi, Box>(committedRoi, normalizedBox);
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
+    Object.assign<Roi, Box>(
+      roi,
+      denormalizeBox(committedRoi, draft.targetSize),
+    );
   }
 }

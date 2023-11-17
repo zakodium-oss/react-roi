@@ -15,4 +15,9 @@ export interface Size {
   height: number;
 }
 
+export interface PanZoom {
+  scale: number;
+  translation: [number, number];
+}
+
 export type RoiMode = 'select' | 'draw';

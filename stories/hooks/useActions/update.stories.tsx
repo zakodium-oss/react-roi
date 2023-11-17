@@ -8,6 +8,7 @@ import {
   useActions,
   useRoiState,
 } from '../../../src';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
@@ -45,17 +46,15 @@ export function Position() {
   }
 
   return (
-    <Layout>
-      <RoiProvider initialRois={initialRois}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <UpdateXYPositionButton />
-
-          <RoiContainer target={<Image />}>
-            <RoiList />
-          </RoiContainer>
-        </div>
-      </RoiProvider>
-    </Layout>
+    <RoiProvider initialRois={initialRois}>
+      <Layout>
+        <UpdateXYPositionButton />
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
   );
 }
 
@@ -78,12 +77,10 @@ export function Label() {
   return (
     <RoiProvider initialRois={initialRois}>
       <Layout>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <UpdateLabelButton />
-          <RoiContainer target={<Image />}>
-            <RoiList />
-          </RoiContainer>
-        </div>
+        <UpdateLabelButton />
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
       </Layout>
     </RoiProvider>
   );

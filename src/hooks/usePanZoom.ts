@@ -7,6 +7,14 @@ export function usePanZoom() {
 }
 
 export function usePanZoomTransform() {
-  const { scale, translation } = usePanZoom();
-  return `matrix(${scale}, 0, 0, ${scale}, ${translation[0]}, ${translation[1]})`;
+  const {
+    panZoom: { scale: s1, translation: t1 },
+    initialPanZoom: { scale: s2, translation: t2 },
+  } = usePanZoom();
+  const scale = s1 * s2;
+
+  // return `matrix(${scale}, 0, 0, ${scale}, ${t1[0]}, ${t1[1]})`;
+  return `matrix(${scale}, 0, 0, ${scale}, ${s1 * t2[0] + t1[0]}, ${
+    s1 * t2[1] + t1[1]
+  })`;
 }

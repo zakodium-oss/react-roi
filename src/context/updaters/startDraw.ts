@@ -1,11 +1,15 @@
 import { Roi } from '../../types/Roi';
-import { applyInverseX, applyInverseY } from '../../utilities/panZoom';
+import {
+  applyInverseX,
+  applyInverseY,
+  computeTotalPanZoom,
+} from '../../utilities/panZoom';
 import { createRoi } from '../../utilities/rois';
-import { StartDrawPayload, ReactRoiState } from '../roiReducer';
+import { ReactRoiState, StartDrawPayload } from '../roiReducer';
 
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
   const { event, containerBoundingRect } = payload;
-  const emptyRoi = createRoi(crypto.randomUUID(), draft.size);
+  const emptyRoi = createRoi(crypto.randomUUID(), draft.targetSize);
 
   if (payload.isPanZooming) {
     draft.action = 'panning';
@@ -13,12 +17,13 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
   }
   switch (draft.mode) {
     case 'draw': {
+      const totalPanZoom = computeTotalPanZoom(draft);
       const x = applyInverseX(
-        draft.panZoom,
+        totalPanZoom,
         event.clientX - containerBoundingRect.x,
       );
       const y = applyInverseY(
-        draft.panZoom,
+        totalPanZoom,
         event.clientY - containerBoundingRect.y,
       );
 

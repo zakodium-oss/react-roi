@@ -39,13 +39,10 @@ export function CrashWithSameId() {
   return (
     <Layout>
       <RoiProvider>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <CreateButton />
-
-          <RoiContainer target={<Image />}>
-            <RoiList />
-          </RoiContainer>
-        </div>
+        <CreateButton />
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
       </RoiProvider>
     </Layout>
   );

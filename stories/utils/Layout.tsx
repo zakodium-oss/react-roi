@@ -6,5 +6,17 @@ interface LayoutProps {
 
 export function Layout(props: LayoutProps) {
   const { children } = props;
-  return <div style={{ maxWidth: 300, position: 'relative' }}>{children}</div>;
+  return (
+    <div
+      style={{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'start',
+        gap: 4,
+      }}
+    >
+      {children}
+    </div>
+  );
 }
