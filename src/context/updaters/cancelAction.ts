@@ -18,6 +18,7 @@ export function cancelAction(draft: Draft<ReactRoiState>) {
   if (roi.action.type === 'drawing') {
     const roiIndex = draft.rois.findIndex((r) => r.id === roi.id);
     draft.rois.splice(roiIndex, 1);
+    draft.selectedRoi = null;
   } else {
     // Revert to the previous state
     const committedRoi = draft.committedRois.find((r) => r.id === roi.id);
