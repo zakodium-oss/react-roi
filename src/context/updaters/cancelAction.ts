@@ -22,7 +22,10 @@ export function cancelAction(draft: Draft<ReactRoiState>) {
     // Revert to the previous state
     const committedRoi = draft.committedRois.find((r) => r.id === roi.id);
     assert(committedRoi);
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi, draft.size));
+    Object.assign<Roi, Box>(
+      roi,
+      denormalizeBox(committedRoi, draft.targetSize),
+    );
   }
   draft.action = 'idle';
   roi.action = {

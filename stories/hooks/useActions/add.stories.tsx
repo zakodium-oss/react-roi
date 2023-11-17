@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider, useActions } from '../../../src';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 
@@ -31,16 +32,14 @@ export function AddROI() {
   }
 
   return (
-    <Layout>
-      <RoiProvider>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <CreateButton />
-
-          <RoiContainer target={<Image />}>
-            <RoiList />
-          </RoiContainer>
-        </div>
-      </RoiProvider>
-    </Layout>
+    <RoiProvider>
+      <Layout>
+        <CreateButton />
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
   );
 }

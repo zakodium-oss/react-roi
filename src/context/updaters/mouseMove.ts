@@ -3,6 +3,7 @@ import { Draft } from 'immer';
 import { Point } from '../../types';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
+import { computeTotalPanZoom } from '../../utilities/panZoom';
 import { ReactRoiState } from '../roiReducer';
 
 export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
@@ -32,8 +33,9 @@ export function updateRoiBox(
   roi: Draft<Roi>,
   movement: Point,
 ) {
-  const movementX = movement.x / draft.panZoom.scale;
-  const movementY = movement.y / draft.panZoom.scale;
+  const totalPanZoom = computeTotalPanZoom(draft);
+  const movementX = movement.x / totalPanZoom.scale;
+  const movementY = movement.y / totalPanZoom.scale;
   switch (roi.action.type) {
     case 'idle':
       return;
@@ -54,9 +56,10 @@ export function updateRoiBox(
 }
 
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
+  const totalPanZoom = computeTotalPanZoom(draft);
   assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
-  const movementX = movement.x / draft.panZoom.scale;
-  const movementY = movement.y / draft.panZoom.scale;
+  const movementX = movement.x / totalPanZoom.scale;
+  const movementY = movement.y / totalPanZoom.scale;
   const xAxisCorner = roi.action.xAxisCorner;
   // Handle X axis
   switch (xAxisCorner) {

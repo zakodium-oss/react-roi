@@ -1,5 +1,6 @@
-import { Dispatch, MutableRefObject, createContext } from 'react';
+import { createContext, Dispatch, MutableRefObject } from 'react';
 
+import { PanZoom } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import type { ReactRoiState, RoiReducerAction } from './roiReducer';
@@ -20,10 +21,19 @@ export const roiContainerRefContext =
   createContext<MutableRefObject<HTMLDivElement> | null>(null);
 
 export interface PanZoomContext {
-  scale: number;
-  translation: [number, number];
+  panZoom: PanZoom;
+  initialPanZoom: PanZoom;
+  isReady: boolean;
 }
+
 export const panZoomContext = createContext<PanZoomContext>({
-  scale: 1.5,
-  translation: [0, 0],
+  panZoom: {
+    scale: 1,
+    translation: [0, 0],
+  },
+  initialPanZoom: {
+    scale: 1,
+    translation: [0, 0],
+  },
+  isReady: false,
 });

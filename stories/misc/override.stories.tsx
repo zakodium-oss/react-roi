@@ -69,7 +69,7 @@ export function WithClassname() {
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <RoiContainer target={<Image />}>
+          <RoiContainer target={<Image src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
               getStyle={(roi, selected) => ({
                 style: {
@@ -109,29 +109,27 @@ export function WithStyle() {
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <UpdateStyleButton />
+        <UpdateStyleButton />
 
-          <RoiContainer target={<Image />}>
-            <RoiList<CustomColorData>
-              getStyle={(roi, selected) => {
-                const {
-                  data: { textColor, backgroundColor, selectedBackgroundColor },
-                } = roi;
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList<CustomColorData>
+            getStyle={(roi, selected) => {
+              const {
+                data: { textColor, backgroundColor, selectedBackgroundColor },
+              } = roi;
 
-                return {
-                  style: {
-                    color: textColor,
-                    backgroundColor: selected
-                      ? backgroundColor
-                      : selectedBackgroundColor,
-                    opacity: selected ? 0.4 : 0.6,
-                  },
-                };
-              }}
-            />
-          </RoiContainer>
-        </div>
+              return {
+                style: {
+                  color: textColor,
+                  backgroundColor: selected
+                    ? backgroundColor
+                    : selectedBackgroundColor,
+                  opacity: selected ? 0.4 : 0.6,
+                },
+              };
+            }}
+          />
+        </RoiContainer>
       </RoiProvider>
     </Layout>
   );
