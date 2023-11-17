@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Box, RoiMode } from '../types';
+import { Box, PanZoom, RoiMode, Size } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -11,17 +11,12 @@ import {
   renormalizeRoiPosition,
 } from '../utilities/rois';
 
-import { PanZoomContext } from './contexts';
 import { cancelAction } from './updaters/cancelAction';
 import { endAction } from './updaters/endAction';
+import { updateInitialPanZoom } from './updaters/initialPanZoom';
 import { mouseMove } from './updaters/mouseMove';
 import { startDraw } from './updaters/startDraw';
 import { resetZoomAction, zoomAction } from './updaters/zoom';
-
-interface Size {
-  width: number;
-  height: number;
-}
 
 interface ZoomDomain {
   min: number;
@@ -45,24 +40,34 @@ export interface ReactRoiState<T = unknown> {
   action: 'idle' | 'moving' | 'drawing' | 'panning' | 'resizing';
 
   /**
-   * rois
+   * Regions of interest
    */
   rois: Array<Roi<T>>;
 
   /**
-   * commited rois
+   * Committed regions of interest
    */
   committedRois: Array<CommittedRoi<T>>;
 
   /**
-   * Size of the container used to normalize coordinates
+   * Size of the target on which the rois are drawn
    */
-  size: Size;
+  targetSize: Size;
+
+  /**
+   * Size of the container (used to normalize initial panzoom transform)
+   */
+  containerSize: Size;
 
   /**
    * Defines the current affine transformation being applied to the container
    */
-  panZoom: PanZoomContext;
+  panZoom: PanZoom;
+
+  /**
+   * Defines the inital panZoom transform so that the image is appropriately scaled and centered in the container
+   */
+  initialPanZoom: PanZoom;
 
   /**
    * Zoom level min and max
@@ -93,6 +98,13 @@ export type RoiReducerAction =
     }
   | {
       type: 'SET_SIZE';
+      payload: {
+        width: number;
+        height: number;
+      };
+    }
+  | {
+      type: 'SET_CONTAINER_SIZE';
       payload: {
         width: number;
         height: number;
@@ -154,10 +166,16 @@ export function roiReducer(
         draft.rois.forEach((roi) => {
           Object.assign<Roi, Box>(
             roi,
-            renormalizeRoiPosition(roi, draft.size, action.payload),
+            renormalizeRoiPosition(roi, draft.targetSize, action.payload),
           );
         });
-        draft.size = action.payload;
+        draft.targetSize = action.payload;
+        updateInitialPanZoom(draft);
+        break;
+      }
+      case 'SET_CONTAINER_SIZE': {
+        draft.containerSize = action.payload;
+        updateInitialPanZoom(draft);
         break;
       }
       case 'REMOVE_ROI': {
@@ -192,7 +210,7 @@ export function roiReducer(
 
         const committedRoi = createCommittedRoi(id, otherRoiProps);
         draft.committedRois.push(committedRoi);
-        draft.rois.push(createRoi(id, draft.size, otherRoiProps));
+        draft.rois.push(createRoi(id, draft.targetSize, otherRoiProps));
         draft.selectedRoi = committedRoi.id;
         break;
       }
@@ -212,7 +230,7 @@ export function roiReducer(
         );
         draft.rois[index] = createRoiFromCommittedRoi(
           committedRois,
-          draft.size,
+          draft.targetSize,
         );
         break;
       }

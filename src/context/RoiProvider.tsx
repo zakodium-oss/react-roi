@@ -6,6 +6,7 @@ import { createRoiFromCommittedRoi } from '../utilities/rois';
 
 import {
   committedRoisContext,
+  PanZoomContext,
   panZoomContext,
   roiContainerRefContext,
   roiDispatchContext,
@@ -13,6 +14,7 @@ import {
   roiStateContext,
 } from './contexts';
 import { ReactRoiState, roiReducer } from './roiReducer';
+import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
 
 interface RoiProviderProps<T> {
   children: ReactNode;
@@ -25,18 +27,21 @@ function createInitialState<T>(
   committedRois: Array<CommittedRoi<T>>,
   zoom: { min: number; max: number },
 ): ReactRoiState<T> {
-  const size = { width: 1, height: 1 };
-
   return {
     mode: 'select',
     action: 'idle',
-    size,
+    targetSize: initialSize,
+    containerSize: initialSize,
     selectedRoi: undefined,
     committedRois,
     rois: committedRois.map((committedRoi) =>
-      createRoiFromCommittedRoi(committedRoi, size),
+      createRoiFromCommittedRoi(committedRoi, initialSize),
     ),
     panZoom: {
+      scale: 1,
+      translation: [0, 0],
+    },
+    initialPanZoom: {
       scale: 1,
       translation: [0, 0],
     },
@@ -45,7 +50,7 @@ function createInitialState<T>(
 }
 
 export function RoiProvider<T>(props: RoiProviderProps<T>) {
-  const { children, initialRois = [], minZoom = 1, maxZoom = 10 } = props;
+  const { children, initialRois = [], minZoom = 0.6, maxZoom = 10 } = props;
 
   const roiInitialState = createInitialState<T>(initialRois, {
     min: minZoom,
@@ -55,7 +60,16 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { rois, committedRois, mode, selectedRoi, panZoom } = state;
+  const {
+    rois,
+    committedRois,
+    mode,
+    selectedRoi,
+    panZoom,
+    initialPanZoom,
+    targetSize,
+    containerSize,
+  } = state;
   const roiState = useMemo(() => {
     return {
       mode,
@@ -63,10 +77,19 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
     };
   }, [mode, selectedRoi]);
 
+  const panzoomContextValue: PanZoomContext = useMemo(() => {
+    return {
+      panZoom,
+      initialPanZoom,
+      // We memoize this here to minimize the number of times we need to render the container
+      isReady: isSizeObserved({ targetSize, containerSize }),
+    };
+  }, [panZoom, initialPanZoom, targetSize, containerSize]);
+
   return (
     <KbsProvider>
       <roiContainerRefContext.Provider value={containerRef}>
-        <panZoomContext.Provider value={panZoom}>
+        <panZoomContext.Provider value={panzoomContextValue}>
           <roiDispatchContext.Provider value={dispatch}>
             <roisContext.Provider value={rois}>
               <committedRoisContext.Provider value={committedRois}>

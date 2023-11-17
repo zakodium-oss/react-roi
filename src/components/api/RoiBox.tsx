@@ -1,13 +1,13 @@
 import { memo, useEffect } from 'react';
 
 import { useRoiState } from '../../hooks';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 import { Box } from '../Box';
 import { RoiBoxCorner } from '../RoiBoxCorner';
 
 import { RoiListProps } from './RoiList';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 
 interface RoiBoxProps {
   roi: Roi;

@@ -17,21 +17,12 @@ export default {
   decorators: [
     (Story) => (
       <RoiProvider initialRois={initialRois}>
-        <div
-          style={{
-            display: 'flex',
-            gap: 5,
-            alignItems: 'start',
-            width: '100%',
-          }}
-        >
-          <Layout>
-            <RoiContainer target={<Image />}>
-              <RoiList />
-            </RoiContainer>
-          </Layout>
+        <Layout>
+          <RoiContainer target={<Image src="/barbara.jpg" />}>
+            <RoiList />
+          </RoiContainer>
           <Story />
-        </div>
+        </Layout>
       </RoiProvider>
     ),
   ],

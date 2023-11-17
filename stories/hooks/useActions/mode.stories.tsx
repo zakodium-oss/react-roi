@@ -8,6 +8,7 @@ import {
   RoiProvider,
   useActions,
 } from '../../../src';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 
@@ -36,16 +37,14 @@ export function ChangeMode() {
   }
 
   return (
-    <Layout>
-      <RoiProvider>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <ChangeModeButton />
-
-          <RoiContainer target={<Image />}>
-            <RoiList />
-          </RoiContainer>
-        </div>
-      </RoiProvider>
-    </Layout>
+    <RoiProvider>
+      <Layout>
+        <ChangeModeButton />
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
   );
 }
