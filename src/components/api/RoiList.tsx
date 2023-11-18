@@ -4,8 +4,7 @@ import { useRoiState } from '../../hooks';
 import { useRois } from '../../hooks/useRois';
 import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
-
-import { RoiBox } from './RoiBox';
+import { RoiBox } from '../box/RoiBox';
 
 export interface RoiGetStyleState {
   isSelected: boolean;

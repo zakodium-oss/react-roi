@@ -1,11 +1,11 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { CSSProperties, MutableRefObject, ReactNode, useEffect } from 'react';
 
-import { useRoiState } from '../hooks';
-import { usePanZoomTransform } from '../hooks/usePanZoom';
-import { useRoiContainerRef } from '../hooks/useRoiContainerRef';
-import { useRoiDispatch } from '../hooks/useRoiDispatch';
-import { throttle } from '../utilities/throttle';
+import { useRoiState } from '../../hooks';
+import { usePanZoomTransform } from '../../hooks/usePanZoom';
+import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { throttle } from '../../utilities/throttle';
 
 interface ContainerProps {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };

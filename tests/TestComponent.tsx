@@ -1,4 +1,4 @@
-import { RoiContainer, RoiList, RoiProvider } from '../src/index';
+import { RoiContainer, RoiList, RoiProvider } from '../src';
 
 export function TestComponent() {
   return (

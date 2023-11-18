@@ -1,8 +1,7 @@
-import { usePanZoom } from '../hooks/usePanZoom';
-import { useRoiDispatch } from '../hooks/useRoiDispatch';
-import { CornerData } from '../utilities/corners';
-
-import { cornerColor, cursorSize } from './constants';
+import { usePanZoom } from '../../hooks/usePanZoom';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { CornerData } from '../../utilities/corners';
+import { cornerColor, cursorSize } from '../constants';
 
 export function RoiBoxCorner({
   corner,
