@@ -7,6 +7,12 @@ import { assert } from '../../utilities/assert';
 
 import { RoiBox } from './RoiBox';
 
+export interface RoiGetStyleState {
+  isSelected: boolean;
+  isReadOnly: boolean;
+  scale: number;
+}
+
 interface StyleProperties {
   /**
    * Classname of the ROI box when not being selected or edited
@@ -19,7 +25,10 @@ interface StyleProperties {
 }
 
 export interface RoiListProps<TData = unknown> {
-  getStyle?: (roi: Roi<TData>, selected: boolean) => StyleProperties;
+  getStyle?: (
+    roi: Roi<TData>,
+    roiAdditionalState: RoiGetStyleState,
+  ) => StyleProperties;
   getReadOnly?: (roi: Roi<TData>) => boolean;
 }
 
@@ -50,13 +59,17 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
 
 function defaultGetStyle<TData = unknown>(
   _: Roi<TData>,
-  selected: boolean,
+  state: RoiGetStyleState,
 ): StyleProperties {
   return {
     style: {
       color: 'white',
-      backgroundColor: 'black',
-      opacity: selected ? 0.5 : 0.3,
+      backgroundColor: state.isReadOnly
+        ? 'rgba(0,0,0,0.6)'
+        : state.isSelected
+          ? 'rgba(0,0,0,0.2)'
+          : 'rgba(0,0,0,0.4)',
+      boxSizing: 'border-box',
     },
   };
 }

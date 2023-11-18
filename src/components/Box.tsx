@@ -13,7 +13,7 @@ export interface BoxAnnotationProps {
   style?: CSSProperties;
   className?: string;
   label?: ReactNode;
-  readOnly: boolean;
+  isReadOnly: boolean;
 }
 
 export function Box({
@@ -25,11 +25,10 @@ export function Box({
   style,
   label,
   className,
-  readOnly,
+  isReadOnly,
 }: BoxAnnotationProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
-
   return (
     <div
       id={id}
@@ -39,12 +38,12 @@ export function Box({
         top: y,
         width,
         height,
-        cursor: getCursor(roiState.mode, readOnly),
+        cursor: getCursor(roiState.mode, isReadOnly),
         ...style,
       }}
       className={className}
       onMouseDown={(event) => {
-        if (event.altKey || readOnly) {
+        if (event.altKey || isReadOnly) {
           return;
         }
 
