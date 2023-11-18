@@ -59,7 +59,7 @@ function initialRois() {
             display: 'flex',
             justifyContent: 'center',
             justifyItems: 'center',
-            fontSize: '12px',
+            fontSize: 12,
           }}
         >
           box1
