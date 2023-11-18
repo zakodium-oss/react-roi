@@ -1,2 +1,2 @@
-export * from './RoiContainer';
+export * from '../container/RoiContainer';
 export * from './RoiList';

@@ -1,8 +1,8 @@
 import { CSSProperties, ReactNode } from 'react';
 
-import { useRoiState } from '../hooks';
-import { useRoiDispatch } from '../hooks/useRoiDispatch';
-import { RoiMode } from '../types';
+import { useRoiState } from '../../hooks';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { RoiMode } from '../../types';
 
 export interface BoxAnnotationProps {
   id: string;
