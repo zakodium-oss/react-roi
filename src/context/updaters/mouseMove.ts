@@ -34,8 +34,8 @@ export function updateRoiBox(
   movement: Point,
 ) {
   const totalPanZoom = computeTotalPanZoom(draft);
-  const movementX = movement.x / totalPanZoom.scale;
-  const movementY = movement.y / totalPanZoom.scale;
+  const movementX = movement.x / totalPanZoom.scale / window.devicePixelRatio;
+  const movementY = movement.y / totalPanZoom.scale / window.devicePixelRatio;
   switch (roi.action.type) {
     case 'idle':
       return;
@@ -58,8 +58,8 @@ export function updateRoiBox(
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   const totalPanZoom = computeTotalPanZoom(draft);
   assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
-  const movementX = movement.x / totalPanZoom.scale;
-  const movementY = movement.y / totalPanZoom.scale;
+  const movementX = movement.x / totalPanZoom.scale / window.devicePixelRatio;
+  const movementY = movement.y / totalPanZoom.scale / window.devicePixelRatio;
   const xAxisCorner = roi.action.xAxisCorner;
   // Handle X axis
   switch (xAxisCorner) {
