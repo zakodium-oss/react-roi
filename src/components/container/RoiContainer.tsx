@@ -4,7 +4,8 @@ import { useKbsGlobal } from 'react-kbs';
 
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { ContainerComponent } from '../ContainerComponent';
+
+import { ContainerComponent } from './ContainerComponent';
 
 interface RoiComponentProps {
   target?: JSX.Element;

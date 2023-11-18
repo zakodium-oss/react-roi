@@ -5,10 +5,10 @@ import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
-import { Box } from '../Box';
-import { RoiBoxCorner } from '../RoiBoxCorner';
+import { RoiListProps } from '../api';
 
-import { RoiListProps } from './RoiList';
+import { Box } from './Box';
+import { RoiBoxCorner } from './RoiBoxCorner';
 
 interface RoiBoxProps {
   roi: Roi;
