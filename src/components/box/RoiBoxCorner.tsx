@@ -1,54 +1,184 @@
-import { usePanZoom } from '../../hooks/usePanZoom';
+import { MouseEventHandler, useCallback } from 'react';
+
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { CornerData } from '../../utilities/corners';
-import { cornerColor, cursorSize } from '../constants';
+
+import { CornerSizeOptions, handlerColor } from './sizes';
+
+type MouseDownCallback = MouseEventHandler<SVGRectElement>;
 
 export function RoiBoxCorner({
   corner,
+  scale,
   roiId,
+  sizes,
 }: {
   corner: CornerData;
+  scale: number;
   roiId: string;
+  sizes: CornerSizeOptions;
 }) {
   const roiDispatch = useRoiDispatch();
-  const panZoom = usePanZoom();
-  const normalizedSize = Math.round(
-    Math.max(
-      cursorSize / (panZoom.panZoom.scale * panZoom.initialPanZoom.scale),
-      2,
-    ),
+  const onMouseDown: MouseDownCallback = useCallback(
+    (event) => {
+      if (event.altKey) {
+        return;
+      }
+      event.stopPropagation();
+      roiDispatch({
+        type: 'START_RESIZE',
+        payload: {
+          id: roiId,
+          xAxisCorner: corner.xPosition,
+          yAxisCorner: corner.yPosition,
+        },
+      });
+    },
+    [roiDispatch, corner, roiId],
   );
-
+  if (corner.xPosition === 'middle' || corner.yPosition === 'middle') {
+    return (
+      <SideHandler
+        corner={corner}
+        onMouseDown={onMouseDown}
+        scale={scale}
+        sizes={sizes}
+      />
+    );
+  }
   return (
-    <div
-      id={`corner-${corner.xPosition}-${corner.yPosition}`}
-      style={{
-        borderStyle: 'solid',
-        borderWidth: (1 / panZoom.panZoom.scale) * panZoom.initialPanZoom.scale,
-        borderColor: cornerColor,
-        position: 'absolute',
-        top: corner.cy - normalizedSize,
-        left: corner.cx - normalizedSize,
-        width: normalizedSize * 2,
-        height: normalizedSize * 2,
-        cursor: corner.cursor,
-        borderRadius: '25%',
-        boxSizing: 'border-box',
-      }}
-      onMouseDown={(event) => {
-        if (event.altKey) {
-          return;
-        }
-        event.stopPropagation();
-        roiDispatch({
-          type: 'START_RESIZE',
-          payload: {
-            id: roiId,
-            xAxisCorner: corner.xPosition,
-            yAxisCorner: corner.yPosition,
-          },
-        });
-      }}
+    <CornerHandler
+      corner={corner}
+      onMouseDown={onMouseDown}
+      scale={scale}
+      sizes={sizes}
     />
   );
+}
+
+function SideHandler({
+  corner,
+  scale,
+  onMouseDown,
+  sizes,
+}: {
+  corner: CornerData;
+  scale: number;
+  onMouseDown: MouseDownCallback;
+  sizes: CornerSizeOptions;
+}) {
+  const linePoints = getSidePoints(corner, scale, sizes);
+  const handlerRect = getHandlerRect(corner, scale, sizes);
+  return (
+    <>
+      <line
+        {...linePoints}
+        stroke={handlerColor}
+        strokeWidth={sizes.handlerBorderWidth / scale}
+        strokeLinecap="round"
+      />
+      <rect
+        {...handlerRect}
+        cursor={corner.cursor}
+        fill="transparent"
+        style={{ pointerEvents: 'initial' }}
+        onMouseDown={onMouseDown}
+      />
+    </>
+  );
+}
+
+function CornerHandler({
+  corner,
+  scale,
+  onMouseDown,
+  sizes,
+}: {
+  corner: CornerData;
+  scale: number;
+  onMouseDown: MouseDownCallback;
+  sizes: CornerSizeOptions;
+}) {
+  const polyline = getCornerPoints(corner, scale, sizes);
+  const handlerRect = getHandlerRect(corner, scale, sizes);
+  return (
+    <>
+      <polyline
+        points={polyline.map((point) => point.join(',')).join(' ')}
+        strokeWidth={sizes.handlerBorderWidth / scale}
+        stroke={handlerColor}
+        fill="none"
+        strokeLinecap="round"
+      />
+      <rect
+        {...handlerRect}
+        cursor={corner.cursor}
+        fill="transparent"
+        style={{ pointerEvents: 'initial' }}
+        onMouseDown={onMouseDown}
+      />
+    </>
+  );
+}
+
+function getSidePoints(
+  corner: CornerData,
+  scale: number,
+  sizes: CornerSizeOptions,
+) {
+  const scaledHandlerSize = sizes.handlerSize / scale;
+  if (corner.xPosition === 'left' || corner.xPosition === 'right') {
+    return {
+      x1: corner.cx,
+      y1: corner.cy - scaledHandlerSize / 2,
+      x2: corner.cx,
+      y2: corner.cy + scaledHandlerSize / 2,
+    };
+  } else {
+    return {
+      x1: corner.cx - scaledHandlerSize / 2,
+      y1: corner.cy,
+      x2: corner.cx + scaledHandlerSize / 2,
+      y2: corner.cy,
+    };
+  }
+}
+
+function getCornerPoints(
+  corner: CornerData,
+  scale: number,
+  sizes: CornerSizeOptions,
+) {
+  const scaledHandlerSize = sizes.handlerSize / scale;
+
+  const startOffsetX =
+    corner.xPosition === 'left' ? +scaledHandlerSize : -scaledHandlerSize;
+
+  const endOffsetY =
+    corner.yPosition === 'top' ? +scaledHandlerSize : -scaledHandlerSize;
+  return [
+    [corner.cx + startOffsetX, corner.cy],
+    [corner.cx, corner.cy],
+    [corner.cx, corner.cy + endOffsetY],
+  ];
+}
+
+function getHandlerRect(
+  corner: CornerData,
+  scale: number,
+  sizes: CornerSizeOptions,
+) {
+  const scaledHandlerSize = sizes.handlerSize / scale;
+  const width = scaledHandlerSize * 2;
+  const height = width;
+
+  const x = corner.cx - scaledHandlerSize;
+  const y = corner.cy - scaledHandlerSize;
+
+  return {
+    x,
+    y,
+    width,
+    height,
+  };
 }
