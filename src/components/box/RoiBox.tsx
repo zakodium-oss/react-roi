@@ -1,14 +1,10 @@
 import { memo, useEffect } from 'react';
 
-import { useRoiState } from '../../hooks';
-import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
-import { getAllCorners } from '../../utilities/corners';
 import { RoiListProps } from '../api';
 
 import { Box } from './Box';
-import { RoiBoxCorner } from './RoiBoxCorner';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -18,14 +14,11 @@ interface RoiBoxProps {
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { roi, getStyle, getReadOnly } = props;
-  const roiState = useRoiState();
 
-  const { x, y, width, height, id, label } = roi;
-  const isSelected = id === roiState.selectedRoi;
+  const { x, y, width, height, id } = roi;
   const isReadOnly = getReadOnly(roi);
 
   const roiDispatch = useRoiDispatch();
-  const panZoom = usePanZoom();
   useEffect(() => {
     if (isReadOnly) {
       roiDispatch({ type: 'UNSELECT_ROI', payload: id });
@@ -33,32 +26,17 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   }, [id, isReadOnly, roiDispatch]);
 
   return (
-    <>
-      <Box
-        id={id}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        label={label}
-        isReadOnly={isReadOnly}
-        {...getStyle(roi, {
-          isReadOnly,
-          isSelected,
-          scale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
-        })}
-      />
-      {roiState.mode === 'select' &&
-        isSelected &&
-        !isReadOnly &&
-        getAllCorners(roi).map((corner) => (
-          <RoiBoxCorner
-            corner={corner}
-            roiId={id}
-            key={`corner-${corner.xPosition}-${corner.yPosition}`}
-          />
-        ))}
-    </>
+    <div
+      style={{
+        position: 'absolute',
+        left: x,
+        top: y,
+        width,
+        height,
+      }}
+    >
+      <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
+    </div>
   );
 }
 
