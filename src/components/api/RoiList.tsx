@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { SVGAttributes } from 'react';
 
 import { useRoiState } from '../../hooks';
 import { useRois } from '../../hooks/useRois';
@@ -12,22 +12,11 @@ export interface RoiGetStyleState {
   scale: number;
 }
 
-interface StyleProperties {
-  /**
-   * Classname of the ROI box when not being selected or edited
-   */
-  className?: string;
-  /**
-   * Style of the ROI box when not being selected or edited.
-   */
-  style?: CSSProperties;
-}
-
 export interface RoiListProps<TData = unknown> {
   getStyle?: (
     roi: Roi<TData>,
     roiAdditionalState: RoiGetStyleState,
-  ) => StyleProperties;
+  ) => SVGAttributes<SVGRectElement>;
   getReadOnly?: (roi: Roi<TData>) => boolean;
 }
 
@@ -56,19 +45,12 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   );
 }
 
-function defaultGetStyle<TData = unknown>(
-  _: Roi<TData>,
-  state: RoiGetStyleState,
-): StyleProperties {
+const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
   return {
-    style: {
-      color: 'white',
-      backgroundColor: state.isReadOnly
-        ? 'rgba(0,0,0,0.6)'
-        : state.isSelected
-          ? 'rgba(0,0,0,0.2)'
-          : 'rgba(0,0,0,0.4)',
-      boxSizing: 'border-box',
-    },
+    fill: state.isReadOnly
+      ? 'rgba(0,0,0,0.6)'
+      : state.isSelected
+        ? 'rgba(0,0,0,0.2)'
+        : 'rgba(0,0,0,0.4)',
   };
-}
+};
