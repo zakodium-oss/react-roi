@@ -1,4 +1,4 @@
-import { SVGAttributes } from 'react';
+import { CSSProperties, SVGAttributes } from 'react';
 
 import { useRoiState } from '../../hooks';
 import { useRois } from '../../hooks/useRois';
@@ -9,14 +9,18 @@ import { RoiBox } from '../box/RoiBox';
 export interface RoiGetStyleState {
   isSelected: boolean;
   isReadOnly: boolean;
-  scale: number;
+}
+
+interface CustomRoiStyle {
+  rectAttributes?: SVGAttributes<SVGRectElement>;
+  resizeHandlerColor?: CSSProperties['color'];
 }
 
 export interface RoiListProps<TData = unknown> {
   getStyle?: (
     roi: Roi<TData>,
     roiAdditionalState: RoiGetStyleState,
-  ) => SVGAttributes<SVGRectElement>;
+  ) => CustomRoiStyle;
   getReadOnly?: (roi: Roi<TData>) => boolean;
 }
 
@@ -47,10 +51,13 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
 
 const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
   return {
-    fill: state.isReadOnly
-      ? 'rgba(0,0,0,0.6)'
-      : state.isSelected
-        ? 'rgba(0,0,0,0.2)'
-        : 'rgba(0,0,0,0.4)',
+    rectAttributes: {
+      fill: state.isReadOnly
+        ? 'rgba(0,0,0,0.6)'
+        : state.isSelected
+          ? 'rgba(0,0,0,0.2)'
+          : 'rgba(0,0,0,0.4)',
+    },
+    resizeHandlerColor: 'black',
   };
 };

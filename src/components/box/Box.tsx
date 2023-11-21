@@ -33,6 +33,10 @@ export function Box({
   const sizes = getBaseSize(roi, panZoom.initialPanZoom.scale);
 
   const isSelected = roi.id === roiState.selectedRoi;
+  const styles = getStyle(roi, {
+    isReadOnly,
+    isSelected,
+  });
 
   return (
     <svg
@@ -70,11 +74,7 @@ export function Box({
         y={roi.y}
         width={roi.width}
         height={roi.height}
-        {...getStyle(roi, {
-          isReadOnly,
-          isSelected,
-          scale: panZoom.initialPanZoom.scale,
-        })}
+        {...styles.rectAttributes}
       />
       {isSelected &&
         getAllCorners(roi).map((corner) => (
@@ -84,6 +84,7 @@ export function Box({
             corner={corner}
             roiId={roi.id}
             sizes={sizes}
+            handlerColor={styles.resizeHandlerColor}
           />
         ))}
     </svg>
