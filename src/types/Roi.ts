@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 
 import { Box } from './utils';
@@ -49,7 +47,7 @@ export interface Roi<TData = unknown> extends Box {
   /**
    * Label to display inside the ROI box.
    */
-  label?: ReactNode;
+  label?: string;
   /**
    * Action being currently performed on the ROI box.
    */

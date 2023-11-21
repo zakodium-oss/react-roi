@@ -22,6 +22,23 @@ export function TestComponent() {
           }
         >
           <RoiList
+            renderLabel={(roi) => {
+              return (
+                <div
+                  style={{
+                    color: 'white',
+                    backgroundColor: 'transparent',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    justifyItems: 'center',
+                    fontSize: 12,
+                  }}
+                >
+                  {roi.label}
+                </div>
+              );
+            }}
             getStyle={(roi, { isSelected }) => {
               if (roi.id === 'box-1') {
                 return {
@@ -50,21 +67,7 @@ function initialRois() {
   return [
     {
       id: 'box-1',
-      label: (
-        <div
-          style={{
-            color: 'white',
-            backgroundColor: 'transparent',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            justifyItems: 'center',
-            fontSize: 12,
-          }}
-        >
-          box1
-        </div>
-      ),
+      label: 'box1',
       x: 0,
       y: 0,
       width: 0.5,

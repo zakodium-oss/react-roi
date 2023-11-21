@@ -8,12 +8,14 @@ import { Box } from './Box';
 
 interface RoiBoxProps {
   roi: Roi;
+  isSelected: boolean;
   getStyle: RoiListProps['getStyle'];
   getReadOnly: RoiListProps['getReadOnly'];
+  renderLabel: RoiListProps['renderLabel'];
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
-  const { roi, getStyle, getReadOnly } = props;
+  const { roi, getStyle, getReadOnly, isSelected, renderLabel } = props;
 
   const { x, y, width, height, id } = roi;
   const isReadOnly = getReadOnly(roi);
@@ -26,17 +28,31 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   }, [id, isReadOnly, roiDispatch]);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: x,
-        top: y,
-        width,
-        height,
-      }}
-    >
-      <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
-    </div>
+    <>
+      <div
+        style={{
+          position: 'absolute',
+          left: x,
+          top: y,
+          width,
+          height,
+        }}
+      >
+        <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: x,
+          top: y,
+          width,
+          height,
+          pointerEvents: 'none',
+        }}
+      >
+        {renderLabel(roi, { isReadOnly, isSelected })}
+      </div>
+    </>
   );
 }
 

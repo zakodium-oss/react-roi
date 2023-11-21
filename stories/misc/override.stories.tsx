@@ -133,3 +133,36 @@ export function WithIndividualStyles() {
     </Layout>
   );
 }
+
+export function CustomLabelRender() {
+  return (
+    <Layout>
+      <RoiProvider initialRois={initialRois}>
+        <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiList<CustomColorData>
+            renderLabel={(roi, { isSelected }) => {
+              if (isSelected) {
+                return null;
+              }
+              return (
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    placeContent: 'center',
+                    alignItems: 'center',
+                    color: 'white',
+                    fontSize: 28,
+                  }}
+                >
+                  {roi.label}
+                </div>
+              );
+            }}
+          />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
+}
