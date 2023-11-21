@@ -64,13 +64,13 @@ export function Zoom() {
 
   return (
     <RoiProvider minZoom={0.2} maxZoom={20} initialRois={initialRois}>
-      <Layout>
+      <Layout fit>
         <ZoomButton />
         <RoiContainer target={<Image src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
-        <CommittedRoisButton />
       </Layout>
+      <CommittedRoisButton />
     </RoiProvider>
   );
 }

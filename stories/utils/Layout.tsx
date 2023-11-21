@@ -2,10 +2,11 @@ import { ReactNode } from 'react';
 
 interface LayoutProps {
   children: ReactNode;
+  fit?: boolean;
 }
 
 export function Layout(props: LayoutProps) {
-  const { children } = props;
+  const { children, fit } = props;
   return (
     <div
       style={{
@@ -14,6 +15,7 @@ export function Layout(props: LayoutProps) {
         flexDirection: 'column',
         alignItems: 'start',
         gap: 4,
+        width: fit ? 'fit-content' : undefined,
       }}
     >
       {children}
