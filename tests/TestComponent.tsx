@@ -1,4 +1,4 @@
-import { RoiContainer, RoiList, RoiProvider } from '../src';
+import { RoiContainer, RoiList, RoiProvider, useTargetRef } from '../src';
 
 export function TestComponent() {
   return (
@@ -10,17 +10,7 @@ export function TestComponent() {
           backgroundColor: 'lightgreen',
         }}
       >
-        <RoiContainer
-          target={
-            <div
-              style={{
-                width: '500px',
-                height: '500px',
-                backgroundColor: 'lightblue',
-              }}
-            />
-          }
-        >
+        <RoiContainer target={<Target />}>
           <RoiList
             renderLabel={(roi) => {
               return (
@@ -60,6 +50,20 @@ export function TestComponent() {
         </RoiContainer>
       </div>
     </RoiProvider>
+  );
+}
+
+function Target() {
+  const ref = useTargetRef();
+  return (
+    <div
+      ref={ref}
+      style={{
+        width: '500px',
+        height: '500px',
+        backgroundColor: 'lightblue',
+      }}
+    />
   );
 }
 

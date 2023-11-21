@@ -30,6 +30,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   return (
     <>
       <div
+        data-testId={roi.id}
         style={{
           position: 'absolute',
           left: x,
@@ -41,6 +42,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
         <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
       </div>
       <div
+        data-testId={`label-${roi.id}`}
         style={{
           position: 'absolute',
           left: x,

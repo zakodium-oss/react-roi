@@ -40,7 +40,6 @@ export function Box({
 
   return (
     <svg
-      id={roi.id}
       style={{
         display: 'block',
         overflow: 'visible',
