@@ -1,9 +1,9 @@
-import { MouseEventHandler, useCallback } from 'react';
+import { CSSProperties, MouseEventHandler, useCallback } from 'react';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { CornerData } from '../../utilities/corners';
 
-import { CornerSizeOptions, handlerColor } from './sizes';
+import { CornerSizeOptions } from './sizes';
 
 type MouseDownCallback = MouseEventHandler<SVGRectElement>;
 
@@ -12,11 +12,13 @@ export function RoiBoxCorner({
   scale,
   roiId,
   sizes,
+  handlerColor,
 }: {
   corner: CornerData;
   scale: number;
   roiId: string;
   sizes: CornerSizeOptions;
+  handlerColor?: CSSProperties['color'];
 }) {
   const roiDispatch = useRoiDispatch();
   const onMouseDown: MouseDownCallback = useCallback(
@@ -43,6 +45,7 @@ export function RoiBoxCorner({
         onMouseDown={onMouseDown}
         scale={scale}
         sizes={sizes}
+        handlerColor={handlerColor}
       />
     );
   }
@@ -52,6 +55,7 @@ export function RoiBoxCorner({
       onMouseDown={onMouseDown}
       scale={scale}
       sizes={sizes}
+      handlerColor={handlerColor}
     />
   );
 }
@@ -61,11 +65,13 @@ function SideHandler({
   scale,
   onMouseDown,
   sizes,
+  handlerColor = 'black',
 }: {
   corner: CornerData;
   scale: number;
   onMouseDown: MouseDownCallback;
   sizes: CornerSizeOptions;
+  handlerColor: CSSProperties['color'] | undefined;
 }) {
   const linePoints = getSidePoints(corner, scale, sizes);
   const handlerRect = getHandlerRect(corner, scale, sizes);
@@ -93,11 +99,13 @@ function CornerHandler({
   scale,
   onMouseDown,
   sizes,
+  handlerColor = 'black',
 }: {
   corner: CornerData;
   scale: number;
   onMouseDown: MouseDownCallback;
   sizes: CornerSizeOptions;
+  handlerColor: CSSProperties['color'] | undefined;
 }) {
   const polyline = getCornerPoints(corner, scale, sizes);
   const handlerRect = getHandlerRect(corner, scale, sizes);

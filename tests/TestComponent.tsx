@@ -22,19 +22,19 @@ export function TestComponent() {
           }
         >
           <RoiList
-            getStyle={(roi, selected) => {
+            getStyle={(roi, { isSelected }) => {
               if (roi.id === 'box-1') {
                 return {
-                  style: {
-                    backgroundColor: selected ? 'blue' : 'black',
+                  rectAttributes: {
+                    fill: isSelected ? 'blue' : 'black',
                     opacity: 0.5,
                   },
                 };
               }
 
               return {
-                style: {
-                  backgroundColor: selected ? 'green' : 'black',
+                rectAttributes: {
+                  fill: isSelected ? 'green' : 'black',
                   opacity: 0.5,
                 },
               };

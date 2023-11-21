@@ -64,18 +64,20 @@ const initialRois: Array<CommittedRoi<CustomColorData>> = [
   },
 ];
 
-export function WithClassname() {
+export function OverrideDefaultStyle() {
   return (
     <Layout>
       <RoiProvider initialRois={initialRois}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<Image src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
-              getStyle={(roi, selected) => ({
-                style: {
-                  opacity: selected ? 0.4 : 0.6,
+              getStyle={(roi, { isSelected }) => ({
+                rectAttributes: {
+                  fill: isSelected ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)',
+                  stroke: 'black',
+                  strokeWidth: 2,
                 },
-                className: selected ? 'selected' : 'not-selected',
+                resizeHandlerColor: 'white',
               })}
             />
           </RoiContainer>
@@ -85,7 +87,7 @@ export function WithClassname() {
   );
 }
 
-export function WithStyle() {
+export function WithIndividualStyles() {
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions<CustomColorData>();
@@ -113,18 +115,15 @@ export function WithStyle() {
 
         <RoiContainer target={<Image src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
-            getStyle={(roi, selected) => {
+            getStyle={(roi, { isSelected }) => {
               const {
-                data: { textColor, backgroundColor, selectedBackgroundColor },
+                data: { backgroundColor, selectedBackgroundColor },
               } = roi;
 
               return {
-                style: {
-                  color: textColor,
-                  backgroundColor: selected
-                    ? backgroundColor
-                    : selectedBackgroundColor,
-                  opacity: selected ? 0.4 : 0.6,
+                rectAttributes: {
+                  fill: isSelected ? selectedBackgroundColor : backgroundColor,
+                  opacity: isSelected ? 0.4 : 0.6,
                 },
               };
             }}

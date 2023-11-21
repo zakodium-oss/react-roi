@@ -14,17 +14,16 @@ export function getBaseSize(roi: Roi, scale: number): CornerSizeOptions {
       handlerSize: size / 3,
       handlerBorderWidth: 2,
     };
-  } else if (size < 56) {
+  } else if (size < 50) {
     // return small handler
     return {
-      handlerSize: 7,
+      handlerSize: 5,
       handlerBorderWidth: 3,
     };
   }
   // Regular sizes
   return {
-    handlerSize: 14,
+    handlerSize: 10,
     handlerBorderWidth: 4,
   };
 }
-export const handlerColor = 'black';
