@@ -13,7 +13,7 @@ export default {
 export function FitWidthWhenTallImage() {
   return (
     <RoiProvider initialRois={initialRois}>
-      <Layout>
+      <Layout fit>
         <div style={{ width: 500, height: 300 }}>
           <RoiContainer
             target={<Image src="/cats-640x640.jpg" />}
