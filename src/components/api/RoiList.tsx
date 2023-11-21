@@ -1,4 +1,4 @@
-import { CSSProperties, SVGAttributes } from 'react';
+import { CSSProperties, ReactNode, SVGAttributes } from 'react';
 
 import { useRoiState } from '../../hooks';
 import { useRois } from '../../hooks/useRois';
@@ -6,7 +6,7 @@ import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
 import { RoiBox } from '../box/RoiBox';
 
-export interface RoiGetStyleState {
+export interface RoiAdditionalCallbackState {
   isSelected: boolean;
   isReadOnly: boolean;
 }
@@ -19,13 +19,21 @@ interface CustomRoiStyle {
 export interface RoiListProps<TData = unknown> {
   getStyle?: (
     roi: Roi<TData>,
-    roiAdditionalState: RoiGetStyleState,
+    roiAdditionalState: RoiAdditionalCallbackState,
   ) => CustomRoiStyle;
   getReadOnly?: (roi: Roi<TData>) => boolean;
+  renderLabel?: (
+    roi: Roi<TData>,
+    roiAdditionalState: RoiAdditionalCallbackState,
+  ) => ReactNode;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
-  const { getStyle = defaultGetStyle, getReadOnly = () => false } = props;
+  const {
+    getStyle = defaultGetStyle,
+    getReadOnly = () => false,
+    renderLabel = defaultRenderLabel,
+  } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
   if (selectedRoi) {
@@ -42,7 +50,9 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           key={roi.id}
           roi={roi}
           getStyle={getStyle}
+          renderLabel={renderLabel}
           getReadOnly={getReadOnly}
+          isSelected={roi.id === selectedRoi}
         />
       ))}
     </>
@@ -60,4 +70,21 @@ const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
     },
     resizeHandlerColor: 'black',
   };
+};
+
+const defaultRenderLabel: RoiListProps['renderLabel'] = (roi) => {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        placeContent: 'center',
+        alignItems: 'center',
+        color: 'white',
+      }}
+    >
+      {roi.label}
+    </div>
+  );
 };
