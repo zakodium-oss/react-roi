@@ -50,7 +50,9 @@ const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
     fill: state.isReadOnly
       ? 'rgba(0,0,0,0.6)'
       : state.isSelected
-        ? 'rgba(0,0,0,0.2)'
+        ? 'transparent'
         : 'rgba(0,0,0,0.4)',
+    stroke: state.isSelected ? '#202020' : 'transparent',
+    strokeWidth: 0,
   };
 };

@@ -1,5 +1,6 @@
 import { memo, useEffect } from 'react';
 
+import { useRoiState } from '../../hooks';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { RoiListProps } from '../api';
@@ -14,6 +15,8 @@ interface RoiBoxProps {
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { roi, getStyle, getReadOnly } = props;
+  const roiState = useRoiState();
+  const isSelected = roiState.selectedRoi === roi.id;
 
   const { x, y, width, height, id } = roi;
   const isReadOnly = getReadOnly(roi);
@@ -26,17 +29,31 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   }, [id, isReadOnly, roiDispatch]);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: x,
-        top: y,
-        width,
-        height,
-      }}
-    >
-      <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
-    </div>
+    <>
+      {isSelected && (
+        <div
+          style={{
+            position: 'absolute',
+            left: x,
+            top: y,
+            width,
+            height,
+            backgroundColor: 'white',
+          }}
+        />
+      )}
+      <div
+        style={{
+          position: 'absolute',
+          left: x,
+          top: y,
+          width,
+          height,
+        }}
+      >
+        <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
+      </div>
+    </>
   );
 }
 

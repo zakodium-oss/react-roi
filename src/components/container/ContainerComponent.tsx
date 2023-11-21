@@ -92,6 +92,8 @@ export function ContainerComponent({
         padding: 0,
         cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
         userSelect: 'none',
+        mixBlendMode: 'multiply',
+        backgroundColor: '#a0a0a0',
       }}
       className={className}
       onDoubleClick={() => {
