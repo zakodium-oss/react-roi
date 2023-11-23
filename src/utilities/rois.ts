@@ -82,3 +82,16 @@ export function renormalizeRoiPosition(
     height: position.height * hFactor,
   };
 }
+
+export function isOverRoi(rois: Roi[], x: number, y: number): boolean {
+  for (const roi of rois) {
+    if (
+      x > roi.x &&
+      x < roi.x + roi.width &&
+      y > roi.y &&
+      y < roi.y + roi.height
+    ) {
+      return true;
+    }
+  }
+}
