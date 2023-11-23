@@ -1,6 +1,7 @@
 import { Draft } from 'immer';
 
 import { Size } from '../../types';
+import { assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 
 export const initialSize: Size = {
@@ -21,6 +22,25 @@ export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
   if (!isSizeObserved(draft)) {
     return;
   }
+  switch (draft.resizeStrategy) {
+    case 'contain':
+      updateInitialPanZoomContain(draft);
+      break;
+    case 'cover':
+      updateInitialPanZoomCover(draft);
+      break;
+    case 'center':
+      updateInitialPanZoomCenter(draft);
+      break;
+    case 'none':
+      updateInitialPanZoomNone(draft);
+      break;
+    default:
+      assertUnreachable(draft.resizeStrategy);
+  }
+}
+
+function updateInitialPanZoomCover(draft: Draft<ReactRoiState>) {
   const { targetSize, containerSize } = draft;
   const wFactor = targetSize.width / containerSize.width;
   const hFactor = targetSize.height / containerSize.height;
@@ -44,9 +64,42 @@ export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
   } else {
     // The image is smaller, just center it
     draft.initialPanZoom.scale = 1;
-    draft.initialPanZoom.translation = [
-      (containerSize.width - targetSize.width) / 2,
-      (containerSize.height - targetSize.height) / 2,
-    ];
+    updateInitialPanZoomCenter(draft);
   }
+}
+
+function updateInitialPanZoomContain(draft: Draft<ReactRoiState>) {
+  const { targetSize, containerSize } = draft;
+  const wFactor = targetSize.width / containerSize.width;
+  const hFactor = targetSize.height / containerSize.height;
+  if (wFactor > 1 || hFactor > 1) {
+    // Target is bigger than container
+    if (wFactor > hFactor) {
+      // Target is wider than container
+      draft.initialPanZoom.scale = 1 / wFactor;
+      updateInitialPanZoomCenter(draft);
+    } else {
+      // Target is taller than container
+      draft.initialPanZoom.scale = 1 / hFactor;
+      updateInitialPanZoomCenter(draft);
+    }
+  } else {
+    // The image is smaller, just center it
+    draft.initialPanZoom.scale = 1;
+    updateInitialPanZoomCenter(draft);
+  }
+}
+
+function updateInitialPanZoomCenter(draft: Draft<ReactRoiState>) {
+  const { targetSize, containerSize, initialPanZoom } = draft;
+  draft.initialPanZoom.translation = [
+    // 0, 0,
+    (containerSize.width - initialPanZoom.scale * targetSize.width) / 2,
+    (containerSize.height - initialPanZoom.scale * targetSize.height) / 2,
+  ];
+}
+
+function updateInitialPanZoomNone(draft: Draft<ReactRoiState>) {
+  draft.initialPanZoom.scale = 1;
+  draft.initialPanZoom.translation = [0, 0];
 }

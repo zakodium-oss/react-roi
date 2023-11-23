@@ -46,7 +46,7 @@ export function Position() {
   }
 
   return (
-    <RoiProvider initialRois={initialRois}>
+    <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <UpdateXYPositionButton />
         <RoiContainer target={<Image src="/barbara.jpg" />}>
@@ -75,7 +75,7 @@ export function Label() {
   }
 
   return (
-    <RoiProvider initialRois={initialRois}>
+    <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <UpdateLabelButton />
         <RoiContainer target={<Image src="/barbara.jpg" />}>

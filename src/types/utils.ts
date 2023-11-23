@@ -21,3 +21,5 @@ export interface PanZoom {
 }
 
 export type RoiMode = 'select' | 'draw';
+
+export type ResizeStrategy = 'cover' | 'contain' | 'center' | 'none';

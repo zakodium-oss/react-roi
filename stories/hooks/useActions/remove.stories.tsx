@@ -29,7 +29,7 @@ export function RemoveROI() {
   }
 
   return (
-    <RoiProvider initialRois={initialRois}>
+    <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <RemoveButton />
 

@@ -11,7 +11,7 @@ export default {
 
 export function Scroll() {
   return (
-    <RoiProvider initialRois={initialRois}>
+    <RoiProvider initialConfig={{ rois: initialRois }}>
       <div style={{ height: 1000 }} />
       <Layout>
         <RoiContainer target={<Image src="/barbara.jpg" />}>

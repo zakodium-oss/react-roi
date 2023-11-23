@@ -16,7 +16,7 @@ export default {
   title: 'hooks/useCommittedRois',
   decorators: [
     (Story) => (
-      <RoiProvider initialRois={initialRois}>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
         <Layout>
           <RoiContainer target={<Image src="/barbara.jpg" />}>
             <RoiList />
