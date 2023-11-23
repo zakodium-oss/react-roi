@@ -73,13 +73,16 @@ export function ContainerComponent({
       onZoom(event);
     }
 
+    const containerElement = ref.current;
+
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-    ref.current.addEventListener('wheel', onWheel, { passive: false });
+    containerElement.addEventListener('wheel', onWheel, { passive: false });
+
     return () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('wheel', onWheel);
+      containerElement.removeEventListener('wheel', onWheel);
     };
   }, [roiDispatch, ref]);
 
