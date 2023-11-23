@@ -71,11 +71,11 @@ export function OverrideDefaultStyle() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<Image src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
-              getStyle={(roi, { isSelected }) => ({
+              getStyle={(roi, { isSelected, scaledSizes }) => ({
                 rectAttributes: {
                   fill: isSelected ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)',
                   stroke: 'black',
-                  strokeWidth: 2,
+                  strokeWidth: scaledSizes.handlerBorderWidth * 2,
                 },
                 resizeHandlerColor: 'white',
               })}

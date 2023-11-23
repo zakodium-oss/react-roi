@@ -9,7 +9,7 @@ import { getAllCorners } from '../../utilities/corners';
 import { RoiListProps } from '../api';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
-import { getBaseSize } from './sizes';
+import { getScaledSizes } from './sizes';
 
 export interface BoxAnnotationProps {
   roi: Roi;
@@ -30,13 +30,16 @@ export function Box({
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   const roiState = useRoiState();
-  const sizes = getBaseSize(roi, panZoom.initialPanZoom.scale);
+  const scaledSizes = getScaledSizes(roi, panZoom.initialPanZoom.scale);
 
   const isSelected = roi.id === roiState.selectedRoi;
   const styles = getStyle(roi, {
     isReadOnly,
     isSelected,
+    scaledSizes,
   });
+
+  const clipPathId = `within-roi-${roi.id}`;
 
   return (
     <svg
@@ -68,7 +71,11 @@ export function Box({
         }
       }}
     >
+      <clipPath id={clipPathId}>
+        <rect x={roi.x} y={roi.y} width={roi.width} height={roi.height} />
+      </clipPath>
       <rect
+        clipPath={`url(#${clipPathId})`}
         x={roi.x}
         y={roi.y}
         width={roi.width}
@@ -79,10 +86,9 @@ export function Box({
         getAllCorners(roi).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
-            scale={panZoom.initialPanZoom.scale}
             corner={corner}
             roiId={roi.id}
-            sizes={sizes}
+            sizes={scaledSizes}
             handlerColor={styles.resizeHandlerColor}
           />
         ))}

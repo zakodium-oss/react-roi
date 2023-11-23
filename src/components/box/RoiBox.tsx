@@ -1,10 +1,12 @@
 import { memo, useEffect } from 'react';
 
+import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { RoiListProps } from '../api';
 
 import { Box } from './Box';
+import { getScaledSizes } from './sizes';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -17,9 +19,11 @@ interface RoiBoxProps {
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { roi, getStyle, getReadOnly, isSelected, renderLabel } = props;
 
+  const panzoom = usePanZoom();
   const { x, y, width, height, id } = roi;
   const isReadOnly = getReadOnly(roi);
 
+  const scaledSizes = getScaledSizes(roi, panzoom.initialPanZoom.scale);
   const roiDispatch = useRoiDispatch();
   useEffect(() => {
     if (isReadOnly) {
@@ -52,7 +56,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           pointerEvents: 'none',
         }}
       >
-        {renderLabel(roi, { isReadOnly, isSelected })}
+        {renderLabel(roi, { isReadOnly, isSelected, scaledSizes })}
       </div>
     </>
   );

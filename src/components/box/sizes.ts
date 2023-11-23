@@ -5,25 +5,31 @@ export interface CornerSizeOptions {
   handlerBorderWidth: number;
 }
 
-export function getBaseSize(roi: Roi, scale: number): CornerSizeOptions {
+export function getBaseSize(roi: Roi): CornerSizeOptions {
   const minLength = Math.min(roi.width, roi.height);
-  const size = minLength * scale;
-  if (size <= 21) {
-    // 3 * 7
+  if (minLength <= 21) {
     return {
-      handlerSize: size / 3,
-      handlerBorderWidth: 2,
+      handlerSize: Math.max(3, Math.floor((minLength - 4) / 3)),
+      handlerBorderWidth: 1,
     };
-  } else if (size < 50) {
+  } else if (minLength < 50) {
     // return small handler
     return {
       handlerSize: 5,
-      handlerBorderWidth: 3,
+      handlerBorderWidth: 2,
     };
   }
   // Regular sizes
   return {
     handlerSize: 10,
-    handlerBorderWidth: 4,
+    handlerBorderWidth: 3,
+  };
+}
+
+export function getScaledSizes(roi: Roi, scale: number): CornerSizeOptions {
+  const { handlerSize, handlerBorderWidth } = getBaseSize(roi);
+  return {
+    handlerSize: handlerSize / scale,
+    handlerBorderWidth: handlerBorderWidth / scale,
   };
 }
