@@ -79,6 +79,8 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
 
   const panzoomContextValue: PanZoomContext = useMemo(() => {
     return {
+      targetSize,
+      containerSize,
       panZoom,
       initialPanZoom,
       // We memoize this here to minimize the number of times we need to render the container
