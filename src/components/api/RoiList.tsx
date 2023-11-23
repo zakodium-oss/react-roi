@@ -5,10 +5,12 @@ import { useRois } from '../../hooks/useRois';
 import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
 import { RoiBox } from '../box/RoiBox';
+import { CornerSizeOptions } from '../box/sizes';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;
   isReadOnly: boolean;
+  scaledSizes: CornerSizeOptions;
 }
 
 interface CustomRoiStyle {

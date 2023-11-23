@@ -19,7 +19,12 @@ export function Image({
       src={src}
       // Pointer events is disabled to prevent the image to be draggable
       // block display so that the container fits the dimensions of the image
-      style={{ display: 'block', pointerEvents: 'none', ...style }}
+      style={{
+        display: 'block',
+        pointerEvents: 'none',
+        imageRendering: 'pixelated',
+        ...style,
+      }}
     />
   );
 }

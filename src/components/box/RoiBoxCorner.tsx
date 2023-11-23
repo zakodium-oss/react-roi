@@ -9,13 +9,11 @@ type MouseDownCallback = MouseEventHandler<SVGRectElement>;
 
 export function RoiBoxCorner({
   corner,
-  scale,
   roiId,
   sizes,
   handlerColor,
 }: {
   corner: CornerData;
-  scale: number;
   roiId: string;
   sizes: CornerSizeOptions;
   handlerColor?: CSSProperties['color'];
@@ -43,8 +41,7 @@ export function RoiBoxCorner({
       <SideHandler
         corner={corner}
         onMouseDown={onMouseDown}
-        scale={scale}
-        sizes={sizes}
+        scaledSizes={sizes}
         handlerColor={handlerColor}
       />
     );
@@ -53,8 +50,7 @@ export function RoiBoxCorner({
     <CornerHandler
       corner={corner}
       onMouseDown={onMouseDown}
-      scale={scale}
-      sizes={sizes}
+      scaledSizes={sizes}
       handlerColor={handlerColor}
     />
   );
@@ -62,25 +58,24 @@ export function RoiBoxCorner({
 
 function SideHandler({
   corner,
-  scale,
   onMouseDown,
-  sizes,
+  scaledSizes,
   handlerColor = 'black',
 }: {
   corner: CornerData;
-  scale: number;
   onMouseDown: MouseDownCallback;
-  sizes: CornerSizeOptions;
+  scaledSizes: CornerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
-  const linePoints = getSidePoints(corner, scale, sizes);
-  const handlerRect = getHandlerRect(corner, scale, sizes);
+  const linePoints = getSidePoints(corner, scaledSizes);
+  const handlerRect = getHandlerRect(corner, scaledSizes);
+  const transform = getTransform(corner, scaledSizes);
   return (
-    <>
+    <g transform={transform}>
       <line
         {...linePoints}
         stroke={handlerColor}
-        strokeWidth={sizes.handlerBorderWidth / scale}
+        strokeWidth={scaledSizes.handlerBorderWidth}
         strokeLinecap="round"
       />
       <rect
@@ -90,30 +85,29 @@ function SideHandler({
         style={{ pointerEvents: 'initial' }}
         onMouseDown={onMouseDown}
       />
-    </>
+    </g>
   );
 }
 
 function CornerHandler({
   corner,
-  scale,
   onMouseDown,
-  sizes,
+  scaledSizes,
   handlerColor = 'black',
 }: {
   corner: CornerData;
-  scale: number;
   onMouseDown: MouseDownCallback;
-  sizes: CornerSizeOptions;
+  scaledSizes: CornerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
-  const polyline = getCornerPoints(corner, scale, sizes);
-  const handlerRect = getHandlerRect(corner, scale, sizes);
+  const polyline = getCornerPoints(corner, scaledSizes);
+  const handlerRect = getHandlerRect(corner, scaledSizes);
+  const transform = getTransform(corner, scaledSizes);
   return (
-    <>
+    <g transform={transform}>
       <polyline
         points={polyline.map((point) => point.join(',')).join(' ')}
-        strokeWidth={sizes.handlerBorderWidth / scale}
+        strokeWidth={scaledSizes.handlerBorderWidth}
         stroke={handlerColor}
         fill="none"
         strokeLinecap="round"
@@ -125,45 +119,35 @@ function CornerHandler({
         style={{ pointerEvents: 'initial' }}
         onMouseDown={onMouseDown}
       />
-    </>
+    </g>
   );
 }
 
-function getSidePoints(
-  corner: CornerData,
-  scale: number,
-  sizes: CornerSizeOptions,
-) {
-  const scaledHandlerSize = sizes.handlerSize / scale;
+function getSidePoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
   if (corner.xPosition === 'left' || corner.xPosition === 'right') {
     return {
       x1: corner.cx,
-      y1: corner.cy - scaledHandlerSize / 2,
+      y1: corner.cy - scaledSizes.handlerSize / 2,
       x2: corner.cx,
-      y2: corner.cy + scaledHandlerSize / 2,
+      y2: corner.cy + scaledSizes.handlerSize / 2,
     };
   } else {
     return {
-      x1: corner.cx - scaledHandlerSize / 2,
+      x1: corner.cx - scaledSizes.handlerSize / 2,
       y1: corner.cy,
-      x2: corner.cx + scaledHandlerSize / 2,
+      x2: corner.cx + scaledSizes.handlerSize / 2,
       y2: corner.cy,
     };
   }
 }
 
-function getCornerPoints(
-  corner: CornerData,
-  scale: number,
-  sizes: CornerSizeOptions,
-) {
-  const scaledHandlerSize = sizes.handlerSize / scale;
+function getCornerPoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
+  const { handlerSize } = scaledSizes;
 
   const startOffsetX =
-    corner.xPosition === 'left' ? +scaledHandlerSize : -scaledHandlerSize;
+    corner.xPosition === 'left' ? +handlerSize : -handlerSize;
 
-  const endOffsetY =
-    corner.yPosition === 'top' ? +scaledHandlerSize : -scaledHandlerSize;
+  const endOffsetY = corner.yPosition === 'top' ? +handlerSize : -handlerSize;
   return [
     [corner.cx + startOffsetX, corner.cy],
     [corner.cx, corner.cy],
@@ -171,17 +155,12 @@ function getCornerPoints(
   ];
 }
 
-function getHandlerRect(
-  corner: CornerData,
-  scale: number,
-  sizes: CornerSizeOptions,
-) {
-  const scaledHandlerSize = sizes.handlerSize / scale;
-  const width = scaledHandlerSize * 2;
+function getHandlerRect(corner: CornerData, scaledSizes: CornerSizeOptions) {
+  const width = scaledSizes.handlerSize * 2;
   const height = width;
 
-  const x = corner.cx - scaledHandlerSize;
-  const y = corner.cy - scaledHandlerSize;
+  const x = corner.cx - scaledSizes.handlerSize;
+  const y = corner.cy - scaledSizes.handlerSize;
 
   return {
     x,
@@ -189,4 +168,25 @@ function getHandlerRect(
     width,
     height,
   };
+}
+
+function getTransform(corner: CornerData, scaledSizes: CornerSizeOptions) {
+  const shift = scaledSizes.handlerBorderWidth / 2;
+
+  let x = 0;
+  let y = 0;
+
+  if (corner.xPosition === 'left') {
+    x = shift;
+  } else if (corner.xPosition === 'right') {
+    x = -shift;
+  }
+
+  if (corner.yPosition === 'top') {
+    y = shift;
+  } else if (corner.yPosition === 'bottom') {
+    y = -shift;
+  }
+
+  return `translate(${x}, ${y})`;
 }
