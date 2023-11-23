@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/zakodium-oss/react-roi/compare/v0.4.0...v0.5.0) (2023-11-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* the initial configuration is now passed as a single prop to RoiProvider
+
+### Features
+
+* do not scale handlers with zoom level ([6ce10ac](https://github.com/zakodium-oss/react-roi/commit/6ce10ac749b7e7b414ce495e4d6017ddc5e39f7a))
+* provide different initial rescaling strategies ([4537913](https://github.com/zakodium-oss/react-roi/commit/45379138b3c3b1dbbc1e9dba0267c029d5bd668f))
+* show corner handles inside of ROI boundaries ([f83ef2a](https://github.com/zakodium-oss/react-roi/commit/f83ef2aaf6a202e61e8d3fcc68d7a374d20905e5))
+
 ## [0.4.0](https://github.com/zakodium-oss/react-roi/compare/v0.3.0...v0.4.0) (2023-11-22)
 
 
