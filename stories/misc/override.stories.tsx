@@ -67,7 +67,7 @@ const initialRois: Array<CommittedRoi<CustomColorData>> = [
 export function OverrideDefaultStyle() {
   return (
     <Layout>
-      <RoiProvider initialRois={initialRois}>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<Image src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
@@ -110,7 +110,7 @@ export function WithIndividualStyles() {
   }
   return (
     <Layout>
-      <RoiProvider initialRois={initialRois}>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
         <UpdateStyleButton />
 
         <RoiContainer target={<Image src="/barbara.jpg" />}>
@@ -137,7 +137,7 @@ export function WithIndividualStyles() {
 export function CustomLabelRender() {
   return (
     <Layout>
-      <RoiProvider initialRois={initialRois}>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
         <RoiContainer target={<Image src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             renderLabel={(roi, { isSelected }) => {

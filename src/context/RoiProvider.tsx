@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, useReducer, useRef } from 'react';
 import { KbsProvider } from 'react-kbs';
 
+import { ResizeStrategy } from '../types';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 
@@ -16,25 +17,32 @@ import {
 import { ReactRoiState, roiReducer } from './roiReducer';
 import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
 
+export interface RoiProviderInitialConfig<T> {
+  zoom?: {
+    min: number;
+    max: number;
+  };
+  resizeStrategy?: ResizeStrategy;
+  rois?: Array<CommittedRoi<T>>;
+}
+
 interface RoiProviderProps<T> {
   children: ReactNode;
-  initialRois?: Array<CommittedRoi<T>>;
-  minZoom?: number;
-  maxZoom?: number;
+  initialConfig?: RoiProviderInitialConfig<T>;
 }
 
 function createInitialState<T>(
-  committedRois: Array<CommittedRoi<T>>,
-  zoom: { min: number; max: number },
+  initialConfig: Required<RoiProviderInitialConfig<T>>,
 ): ReactRoiState<T> {
   return {
     mode: 'select',
     action: 'idle',
+    resizeStrategy: initialConfig.resizeStrategy,
     targetSize: initialSize,
     containerSize: initialSize,
     selectedRoi: undefined,
-    committedRois,
-    rois: committedRois.map((committedRoi) =>
+    committedRois: initialConfig.rois,
+    rois: initialConfig.rois.map((committedRoi) =>
       createRoiFromCommittedRoi(committedRoi, initialSize),
     ),
     panZoom: {
@@ -45,16 +53,24 @@ function createInitialState<T>(
       scale: 1,
       translation: [0, 0],
     },
-    zoomDomain: zoom,
+    zoomDomain: initialConfig.zoom,
   };
 }
 
 export function RoiProvider<T>(props: RoiProviderProps<T>) {
-  const { children, initialRois = [], minZoom = 0.6, maxZoom = 10 } = props;
-
-  const roiInitialState = createInitialState<T>(initialRois, {
-    min: minZoom,
-    max: maxZoom,
+  const { children, initialConfig = {} } = props;
+  const {
+    rois: initialRois = [],
+    zoom: { min: minZoom = 1, max: maxZoom = 10 } = {},
+    resizeStrategy = 'contain',
+  } = initialConfig;
+  const roiInitialState = createInitialState<T>({
+    rois: initialRois,
+    zoom: {
+      min: minZoom,
+      max: maxZoom,
+    },
+    resizeStrategy,
   });
 
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);

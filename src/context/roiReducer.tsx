@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Box, PanZoom, RoiMode, Size } from '../types';
+import { Box, PanZoom, ResizeStrategy, RoiMode, Size } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -28,6 +28,11 @@ export interface ReactRoiState<T = unknown> {
    * Current mode
    */
   mode: RoiMode;
+
+  /**
+   * Resize strategy
+   */
+  resizeStrategy: ResizeStrategy;
 
   /**
    * Identification of the selected object

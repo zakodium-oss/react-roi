@@ -5,12 +5,41 @@ import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
+import { useResetOnChange } from '../../utils/useResetOnChange';
 
 export default {
   title: 'hooks/useActions',
+  argTypes: {
+    minZoom: {
+      control: {
+        type: 'number',
+        min: 0.0001,
+        max: 1000,
+        step: 0.1,
+      },
+    },
+    maxZoom: {
+      control: {
+        type: 'number',
+        min: 0.0001,
+        max: 1000,
+        step: 0.1,
+      },
+    },
+  },
+  args: {
+    minZoom: 0.1,
+    maxZoom: 20,
+  },
 } as Meta;
 
-export function Zoom() {
+interface ZoomStoryProps {
+  minZoom: number;
+  maxZoom: number;
+}
+
+export function Zoom({ minZoom, maxZoom }: ZoomStoryProps) {
+  const keyId = useResetOnChange([minZoom, maxZoom]);
   function ZoomButton() {
     const { zoom } = useActions();
 
@@ -63,7 +92,16 @@ export function Zoom() {
   }
 
   return (
-    <RoiProvider minZoom={0.2} maxZoom={20} initialRois={initialRois}>
+    <RoiProvider
+      key={keyId}
+      initialConfig={{
+        rois: initialRois,
+        zoom: {
+          min: minZoom,
+          max: maxZoom,
+        },
+      }}
+    >
       <Layout fit>
         <ZoomButton />
         <RoiContainer target={<Image src="/barbara.jpg" />}>

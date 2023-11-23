@@ -2,7 +2,7 @@ import { RoiContainer, RoiList, RoiProvider, useTargetRef } from '../src';
 
 export function TestComponent() {
   return (
-    <RoiProvider initialRois={initialRois()}>
+    <RoiProvider initialConfig={{ rois: initialRois() }}>
       <div
         style={{
           width: '500px',
