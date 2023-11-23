@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 
 import { useRoiState } from '../../hooks';
+import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { RoiMode } from '../../types';
@@ -27,6 +28,7 @@ export function Box({
   isReadOnly,
   getStyle,
 }: BoxAnnotationProps) {
+  const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   const roiState = useRoiState();
@@ -48,7 +50,7 @@ export function Box({
         overflow: 'visible',
         width: roi.width,
         height: roi.height,
-        cursor: getCursor(roiState.mode, isReadOnly),
+        cursor: getCursor(roiState.mode, isReadOnly, isAltKeyDown),
         ...style,
       }}
       viewBox={`${roi.x} ${roi.y} ${roi.width} ${roi.height}`}
@@ -96,7 +98,12 @@ export function Box({
   );
 }
 
-function getCursor(mode: RoiMode, readOnly: boolean): CSSProperties['cursor'] {
+function getCursor(
+  mode: RoiMode,
+  readOnly: boolean,
+  isAltKeyDown: boolean,
+): CSSProperties['cursor'] {
+  if (isAltKeyDown) return 'grab';
   if (readOnly) return 'default';
-  return mode === 'draw' ? 'crosshair' : 'grab';
+  return mode === 'draw' ? 'crosshair' : 'move';
 }

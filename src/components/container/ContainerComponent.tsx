@@ -2,9 +2,11 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { CSSProperties, MutableRefObject, ReactNode, useEffect } from 'react';
 
 import { useRoiState } from '../../hooks';
+import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { RoiMode } from '../../types';
 import { throttle } from '../../utilities/throttle';
 
 interface ContainerProps {
@@ -22,6 +24,7 @@ export function ContainerComponent({
   className,
   id,
 }: ContainerProps) {
+  const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
@@ -90,7 +93,7 @@ export function ContainerComponent({
         overflow: 'hidden',
         margin: 0,
         padding: 0,
-        cursor: roiState.mode === 'draw' ? 'crosshair' : 'default',
+        cursor: getCursor(roiState.mode, isAltKeyDown),
         userSelect: 'none',
       }}
       className={className}
@@ -134,4 +137,12 @@ export function ContainerComponent({
       </div>
     </div>
   );
+}
+
+function getCursor(mode: RoiMode, altKey: boolean) {
+  if (altKey) {
+    return 'grab';
+  }
+
+  return mode === 'draw' ? 'crosshair' : 'grab';
 }
