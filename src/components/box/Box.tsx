@@ -30,7 +30,7 @@ export function Box({
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   const roiState = useRoiState();
-  const scaledSizes = getScaledSizes(roi, panZoom.initialPanZoom.scale);
+  const scaledSizes = getScaledSizes(roi, panZoom);
 
   const isSelected = roi.id === roiState.selectedRoi;
   const styles = getStyle(roi, {

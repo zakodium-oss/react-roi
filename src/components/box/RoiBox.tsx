@@ -23,7 +23,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { x, y, width, height, id } = roi;
   const isReadOnly = getReadOnly(roi);
 
-  const scaledSizes = getScaledSizes(roi, panzoom.initialPanZoom.scale);
+  const scaledSizes = getScaledSizes(roi, panzoom);
   const roiDispatch = useRoiDispatch();
   useEffect(() => {
     if (isReadOnly) {

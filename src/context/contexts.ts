@@ -1,6 +1,6 @@
 import { createContext, Dispatch, MutableRefObject } from 'react';
 
-import { PanZoom } from '../types';
+import { PanZoom, Size } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import type { ReactRoiState, RoiReducerAction } from './roiReducer';
@@ -24,9 +24,19 @@ export interface PanZoomContext {
   panZoom: PanZoom;
   initialPanZoom: PanZoom;
   isReady: boolean;
+  targetSize: Size;
+  containerSize: Size;
 }
 
 export const panZoomContext = createContext<PanZoomContext>({
+  targetSize: {
+    width: 0,
+    height: 0,
+  },
+  containerSize: {
+    width: 0,
+    height: 0,
+  },
   panZoom: {
     scale: 1,
     translation: [0, 0],
