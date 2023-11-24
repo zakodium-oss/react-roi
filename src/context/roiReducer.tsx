@@ -1,6 +1,13 @@
 import { produce } from 'immer';
 
-import { Box, PanZoom, ResizeStrategy, RoiMode, Size } from '../types';
+import {
+  Box,
+  PanZoom,
+  ResizeStrategy,
+  RoiAction,
+  RoiMode,
+  Size,
+} from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -42,7 +49,7 @@ export interface ReactRoiState<T = unknown> {
   /**
    * Current action being performed
    */
-  action: 'idle' | 'moving' | 'drawing' | 'panning' | 'resizing';
+  action: RoiAction;
 
   /**
    * Regions of interest

@@ -15,6 +15,8 @@ export interface Size {
   height: number;
 }
 
+export type RoiAction = 'idle' | 'moving' | 'drawing' | 'panning' | 'resizing';
+
 export interface PanZoom {
   scale: number;
   translation: [number, number];

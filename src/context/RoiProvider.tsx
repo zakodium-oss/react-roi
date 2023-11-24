@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useReducer, useRef } from 'react';
 import { KbsProvider } from 'react-kbs';
 
-import { ResizeStrategy } from '../types';
+import type { ResizeStrategy, RoiState } from '../types';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 
@@ -85,13 +85,15 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
     initialPanZoom,
     targetSize,
     containerSize,
+    action,
   } = state;
-  const roiState = useMemo(() => {
+  const roiState: RoiState = useMemo(() => {
     return {
       mode,
       selectedRoi,
+      action,
     };
-  }, [mode, selectedRoi]);
+  }, [mode, selectedRoi, action]);
 
   const panzoomContextValue: PanZoomContext = useMemo(() => {
     return {
