@@ -6,7 +6,7 @@ import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { RoiMode } from '../../types';
+import { RoiAction, RoiMode } from '../../types';
 import { throttle } from '../../utilities/throttle';
 
 interface ContainerProps {
@@ -96,7 +96,7 @@ export function ContainerComponent({
         overflow: 'hidden',
         margin: 0,
         padding: 0,
-        cursor: getCursor(roiState.mode, isAltKeyDown),
+        cursor: getCursor(roiState.mode, isAltKeyDown, roiState.action),
         userSelect: 'none',
       }}
       className={className}
@@ -142,7 +142,14 @@ export function ContainerComponent({
   );
 }
 
-function getCursor(mode: RoiMode, altKey: boolean) {
+function getCursor(mode: RoiMode, altKey: boolean, action: RoiAction) {
+  if (action !== 'idle') {
+    if (action === 'drawing') {
+      return 'crosshair';
+    } else if (action === 'panning') {
+      return 'grab';
+    }
+  }
   if (altKey) {
     return 'grab';
   }

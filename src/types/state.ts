@@ -1,6 +1,6 @@
-import { RoiMode } from './utils';
+import { RoiAction, RoiMode } from './utils';
 
-export interface RoiContainerState {
+export interface RoiState {
   /**
    * Current mode
    */
@@ -10,4 +10,9 @@ export interface RoiContainerState {
    * Identification of the selected object
    */
   selectedRoi?: string;
+
+  /**
+   * Current action
+   */
+  action: RoiAction;
 }

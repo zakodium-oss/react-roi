@@ -4,7 +4,7 @@ import { useRoiState } from '../../hooks';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { RoiMode } from '../../types';
+import { RoiAction, RoiMode } from '../../types';
 import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 import { RoiListProps } from '../api';
@@ -16,7 +16,6 @@ export interface BoxAnnotationProps {
   roi: Roi;
   style?: CSSProperties;
   className?: string;
-  // label?: ReactNode;
   isReadOnly: boolean;
   getStyle: RoiListProps['getStyle'];
 }
@@ -50,7 +49,12 @@ export function Box({
         overflow: 'visible',
         width: roi.width,
         height: roi.height,
-        cursor: getCursor(roiState.mode, isReadOnly, isAltKeyDown),
+        cursor: getCursor(
+          roiState.mode,
+          isReadOnly,
+          isAltKeyDown,
+          roiState.action,
+        ),
         ...style,
       }}
       viewBox={`${roi.x} ${roi.y} ${roi.width} ${roi.height}`}
@@ -102,7 +106,17 @@ function getCursor(
   mode: RoiMode,
   readOnly: boolean,
   isAltKeyDown: boolean,
+  action: RoiAction,
 ): CSSProperties['cursor'] {
+  if (action !== 'idle') {
+    if (action === 'drawing') {
+      return 'crosshair';
+    } else if (action === 'moving') {
+      return 'move';
+    } else if (action === 'panning') {
+      return 'grabbing';
+    }
+  }
   if (isAltKeyDown) return 'grab';
   if (readOnly) return 'default';
   return mode === 'draw' ? 'crosshair' : 'move';

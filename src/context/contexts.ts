@@ -1,14 +1,11 @@
 import { createContext, Dispatch, MutableRefObject } from 'react';
 
-import { PanZoom, Size } from '../types';
+import { PanZoom, RoiState, Size } from '../types';
 import { CommittedRoi, Roi } from '../types/Roi';
 
-import type { ReactRoiState, RoiReducerAction } from './roiReducer';
+import type { RoiReducerAction } from './roiReducer';
 
-export const roiStateContext = createContext<Pick<
-  ReactRoiState,
-  'mode' | 'selectedRoi'
-> | null>(null);
+export const roiStateContext = createContext<RoiState | null>(null);
 
 export const roiDispatchContext =
   createContext<Dispatch<RoiReducerAction> | null>(null);
