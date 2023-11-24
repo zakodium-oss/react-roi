@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/zakodium-oss/react-roi/compare/v0.5.0...v0.6.0) (2023-11-24)
+
+
+### Features
+
+* pan without the alt key ([6647c62](https://github.com/zakodium-oss/react-roi/commit/6647c622785f3627a1d0a6e864c1079fe3eb59cc))
+
+
+### Bug Fixes
+
+* correct leaking event listener ([937d005](https://github.com/zakodium-oss/react-roi/commit/937d005a5680d62162a061c6b8d607285a2d5215))
+* use correct cursor during action after releasing the alt key ([5467213](https://github.com/zakodium-oss/react-roi/commit/54672135afa01becdf033816a5eb14845a2671f7))
+
 ## [0.5.0](https://github.com/zakodium-oss/react-roi/compare/v0.4.0...v0.5.0) (2023-11-23)
 
 
