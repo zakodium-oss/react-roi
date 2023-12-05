@@ -1,6 +1,6 @@
 {
   "name": "react-roi",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "types": "lib-esm/index.d.ts",
   "files": [
     "lib",

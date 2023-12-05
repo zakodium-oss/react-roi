@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/zakodium-oss/react-roi/compare/v0.6.0...v0.6.1) (2023-12-01)
+
+
+### Bug Fixes
+
+* make roi move sync with mouse ([#73](https://github.com/zakodium-oss/react-roi/issues/73)) ([b244c2c](https://github.com/zakodium-oss/react-roi/commit/b244c2ca624a18bd7b1953ab37ad17b0e4b5ff36))
+
 ## [0.6.0](https://github.com/zakodium-oss/react-roi/compare/v0.5.0...v0.6.0) (2023-11-24)
 
 
