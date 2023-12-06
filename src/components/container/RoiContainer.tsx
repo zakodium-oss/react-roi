@@ -1,6 +1,5 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { CSSProperties, ReactNode } from 'react';
-import { useKbsGlobal } from 'react-kbs';
 
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
@@ -35,29 +34,6 @@ export function RoiContainer({
       },
     });
   });
-
-  useKbsGlobal([
-    {
-      shortcut: ['delete', 'backspace'],
-      handler: (event) => {
-        if (event.isTrusted) {
-          roiDispatch({ type: 'REMOVE_ROI', payload: undefined });
-        }
-      },
-    },
-
-    {
-      shortcut: ['Escape'],
-      handler: (event) => {
-        event.preventDefault();
-        if (event.isTrusted) {
-          roiDispatch({
-            type: 'CANCEL_ACTION',
-          });
-        }
-      },
-    },
-  ]);
 
   return (
     <ContainerComponent

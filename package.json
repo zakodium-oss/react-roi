@@ -28,8 +28,7 @@
   "dependencies": {
     "@react-hook/resize-observer": "^1.2.6",
     "immer": "^10.0.2",
-    "react": "^18.2.0",
-    "react-kbs": "^2.1.1"
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "@playwright/experimental-ct-react": "^1.38.0",
