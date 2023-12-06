@@ -4,11 +4,11 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
+  TargetImage,
   useActions,
   useRoiState,
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
 
@@ -33,7 +33,7 @@ export function RemoveROI() {
       <Layout>
         <RemoveButton />
 
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />

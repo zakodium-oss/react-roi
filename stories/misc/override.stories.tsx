@@ -5,11 +5,11 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
+  TargetImage,
   useActions,
   useRoiState,
 } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
-import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 
 export default {
@@ -69,7 +69,7 @@ export function OverrideDefaultStyle() {
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
               getStyle={(roi, { isSelected, scaledSizes }) => ({
                 rectAttributes: {
@@ -113,7 +113,7 @@ export function WithIndividualStyles() {
       <RoiProvider initialConfig={{ rois: initialRois }}>
         <UpdateStyleButton />
 
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             getStyle={(roi, { isSelected }) => {
               const {
@@ -138,7 +138,7 @@ export function CustomLabelRender() {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             renderLabel={(roi, { isSelected }) => {
               if (isSelected) {

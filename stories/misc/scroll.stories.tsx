@@ -1,7 +1,6 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider } from '../../src';
-import { Image } from '../utils/Image';
+import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
 import { initialRois } from '../utils/initialRois';
 
@@ -14,7 +13,7 @@ export function Scroll() {
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <div style={{ height: 1000 }} />
       <Layout>
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
       </Layout>

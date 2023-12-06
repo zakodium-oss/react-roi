@@ -1,8 +1,13 @@
 import { Meta } from '@storybook/react';
 
-import { ResizeStrategy, RoiContainer, RoiList, RoiProvider } from '../../src';
+import {
+  ResizeStrategy,
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src';
 import { CommittedRoisButton } from '../utils/CommittedRoisButton';
-import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 import { initialRois } from '../utils/initialRois';
 import { useResetOnChange } from '../utils/useResetOnChange';
@@ -35,7 +40,7 @@ export function TallContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout fit>
         <div style={{ width: 300, height: 500 }}>
           <RoiContainer
-            target={<Image src="/cats-640x640.jpg" />}
+            target={<TargetImage src="/cats-640x640.jpg" />}
             style={{
               width: '100%',
               height: '100%',
@@ -64,7 +69,7 @@ export function WideContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout>
         <div style={{ width: 500, height: 300 }}>
           <RoiContainer
-            target={<Image src="/cats-640x640.jpg" />}
+            target={<TargetImage src="/cats-640x640.jpg" />}
             style={{ width: '100%', height: '100%', border: '1px solid red' }}
           >
             <RoiList />
@@ -88,7 +93,7 @@ export function SmallImage(props: { resizeStrategy: ResizeStrategy }) {
     >
       <Layout>
         <RoiContainer
-          target={<Image src="/cat-200x300.jpg" />}
+          target={<TargetImage src="/cat-200x300.jpg" />}
           style={{ width: 300, height: 400, border: '1px solid red' }}
         >
           <RoiList />
@@ -112,7 +117,7 @@ export function DynamicContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout>
         <RoiContainer
           style={{ maxWidth: '100%', height: 500, border: '1px solid red' }}
-          target={<Image src="/cats-640x640.jpg" />}
+          target={<TargetImage src="/cats-640x640.jpg" />}
         >
           <RoiList />
         </RoiContainer>

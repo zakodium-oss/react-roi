@@ -1,7 +1,12 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, useActions } from '../../src';
-import { Image } from '../utils/Image';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+  useActions,
+} from '../../src';
 import { Layout } from '../utils/Layout';
 
 export default {
@@ -40,7 +45,7 @@ export function CrashWithSameId() {
     <Layout>
       <RoiProvider>
         <CreateButton />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
       </RoiProvider>
