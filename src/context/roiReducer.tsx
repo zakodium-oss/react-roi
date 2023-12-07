@@ -93,6 +93,7 @@ export interface StartDrawPayload {
   event: MouseEvent | React.MouseEvent;
   containerBoundingRect: DOMRect;
   isPanZooming: boolean;
+  noUnselection?: boolean;
 }
 
 export type RoiReducerAction =

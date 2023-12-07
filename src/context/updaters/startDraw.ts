@@ -8,7 +8,7 @@ import { createRoi, isOverRoi } from '../../utilities/rois';
 import { ReactRoiState, StartDrawPayload } from '../roiReducer';
 
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
-  const { event, containerBoundingRect } = payload;
+  const { event, containerBoundingRect, noUnselection } = payload;
   const emptyRoi = createRoi(crypto.randomUUID(), draft.targetSize);
 
   if (payload.isPanZooming) {
@@ -48,7 +48,9 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
     }
     case 'select': {
       const isMouseOverRoi = isOverRoi(draft.rois, x, y);
-      draft.selectedRoi = undefined;
+      if (!noUnselection) {
+        draft.selectedRoi = undefined;
+      }
       if (!isMouseOverRoi) {
         draft.action = 'panning';
       }

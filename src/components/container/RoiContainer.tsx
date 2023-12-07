@@ -6,13 +6,17 @@ import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 
 import { ContainerComponent } from './ContainerComponent';
 
-interface RoiComponentProps {
+export interface RoiContainerProps {
   target?: JSX.Element;
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;
   id?: string;
   targetRef?: React.MutableRefObject<undefined>;
+  /**
+   * If true, the user won't be able to unselect the current ROI by clicking on the container
+   */
+  noUnselection?: boolean;
 }
 
 export function RoiContainer({
@@ -22,7 +26,8 @@ export function RoiContainer({
   style,
   className,
   id,
-}: RoiComponentProps) {
+  noUnselection,
+}: RoiContainerProps) {
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   useResizeObserver(targetRef, (data) => {
@@ -39,6 +44,7 @@ export function RoiContainer({
     <ContainerComponent
       id={id}
       target={target}
+      noUnselection={noUnselection}
       style={{
         ...style,
         visibility: panZoom.isReady ? 'visible' : 'hidden',
