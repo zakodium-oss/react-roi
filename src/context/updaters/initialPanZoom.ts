@@ -4,6 +4,7 @@ import { Size } from '../..';
 import { assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 
+// Initial values are set to 1 and not 0 to avoid division by 0
 export const initialSize: Size = {
   width: 1,
   height: 1,
@@ -12,11 +13,14 @@ export function isSizeObserved(data: {
   targetSize: Size;
   containerSize: Size;
 }) {
-  // Those are initialized to 0 and get updated by the resize observers
+  // Those are initialized to a fixed value and get updated by the resize observers
   // When both the size of the target and the container are set we can:
   // - Make the target visible
   // - Compute the initial transform which fits the target inside the container
-  return data.targetSize.width !== 1 || data.containerSize.width !== 1;
+  return (
+    data.targetSize.width !== initialSize.height ||
+    data.containerSize.width !== initialSize.width
+  );
 }
 export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
   if (!isSizeObserved(draft)) {
