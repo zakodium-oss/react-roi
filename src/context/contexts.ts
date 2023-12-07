@@ -4,6 +4,7 @@ import { PanZoom, RoiState, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import type { RoiReducerAction } from './roiReducer';
+import { initialSize } from './updaters/initialPanZoom';
 
 export const roiStateContext = createContext<RoiState | null>(null);
 
@@ -27,12 +28,12 @@ export interface PanZoomContext {
 
 export const panZoomContext = createContext<PanZoomContext>({
   targetSize: {
-    width: 0,
-    height: 0,
+    width: initialSize.width,
+    height: initialSize.height,
   },
   containerSize: {
-    width: 0,
-    height: 0,
+    width: initialSize.width,
+    height: initialSize.height,
   },
   panZoom: {
     scale: 1,
