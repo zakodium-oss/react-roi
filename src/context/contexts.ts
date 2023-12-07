@@ -1,6 +1,6 @@
 import { createContext, Dispatch, MutableRefObject } from 'react';
 
-import { PanZoom, RoiState, Size } from '../types';
+import { PanZoom, RoiState, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import type { RoiReducerAction } from './roiReducer';

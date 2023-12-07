@@ -1,9 +1,9 @@
 import { memo, useEffect } from 'react';
 
+import { RoiListProps } from '../..';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
-import { RoiListProps } from '../api';
 
 import { Box } from './Box';
 import { getScaledSizes } from './sizes';

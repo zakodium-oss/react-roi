@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useReducer, useRef } from 'react';
 
-import type { ResizeStrategy, RoiState } from '../types';
+import type { ResizeStrategy, RoiState } from '..';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 

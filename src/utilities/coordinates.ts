@@ -1,4 +1,4 @@
-import { Box, Size } from '../types';
+import { Box, Size } from '..';
 
 export type XCornerPosition = 'left' | 'right' | 'middle';
 export type YCornerPosition = 'top' | 'bottom' | 'middle';

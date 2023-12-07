@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Size } from '../../types';
+import { Size } from '../..';
 import { assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 

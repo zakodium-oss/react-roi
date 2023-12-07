@@ -1,6 +1,6 @@
 import { HTMLProps, MutableRefObject } from 'react';
 
-import { useTargetRef } from '../../hooks';
+import { useTargetRef } from '..';
 
 interface TargetImageProps extends Omit<HTMLProps<HTMLImageElement>, 'src'> {
   src: string;

@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { Point } from '../types';
+import { Point } from '..';
 import { Roi } from '../types/Roi';
 
 import { assertUnreachable } from './assert';

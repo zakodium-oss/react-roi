@@ -1,12 +1,11 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { CSSProperties, MutableRefObject, ReactNode, useEffect } from 'react';
 
-import { useRoiState } from '../../hooks';
+import { RoiAction, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { RoiAction, RoiMode } from '../../types';
 import { throttle } from '../../utilities/throttle';
 
 interface ContainerProps {

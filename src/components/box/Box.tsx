@@ -1,13 +1,11 @@
 import { CSSProperties } from 'react';
 
-import { useRoiState } from '../../hooks';
+import { RoiAction, RoiMode, useRoiState, RoiListProps } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { RoiAction, RoiMode } from '../../types';
 import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
-import { RoiListProps } from '../api';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
 import { getScaledSizes } from './sizes';
