@@ -50,6 +50,9 @@ export function useActions<T = unknown>() {
       removeRoi: (selectedRoi: string) => {
         roiDispatch({ type: 'REMOVE_ROI', payload: selectedRoi });
       },
+      selectRoi: (selectedRoi: string | null) => {
+        roiDispatch({ type: 'SELECT_ROI', payload: selectedRoi });
+      },
       setMode: (mode: 'select' | 'draw') =>
         roiDispatch({ type: 'SET_MODE', payload: mode }),
     };
