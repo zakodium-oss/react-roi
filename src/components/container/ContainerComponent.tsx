@@ -14,6 +14,7 @@ interface ContainerProps {
   style?: CSSProperties;
   className?: string;
   id?: string;
+  noUnselection?: boolean;
 }
 
 export function ContainerComponent({
@@ -22,6 +23,7 @@ export function ContainerComponent({
   style,
   className,
   id,
+  noUnselection,
 }: ContainerProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
@@ -110,6 +112,7 @@ export function ContainerComponent({
             event,
             containerBoundingRect,
             isPanZooming: event.altKey,
+            noUnselection,
           },
         });
       }}

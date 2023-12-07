@@ -21,3 +21,17 @@ export function InitialSelectedRoi() {
     </Layout>
   );
 }
+
+export function NoUnselection() {
+  return (
+    <Layout>
+      <RoiProvider
+        initialConfig={{ rois: initialRois, selectedRoiId: initialRois[2].id }}
+      >
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />} noUnselection>
+          <RoiList />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
+}
