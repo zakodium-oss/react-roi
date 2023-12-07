@@ -1,11 +1,12 @@
 import { CSSProperties, ReactNode, SVGAttributes } from 'react';
 
-import { useRoiState } from '../../hooks';
-import { useRois } from '../../hooks/useRois';
-import { Roi } from '../../types/Roi';
-import { assert } from '../../utilities/assert';
-import { RoiBox } from '../box/RoiBox';
-import { CornerSizeOptions } from '../box/sizes';
+import { useRoiState } from '..';
+import { useRois } from '../hooks/useRois';
+import { Roi } from '../types/Roi';
+import { assert } from '../utilities/assert';
+
+import { RoiBox } from './box/RoiBox';
+import { CornerSizeOptions } from './box/sizes';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;

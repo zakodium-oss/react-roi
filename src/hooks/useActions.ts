@@ -12,6 +12,15 @@ export function useActions<T = unknown>() {
 
   return useMemo(() => {
     return {
+      cancelAction: (event: KeyboardEvent) => {
+        event.preventDefault();
+
+        if (event.isTrusted) {
+          roiDispatch({
+            type: 'CANCEL_ACTION',
+          });
+        }
+      },
       zoom: (factor: number) => {
         if (!ref.current) return;
         const refBound = ref.current.getBoundingClientRect();

@@ -1,22 +1,19 @@
-import { MutableRefObject } from 'react';
+import { HTMLProps, MutableRefObject } from 'react';
 
-import { useTargetRef } from '../../src';
+import { useTargetRef } from '..';
 
-export function Image({
-  src,
-  style,
-}: {
+interface TargetImageProps extends Omit<HTMLProps<HTMLImageElement>, 'src'> {
   src: string;
-  style?: React.CSSProperties;
-}) {
+}
+
+export function TargetImage(props: TargetImageProps) {
+  const { style, ...otherProps } = props;
   const ref = useTargetRef() as MutableRefObject<HTMLImageElement>;
 
   return (
     <img
-      alt="story"
-      id="story-image"
       ref={ref}
-      src={src}
+      {...otherProps}
       // Pointer events is disabled to prevent the image to be draggable
       // block display so that the container fits the dimensions of the image
       style={{

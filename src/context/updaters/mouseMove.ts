@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Point } from '../../types';
+import { Point } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
 import { computeTotalPanZoom } from '../../utilities/panZoom';

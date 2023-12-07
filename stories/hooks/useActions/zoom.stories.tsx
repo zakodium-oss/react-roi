@@ -1,8 +1,13 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, useActions } from '../../../src';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+  useActions,
+} from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
 import { useResetOnChange } from '../../utils/useResetOnChange';
@@ -104,7 +109,9 @@ export function Zoom({ minZoom, maxZoom }: ZoomStoryProps) {
     >
       <Layout fit>
         <ZoomButton />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
       </Layout>

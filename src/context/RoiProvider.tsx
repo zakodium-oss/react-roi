@@ -1,7 +1,6 @@
 import { ReactNode, useMemo, useReducer, useRef } from 'react';
-import { KbsProvider } from 'react-kbs';
 
-import type { ResizeStrategy, RoiState } from '../types';
+import type { ResizeStrategy, RoiState } from '..';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 
@@ -107,20 +106,18 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   }, [panZoom, initialPanZoom, targetSize, containerSize]);
 
   return (
-    <KbsProvider>
-      <roiContainerRefContext.Provider value={containerRef}>
-        <panZoomContext.Provider value={panzoomContextValue}>
-          <roiDispatchContext.Provider value={dispatch}>
-            <roisContext.Provider value={rois}>
-              <committedRoisContext.Provider value={committedRois}>
-                <roiStateContext.Provider value={roiState}>
-                  {children}
-                </roiStateContext.Provider>
-              </committedRoisContext.Provider>
-            </roisContext.Provider>
-          </roiDispatchContext.Provider>
-        </panZoomContext.Provider>
-      </roiContainerRefContext.Provider>
-    </KbsProvider>
+    <roiContainerRefContext.Provider value={containerRef}>
+      <panZoomContext.Provider value={panzoomContextValue}>
+        <roiDispatchContext.Provider value={dispatch}>
+          <roisContext.Provider value={rois}>
+            <committedRoisContext.Provider value={committedRois}>
+              <roiStateContext.Provider value={roiState}>
+                {children}
+              </roiStateContext.Provider>
+            </committedRoisContext.Provider>
+          </roisContext.Provider>
+        </roiDispatchContext.Provider>
+      </panZoomContext.Provider>
+    </roiContainerRefContext.Provider>
   );
 }

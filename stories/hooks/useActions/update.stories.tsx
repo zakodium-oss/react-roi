@@ -4,12 +4,12 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
+  TargetImage,
   UpdateData,
   useActions,
   useRoiState,
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
 
@@ -49,7 +49,9 @@ export function Position() {
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <UpdateXYPositionButton />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />
@@ -78,7 +80,7 @@ export function Label() {
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <UpdateLabelButton />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
       </Layout>

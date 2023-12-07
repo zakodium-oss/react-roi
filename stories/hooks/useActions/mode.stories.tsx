@@ -6,10 +6,10 @@ import {
   RoiList,
   RoiMode,
   RoiProvider,
+  TargetImage,
   useActions,
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 
 export default {
@@ -40,7 +40,9 @@ export function ChangeMode() {
     <RoiProvider>
       <Layout>
         <ChangeModeButton />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />

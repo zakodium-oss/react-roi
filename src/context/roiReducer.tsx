@@ -1,13 +1,6 @@
 import { produce } from 'immer';
 
-import {
-  Box,
-  PanZoom,
-  ResizeStrategy,
-  RoiAction,
-  RoiMode,
-  Size,
-} from '../types';
+import { Box, PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';

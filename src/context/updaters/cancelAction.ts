@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Box } from '../../types';
+import { Box } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert } from '../../utilities/assert';
 import { denormalizeBox } from '../../utilities/coordinates';

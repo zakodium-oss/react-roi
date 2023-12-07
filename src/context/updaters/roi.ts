@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Box } from '../../types';
+import { Box } from '../..';
 import { CommittedRoi, Roi } from '../../types/Roi';
 import { denormalizeBox, normalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';

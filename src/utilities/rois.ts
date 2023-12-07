@@ -1,4 +1,4 @@
-import { Box, Size } from '../types';
+import { Box, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import { denormalizeBox, normalizeValue } from './coordinates';

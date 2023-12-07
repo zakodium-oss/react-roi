@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
+import { RoiState } from '..';
 import { roiStateContext } from '../context/contexts';
-import { RoiState } from '../types';
 
 export function useRoiState() {
   /**

@@ -1,9 +1,8 @@
 import { Meta } from '@storybook/react';
 import { useState } from 'react';
 
-import { RoiContainer, RoiList, RoiProvider } from '../../src';
+import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
-import { Image } from '../utils/Image';
 import { Layout } from '../utils/Layout';
 import { initialRois } from '../utils/initialRois';
 
@@ -30,7 +29,7 @@ export function ReadOnly() {
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <ReadOnlyButton onClick={() => setState(initialRois[0].id)} />
-        <RoiContainer target={<Image src="/barbara.jpg" />}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList getReadOnly={getReadOnly} />
         </RoiContainer>
       </Layout>

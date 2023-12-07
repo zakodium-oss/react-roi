@@ -6,9 +6,9 @@ import {
   RoiContainer,
   RoiList,
   RoiProvider,
+  TargetImage,
   useCommittedRois,
 } from '../../../src';
-import { Image } from '../../utils/Image';
 import { Layout } from '../../utils/Layout';
 import { initialRois } from '../../utils/initialRois';
 
@@ -18,7 +18,7 @@ export default {
     (Story) => (
       <RoiProvider initialConfig={{ rois: initialRois }}>
         <Layout>
-          <RoiContainer target={<Image src="/barbara.jpg" />}>
+          <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList />
           </RoiContainer>
           <Story />
