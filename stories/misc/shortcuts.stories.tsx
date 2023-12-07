@@ -35,13 +35,14 @@ export function Shortcuts() {
   ]);
 
   return (
-    <>
-      <div style={{ height: 1000 }} />
-      <Layout>
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList />
-        </RoiContainer>
-      </Layout>
-    </>
+    <Layout>
+      <p>
+        Try moving a ROI. And while still holding the ROI, press your Escape
+        button. The ROI&apos;s position will be reset
+      </p>
+      <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiList />
+      </RoiContainer>
+    </Layout>
   );
 }
