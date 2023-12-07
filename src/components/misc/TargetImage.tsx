@@ -7,13 +7,12 @@ interface TargetImageProps extends Omit<HTMLProps<HTMLImageElement>, 'src'> {
 }
 
 export function TargetImage(props: TargetImageProps) {
-  const { src, style, ...otherProps } = props;
+  const { style, ...otherProps } = props;
   const ref = useTargetRef() as MutableRefObject<HTMLImageElement>;
 
   return (
     <img
       ref={ref}
-      src={src}
       {...otherProps}
       // Pointer events is disabled to prevent the image to be draggable
       // block display so that the container fits the dimensions of the image
