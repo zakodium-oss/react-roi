@@ -12,7 +12,7 @@ export function useActions<T = unknown>() {
 
   return useMemo(() => {
     return {
-      cancelAction: (event: Event) => {
+      cancelAction: (event: KeyboardEvent) => {
         event.preventDefault();
 
         if (event.isTrusted) {
