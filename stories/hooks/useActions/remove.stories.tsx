@@ -33,7 +33,9 @@ export function RemoveROI() {
       <Layout>
         <RemoveButton />
 
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />

@@ -49,7 +49,9 @@ export function Position() {
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>
         <UpdateXYPositionButton />
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />

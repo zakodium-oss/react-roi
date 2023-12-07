@@ -40,7 +40,9 @@ export function AddROI() {
     <RoiProvider>
       <Layout>
         <CreateButton />
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
         <CommittedRoisButton />

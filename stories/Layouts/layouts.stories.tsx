@@ -40,7 +40,7 @@ export function TallContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout fit>
         <div style={{ width: 300, height: 500 }}>
           <RoiContainer
-            target={<TargetImage src="/cats-640x640.jpg" />}
+            target={<TargetImage id="story-image" src="/cats-640x640.jpg" />}
             style={{
               width: '100%',
               height: '100%',
@@ -69,7 +69,7 @@ export function WideContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout>
         <div style={{ width: 500, height: 300 }}>
           <RoiContainer
-            target={<TargetImage src="/cats-640x640.jpg" />}
+            target={<TargetImage id="story-image" src="/cats-640x640.jpg" />}
             style={{ width: '100%', height: '100%', border: '1px solid red' }}
           >
             <RoiList />
@@ -93,7 +93,7 @@ export function SmallImage(props: { resizeStrategy: ResizeStrategy }) {
     >
       <Layout>
         <RoiContainer
-          target={<TargetImage src="/cat-200x300.jpg" />}
+          target={<TargetImage id="story-image" src="/cat-200x300.jpg" />}
           style={{ width: 300, height: 400, border: '1px solid red' }}
         >
           <RoiList />
@@ -117,7 +117,7 @@ export function DynamicContainer(props: { resizeStrategy: ResizeStrategy }) {
       <Layout>
         <RoiContainer
           style={{ maxWidth: '100%', height: 500, border: '1px solid red' }}
-          target={<TargetImage src="/cats-640x640.jpg" />}
+          target={<TargetImage id="story-image" src="/cats-640x640.jpg" />}
         >
           <RoiList />
         </RoiContainer>

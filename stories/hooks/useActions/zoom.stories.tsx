@@ -109,7 +109,9 @@ export function Zoom({ minZoom, maxZoom }: ZoomStoryProps) {
     >
       <Layout fit>
         <ZoomButton />
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
           <RoiList />
         </RoiContainer>
       </Layout>
