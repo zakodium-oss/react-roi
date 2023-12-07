@@ -23,6 +23,7 @@ export interface RoiProviderInitialConfig<T> {
   };
   resizeStrategy?: ResizeStrategy;
   rois?: Array<CommittedRoi<T>>;
+  selectedRoiId?: string;
 }
 
 interface RoiProviderProps<T> {
@@ -39,7 +40,7 @@ function createInitialState<T>(
     resizeStrategy: initialConfig.resizeStrategy,
     targetSize: initialSize,
     containerSize: initialSize,
-    selectedRoi: undefined,
+    selectedRoi: initialConfig.selectedRoiId,
     committedRois: initialConfig.rois,
     rois: initialConfig.rois.map((committedRoi) =>
       createRoiFromCommittedRoi(committedRoi, initialSize),
@@ -61,6 +62,7 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   const {
     rois: initialRois = [],
     zoom: { min: minZoom = 1, max: maxZoom = 10 } = {},
+    selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;
   const roiInitialState = createInitialState<T>({
@@ -70,6 +72,7 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
       max: maxZoom,
     },
     resizeStrategy,
+    selectedRoiId,
   });
 
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
