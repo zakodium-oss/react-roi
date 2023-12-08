@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.0](https://github.com/zakodium-oss/react-roi/compare/v0.6.1...v0.7.0) (2023-12-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* there are no keyboard shortcuts anymore, those must be configured by the user
+
+### Features
+
+* add noUnselection prop to prevent unselect by clicking in the container outside of any ROI ([b42f894](https://github.com/zakodium-oss/react-roi/commit/b42f8941652581478d05df4659ef3892d103e6b7))
+* add selectRoi action ([8fa6c81](https://github.com/zakodium-oss/react-roi/commit/8fa6c81c720f5cb39a82dab607a8f5c06429a1e1))
+* initial selection of an ROI ([597133f](https://github.com/zakodium-oss/react-roi/commit/597133fa53606d0b2759b53e0a4772962265683b))
+* remove react-kbs, add cancelAction aciton  and add TargetImage component ([#76](https://github.com/zakodium-oss/react-roi/issues/76)) ([ee07373](https://github.com/zakodium-oss/react-roi/commit/ee0737337ffb7d0b3299007514ddd5f63d4960c9))
+
 ## [0.6.1](https://github.com/zakodium-oss/react-roi/compare/v0.6.0...v0.6.1) (2023-12-01)
 
 
