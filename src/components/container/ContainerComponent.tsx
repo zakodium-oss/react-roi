@@ -15,16 +15,13 @@ interface ContainerProps {
   className?: string;
   id?: string;
   noUnselection?: boolean;
+  lockZoom: boolean;
 }
 
-export function ContainerComponent({
-  target,
-  children,
-  style,
-  className,
-  id,
-  noUnselection,
-}: ContainerProps) {
+export function ContainerComponent(props: ContainerProps) {
+  const { target, children, style, className, id, noUnselection, lockZoom } =
+    props;
+
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
@@ -68,7 +65,7 @@ export function ContainerComponent({
     }, 25);
 
     function onWheel(event: WheelEvent) {
-      if (!event.altKey) return;
+      if (!event.altKey || lockZoom) return;
       event.preventDefault();
       event.stopPropagation();
       onZoom(event);
