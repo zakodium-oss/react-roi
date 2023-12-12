@@ -16,11 +16,20 @@ interface ContainerProps {
   id?: string;
   noUnselection?: boolean;
   lockZoom: boolean;
+  lockPan: boolean;
 }
 
 export function ContainerComponent(props: ContainerProps) {
-  const { target, children, style, className, id, noUnselection, lockZoom } =
-    props;
+  const {
+    target,
+    children,
+    style,
+    className,
+    id,
+    noUnselection,
+    lockZoom,
+    lockPan,
+  } = props;
 
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
@@ -94,7 +103,12 @@ export function ContainerComponent(props: ContainerProps) {
         overflow: 'hidden',
         margin: 0,
         padding: 0,
-        cursor: getCursor(roiState.mode, isAltKeyDown, roiState.action),
+        cursor: getCursor(
+          roiState.mode,
+          isAltKeyDown,
+          roiState.action,
+          lockPan,
+        ),
         userSelect: 'none',
       }}
       className={className}
@@ -109,6 +123,7 @@ export function ContainerComponent(props: ContainerProps) {
             event,
             containerBoundingRect,
             isPanZooming: event.altKey,
+            lockPan,
             noUnselection,
           },
         });
@@ -141,7 +156,14 @@ export function ContainerComponent(props: ContainerProps) {
   );
 }
 
-function getCursor(mode: RoiMode, altKey: boolean, action: RoiAction) {
+function getCursor(
+  mode: RoiMode,
+  altKey: boolean,
+  action: RoiAction,
+  lockPan: boolean,
+) {
+  if (lockPan) return 'default';
+
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
@@ -149,6 +171,7 @@ function getCursor(mode: RoiMode, altKey: boolean, action: RoiAction) {
       return 'grab';
     }
   }
+
   if (altKey) {
     return 'grab';
   }

@@ -14,6 +14,7 @@ export interface RoiContainerProps {
   id?: string;
   targetRef?: React.MutableRefObject<undefined>;
   lockZoom?: boolean;
+  lockPan?: boolean;
   /**
    * If true, the user won't be able to unselect the current ROI by clicking on the container
    */
@@ -30,6 +31,7 @@ export function RoiContainer(props: RoiContainerProps) {
     id,
     noUnselection,
     lockZoom = false,
+    lockPan = false,
   } = props;
 
   const roiDispatch = useRoiDispatch();
@@ -48,6 +50,7 @@ export function RoiContainer(props: RoiContainerProps) {
   return (
     <ContainerComponent
       lockZoom={lockZoom}
+      lockPan={lockPan}
       id={id}
       target={target}
       noUnselection={noUnselection}
