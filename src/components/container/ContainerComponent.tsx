@@ -82,7 +82,7 @@ export function ContainerComponent(props: ContainerProps) {
       document.removeEventListener('mouseup', onMouseUp);
       containerElement.removeEventListener('wheel', onWheel);
     };
-  }, [roiDispatch, ref]);
+  }, [roiDispatch, ref, lockZoom]);
 
   return (
     <div
