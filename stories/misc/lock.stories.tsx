@@ -8,7 +8,7 @@ export default {
   title: 'Misc',
 } as Meta;
 
-export function DisableZoom() {
+export function LockZoom() {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>
@@ -20,7 +20,7 @@ export function DisableZoom() {
   );
 }
 
-export function DisablePan() {
+export function LockPan() {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>

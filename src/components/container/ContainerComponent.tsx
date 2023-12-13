@@ -162,7 +162,7 @@ function getCursor(
   action: RoiAction,
   lockPan: boolean,
 ) {
-  if (lockPan) return 'default';
+  if (mode !== 'draw' && lockPan) return 'default';
 
   if (action !== 'idle') {
     if (action === 'drawing') {

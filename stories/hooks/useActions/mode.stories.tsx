@@ -41,6 +41,8 @@ export function ChangeMode() {
       <Layout>
         <ChangeModeButton />
         <RoiContainer
+          lockPan
+          lockZoom
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList />
