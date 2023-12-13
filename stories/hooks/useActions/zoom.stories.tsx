@@ -31,20 +31,52 @@ export default {
         step: 0.1,
       },
     },
+    spaceAroundTarget: {
+      control: {
+        type: 'number',
+        min: 0,
+        max: 1,
+        step: 0.1,
+      },
+    },
+    containerWidth: {
+      control: 'number',
+    },
+    containerHeight: {
+      control: 'number',
+    },
   },
   args: {
     minZoom: 0.1,
     maxZoom: 20,
+    spaceAroundTarget: 0.5,
+    containerWidth: 500,
+    containerHeight: 500,
   },
 } as Meta;
 
 interface ZoomStoryProps {
   minZoom: number;
   maxZoom: number;
+  spaceAroundTarget: number;
+  containerWidth: number;
+  containerHeight: number;
 }
 
-export function Zoom({ minZoom, maxZoom }: ZoomStoryProps) {
-  const keyId = useResetOnChange([minZoom, maxZoom]);
+export function Zoom({
+  minZoom,
+  maxZoom,
+  spaceAroundTarget,
+  containerWidth,
+  containerHeight,
+}: ZoomStoryProps) {
+  const keyId = useResetOnChange([
+    minZoom,
+    maxZoom,
+    spaceAroundTarget,
+    containerWidth,
+    containerHeight,
+  ]);
   function ZoomButton() {
     const { zoom } = useActions();
 
@@ -104,12 +136,18 @@ export function Zoom({ minZoom, maxZoom }: ZoomStoryProps) {
         zoom: {
           min: minZoom,
           max: maxZoom,
+          spaceAroundTarget,
         },
       }}
     >
       <Layout fit>
         <ZoomButton />
         <RoiContainer
+          style={{
+            width: containerWidth,
+            height: containerHeight,
+            border: '2px red solid',
+          }}
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList />

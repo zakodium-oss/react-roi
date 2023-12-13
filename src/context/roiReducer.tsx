@@ -21,6 +21,7 @@ import { resetZoomAction, zoomAction } from './updaters/zoom';
 interface ZoomDomain {
   min: number;
   max: number;
+  spaceAroundTarget: number;
 }
 
 export interface ReactRoiState<T = unknown> {
