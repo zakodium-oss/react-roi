@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Size } from '../..';
+import { Size } from '../../types/utils';
 import { assertUnreachable } from '../../utilities/assert';
 import { ReactRoiState } from '../roiReducer';
 
@@ -26,6 +26,7 @@ export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
   if (!isSizeObserved(draft)) {
     return;
   }
+
   switch (draft.resizeStrategy) {
     case 'contain':
       updateInitialPanZoomContain(draft);
@@ -97,7 +98,6 @@ function updateInitialPanZoomContain(draft: Draft<ReactRoiState>) {
 function updateInitialPanZoomCenter(draft: Draft<ReactRoiState>) {
   const { targetSize, containerSize, initialPanZoom } = draft;
   draft.initialPanZoom.translation = [
-    // 0, 0,
     (containerSize.width - initialPanZoom.scale * targetSize.width) / 2,
     (containerSize.height - initialPanZoom.scale * targetSize.height) / 2,
   ];

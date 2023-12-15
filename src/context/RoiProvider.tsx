@@ -18,8 +18,23 @@ import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
 
 export interface RoiProviderInitialConfig<T> {
   zoom?: {
+    /**
+     * The minimum zoom level allowed.
+     * @default 1
+     */
     min: number;
+    /**
+     * The maximum zoom level allowed.
+     * @default 10
+     */
     max: number;
+    /**
+     * When zooming and panning the target, some of the empty space around the target can become visible within the container.
+     * This option controls how much of that space is allowed to be visible, expressed as a number between 0 and 1
+     * which represents the percentage of the container's available space.
+     * @default 0.5
+     */
+    spaceAroundTarget?: number;
   };
   resizeStrategy?: ResizeStrategy;
   rois?: Array<CommittedRoi<T>>;
@@ -31,8 +46,12 @@ interface RoiProviderProps<T> {
   initialConfig?: RoiProviderInitialConfig<T>;
 }
 
+type CreateInitialConfigParam<T> = Required<RoiProviderInitialConfig<T>> & {
+  zoom: Required<RoiProviderInitialConfig<T>['zoom']>;
+};
+
 function createInitialState<T>(
-  initialConfig: Required<RoiProviderInitialConfig<T>>,
+  initialConfig: CreateInitialConfigParam<T>,
 ): ReactRoiState<T> {
   return {
     mode: 'select',
@@ -61,15 +80,16 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   const { children, initialConfig = {} } = props;
   const {
     rois: initialRois = [],
-    zoom: { min: minZoom = 1, max: maxZoom = 10 } = {},
+    zoom: { min = 1, max = 10, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;
   const roiInitialState = createInitialState<T>({
     rois: initialRois,
     zoom: {
-      min: minZoom,
-      max: maxZoom,
+      min,
+      max,
+      spaceAroundTarget,
     },
     resizeStrategy,
     selectedRoiId,

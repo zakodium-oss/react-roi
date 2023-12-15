@@ -1,6 +1,8 @@
 import { applyInverseX, applyInverseY } from '../../utilities/panZoom';
 import { ReactRoiState, ZoomPayload } from '../roiReducer';
 
+import { rectifyPanZoom } from './rectifyPanZoom';
+
 export function zoomAction(draft: ReactRoiState, zoom: ZoomPayload) {
   const { min: minZoom, max: maxZoom } = draft.zoomDomain;
   const { scale: zoomScale, refBoundingClientRect, clientX, clientY } = zoom;
@@ -24,6 +26,8 @@ export function zoomAction(draft: ReactRoiState, zoom: ZoomPayload) {
   //     translation_new = (scale - scale_new) * originalX + translation
   translation[0] = (scale - scaleNew) * originalX + translation[0];
   translation[1] = (scale - scaleNew) * originalY + translation[1];
+
+  rectifyPanZoom(draft);
 }
 
 export function resetZoomAction(draft: ReactRoiState) {

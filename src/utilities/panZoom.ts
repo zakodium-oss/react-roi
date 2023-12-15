@@ -10,6 +10,14 @@ export function applyInverseY(panzoom: PanZoom, y: number) {
   return (y - panzoom.translation[1]) / panzoom.scale;
 }
 
+export function applyTransformX(panzoom: PanZoom, x: number) {
+  return panzoom.scale * x + panzoom.translation[0];
+}
+
+export function applyTransformY(panzoom: PanZoom, y: number) {
+  return panzoom.scale * y + panzoom.translation[1];
+}
+
 /**
  * Multiplies the initial transform with the zoom transform
  **/

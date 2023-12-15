@@ -6,6 +6,8 @@ import { assert, assertUnreachable } from '../../utilities/assert';
 import { computeTotalPanZoom } from '../../utilities/panZoom';
 import { ReactRoiState } from '../roiReducer';
 
+import { rectifyPanZoom } from './rectifyPanZoom';
+
 export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
   switch (draft.action) {
     case 'idle':
@@ -13,6 +15,7 @@ export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
     case 'panning':
       draft.panZoom.translation[0] += event.movementX;
       draft.panZoom.translation[1] += event.movementY;
+      rectifyPanZoom(draft);
       return;
     case 'moving':
     case 'drawing':
