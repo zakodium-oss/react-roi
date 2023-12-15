@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/zakodium-oss/react-roi/compare/v0.7.0...v0.8.0) (2023-12-15)
+
+
+### Features
+
+* add lockZoom & lockPan ([#86](https://github.com/zakodium-oss/react-roi/issues/86)) ([ea7577f](https://github.com/zakodium-oss/react-roi/commit/ea7577f7dc4dd9e16044ed9ca8ac2a47d5026335))
+* add spaceAroundTarget zoom option ([#87](https://github.com/zakodium-oss/react-roi/issues/87)) ([280ea22](https://github.com/zakodium-oss/react-roi/commit/280ea22855ef07d521a9524023179154700092c5))
+
 ## [0.7.0](https://github.com/zakodium-oss/react-roi/compare/v0.6.1...v0.7.0) (2023-12-08)
 
 
