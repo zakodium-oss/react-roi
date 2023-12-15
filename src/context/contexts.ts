@@ -8,6 +8,16 @@ import { initialSize } from './updaters/initialPanZoom';
 
 export const roiStateContext = createContext<RoiState | null>(null);
 
+export interface LockContext {
+  lockPan: boolean;
+  lockZoom: boolean;
+}
+
+export const lockContext = createContext<LockContext>({
+  lockPan: false,
+  lockZoom: false,
+});
+
 export const roiDispatchContext =
   createContext<Dispatch<RoiReducerAction> | null>(null);
 

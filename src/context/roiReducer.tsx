@@ -94,6 +94,7 @@ export interface StartDrawPayload {
   containerBoundingRect: DOMRect;
   isPanZooming: boolean;
   noUnselection?: boolean;
+  lockPan: boolean;
 }
 
 export type RoiReducerAction =
