@@ -11,11 +11,13 @@ export default {
 export function LockZoom() {
   return (
     <Layout>
-      <RoiProvider initialConfig={{ rois: initialRois }}>
-        <RoiContainer lockZoom target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList />
-        </RoiContainer>
-      </RoiProvider>
+      <div style={{ width: 300, height: 500 }}>
+        <RoiProvider initialConfig={{ rois: initialRois }}>
+          <RoiContainer lockZoom target={<TargetImage src="/barbara.jpg" />}>
+            <RoiList />
+          </RoiContainer>
+        </RoiProvider>
+      </div>
     </Layout>
   );
 }
@@ -23,11 +25,13 @@ export function LockZoom() {
 export function LockPan() {
   return (
     <Layout>
-      <RoiProvider initialConfig={{ rois: initialRois }}>
-        <RoiContainer lockPan target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList />
-        </RoiContainer>
-      </RoiProvider>
+      <div style={{ width: 300, height: 500 }}>
+        <RoiProvider initialConfig={{ rois: initialRois }}>
+          <RoiContainer lockPan target={<TargetImage src="/barbara.jpg" />}>
+            <RoiList />
+          </RoiContainer>
+        </RoiProvider>
+      </div>
     </Layout>
   );
 }

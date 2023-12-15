@@ -1,7 +1,8 @@
 import { CSSProperties } from 'react';
 
-import { RoiAction, RoiMode, useRoiState, RoiListProps } from '../..';
+import { RoiAction, RoiListProps, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
+import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
@@ -39,6 +40,7 @@ export function Box({
   });
 
   const clipPathId = `within-roi-${roi.id}`;
+  const { lockPan } = useLockContext();
 
   return (
     <svg
@@ -52,6 +54,7 @@ export function Box({
           isReadOnly,
           isAltKeyDown,
           roiState.action,
+          lockPan,
         ),
         ...style,
       }}
@@ -105,6 +108,7 @@ function getCursor(
   readOnly: boolean,
   isAltKeyDown: boolean,
   action: RoiAction,
+  lockPan: boolean,
 ): CSSProperties['cursor'] {
   if (action !== 'idle') {
     if (action === 'drawing') {
@@ -112,10 +116,19 @@ function getCursor(
     } else if (action === 'moving') {
       return 'move';
     } else if (action === 'panning') {
-      return 'grabbing';
+      return 'grab';
     }
   }
-  if (isAltKeyDown) return 'grab';
-  if (readOnly) return 'default';
+
+  if (isAltKeyDown && !lockPan) return 'grab';
+
+  if (readOnly) {
+    if (!isAltKeyDown && !lockPan && mode === 'draw') {
+      return 'crosshair';
+    } else {
+      return 'default';
+    }
+  }
+
   return mode === 'draw' ? 'crosshair' : 'move';
 }

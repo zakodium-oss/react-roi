@@ -1,7 +1,14 @@
 import useResizeObserver from '@react-hook/resize-observer';
-import { CSSProperties, MutableRefObject, ReactNode, useEffect } from 'react';
+import {
+  CSSProperties,
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useMemo,
+} from 'react';
 
 import { RoiAction, RoiMode, useRoiState } from '../..';
+import { LockContext, lockContext } from '../../context/contexts';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
@@ -93,66 +100,72 @@ export function ContainerComponent(props: ContainerProps) {
     };
   }, [roiDispatch, ref, lockZoom]);
 
+  const lockContextValue = useMemo<LockContext>(() => {
+    return { lockPan, lockZoom };
+  }, [lockPan, lockZoom]);
+
   return (
-    <div
-      id={id}
-      ref={ref}
-      style={{
-        ...style,
-        position: 'relative',
-        overflow: 'hidden',
-        margin: 0,
-        padding: 0,
-        cursor: getCursor(
-          roiState.mode,
-          isAltKeyDown,
-          roiState.action,
-          lockPan,
-        ),
-        userSelect: 'none',
-      }}
-      className={className}
-      onDoubleClick={() => {
-        roiDispatch({ type: 'RESET_ZOOM' });
-      }}
-      onMouseDown={(event) => {
-        const containerBoundingRect = ref.current.getBoundingClientRect();
-        roiDispatch({
-          type: 'START_DRAW',
-          payload: {
-            event,
-            containerBoundingRect,
-            isPanZooming: event.altKey,
-            lockPan,
-            noUnselection,
-          },
-        });
-      }}
-    >
+    <lockContext.Provider value={lockContextValue}>
       <div
+        id={id}
+        ref={ref}
         style={{
-          transform: panZoomTransform,
-          transformOrigin: '0 0',
+          ...style,
+          position: 'relative',
+          overflow: 'hidden',
+          margin: 0,
+          padding: 0,
+          cursor: getCursor(
+            roiState.mode,
+            isAltKeyDown,
+            roiState.action,
+            lockPan,
+          ),
+          userSelect: 'none',
+        }}
+        className={className}
+        onDoubleClick={() => {
+          roiDispatch({ type: 'RESET_ZOOM' });
+        }}
+        onMouseDown={(event) => {
+          const containerBoundingRect = ref.current.getBoundingClientRect();
+          roiDispatch({
+            type: 'START_DRAW',
+            payload: {
+              event,
+              containerBoundingRect,
+              isPanZooming: event.altKey,
+              lockPan,
+              noUnselection,
+            },
+          });
         }}
       >
-        {target}
-
         <div
           style={{
-            userSelect: 'none',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            margin: 0,
-            padding: 0,
-            top: 0,
-            left: 0,
+            transform: panZoomTransform,
+            transformOrigin: '0 0',
           }}
         >
-          {children}
+          {target}
+
+          <div
+            style={{
+              userSelect: 'none',
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              margin: 0,
+              padding: 0,
+              top: 0,
+              left: 0,
+            }}
+          >
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </lockContext.Provider>
   );
 }
 
@@ -161,18 +174,23 @@ function getCursor(
   altKey: boolean,
   action: RoiAction,
   lockPan: boolean,
-) {
-  if (mode !== 'draw' && lockPan) return 'default';
-
+): CSSProperties['cursor'] {
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
     } else if (action === 'panning') {
       return 'grab';
+    } else {
+      // action === resizing || action === moving
+      // In this case the cursor set on the box has the priority.
+      // Because it's a child element [See: getCursor from Box.ts]
+      return 'auto';
     }
+  } else if (mode === 'select' && lockPan) {
+    return 'default';
   }
 
-  if (altKey) {
+  if (altKey && !lockPan) {
     return 'grab';
   }
 
