@@ -80,7 +80,7 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   const { children, initialConfig = {} } = props;
   const {
     rois: initialRois = [],
-    zoom: { min = 1, max = 10, spaceAroundTarget = 0.5 } = {},
+    zoom: { min = 1, max = 20, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;

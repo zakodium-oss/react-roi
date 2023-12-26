@@ -1,6 +1,12 @@
 import { CSSProperties } from 'react';
 
-import { RoiAction, RoiListProps, RoiMode, useRoiState } from '../..';
+import {
+  CommittedBox,
+  RoiAction,
+  RoiListProps,
+  RoiMode,
+  useRoiState,
+} from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -42,13 +48,15 @@ export function Box({
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
 
+  const flooredBox = floorRoi(roi);
+
   return (
     <svg
       style={{
         display: 'block',
         overflow: 'visible',
-        width: roi.width,
-        height: roi.height,
+        width: flooredBox.width,
+        height: flooredBox.height,
         cursor: getCursor(
           roiState.mode,
           isReadOnly,
@@ -58,7 +66,7 @@ export function Box({
         ),
         ...style,
       }}
-      viewBox={`${roi.x} ${roi.y} ${roi.width} ${roi.height}`}
+      viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
       className={className}
       onMouseDown={(event) => {
         if (event.altKey || isReadOnly) {
@@ -71,6 +79,7 @@ export function Box({
             id: roi.id,
           },
         });
+
         if (roiState.mode === 'select') {
           // By preventing the event to fire on the container, we prevent
           // the drawing of a new ROI to start.
@@ -79,18 +88,23 @@ export function Box({
       }}
     >
       <clipPath id={clipPathId}>
-        <rect x={roi.x} y={roi.y} width={roi.width} height={roi.height} />
+        <rect
+          x={flooredBox.x}
+          y={flooredBox.y}
+          width={flooredBox.width}
+          height={flooredBox.height}
+        />
       </clipPath>
       <rect
         clipPath={`url(#${clipPathId})`}
-        x={roi.x}
-        y={roi.y}
-        width={roi.width}
-        height={roi.height}
+        x={flooredBox.x}
+        y={flooredBox.y}
+        width={flooredBox.width}
+        height={flooredBox.height}
         {...styles.rectAttributes}
       />
       {isSelected &&
-        getAllCorners(roi).map((corner) => (
+        getAllCorners(flooredBox).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}
@@ -131,4 +145,17 @@ function getCursor(
   }
 
   return mode === 'draw' ? 'crosshair' : 'move';
+}
+
+function floorRoi(roi: Roi): CommittedBox {
+  const x1 = Math.floor(roi.x1);
+  const y1 = Math.floor(roi.y1);
+  const x2 = Math.floor(roi.x2);
+  const y2 = Math.floor(roi.y2);
+  return {
+    x: x1,
+    width: x2 - x1,
+    y: y1,
+    height: y2 - y1,
+  };
 }

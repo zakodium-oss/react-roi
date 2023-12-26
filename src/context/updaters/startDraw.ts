@@ -34,10 +34,10 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
           yAxisCorner: 'top',
         },
 
-        x,
-        y,
-        width: 0,
-        height: 0,
+        x1: x,
+        y1: y,
+        x2: x,
+        y2: y,
 
         data: undefined,
       };

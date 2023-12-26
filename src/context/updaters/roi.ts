@@ -1,16 +1,16 @@
 import { Draft } from 'immer';
 
-import { Box } from '../..';
+import { Box, CommittedBox } from '../..';
 import { CommittedRoi, Roi } from '../../types/Roi';
 import { denormalizeBox, normalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';
 
-function boundRoi<T extends Box>(
+function boundRoi<T extends CommittedBox>(
   roi: T,
   actionType: Roi['action']['type'],
-): Box {
+): CommittedBox {
   // Bound points and recalculate width and height
-  const result: Box = {
+  const result: CommittedBox = {
     x: roi.x,
     y: roi.y,
     width: roi.width,
@@ -68,7 +68,7 @@ export function updateCommitedRoiPosition(
       denormalizeBox(committedRoi, draft.targetSize),
     );
   } else {
-    Object.assign<CommittedRoi, Box>(committedRoi, normalizedBox);
+    Object.assign<CommittedRoi, CommittedBox>(committedRoi, normalizedBox);
     Object.assign<Roi, Box>(
       roi,
       denormalizeBox(committedRoi, draft.targetSize),

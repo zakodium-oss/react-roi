@@ -19,10 +19,10 @@ export const initialRois: CommittedRoi[] = [
   },
   {
     id: '2222-3333-4444-5555',
-    x: 0,
-    y: 0.3,
-    width: 0.3,
-    height: 0.3,
+    x: 0.5,
+    y: 0.5,
+    width: 0.2,
+    height: 0.1,
     label: 'C',
   },
 ];

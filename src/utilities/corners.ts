@@ -1,9 +1,7 @@
 import { CSSProperties } from 'react';
 
-import { Point } from '..';
-import { Roi } from '../types/Roi';
+import { CommittedBox } from '..';
 
-import { assertUnreachable } from './assert';
 import { XCornerPosition, YCornerPosition } from './coordinates';
 
 export interface CornerData {
@@ -14,7 +12,7 @@ export interface CornerData {
   cy: number;
 }
 
-export function getAllCorners(roi: Roi): CornerData[] {
+export function getAllCorners(roi: CommittedBox): CornerData[] {
   const { x, y, width, height } = roi;
   return [
     {
@@ -74,42 +72,4 @@ export function getAllCorners(roi: Roi): CornerData[] {
       cy: y + height / 2,
     },
   ];
-}
-
-export function getCornerPoint(
-  roi: Roi,
-  xAxisCorner: XCornerPosition,
-  yAxisCorner: YCornerPosition,
-): Point {
-  return {
-    x: getXCornerValue(roi, xAxisCorner),
-    y: getYCornerValue(roi, yAxisCorner),
-  };
-}
-
-function getXCornerValue(roi: Roi, xAxisCorner: XCornerPosition) {
-  switch (xAxisCorner) {
-    case 'left':
-      return roi.x;
-    case 'middle':
-      return roi.x + roi.width / 2;
-      break;
-    case 'right':
-      return roi.x + roi.width;
-    default:
-      assertUnreachable(xAxisCorner);
-  }
-}
-
-function getYCornerValue(roi: Roi, yAxisCorner: YCornerPosition) {
-  switch (yAxisCorner) {
-    case 'top':
-      return roi.y;
-    case 'middle':
-      return roi.y + roi.height / 2;
-    case 'bottom':
-      return roi.y + roi.height;
-    default:
-      assertUnreachable(yAxisCorner);
-  }
 }

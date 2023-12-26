@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react';
 
-import { RoiListProps } from '../..';
+import { CommittedBox, RoiListProps } from '../..';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
@@ -20,7 +20,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { roi, getStyle, getReadOnly, isSelected, renderLabel } = props;
 
   const panzoom = usePanZoom();
-  const { x, y, width, height, id } = roi;
+  const { id } = roi;
   const isReadOnly = getReadOnly(roi);
 
   const scaledSizes = getScaledSizes(roi, panzoom);
@@ -31,16 +31,18 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     }
   }, [id, isReadOnly, roiDispatch]);
 
+  const box = floorRoi(roi);
+
   return (
     <>
       <div
         data-testid={roi.id}
         style={{
           position: 'absolute',
-          left: x,
-          top: y,
-          width,
-          height,
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height,
         }}
       >
         <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
@@ -49,10 +51,10 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
         data-testid={`label-${roi.id}`}
         style={{
           position: 'absolute',
-          left: x,
-          top: y,
-          width,
-          height,
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height,
           pointerEvents: 'none',
         }}
       >
@@ -63,3 +65,17 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
 }
 
 export const RoiBox = memo(RoiBoxInternal);
+
+function floorRoi(roi: Roi): CommittedBox {
+  console.log(`x1: ${roi.x1}, y1: ${roi.y1}, x2: ${roi.x2}, y2: ${roi.y2}\n`);
+  const x1 = Math.floor(roi.x1);
+  const y1 = Math.floor(roi.y1);
+  const x2 = Math.floor(roi.x2);
+  const y2 = Math.floor(roi.y2);
+  return {
+    x: x1,
+    width: x2 - x1,
+    y: y1,
+    height: y2 - y1,
+  };
+}

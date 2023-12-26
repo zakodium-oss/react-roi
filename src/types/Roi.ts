@@ -59,23 +59,23 @@ export interface Roi<TData = unknown> extends Box {
   /**
    * Left position of the ROI box in absolute units (px).
    */
-  x: number;
+  x1: number;
   /**
    * Top position of the ROI box in absolute units (px).
    */
-  y: number;
+  y1: number;
   /**
    * Width of the ROI box in absolute units (px).
    */
-  width: number;
+  x2: number;
   /**
    * Height of the ROI box in absolute units (px).
    */
-  height: number;
+  y2: number;
 }
 
 export interface CommittedRoi<TData = unknown>
-  extends Omit<Roi<TData>, 'action'> {
+  extends Omit<Roi<TData>, 'action' | 'x1' | 'x2' | 'y1' | 'y2'> {
   /**
    * Left position of the ROI box relatively to the viewport of the target. The value is in the [0, 1] domain.
    */

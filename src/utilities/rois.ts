@@ -1,9 +1,9 @@
-import { Box, Size } from '../index';
+import { Box, CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import { denormalizeBox, normalizeValue } from './coordinates';
 
-function createInitialBox(): Box {
+function createInitialCommittedBox(): CommittedBox {
   return {
     x: 0,
     y: 0,
@@ -19,7 +19,7 @@ export function createCommittedRoi<T>(
   return {
     id,
     label: '',
-    ...createInitialBox(),
+    ...createInitialCommittedBox(),
     ...options,
   };
 }
@@ -30,12 +30,12 @@ export function createRoi(
   options: Omit<Partial<Roi>, 'id'> = {},
 ): Roi {
   const committedRoi = createCommittedRoi(id, options);
+  const { x, y, width, height, ...otherRoiProps } = committedRoi;
   return {
-    ...committedRoi,
+    ...otherRoiProps,
     action: {
       type: 'idle',
     },
-    ...options,
     ...denormalizeBox(committedRoi, size),
   };
 }
@@ -47,10 +47,10 @@ export function createCommittedRoiFromRoi<T>(
   const { action, ...obj } = roi;
   return {
     ...obj,
-    x: normalizeValue(roi.x, size.width),
-    y: normalizeValue(roi.y, size.height),
-    width: normalizeValue(roi.width, size.width),
-    height: normalizeValue(roi.height, size.height),
+    x: normalizeValue(roi.x1, size.width),
+    y: normalizeValue(roi.y1, size.height),
+    width: normalizeValue(roi.x2 - roi.x1, size.width),
+    height: normalizeValue(roi.y2 - roi.y1, size.height),
   };
 }
 
@@ -58,7 +58,7 @@ export function createRoiFromCommittedRoi<T>(
   roi: CommittedRoi<T>,
   size: Size,
 ): Roi<T> {
-  const { ...otherRoiProps } = roi;
+  const { x, y, width, height, ...otherRoiProps } = roi;
   return {
     ...otherRoiProps,
     action: {
@@ -76,21 +76,16 @@ export function renormalizeRoiPosition(
   const wFactor = newSize.width / oldSize.width;
   const hFactor = newSize.height / oldSize.height;
   return {
-    x: position.x * wFactor,
-    y: position.y * hFactor,
-    width: position.width * wFactor,
-    height: position.height * hFactor,
+    x1: Math.floor(position.x1 * wFactor),
+    y1: Math.floor(position.y1 * hFactor),
+    x2: Math.floor(position.x2 * wFactor),
+    y2: Math.floor(position.y2 * hFactor),
   };
 }
 
 export function isOverRoi(rois: Roi[], x: number, y: number): boolean {
   for (const roi of rois) {
-    if (
-      x > roi.x &&
-      x < roi.x + roi.width &&
-      y > roi.y &&
-      y < roi.y + roi.height
-    ) {
+    if (x > roi.x1 && x < roi.x2 && y > roi.y1 && y < roi.y2) {
       return true;
     }
   }

@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
-import { Box } from '../..';
 import { Roi } from '../../types/Roi';
+import { Box } from '../../types/utils';
 import { assert } from '../../utilities/assert';
 import { denormalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';

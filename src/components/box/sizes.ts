@@ -15,7 +15,7 @@ export function getScaledSizes(
   roi: Roi,
   panZoom: PanZoomContext,
 ): CornerSizeOptions {
-  const minLength = Math.min(roi.width, roi.height);
+  const minLength = Math.min(roi.x2 - roi.x1, roi.y2 - roi.y1);
   const { handlerSize, handlerBorderWidth } = baseSize;
   const divider = panZoom.initialPanZoom.scale * panZoom.panZoom.scale;
   return {

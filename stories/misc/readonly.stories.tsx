@@ -2,7 +2,7 @@ import { Meta } from '@storybook/react';
 import { useState } from 'react';
 
 import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { CommittedRoi } from '../../src/types/Roi';
+import { Roi } from '../../src/types/Roi';
 import { Layout } from '../utils/Layout';
 import { initialRois } from '../utils/initialRois';
 
@@ -13,7 +13,7 @@ export default {
 export function ReadOnly() {
   const [state, setState] = useState<string | null>(null);
 
-  function getReadOnly(roi: CommittedRoi) {
+  function getReadOnly(roi: Roi) {
     return roi.id === state;
   }
 
