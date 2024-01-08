@@ -73,7 +73,7 @@ export function Box({
         });
         if (roiState.mode === 'select') {
           // By preventing the event to fire on the container, we prevent
-          // the drawing of a new ROI to start.
+          // the panning of a roi.
           event.stopPropagation();
         }
       }}
