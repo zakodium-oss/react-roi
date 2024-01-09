@@ -117,7 +117,7 @@ function getCursor(
     }
   }
 
-  if (isAltKeyDown && !lockPan && !readOnly) return 'grab';
+  if (isAltKeyDown && !lockPan) return 'grab';
 
   if (readOnly) {
     if (mode === 'draw') {
