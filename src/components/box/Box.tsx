@@ -65,17 +65,14 @@ export function Box({
           return;
         }
 
+        event.stopPropagation();
+
         roiDispatch({
           type: 'SELECT_BOX_AND_START_MOVE',
           payload: {
             id: roi.id,
           },
         });
-        if (roiState.mode === 'select') {
-          // By preventing the event to fire on the container, we prevent
-          // the panning of a roi.
-          event.stopPropagation();
-        }
       }}
     >
       <clipPath id={clipPathId}>
@@ -120,13 +117,17 @@ function getCursor(
     }
   }
 
-  if (isAltKeyDown && !lockPan) return 'grab';
+  if (isAltKeyDown && !lockPan && !readOnly) return 'grab';
 
   if (readOnly) {
-    if (!isAltKeyDown && !lockPan && mode === 'draw') {
-      return 'crosshair';
+    if (mode === 'draw') {
+      if (!isAltKeyDown && !lockPan) {
+        return 'crosshair';
+      } else {
+        return 'default';
+      }
     } else {
-      return 'default';
+      return lockPan ? 'default' : 'grab';
     }
   }
 
