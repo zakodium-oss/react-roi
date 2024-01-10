@@ -61,7 +61,7 @@ export function Box({
       viewBox={`${roi.x} ${roi.y} ${roi.width} ${roi.height}`}
       className={className}
       onMouseDown={(event) => {
-        if (event.altKey || isReadOnly) {
+        if (event.altKey || isReadOnly || roiState.mode === 'draw') {
           return;
         }
 
