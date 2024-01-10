@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/zakodium-oss/react-roi/compare/v0.8.0...v0.8.1) (2024-01-10)
+
+
+### Bug Fixes
+
+* allow to pan hover a readOnly roi and other edge cases ([#90](https://github.com/zakodium-oss/react-roi/issues/90)) ([a876b43](https://github.com/zakodium-oss/react-roi/commit/a876b43cba2f65e8cf57702a3cb82d175ea01069))
+
 ## [0.8.0](https://github.com/zakodium-oss/react-roi/compare/v0.7.0...v0.8.0) (2023-12-15)
 
 
