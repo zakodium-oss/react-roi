@@ -36,3 +36,28 @@ export function ReadOnly() {
     </RoiProvider>
   );
 }
+
+export function canPanThroughReadOnly() {
+  function getReadOnly(roi: CommittedRoi) {
+    return roi.id === initialRois[0].id;
+  }
+
+  function getStyle(roi: CommittedRoi) {
+    return {
+      rectAttributes: {
+        fill: roi.id === initialRois[0].id ? 'darkgreen' : 'red',
+        opacity: roi.id === initialRois[0].id ? 0.4 : 0.6,
+      },
+    };
+  }
+
+  return (
+    <RoiProvider initialConfig={{ rois: initialRois }}>
+      <Layout>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+          <RoiList getReadOnly={getReadOnly} getStyle={getStyle} />
+        </RoiContainer>
+      </Layout>
+    </RoiProvider>
+  );
+}

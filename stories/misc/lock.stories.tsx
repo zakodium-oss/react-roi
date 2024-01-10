@@ -28,7 +28,7 @@ export function LockPan() {
       <div style={{ width: 300, height: 500 }}>
         <RoiProvider initialConfig={{ rois: initialRois }}>
           <RoiContainer lockPan target={<TargetImage src="/barbara.jpg" />}>
-            <RoiList />
+            <RoiList getReadOnly={(roi) => roi.id === initialRois[2].id} />
           </RoiContainer>
         </RoiProvider>
       </div>
