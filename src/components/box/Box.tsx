@@ -69,9 +69,11 @@ export function Box({
       viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
       className={className}
       onMouseDown={(event) => {
-        if (event.altKey || isReadOnly) {
+        if (event.altKey || isReadOnly || roiState.mode === 'draw') {
           return;
         }
+
+        event.stopPropagation();
 
         roiDispatch({
           type: 'SELECT_BOX_AND_START_MOVE',
@@ -79,12 +81,6 @@ export function Box({
             id: roi.id,
           },
         });
-
-        if (roiState.mode === 'select') {
-          // By preventing the event to fire on the container, we prevent
-          // the drawing of a new ROI to start.
-          event.stopPropagation();
-        }
       }}
     >
       <clipPath id={clipPathId}>
@@ -137,10 +133,14 @@ function getCursor(
   if (isAltKeyDown && !lockPan) return 'grab';
 
   if (readOnly) {
-    if (!isAltKeyDown && !lockPan && mode === 'draw') {
-      return 'crosshair';
+    if (mode === 'draw') {
+      if (!isAltKeyDown && !lockPan) {
+        return 'crosshair';
+      } else {
+        return isAltKeyDown ? 'grab' : 'default';
+      }
     } else {
-      return 'default';
+      return lockPan ? 'default' : 'grab';
     }
   }
 

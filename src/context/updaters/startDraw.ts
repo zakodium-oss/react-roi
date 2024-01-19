@@ -4,7 +4,7 @@ import {
   applyInverseY,
   computeTotalPanZoom,
 } from '../../utilities/panZoom';
-import { createRoi, isOverRoi } from '../../utilities/rois';
+import { createRoi } from '../../utilities/rois';
 import { ReactRoiState, StartDrawPayload } from '../roiReducer';
 
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
@@ -47,13 +47,14 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       break;
     }
     case 'select': {
-      const isMouseOverRoi = isOverRoi(draft.rois, x, y);
       if (!noUnselection) {
         draft.selectedRoi = undefined;
       }
-      if (!isMouseOverRoi && !lockPan) {
+
+      if (!lockPan) {
         draft.action = 'panning';
       }
+
       break;
     }
     default:
