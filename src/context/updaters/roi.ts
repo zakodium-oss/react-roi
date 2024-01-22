@@ -1,20 +1,21 @@
 import { Draft } from 'immer';
 
-import { Box } from '../..';
+import { Box, CommittedBox, Size } from '../..';
 import { CommittedRoi, Roi } from '../../types/Roi';
 import { denormalizeBox, normalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';
 
-function boundRoi<T extends Box>(
-  roi: T,
+function boundRoi<T extends CommittedBox>(
+  committedBox: T,
+  targetSize: Size,
   actionType: Roi['action']['type'],
-): Box {
+): CommittedBox {
   // Bound points and recalculate width and height
-  const result: Box = {
-    x: roi.x,
-    y: roi.y,
-    width: roi.width,
-    height: roi.height,
+  const result: CommittedBox = {
+    x: committedBox.x,
+    y: committedBox.y,
+    width: committedBox.width,
+    height: committedBox.height,
   };
 
   if (actionType === 'drawing' || actionType === 'resizing') {
@@ -28,11 +29,11 @@ function boundRoi<T extends Box>(
     }
 
     // Cut if the ROI is outside the boundaries
-    if (result.height + result.y > 1) {
-      result.height = 1 - result.y;
+    if (result.height + result.y > targetSize.height) {
+      result.height = targetSize.height - result.y;
     }
-    if (result.width + result.x > 1) {
-      result.width = 1 - result.x;
+    if (result.width + result.x > targetSize.width) {
+      result.width = targetSize.width - result.x;
     }
   } else {
     // Move back inside the viewport if outside the boundaries
@@ -42,11 +43,11 @@ function boundRoi<T extends Box>(
     if (result.y < 0) {
       result.y = 0;
     }
-    if (result.x + result.width > 1) {
-      result.x = 1 - result.width;
+    if (result.x + result.width > targetSize.width) {
+      result.x = targetSize.width - result.width;
     }
-    if (result.y + result.height > 1) {
-      result.y = 1 - result.height;
+    if (result.y + result.height > targetSize.height) {
+      result.y = targetSize.height - result.height;
     }
   }
   return result;
@@ -58,20 +59,15 @@ export function updateCommitedRoiPosition(
   roi: Draft<Roi>,
 ) {
   const normalizedBox = boundRoi(
-    normalizeBox(roi, draft.targetSize),
+    normalizeBox(roi),
+    draft.targetSize,
     roi.action.type,
   );
   if (normalizedBox.height === 0 || normalizedBox.width === 0) {
     // Revert changes since the ROI is no longer visible
-    Object.assign<Roi, Box>(
-      roi,
-      denormalizeBox(committedRoi, draft.targetSize),
-    );
+    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi));
   } else {
-    Object.assign<CommittedRoi, Box>(committedRoi, normalizedBox);
-    Object.assign<Roi, Box>(
-      roi,
-      denormalizeBox(committedRoi, draft.targetSize),
-    );
+    Object.assign<CommittedRoi, CommittedBox>(committedRoi, normalizedBox);
+    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi));
   }
 }

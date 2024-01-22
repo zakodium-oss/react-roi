@@ -9,7 +9,7 @@ import {
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
-import { initialRois } from '../../utils/initialRois';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
   title: 'hooks/useActions',
@@ -17,6 +17,7 @@ export default {
 
 export function SelectRoi() {
   function SelectButtons() {
+    const initialRois = getInitialRois(320, 320);
     const { selectRoi } = useActions();
     const buttons = initialRois.map((roi) => {
       return (
@@ -42,7 +43,7 @@ export function SelectRoi() {
   }
 
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
       <Layout>
         <div style={{ display: 'flex', gap: 8 }}>
           <RoiContainer

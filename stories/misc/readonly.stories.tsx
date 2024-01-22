@@ -2,18 +2,19 @@ import { Meta } from '@storybook/react';
 import { useState } from 'react';
 
 import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { CommittedRoi } from '../../src/types/Roi';
+import { Roi } from '../../src/types/Roi';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
 } as Meta;
 
 export function ReadOnly() {
+  const initialRois = getInitialRois(320, 320);
   const [state, setState] = useState<string | null>(null);
 
-  function getReadOnly(roi: CommittedRoi) {
+  function getReadOnly(roi: Roi) {
     return roi.id === state;
   }
 
@@ -38,11 +39,12 @@ export function ReadOnly() {
 }
 
 export function canPanThroughReadOnly() {
-  function getReadOnly(roi: CommittedRoi) {
+  const initialRois = getInitialRois(320, 320);
+  function getReadOnly(roi: Roi) {
     return roi.id === initialRois[0].id;
   }
 
-  function getStyle(roi: CommittedRoi) {
+  function getStyle(roi: Roi) {
     return {
       rectAttributes: {
         fill: roi.id === initialRois[0].id ? 'darkgreen' : 'red',

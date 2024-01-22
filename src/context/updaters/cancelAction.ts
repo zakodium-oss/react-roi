@@ -1,7 +1,7 @@
 import { Draft } from 'immer';
 
-import { Box } from '../..';
 import { Roi } from '../../types/Roi';
+import { Box } from '../../types/utils';
 import { assert } from '../../utilities/assert';
 import { denormalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';
@@ -23,10 +23,7 @@ export function cancelAction(draft: Draft<ReactRoiState>) {
     // Revert to the previous state
     const committedRoi = draft.committedRois.find((r) => r.id === roi.id);
     assert(committedRoi);
-    Object.assign<Roi, Box>(
-      roi,
-      denormalizeBox(committedRoi, draft.targetSize),
-    );
+    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi));
   }
   draft.action = 'idle';
   roi.action = {

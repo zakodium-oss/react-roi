@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { Box, PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
+import { PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -8,7 +8,6 @@ import {
   createCommittedRoi,
   createRoi,
   createRoiFromCommittedRoi,
-  renormalizeRoiPosition,
 } from '../utilities/rois';
 
 import { cancelAction } from './updaters/cancelAction';
@@ -171,13 +170,6 @@ export function roiReducer(
         // Ignore if size is 0
         if (action.payload.width === 0 || action.payload.height === 0) return;
 
-        // Update absolute positions
-        draft.rois.forEach((roi) => {
-          Object.assign<Roi, Box>(
-            roi,
-            renormalizeRoiPosition(roi, draft.targetSize, action.payload),
-          );
-        });
         draft.targetSize = action.payload;
         updateInitialPanZoom(draft);
         break;
@@ -252,10 +244,7 @@ export function roiReducer(
           committedRois,
           updatedData,
         );
-        draft.rois[index] = createRoiFromCommittedRoi(
-          committedRois,
-          draft.targetSize,
-        );
+        draft.rois[index] = createRoiFromCommittedRoi(committedRois);
         break;
       }
 

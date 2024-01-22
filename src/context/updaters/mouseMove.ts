@@ -43,8 +43,10 @@ export function updateRoiBox(
     case 'idle':
       return;
     case 'moving':
-      roi.x += movementX;
-      roi.y += movementY;
+      roi.x1 += movementX;
+      roi.y1 += movementY;
+      roi.x2 += movementX;
+      roi.y2 += movementY;
       break;
     case 'resizing': {
       resize(draft, roi, movement);
@@ -67,24 +69,24 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   // Handle X axis
   switch (xAxisCorner) {
     case 'left': {
-      const newX = roi.x + movementX;
-      if (newX <= roi.x + roi.width) {
-        roi.x = newX;
-        roi.width -= movementX;
+      const newX = roi.x1 + movementX;
+      if (newX <= roi.x2) {
+        roi.x1 = newX;
       } else {
-        roi.x = roi.x + roi.width;
-        roi.width = newX - roi.x;
+        roi.x1 = roi.x2;
+        roi.x2 = newX;
         roi.action.xAxisCorner = 'right';
       }
       break;
     }
     case 'right': {
-      const newWidth = roi.width + movementX;
-      if (newWidth >= 0) {
-        roi.width = newWidth;
+      const newX = roi.x2 + movementX;
+
+      if (newX >= roi.x1) {
+        roi.x2 = newX;
       } else {
-        roi.x = roi.x + newWidth;
-        roi.width = -newWidth;
+        roi.x2 = roi.x1;
+        roi.x1 = newX;
         roi.action.xAxisCorner = 'left';
       }
       break;
@@ -100,24 +102,23 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   const yAxisCorner = roi.action.yAxisCorner;
   switch (yAxisCorner) {
     case 'top': {
-      const newX = roi.y + movementY;
-      if (newX <= roi.y + roi.height) {
-        roi.y = newX;
-        roi.height -= movementY;
+      const newY = roi.y1 + movementY;
+      if (newY <= roi.y2) {
+        roi.y1 = newY;
       } else {
-        roi.y = roi.y + roi.height;
-        roi.height = newX - roi.y;
+        roi.y1 = roi.y2;
+        roi.y2 = newY;
         roi.action.yAxisCorner = 'bottom';
       }
       break;
     }
     case 'bottom': {
-      const newWidth = roi.height + movementY;
-      if (newWidth >= 0) {
-        roi.height = newWidth;
+      const newY = roi.y2 + movementY;
+      if (newY >= roi.y1) {
+        roi.y2 = newY;
       } else {
-        roi.y = roi.y + newWidth;
-        roi.height = -newWidth;
+        roi.y2 = roi.y1;
+        roi.y1 = newY;
         roi.action.yAxisCorner = 'top';
       }
       break;

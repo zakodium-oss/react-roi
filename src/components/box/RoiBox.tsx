@@ -7,6 +7,7 @@ import { Roi } from '../../types/Roi';
 
 import { Box } from './Box';
 import { getScaledSizes } from './sizes';
+import { roiToFloorBox } from './util';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -20,7 +21,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const { roi, getStyle, getReadOnly, isSelected, renderLabel } = props;
 
   const panzoom = usePanZoom();
-  const { x, y, width, height, id } = roi;
+  const { id } = roi;
   const isReadOnly = getReadOnly(roi);
 
   const scaledSizes = getScaledSizes(roi, panzoom);
@@ -31,16 +32,18 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     }
   }, [id, isReadOnly, roiDispatch]);
 
+  const box = roiToFloorBox(roi);
+
   return (
     <>
       <div
         data-testid={roi.id}
         style={{
           position: 'absolute',
-          left: x,
-          top: y,
-          width,
-          height,
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height,
         }}
       >
         <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
@@ -49,10 +52,10 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
         data-testid={`label-${roi.id}`}
         style={{
           position: 'absolute',
-          left: x,
-          top: y,
-          width,
-          height,
+          left: box.x,
+          top: box.y,
+          width: box.width,
+          height: box.height,
           pointerEvents: 'none',
         }}
       >

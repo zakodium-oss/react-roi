@@ -2,13 +2,14 @@ import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
 } as Meta;
 
 export function InitialSelectedRoi() {
+  const initialRois = getInitialRois(320, 320);
   return (
     <Layout>
       <RoiProvider
@@ -23,6 +24,7 @@ export function InitialSelectedRoi() {
 }
 
 export function NoUnselection() {
+  const initialRois = getInitialRois(320, 320);
   return (
     <Layout>
       <RoiProvider

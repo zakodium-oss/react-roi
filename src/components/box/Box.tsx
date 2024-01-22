@@ -10,6 +10,7 @@ import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
 import { getScaledSizes } from './sizes';
+import { roiToFloorBox } from './util';
 
 export interface BoxAnnotationProps {
   roi: Roi;
@@ -42,13 +43,15 @@ export function Box({
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
 
+  const flooredBox = roiToFloorBox(roi);
+
   return (
     <svg
       style={{
         display: 'block',
         overflow: 'visible',
-        width: roi.width,
-        height: roi.height,
+        width: flooredBox.width,
+        height: flooredBox.height,
         cursor: getCursor(
           roiState.mode,
           isReadOnly,
@@ -58,7 +61,7 @@ export function Box({
         ),
         ...style,
       }}
-      viewBox={`${roi.x} ${roi.y} ${roi.width} ${roi.height}`}
+      viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
       className={className}
       onMouseDown={(event) => {
         if (event.altKey || isReadOnly || roiState.mode === 'draw') {
@@ -76,18 +79,23 @@ export function Box({
       }}
     >
       <clipPath id={clipPathId}>
-        <rect x={roi.x} y={roi.y} width={roi.width} height={roi.height} />
+        <rect
+          x={flooredBox.x}
+          y={flooredBox.y}
+          width={flooredBox.width}
+          height={flooredBox.height}
+        />
       </clipPath>
       <rect
         clipPath={`url(#${clipPathId})`}
-        x={roi.x}
-        y={roi.y}
-        width={roi.width}
-        height={roi.height}
+        x={flooredBox.x}
+        y={flooredBox.y}
+        width={flooredBox.width}
+        height={flooredBox.height}
         {...styles.rectAttributes}
       />
       {isSelected &&
-        getAllCorners(roi).map((corner) => (
+        getAllCorners(flooredBox).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}

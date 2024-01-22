@@ -2,7 +2,7 @@ import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
@@ -10,7 +10,7 @@ export default {
 
 export function Scroll() {
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
       <div style={{ height: 1000 }} />
       <Layout>
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>

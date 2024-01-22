@@ -18,9 +18,9 @@ export function endAction(draft: ReactRoiState) {
     updateCommitedRoiPosition(draft, commitedRoi, roi);
   } else {
     assert(roi.action.type === 'drawing');
-    const newCommitedRoi = createCommittedRoiFromRoi(roi, draft.targetSize);
-    updateCommitedRoiPosition(draft, newCommitedRoi, roi);
-    draft.committedRois.push(newCommitedRoi);
+    const newCommittedRoi = createCommittedRoiFromRoi(roi);
+    updateCommitedRoiPosition(draft, newCommittedRoi, roi);
+    draft.committedRois.push(newCommittedRoi);
   }
   roi.action = {
     type: 'idle',

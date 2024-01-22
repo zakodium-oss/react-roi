@@ -8,6 +8,7 @@ import {
   useActions,
 } from '../../src';
 import { Layout } from '../utils/Layout';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
@@ -16,16 +17,10 @@ export default {
 export function CrashWithSameId() {
   function CreateButton() {
     const { createRoi } = useActions();
-
+    const newRoi = getInitialRois(320, 320)[0];
+    newRoi.id = 'ROI 1';
     function onClick() {
-      createRoi({
-        id: '0000-0000-0000-0000',
-        x: 0,
-        y: 0,
-        width: 0.2,
-        height: 0.2,
-        label: 'A',
-      });
+      createRoi(newRoi);
     }
 
     return (
@@ -35,7 +30,7 @@ export function CrashWithSameId() {
           with the button.
         </p>
         <button type="button" onClick={onClick}>
-          Add a new ROI with id: 0000-0000-0000-0000
+          {'Add a new ROI with id "ROI 1"'}
         </button>
       </>
     );

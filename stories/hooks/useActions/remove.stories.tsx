@@ -10,7 +10,7 @@ import {
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
-import { initialRois } from '../../utils/initialRois';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
   title: 'hooks/useActions',
@@ -29,7 +29,7 @@ export function RemoveROI() {
   }
 
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
       <Layout>
         <RemoveButton />
 

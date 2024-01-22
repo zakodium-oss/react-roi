@@ -9,8 +9,8 @@ import {
   useActions,
   useRoiState,
 } from '../../src';
-import { CommittedRoi } from '../../src/types/Roi';
 import { Layout } from '../utils/Layout';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc/Style customization',
@@ -22,52 +22,16 @@ interface CustomColorData {
   textColor: CSSProperties['color'];
 }
 
-const initialRois: Array<CommittedRoi<CustomColorData>> = [
-  {
-    id: '0000-1111-2222-3333',
-    x: 0,
-    y: 0,
-    width: 0.2,
-    height: 0.2,
-    label: 'A',
-    data: {
-      textColor: 'white',
-      selectedBackgroundColor: 'darkgreen',
-      backgroundColor: 'green',
-    },
-  },
-  {
-    id: '1111-2222-3333-4444',
-    x: 0.3,
-    y: 0,
-    width: 0.2,
-    height: 0.2,
-    label: 'B',
-    data: {
-      textColor: 'white',
-      selectedBackgroundColor: 'darkgreen',
-      backgroundColor: 'green',
-    },
-  },
-  {
-    id: '2222-3333-4444-5555',
-    x: 0,
-    y: 0.3,
-    width: 0.3,
-    height: 0.3,
-    label: 'C',
-    data: {
-      textColor: 'white',
-      selectedBackgroundColor: 'darkgreen',
-      backgroundColor: 'green',
-    },
-  },
-];
+const initialRois = getInitialRois<CustomColorData>(320, 320, {
+  textColor: 'white',
+  selectedBackgroundColor: 'darkgreen',
+  backgroundColor: 'green',
+});
 
 export function OverrideDefaultStyle() {
   return (
     <Layout>
-      <RoiProvider initialConfig={{ rois: initialRois }}>
+      <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>

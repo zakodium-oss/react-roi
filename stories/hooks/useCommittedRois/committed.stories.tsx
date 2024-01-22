@@ -10,13 +10,13 @@ import {
   useCommittedRois,
 } from '../../../src';
 import { Layout } from '../../utils/Layout';
-import { initialRois } from '../../utils/initialRois';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
   title: 'hooks/useCommittedRois',
   decorators: [
     (Story) => (
-      <RoiProvider initialConfig={{ rois: initialRois }}>
+      <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
         <Layout>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList />
@@ -42,11 +42,11 @@ export function DisplayCommitedRois() {
           image.drawRectangle({
             strokeColor: [255, 255, 255],
             origin: {
-              column: Math.round(roi.x * image.width),
-              row: Math.round(roi.y * image.height),
+              column: roi.x,
+              row: roi.y,
             },
-            width: Math.round(roi.width * image.width),
-            height: Math.round(roi.height * image.height),
+            width: roi.width,
+            height: roi.height,
             out: image,
           });
         }

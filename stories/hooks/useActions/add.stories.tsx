@@ -9,6 +9,7 @@ import {
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
   title: 'hooks/useActions',
@@ -19,14 +20,10 @@ export function AddROI() {
     const { createRoi } = useActions();
 
     function onClick() {
-      createRoi({
-        id: Math.random().toString(36),
-        x: 0,
-        y: 0,
-        width: 0.2,
-        height: 0.2,
-        label: 'Hello, World!',
-      });
+      const newRoi = getInitialRois(320, 320)[0];
+      newRoi.id = Math.random().toString(36);
+      newRoi.label = 'Hello World!';
+      createRoi(newRoi);
     }
 
     return (

@@ -1,9 +1,9 @@
-import { Box, Size } from '../index';
+import { CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
-import { denormalizeBox, normalizeValue } from './coordinates';
+import { denormalizeBox, normalizeBox } from './coordinates';
 
-function createInitialBox(): Box {
+function createInitialCommittedBox(): CommittedBox {
   return {
     x: 0,
     y: 0,
@@ -19,7 +19,7 @@ export function createCommittedRoi<T>(
   return {
     id,
     label: '',
-    ...createInitialBox(),
+    ...createInitialCommittedBox(),
     ...options,
   };
 }
@@ -30,55 +30,31 @@ export function createRoi(
   options: Omit<Partial<Roi>, 'id'> = {},
 ): Roi {
   const committedRoi = createCommittedRoi(id, options);
-  return {
-    ...committedRoi,
-    action: {
-      type: 'idle',
-    },
-    ...options,
-    ...denormalizeBox(committedRoi, size),
-  };
-}
-
-export function createCommittedRoiFromRoi<T>(
-  roi: Roi<T>,
-  size: Size,
-): CommittedRoi<T> {
-  const { action, ...obj } = roi;
-  return {
-    ...obj,
-    x: normalizeValue(roi.x, size.width),
-    y: normalizeValue(roi.y, size.height),
-    width: normalizeValue(roi.width, size.width),
-    height: normalizeValue(roi.height, size.height),
-  };
-}
-
-export function createRoiFromCommittedRoi<T>(
-  roi: CommittedRoi<T>,
-  size: Size,
-): Roi<T> {
-  const { ...otherRoiProps } = roi;
+  const { x, y, width, height, ...otherRoiProps } = committedRoi;
   return {
     ...otherRoiProps,
     action: {
       type: 'idle',
     },
-    ...denormalizeBox(roi, size),
+    ...denormalizeBox(committedRoi),
   };
 }
 
-export function renormalizeRoiPosition(
-  position: Box,
-  oldSize: Size,
-  newSize: Size,
-): Box {
-  const wFactor = newSize.width / oldSize.width;
-  const hFactor = newSize.height / oldSize.height;
+export function createCommittedRoiFromRoi<T>(roi: Roi<T>): CommittedRoi<T> {
+  const { action, ...obj } = roi;
   return {
-    x: position.x * wFactor,
-    y: position.y * hFactor,
-    width: position.width * wFactor,
-    height: position.height * hFactor,
+    ...obj,
+    ...normalizeBox(roi),
+  };
+}
+
+export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
+  const { x, y, width, height, ...otherRoiProps } = roi;
+  return {
+    ...otherRoiProps,
+    action: {
+      type: 'idle',
+    },
+    ...denormalizeBox(roi),
   };
 }
