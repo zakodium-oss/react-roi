@@ -12,7 +12,7 @@ export function getInitialRois<T>(
       y: 0,
       width: Math.floor(0.2 * width),
       height: Math.floor(0.2 * height),
-      label: 'A',
+      label: 'Roi label A',
       data,
     },
     {
@@ -21,7 +21,7 @@ export function getInitialRois<T>(
       y: 0,
       width: Math.floor(0.2 * width),
       height: Math.floor(0.2 * height),
-      label: 'B',
+      label: 'Roi label B',
       data,
     },
     {
@@ -30,7 +30,7 @@ export function getInitialRois<T>(
       y: Math.floor(0.5 * height),
       width: Math.floor(0.2 * width),
       height: Math.floor(0.1 * height),
-      label: 'C',
+      label: 'Roi label C',
       data,
     },
   ];

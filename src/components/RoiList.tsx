@@ -12,6 +12,7 @@ export interface RoiAdditionalCallbackState {
   isSelected: boolean;
   isReadOnly: boolean;
   scaledSizes: CornerSizeOptions;
+  zoomScale: number;
 }
 
 interface CustomRoiStyle {
@@ -75,7 +76,10 @@ const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
   };
 };
 
-const defaultRenderLabel: RoiListProps['renderLabel'] = (roi) => {
+const defaultRenderLabel: RoiListProps['renderLabel'] = (
+  roi,
+  { zoomScale },
+) => {
   return (
     <div
       style={{
@@ -85,6 +89,8 @@ const defaultRenderLabel: RoiListProps['renderLabel'] = (roi) => {
         placeContent: 'center',
         alignItems: 'center',
         color: 'white',
+        overflow: 'hidden',
+        fontSize: 16 / zoomScale,
       }}
     >
       {roi.label}

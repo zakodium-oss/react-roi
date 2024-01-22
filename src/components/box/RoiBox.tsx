@@ -59,7 +59,12 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           pointerEvents: 'none',
         }}
       >
-        {renderLabel(roi, { isReadOnly, isSelected, scaledSizes })}
+        {renderLabel(roi, {
+          isReadOnly,
+          isSelected,
+          scaledSizes,
+          zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
+        })}
       </div>
     </>
   );
