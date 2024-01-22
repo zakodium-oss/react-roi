@@ -9,14 +9,14 @@ import {
   useActions,
 } from '../../src';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
   decorators: [
     (Story) => (
       <KbsProvider>
-        <RoiProvider initialConfig={{ rois: initialRois }}>
+        <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
           <Story />
         </RoiProvider>
       </KbsProvider>

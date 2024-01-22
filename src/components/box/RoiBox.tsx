@@ -1,12 +1,13 @@
 import { memo, useEffect } from 'react';
 
-import { CommittedBox, RoiListProps } from '../..';
+import { RoiListProps } from '../..';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 
 import { Box } from './Box';
 import { getScaledSizes } from './sizes';
+import { roiToFloorBox } from './util';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -31,7 +32,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     }
   }, [id, isReadOnly, roiDispatch]);
 
-  const box = floorRoi(roi);
+  const box = roiToFloorBox(roi);
 
   return (
     <>
@@ -65,17 +66,3 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
 }
 
 export const RoiBox = memo(RoiBoxInternal);
-
-function floorRoi(roi: Roi): CommittedBox {
-  console.log(`x1: ${roi.x1}, y1: ${roi.y1}, x2: ${roi.x2}, y2: ${roi.y2}\n`);
-  const x1 = Math.floor(roi.x1);
-  const y1 = Math.floor(roi.y1);
-  const x2 = Math.floor(roi.x2);
-  const y2 = Math.floor(roi.y2);
-  return {
-    x: x1,
-    width: x2 - x1,
-    y: y1,
-    height: y2 - y1,
-  };
-}

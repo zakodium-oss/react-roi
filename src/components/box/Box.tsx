@@ -1,12 +1,6 @@
 import { CSSProperties } from 'react';
 
-import {
-  CommittedBox,
-  RoiAction,
-  RoiListProps,
-  RoiMode,
-  useRoiState,
-} from '../..';
+import { RoiAction, RoiListProps, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -16,6 +10,7 @@ import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
 import { getScaledSizes } from './sizes';
+import { roiToFloorBox } from './util';
 
 export interface BoxAnnotationProps {
   roi: Roi;
@@ -48,7 +43,7 @@ export function Box({
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
 
-  const flooredBox = floorRoi(roi);
+  const flooredBox = roiToFloorBox(roi);
 
   return (
     <svg
@@ -145,17 +140,4 @@ function getCursor(
   }
 
   return mode === 'draw' ? 'crosshair' : 'move';
-}
-
-function floorRoi(roi: Roi): CommittedBox {
-  const x1 = Math.floor(roi.x1);
-  const y1 = Math.floor(roi.y1);
-  const x2 = Math.floor(roi.x2);
-  const y2 = Math.floor(roi.y2);
-  return {
-    x: x1,
-    width: x2 - x1,
-    y: y1,
-    height: y2 - y1,
-  };
 }

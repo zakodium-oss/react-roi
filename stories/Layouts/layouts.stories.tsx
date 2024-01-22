@@ -9,7 +9,7 @@ import {
 } from '../../src';
 import { CommittedRoisButton } from '../utils/CommittedRoisButton';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 import { useResetOnChange } from '../utils/useResetOnChange';
 
 export default {
@@ -33,7 +33,7 @@ export function TallContainer(props: { resizeStrategy: ResizeStrategy }) {
     <RoiProvider
       key={keyId}
       initialConfig={{
-        rois: initialRois,
+        rois: getInitialRois(640, 640),
         resizeStrategy: props.resizeStrategy,
       }}
     >
@@ -62,7 +62,7 @@ export function WideContainer(props: { resizeStrategy: ResizeStrategy }) {
     <RoiProvider
       key={keyId}
       initialConfig={{
-        rois: initialRois,
+        rois: getInitialRois(640, 640),
         resizeStrategy: props.resizeStrategy,
       }}
     >
@@ -87,7 +87,7 @@ export function SmallImage(props: { resizeStrategy: ResizeStrategy }) {
     <RoiProvider
       key={keyId}
       initialConfig={{
-        rois: initialRois,
+        rois: getInitialRois(200, 300),
         resizeStrategy: props.resizeStrategy,
       }}
     >
@@ -110,7 +110,7 @@ export function DynamicContainer(props: { resizeStrategy: ResizeStrategy }) {
     <RoiProvider
       key={keyId}
       initialConfig={{
-        rois: initialRois,
+        rois: getInitialRois(640, 640),
         resizeStrategy: props.resizeStrategy,
       }}
     >

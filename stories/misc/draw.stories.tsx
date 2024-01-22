@@ -9,7 +9,7 @@ import {
   useActions,
 } from '../../src';
 import { Layout } from '../utils/Layout';
-import { initialRois } from '../utils/initialRois';
+import { getInitialRois } from '../utils/initialRois';
 
 export default {
   title: 'Misc',
@@ -26,6 +26,7 @@ export function DrawReadOnlyAndEditable() {
     return null;
   }
 
+  const initialRois = getInitialRois(320, 320);
   return (
     <RoiProvider initialConfig={{ rois: initialRois }}>
       <Layout>

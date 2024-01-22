@@ -1,7 +1,7 @@
-import { Box, CommittedBox, Size } from '../index';
+import { CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
-import { denormalizeBox, normalizeValue } from './coordinates';
+import { denormalizeBox, normalizeBox } from './coordinates';
 
 function createInitialCommittedBox(): CommittedBox {
   return {
@@ -36,49 +36,25 @@ export function createRoi(
     action: {
       type: 'idle',
     },
-    ...denormalizeBox(committedRoi, size),
+    ...denormalizeBox(committedRoi),
   };
 }
 
-export function createCommittedRoiFromRoi<T>(
-  roi: Roi<T>,
-  size: Size,
-): CommittedRoi<T> {
+export function createCommittedRoiFromRoi<T>(roi: Roi<T>): CommittedRoi<T> {
   const { action, ...obj } = roi;
   return {
     ...obj,
-    x: normalizeValue(roi.x1, size.width),
-    y: normalizeValue(roi.y1, size.height),
-    width: normalizeValue(roi.x2 - roi.x1, size.width),
-    height: normalizeValue(roi.y2 - roi.y1, size.height),
+    ...normalizeBox(roi),
   };
 }
 
-export function createRoiFromCommittedRoi<T>(
-  roi: CommittedRoi<T>,
-  size: Size,
-): Roi<T> {
+export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
   const { x, y, width, height, ...otherRoiProps } = roi;
   return {
     ...otherRoiProps,
     action: {
       type: 'idle',
     },
-    ...denormalizeBox(roi, size),
-  };
-}
-
-export function renormalizeRoiPosition(
-  position: Box,
-  oldSize: Size,
-  newSize: Size,
-): Box {
-  const wFactor = newSize.width / oldSize.width;
-  const hFactor = newSize.height / oldSize.height;
-  return {
-    x1: Math.floor(position.x1 * wFactor),
-    y1: Math.floor(position.y1 * hFactor),
-    x2: Math.floor(position.x2 * wFactor),
-    y2: Math.floor(position.y2 * hFactor),
+    ...denormalizeBox(roi),
   };
 }

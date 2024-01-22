@@ -11,7 +11,7 @@ import {
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
-import { initialRois } from '../../utils/initialRois';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
   title: 'hooks/useActions/Update ROI',
@@ -46,7 +46,7 @@ export function Position() {
   }
 
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
       <Layout>
         <UpdateXYPositionButton />
         <RoiContainer
@@ -77,7 +77,7 @@ export function Label() {
   }
 
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
       <Layout>
         <UpdateLabelButton />
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>

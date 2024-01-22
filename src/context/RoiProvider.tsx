@@ -62,7 +62,7 @@ function createInitialState<T>(
     selectedRoi: initialConfig.selectedRoiId,
     committedRois: initialConfig.rois,
     rois: initialConfig.rois.map((committedRoi) =>
-      createRoiFromCommittedRoi(committedRoi, initialSize),
+      createRoiFromCommittedRoi(committedRoi),
     ),
     panZoom: {
       scale: 1,

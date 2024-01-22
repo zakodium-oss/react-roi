@@ -9,7 +9,7 @@ import {
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
-import { initialRois } from '../../utils/initialRois';
+import { getInitialRois } from '../../utils/initialRois';
 import { useResetOnChange } from '../../utils/useResetOnChange';
 
 export default {
@@ -132,7 +132,7 @@ export function Zoom({
     <RoiProvider
       key={keyId}
       initialConfig={{
-        rois: initialRois,
+        rois: getInitialRois(320, 320),
         zoom: {
           min: minZoom,
           max: maxZoom,
