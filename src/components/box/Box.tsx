@@ -38,6 +38,7 @@ export function Box({
     isReadOnly,
     isSelected,
     scaledSizes,
+    zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
   });
 
   const clipPathId = `within-roi-${roi.id}`;
