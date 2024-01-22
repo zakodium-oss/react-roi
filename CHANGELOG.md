@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.9.0](https://github.com/zakodium-oss/react-roi/compare/v0.8.1...v0.9.0) (2024-01-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* always use target coordinate system in rois and snap roi to pixel ([#93](https://github.com/zakodium-oss/react-roi/issues/93))
+
+### Features
+
+* always use target coordinate system in rois and snap roi to pixel ([#93](https://github.com/zakodium-oss/react-roi/issues/93)) ([443d0c4](https://github.com/zakodium-oss/react-roi/commit/443d0c422fa8772b45a54befecfb67a9d0b9c9de))
+
+
+### Bug Fixes
+
+* handle size must be at least 1 ([8132008](https://github.com/zakodium-oss/react-roi/commit/8132008cc26f7213fb28c5198af817ca7c58bca7))
+* render roi label with constant font size ([4e6d903](https://github.com/zakodium-oss/react-roi/commit/4e6d90393bd2fab716f858068837a28d03f72f75))
+
 ## [0.8.1](https://github.com/zakodium-oss/react-roi/compare/v0.8.0...v0.8.1) (2024-01-10)
 
 
