@@ -30,7 +30,7 @@ export function CrashWithSameId() {
           with the button.
         </p>
         <button type="button" onClick={onClick}>
-          Add a new ROI with id "ROI 1"
+          {'Add a new ROI with id "ROI 1"'}
         </button>
       </>
     );
