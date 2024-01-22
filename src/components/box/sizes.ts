@@ -19,7 +19,9 @@ export function getScaledSizes(
   const { handlerSize, handlerBorderWidth } = baseSize;
   const divider = panZoom.initialPanZoom.scale * panZoom.panZoom.scale;
   return {
-    handlerSize: Math.floor(Math.min(handlerSize / divider, minLength / 3 + 1)),
+    handlerSize: Math.floor(
+      Math.max(Math.min(handlerSize / divider, minLength / 3 + 1), 1),
+    ),
     handlerBorderWidth: handlerBorderWidth / divider,
   };
 }
