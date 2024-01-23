@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.10.0](https://github.com/zakodium-oss/react-roi/compare/v0.9.0...v0.10.0) (2024-01-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* introduce new hybrid mode
+
+### Features
+
+* add option to initial config to configure initial mode ([1641606](https://github.com/zakodium-oss/react-roi/commit/1641606a97c780d225472ac9269171c5bc2454c4))
+* introduce new hybrid mode ([26f71ed](https://github.com/zakodium-oss/react-roi/commit/26f71ed81528a444ed0fa30b3be278cba866d5c2))
+
+
+### Bug Fixes
+
+* send the container size only when it has a non-zero size ([aed07f9](https://github.com/zakodium-oss/react-roi/commit/aed07f99fbba1b0aa43f38d155903800a9ebcd38))
+
 ## [0.9.0](https://github.com/zakodium-oss/react-roi/compare/v0.8.1...v0.9.0) (2024-01-22)
 
 
