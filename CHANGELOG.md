@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/zakodium-oss/react-roi/compare/v0.10.0...v0.10.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* reset TargetImage style properties which can influence it's dimensions ([92e5f3c](https://github.com/zakodium-oss/react-roi/commit/92e5f3c92316dfeeb3c986d8f22bf08d09e5f88c))
+
 ## [0.10.0](https://github.com/zakodium-oss/react-roi/compare/v0.9.0...v0.10.0) (2024-01-23)
 
 
