@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/zakodium-oss/react-roi/compare/v0.10.1...v0.11.0) (2024-01-23)
+
+
+### Features
+
+* allow custom svg to be produced which enables filling roi with custom patterns ([c236822](https://github.com/zakodium-oss/react-roi/commit/c2368224d1bf91758bb0ead517b62b8224e48f0a))
+
 ## [0.10.1](https://github.com/zakodium-oss/react-roi/compare/v0.10.0...v0.10.1) (2024-01-23)
 
 
