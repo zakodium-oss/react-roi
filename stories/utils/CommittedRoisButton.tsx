@@ -42,7 +42,10 @@ export function CommittedRoisButton() {
         Show committed ROIs
       </button>
       {isShown && (
-        <canvas ref={ref} id="transformed-image" style={{ maxWidth: 400 }} />
+        <>
+          <canvas ref={ref} id="transformed-image" style={{ maxWidth: 400 }} />
+          <pre>{JSON.stringify(rois, null, 2)}</pre>
+        </>
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { CommittedRoi } from '../types/Roi';
+import { RoiMode } from '../types/utils';
 
 import { useRoiContainerRef } from './useRoiContainerRef';
 import { useRoiDispatch } from './useRoiDispatch';
@@ -53,7 +54,7 @@ export function useActions<T = unknown>() {
       selectRoi: (selectedRoi: string | null) => {
         roiDispatch({ type: 'SELECT_ROI', payload: selectedRoi });
       },
-      setMode: (mode: 'select' | 'draw') =>
+      setMode: (mode: RoiMode) =>
         roiDispatch({ type: 'SET_MODE', payload: mode }),
     };
   }, [roiDispatch, ref]);

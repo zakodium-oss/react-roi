@@ -1,4 +1,5 @@
 import { Roi } from '../../types/Roi';
+import { assertUnreachable } from '../../utilities/assert';
 import {
   applyInverseX,
   applyInverseY,
@@ -7,6 +8,9 @@ import {
 import { createRoi } from '../../utilities/rois';
 import { ReactRoiState, StartDrawPayload } from '../roiReducer';
 
+/**
+ * The draw action is executed when the user starts interacting with the container
+ */
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
   const { event, containerBoundingRect, noUnselection, lockPan } = payload;
   const emptyRoi = createRoi(crypto.randomUUID(), draft.targetSize);
@@ -24,7 +28,9 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
     totalPanZoom,
     event.clientY - containerBoundingRect.y,
   );
+
   switch (draft.mode) {
+    case 'hybrid':
     case 'draw': {
       const roi: Roi = {
         ...emptyRoi,
@@ -32,6 +38,7 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
           type: 'drawing',
           xAxisCorner: 'left',
           yAxisCorner: 'top',
+          previousSelectedRoi: draft.selectedRoi,
         },
 
         x1: x,
@@ -58,6 +65,6 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       break;
     }
     default:
-      break;
+      assertUnreachable(draft.mode);
   }
 }

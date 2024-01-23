@@ -24,6 +24,7 @@ interface ContainerProps {
   noUnselection?: boolean;
   lockZoom: boolean;
   lockPan: boolean;
+  minNewRoiSize?: number;
 }
 
 export function ContainerComponent(props: ContainerProps) {
@@ -36,6 +37,7 @@ export function ContainerComponent(props: ContainerProps) {
     noUnselection,
     lockZoom,
     lockPan,
+    minNewRoiSize = 1,
   } = props;
 
   const isAltKeyDown = useIsKeyDown('Alt');
@@ -65,6 +67,10 @@ export function ContainerComponent(props: ContainerProps) {
     function onMouseUp() {
       roiDispatch({
         type: 'END_ACTION',
+        payload: {
+          noUnselection,
+          minNewRoiSize,
+        },
       });
     }
 
@@ -98,7 +104,7 @@ export function ContainerComponent(props: ContainerProps) {
       document.removeEventListener('mouseup', onMouseUp);
       containerElement.removeEventListener('wheel', onWheel);
     };
-  }, [roiDispatch, ref, lockZoom]);
+  }, [roiDispatch, ref, lockZoom, minNewRoiSize, noUnselection]);
 
   const lockContextValue = useMemo<LockContext>(() => {
     return { lockPan, lockZoom };
@@ -186,7 +192,10 @@ function getCursor(
       // Because it's a child element [See: getCursor from Box.ts]
       return 'auto';
     }
-  } else if (mode === 'select' && lockPan) {
+  }
+
+  // No action, return cursor based on mode, lockPan and altKey
+  if (mode === 'select' && lockPan) {
     return 'default';
   }
 
@@ -194,5 +203,5 @@ function getCursor(
     return 'grab';
   }
 
-  return mode === 'draw' ? 'crosshair' : 'grab';
+  return mode !== 'select' ? 'crosshair' : 'grab';
 }

@@ -129,8 +129,8 @@ function getCursor(
   if (isAltKeyDown && !lockPan) return 'grab';
 
   if (readOnly) {
-    if (mode === 'draw') {
-      if (!isAltKeyDown && !lockPan) {
+    if (mode !== 'select') {
+      if ((!isAltKeyDown && !lockPan) || lockPan) {
         return 'crosshair';
       } else {
         return isAltKeyDown ? 'grab' : 'default';

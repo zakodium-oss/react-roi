@@ -21,7 +21,7 @@ export function ChangeMode() {
     const { setMode } = useActions();
 
     useEffect(() => {
-      setMode('draw');
+      setMode('hybrid');
     }, [setMode]);
 
     function onChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -30,6 +30,7 @@ export function ChangeMode() {
 
     return (
       <select name="select-mode" onChange={onChange}>
+        <option value="hybrid">Hybrid</option>
         <option value="draw">Draw</option>
         <option value="select">Select</option>
       </select>
