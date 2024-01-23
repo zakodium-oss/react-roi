@@ -38,7 +38,7 @@ export function ReadOnly() {
   );
 }
 
-export function canPanThroughReadOnly() {
+export function canInteractThroughReadOnlyRoi() {
   const initialRois = getInitialRois(320, 320);
   function getReadOnly(roi: Roi) {
     return roi.id === initialRois[0].id;

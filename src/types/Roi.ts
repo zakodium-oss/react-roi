@@ -35,6 +35,7 @@ export interface IdleAction {
 
 export interface DrawAction extends Omit<ResizeAction, 'type'> {
   type: 'drawing';
+  previousSelectedRoi?: string;
 }
 
 export type RoiAction = IdleAction | DrawAction | MoveAction | ResizeAction;

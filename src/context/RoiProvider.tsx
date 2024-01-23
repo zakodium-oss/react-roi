@@ -54,7 +54,7 @@ function createInitialState<T>(
   initialConfig: CreateInitialConfigParam<T>,
 ): ReactRoiState<T> {
   return {
-    mode: 'select',
+    mode: 'hybrid',
     action: 'idle',
     resizeStrategy: initialConfig.resizeStrategy,
     targetSize: initialSize,

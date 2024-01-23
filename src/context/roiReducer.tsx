@@ -97,6 +97,21 @@ export interface StartDrawPayload {
   lockPan: boolean;
 }
 
+export interface StartResizePayload {
+  id: string;
+  xAxisCorner: XCornerPosition;
+  yAxisCorner: YCornerPosition;
+}
+
+export interface EndActionPayload {
+  noUnselection: boolean;
+  minNewRoiSize: number;
+}
+
+export interface SelectBoxAndStartMovePayload {
+  id: string;
+}
+
 export type RoiReducerAction =
   | { type: 'SET_MODE'; payload: RoiMode }
   | {
@@ -105,17 +120,11 @@ export type RoiReducerAction =
     }
   | {
       type: 'SET_SIZE';
-      payload: {
-        width: number;
-        height: number;
-      };
+      payload: Size;
     }
   | {
       type: 'SET_CONTAINER_SIZE';
-      payload: {
-        width: number;
-        height: number;
-      };
+      payload: Size;
     }
   | {
       type: 'UPDATE_ROI';
@@ -124,11 +133,7 @@ export type RoiReducerAction =
   | { type: 'REMOVE_ROI'; payload?: string }
   | {
       type: 'START_RESIZE';
-      payload: {
-        id: string;
-        xAxisCorner: XCornerPosition;
-        yAxisCorner: YCornerPosition;
-      };
+      payload: StartResizePayload;
     }
   | {
       type: 'START_DRAW';
@@ -140,11 +145,12 @@ export type RoiReducerAction =
     }
   | {
       type: 'END_ACTION';
+      payload: EndActionPayload;
     }
   | { type: 'CANCEL_ACTION' }
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
-      payload: { id: string };
+      payload: SelectBoxAndStartMovePayload;
     }
   | {
       type: 'ZOOM';
@@ -291,7 +297,7 @@ export function roiReducer(
       }
 
       case 'END_ACTION': {
-        endAction(draft);
+        endAction(draft, action.payload);
         break;
       }
 
