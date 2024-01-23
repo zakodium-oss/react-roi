@@ -20,6 +20,11 @@ export function TargetImage(props: TargetImageProps) {
         display: 'block',
         pointerEvents: 'none',
         imageRendering: 'pixelated',
+        // Revert any global css rules that can influence the width and height of the image
+        // e.g. tailwindcss's preflight sets max-width: 100% on any img tag
+        // The width and height of the target should be their natural values for react-roi to work as expected
+        maxWidth: 'initial',
+        maxHeight: 'initial',
         ...style,
       }}
     />
