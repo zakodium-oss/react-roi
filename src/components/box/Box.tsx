@@ -79,6 +79,8 @@ export function Box({
         });
       }}
     >
+      {styles.renderCustomPattern?.()}
+
       <clipPath id={clipPathId}>
         <rect
           x={flooredBox.x}

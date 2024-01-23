@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactElement, SVGAttributes } from 'react';
 
 import {
   RoiContainer,
@@ -35,14 +35,33 @@ export function OverrideDefaultStyle() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
-              getStyle={(roi, { isSelected, scaledSizes }) => ({
-                rectAttributes: {
-                  fill: isSelected ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)',
-                  stroke: 'black',
-                  strokeWidth: scaledSizes.handlerBorderWidth * 2,
-                },
-                resizeHandlerColor: 'white',
-              })}
+              getStyle={(roi, { isSelected, scaledSizes }) => {
+                const patternId = `stripe-pattern-${roi.id}`;
+                return {
+                  renderCustomPattern: () => (
+                    <StripePattern
+                      id={patternId}
+                      pattern={{
+                        space: 8,
+                        strokeWidth: 1,
+                        pathAttributes: {
+                          stroke: isSelected ? 'white' : 'black',
+                        },
+                      }}
+                      backgroundRectAttributes={{
+                        fill: 'yellow',
+                        fillOpacity: 0.2,
+                      }}
+                    />
+                  ),
+                  rectAttributes: {
+                    fill: `url(#${patternId})`,
+                    stroke: isSelected ? 'transparent' : 'black',
+                    strokeWidth: scaledSizes.handlerBorderWidth * 2,
+                  },
+                  resizeHandlerColor: 'white',
+                };
+              }}
             />
           </RoiContainer>
         </div>
@@ -128,5 +147,52 @@ export function CustomLabelRender() {
         </RoiContainer>
       </RoiProvider>
     </Layout>
+  );
+}
+
+function StripePattern(props: {
+  id: string;
+  pattern: {
+    space: number;
+    strokeWidth: number;
+    pathAttributes?: Omit<SVGAttributes<SVGPathElement>, 'strokeWidth'>;
+  };
+  backgroundRectAttributes?: SVGAttributes<SVGRectElement>;
+}): ReactElement<{ id: string }, 'pattern'> {
+  if (!props.pattern) {
+    return null;
+  }
+  const {
+    space,
+    strokeWidth,
+    pathAttributes = {
+      stroke: 'black',
+    },
+  } = props.pattern;
+  const patternSize = space * 2;
+  const mainLine = `M0,${patternSize} l${patternSize},-${patternSize}`;
+  const cornerLine1 = `M-${strokeWidth},${strokeWidth} l${strokeWidth * 2},-${strokeWidth * 2}`;
+  const cornerLine2 = `M${patternSize - strokeWidth},${patternSize + strokeWidth} l${strokeWidth * 2},-${strokeWidth * 2}`;
+
+  return (
+    <pattern
+      id={props.id}
+      patternUnits="userSpaceOnUse"
+      width={patternSize}
+      height={patternSize}
+    >
+      <rect
+        x={0}
+        y={0}
+        width={patternSize}
+        height={patternSize}
+        {...props.backgroundRectAttributes}
+      />
+      <path
+        d={`${cornerLine1} ${mainLine} ${cornerLine2}`}
+        strokeWidth={strokeWidth}
+        {...pathAttributes}
+      />
+    </pattern>
   );
 }

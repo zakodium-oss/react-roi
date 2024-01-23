@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, SVGAttributes } from 'react';
+import { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
 
 import { useRoiState } from '..';
 import { useRois } from '../hooks/useRois';
@@ -15,9 +15,18 @@ export interface RoiAdditionalCallbackState {
   zoomScale: number;
 }
 
-interface CustomRoiStyle {
+export interface CustomRoiStyle {
+  /**
+   * The attributes to forward to the SVG rect element which draws the ROI
+   */
   rectAttributes?: SVGAttributes<SVGRectElement>;
   resizeHandlerColor?: CSSProperties['color'];
+  /**
+   * This property allows to render custom markup inside the ROI SVG
+   * This can be used for example to render an svg pattern that can then be used as a fill in `rectAttributes`
+   * It is not meant to be used to render markup that will be displayed on screen, see `rectAttributes` to customize the ROI appearance
+   */
+  renderCustomPattern?: () => JSX.Element;
 }
 
 export interface RoiListProps<TData = unknown> {
