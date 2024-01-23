@@ -47,6 +47,8 @@ export function ContainerComponent(props: ContainerProps) {
   const ref = useRoiContainerRef();
 
   useResizeObserver(ref, (entry) => {
+    const { width, height } = entry.contentRect;
+    if (width === 0 || height === 0) return;
     roiDispatch({
       type: 'SET_CONTAINER_SIZE',
       payload: {
