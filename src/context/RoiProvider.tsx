@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useReducer, useRef } from 'react';
 
-import type { ResizeStrategy, RoiState } from '..';
+import type { ResizeStrategy, RoiMode, RoiState } from '..';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 
@@ -17,6 +17,7 @@ import { ReactRoiState, roiReducer } from './roiReducer';
 import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
 
 export interface RoiProviderInitialConfig<T> {
+  mode?: RoiMode;
   zoom?: {
     /**
      * The minimum zoom level allowed.
@@ -54,7 +55,7 @@ function createInitialState<T>(
   initialConfig: CreateInitialConfigParam<T>,
 ): ReactRoiState<T> {
   return {
-    mode: 'hybrid',
+    mode: initialConfig.mode,
     action: 'idle',
     resizeStrategy: initialConfig.resizeStrategy,
     targetSize: initialSize,
@@ -80,11 +81,13 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   const { children, initialConfig = {} } = props;
   const {
     rois: initialRois = [],
+    mode: initialMode = 'hybrid',
     zoom: { min = 1, max = 20, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;
   const roiInitialState = createInitialState<T>({
+    mode: initialMode,
     rois: initialRois,
     zoom: {
       min,
