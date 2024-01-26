@@ -1,5 +1,5 @@
 import { assert } from '../../utilities/assert';
-import { createCommittedRoiFromRoi } from '../../utilities/rois';
+import { createCommittedRoiFromRoiIfValid } from '../../utilities/rois';
 import { EndActionPayload, ReactRoiState } from '../roiReducer';
 
 import { updateCommitedRoiPosition } from './roi';
@@ -21,14 +21,17 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
     updateCommitedRoiPosition(draft, committedRoi, roi);
   } else {
     assert(roi.action.type === 'drawing');
-    const newCommittedRoi = createCommittedRoiFromRoi(roi);
-    if (
-      newCommittedRoi.width < payload.minNewRoiSize ||
-      newCommittedRoi.height < payload.minNewRoiSize
-    ) {
-      // User simply clicked, don't add the ROI
-      // Select previously selected ROI
-      const index = draft.rois.findIndex((r) => r.id === newCommittedRoi.id);
+    const newCommittedRoi = createCommittedRoiFromRoiIfValid(
+      roi,
+      {
+        targetSize: draft.targetSize,
+        minNewRoiSize: payload.minNewRoiSize,
+      },
+      'resize',
+    );
+    if (newCommittedRoi === null) {
+      // Roi is not valid, remove it
+      const index = draft.rois.findIndex((r) => r.id === roi.id);
       draft.rois.splice(index, 1);
       if (payload.noUnselection) {
         draft.selectedRoi = roi.action.previousSelectedRoi;

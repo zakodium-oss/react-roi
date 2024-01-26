@@ -1,4 +1,5 @@
 import { Meta } from '@storybook/react';
+import { useState } from 'react';
 
 import {
   RoiContainer,
@@ -44,6 +45,66 @@ export function AddROI() {
         </RoiContainer>
         <CommittedRoisButton />
       </Layout>
+    </RoiProvider>
+  );
+}
+
+interface CountData {
+  moveCount: number;
+  resizeCount: number;
+  count: number;
+}
+
+function OnLifecycleHooksInternal() {
+  const { createRoi, updateRoi } = useActions<CountData>();
+  const [count, setCount] = useState(0);
+
+  return (
+    <Layout>
+      <RoiContainer<CountData>
+        target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        onDrawFinish={(roi) => {
+          createRoi({
+            ...roi,
+            data: { moveCount: 0, count: count + 1, resizeCount: 0 },
+          });
+          setCount(count + 1);
+        }}
+        onMoveFinish={(selectedRoi, roi) => {
+          updateRoi(selectedRoi, {
+            ...roi,
+            data: {
+              ...roi.data,
+              moveCount: roi.data.moveCount + 1,
+            },
+          });
+        }}
+        onResizeFinish={(selectedRoi, roi) => {
+          updateRoi(selectedRoi, {
+            ...roi,
+            data: {
+              ...roi.data,
+              resizeCount: roi.data.resizeCount + 1,
+            },
+          });
+        }}
+      >
+        <RoiList<CountData>
+          renderLabel={(roi) => {
+            if (!roi.data) return null;
+            return `ROI ${roi.data?.count || 0}\nMoved: ${roi.data?.moveCount || 0}\nResized: ${roi.data?.resizeCount || 0}`;
+          }}
+        />
+      </RoiContainer>
+      <CommittedRoisButton />
+    </Layout>
+  );
+}
+
+export function LifecycleHooks() {
+  return (
+    <RoiProvider>
+      <OnLifecycleHooksInternal />
     </RoiProvider>
   );
 }

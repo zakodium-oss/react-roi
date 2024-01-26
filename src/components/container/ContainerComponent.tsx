@@ -1,21 +1,40 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import {
   CSSProperties,
+  Dispatch,
   MutableRefObject,
   ReactNode,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 
-import { RoiAction, RoiMode, useRoiState } from '../..';
+import {
+  OnFinishDrawCallback,
+  OnFinishUpdateCallback,
+  RoiAction,
+  RoiMode,
+  useRoiState,
+} from '../..';
 import { LockContext, lockContext } from '../../context/contexts';
+import {
+  EndActionPayload,
+  ReactRoiState,
+  RoiReducerAction,
+} from '../../context/roiReducer';
+import { useCurrentState } from '../../hooks/useCurrentState';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { assert } from '../../utilities/assert';
+import {
+  createCommittedRoiFromRoiIfValid,
+  roiHasChanged,
+} from '../../utilities/rois';
 import { throttle } from '../../utilities/throttle';
 
-interface ContainerProps {
+interface ContainerProps<TData = unknown> {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
   children: ReactNode;
   style?: CSSProperties;
@@ -25,9 +44,14 @@ interface ContainerProps {
   lockZoom: boolean;
   lockPan: boolean;
   minNewRoiSize?: number;
+  onDrawFinish?: OnFinishDrawCallback<TData>;
+  onMoveFinish?: OnFinishUpdateCallback<TData>;
+  onResizeFinish?: OnFinishUpdateCallback<TData>;
 }
 
-export function ContainerComponent(props: ContainerProps) {
+export function ContainerComponent<TData = unknown>(
+  props: ContainerProps<TData>,
+) {
   const {
     target,
     children,
@@ -45,6 +69,16 @@ export function ContainerComponent(props: ContainerProps) {
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
   const ref = useRoiContainerRef();
+  const stateRef = useCurrentState();
+  const onDrawFinishRef = useRef(props.onDrawFinish);
+  const onMoveFinish = useRef(props.onMoveFinish);
+  const onResizeFinish = useRef(props.onResizeFinish);
+
+  useEffect(() => {
+    onDrawFinishRef.current = props.onDrawFinish;
+    onMoveFinish.current = props.onMoveFinish;
+    onResizeFinish.current = props.onResizeFinish;
+  }, [props.onDrawFinish, props.onResizeFinish, props.onMoveFinish]);
 
   useResizeObserver(ref, (entry) => {
     const { width, height } = entry.contentRect;
@@ -67,13 +101,27 @@ export function ContainerComponent(props: ContainerProps) {
     }
 
     function onMouseUp() {
-      roiDispatch({
-        type: 'END_ACTION',
-        payload: {
-          noUnselection,
-          minNewRoiSize,
+      const endPayload = {
+        noUnselection,
+        minNewRoiSize,
+      };
+      const hasCancelled = callMouseUpLifeCycleHooks(
+        stateRef.current,
+        roiDispatch,
+        {
+          onDrawFinish: onDrawFinishRef.current,
+          onMoveFinish: onMoveFinish.current,
+          onResizeFinish: onResizeFinish.current,
         },
-      });
+        endPayload,
+      );
+
+      if (!hasCancelled) {
+        roiDispatch({
+          type: 'END_ACTION',
+          payload: endPayload,
+        });
+      }
     }
 
     const onZoom = throttle((event: WheelEvent) => {
@@ -106,7 +154,7 @@ export function ContainerComponent(props: ContainerProps) {
       document.removeEventListener('mouseup', onMouseUp);
       containerElement.removeEventListener('wheel', onWheel);
     };
-  }, [roiDispatch, ref, lockZoom, minNewRoiSize, noUnselection]);
+  }, [roiDispatch, ref, lockZoom, minNewRoiSize, noUnselection, stateRef]);
 
   const lockContextValue = useMemo<LockContext>(() => {
     return { lockPan, lockZoom };
@@ -206,4 +254,84 @@ function getCursor(
   }
 
   return mode !== 'select' ? 'crosshair' : 'grab';
+}
+
+function callMouseUpLifeCycleHooks(
+  state: ReactRoiState,
+  roiDispatch: Dispatch<RoiReducerAction>,
+  callbacks: {
+    onDrawFinish?: OnFinishDrawCallback;
+    onMoveFinish?: OnFinishUpdateCallback;
+    onResizeFinish?: OnFinishUpdateCallback;
+  },
+  options: EndActionPayload,
+) {
+  const cancelAction = {
+    type: 'CANCEL_ACTION',
+    payload: { noUnselection: options.noUnselection },
+  } as const;
+  switch (state.action) {
+    case 'drawing':
+      if (callbacks.onDrawFinish) {
+        const roi = state.rois.find((roi) => roi.action.type === 'drawing');
+        assert(roi, 'An roi in the "drawing" state should exist while drawing');
+        const committedRoi = createCommittedRoiFromRoiIfValid(
+          roi,
+          {
+            targetSize: state.targetSize,
+            minNewRoiSize: options.minNewRoiSize,
+          },
+          'resize',
+        );
+        roiDispatch(cancelAction);
+        if (committedRoi) {
+          callbacks.onDrawFinish(committedRoi);
+        }
+        return true;
+      }
+      return false;
+    case 'moving':
+      if (callbacks.onMoveFinish) {
+        const roi = state.rois.find((roi) => roi.action.type === 'moving');
+        assert(roi, 'An roi in the "moving" state should exist while moving');
+        const committedRoi = createCommittedRoiFromRoiIfValid(
+          roi,
+          {
+            targetSize: state.targetSize,
+            minNewRoiSize: options.minNewRoiSize,
+          },
+          'move',
+        );
+        roiDispatch(cancelAction);
+        if (committedRoi && roiHasChanged(state, committedRoi)) {
+          const { id, ...updateData } = committedRoi;
+          callbacks.onMoveFinish(id, updateData);
+        }
+        return true;
+      }
+      return false;
+    case 'resizing':
+      if (callbacks.onResizeFinish) {
+        const roi = state.rois.find((roi) => roi.action.type === 'resizing');
+        assert(roi, 'An roi in the "resizing" state should exist while moving');
+        const committedRoi = createCommittedRoiFromRoiIfValid(
+          roi,
+          {
+            targetSize: state.targetSize,
+            minNewRoiSize: options.minNewRoiSize,
+          },
+          'resize',
+        );
+        roiDispatch(cancelAction);
+        if (committedRoi && roiHasChanged(state, committedRoi)) {
+          const { id, ...updateData } = committedRoi;
+          callbacks.onResizeFinish(id, updateData);
+          return true;
+        }
+      }
+      return false;
+
+    default:
+      return false;
+  }
 }

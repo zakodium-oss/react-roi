@@ -1,9 +1,9 @@
-import { createContext, Dispatch, MutableRefObject } from 'react';
+import { createContext, Dispatch, MutableRefObject, RefObject } from 'react';
 
 import { PanZoom, RoiState, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 
-import type { RoiReducerAction } from './roiReducer';
+import { ReactRoiState, RoiReducerAction } from './roiReducer';
 import { initialSize } from './updaters/initialPanZoom';
 
 export const roiStateContext = createContext<RoiState | null>(null);
@@ -55,3 +55,6 @@ export const panZoomContext = createContext<PanZoomContext>({
   },
   isReady: false,
 });
+
+export const roiStateRefContext =
+  createContext<RefObject<ReactRoiState> | null>(null);

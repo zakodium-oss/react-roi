@@ -5,10 +5,16 @@ import { CommittedRoi, Roi } from '../../types/Roi';
 import { denormalizeBox, normalizeBox } from '../../utilities/coordinates';
 import { ReactRoiState } from '../roiReducer';
 
-function boundRoi<T extends CommittedBox>(
+export type BoundStrategy = 'move' | 'resize';
+
+export function boundRoi<T extends CommittedBox>(
   committedBox: T,
   targetSize: Size,
-  actionType: Roi['action']['type'],
+  /**
+   * Strategy to bound the ROI box. If `move`, the ROI box will be moved so that it fits inside the target.
+   * If `resize`, the ROI box will be resized so that it fits inside the target.
+   */
+  strategy: BoundStrategy,
 ): CommittedBox {
   // Bound points and recalculate width and height
   const result: CommittedBox = {
@@ -18,7 +24,7 @@ function boundRoi<T extends CommittedBox>(
     height: committedBox.height,
   };
 
-  if (actionType === 'drawing' || actionType === 'resizing') {
+  if (strategy === 'resize') {
     if (result.x < 0) {
       result.width += result.x;
       result.x = 0;
@@ -61,7 +67,7 @@ export function updateCommitedRoiPosition(
   const normalizedBox = boundRoi(
     normalizeBox(roi),
     draft.targetSize,
-    roi.action.type,
+    roi.action.type === 'moving' ? 'move' : 'resize',
   );
   if (normalizedBox.height === 0 || normalizedBox.width === 0) {
     // Revert changes since the ROI is no longer visible

@@ -23,7 +23,7 @@ interface ZoomDomain {
   spaceAroundTarget: number;
 }
 
-export interface ReactRoiState<T = unknown> {
+export interface ReactRoiState<TData = unknown> {
   /**
    * Current mode
    */
@@ -47,12 +47,12 @@ export interface ReactRoiState<T = unknown> {
   /**
    * Regions of interest
    */
-  rois: Array<Roi<T>>;
+  rois: Array<Roi<TData>>;
 
   /**
    * Committed regions of interest
    */
-  committedRois: Array<CommittedRoi<T>>;
+  committedRois: Array<CommittedRoi<TData>>;
 
   /**
    * Size of the target on which the rois are drawn
@@ -108,6 +108,10 @@ export interface EndActionPayload {
   minNewRoiSize: number;
 }
 
+export interface CancelActionPayload {
+  noUnselection: boolean;
+}
+
 export interface SelectBoxAndStartMovePayload {
   id: string;
 }
@@ -147,7 +151,7 @@ export type RoiReducerAction =
       type: 'END_ACTION';
       payload: EndActionPayload;
     }
-  | { type: 'CANCEL_ACTION' }
+  | { type: 'CANCEL_ACTION'; payload: CancelActionPayload }
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
       payload: SelectBoxAndStartMovePayload;
@@ -186,7 +190,7 @@ export function roiReducer(
         break;
       }
       case 'REMOVE_ROI': {
-        cancelAction(draft);
+        cancelAction(draft, { noUnselection: false });
 
         const id = action.payload ?? draft.selectedRoi;
         const index = draft.rois.findIndex((roi) => roi.id === id);
@@ -202,11 +206,11 @@ export function roiReducer(
         if (id) {
           const roi = draft.rois.find((roi) => roi.id === id);
           if (roi) {
-            cancelAction(draft);
+            cancelAction(draft, { noUnselection: false });
             draft.selectedRoi = id;
           }
         } else if (draft.selectedRoi) {
-          cancelAction(draft);
+          cancelAction(draft, { noUnselection: false });
           draft.selectedRoi = undefined;
         }
         break;
@@ -216,7 +220,7 @@ export function roiReducer(
         const id = action.payload;
 
         if (draft.selectedRoi === id) {
-          cancelAction(draft);
+          cancelAction(draft, { noUnselection: false });
           draft.selectedRoi = undefined;
         }
 
@@ -232,7 +236,7 @@ export function roiReducer(
 
         const committedRoi = createCommittedRoi(id, otherRoiProps);
         draft.committedRois.push(committedRoi);
-        draft.rois.push(createRoi(id, draft.targetSize, otherRoiProps));
+        draft.rois.push(createRoi(id, otherRoiProps));
         draft.selectedRoi = committedRoi.id;
         break;
       }
@@ -302,7 +306,7 @@ export function roiReducer(
       }
 
       case 'CANCEL_ACTION': {
-        cancelAction(draft);
+        cancelAction(draft, action.payload);
         break;
       }
       case 'ZOOM':

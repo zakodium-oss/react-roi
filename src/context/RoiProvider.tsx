@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useReducer, useRef } from 'react';
+import { ReactNode, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import type { ResizeStrategy, RoiMode, RoiState } from '..';
 import { CommittedRoi } from '../types/Roi';
@@ -12,6 +12,7 @@ import {
   roiDispatchContext,
   roisContext,
   roiStateContext,
+  roiStateRefContext,
 } from './contexts';
 import { ReactRoiState, roiReducer } from './roiReducer';
 import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
@@ -99,7 +100,12 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   });
 
   const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+  const stateRef = useRef(state);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const {
     rois,
@@ -132,18 +138,20 @@ export function RoiProvider<T>(props: RoiProviderProps<T>) {
   }, [panZoom, initialPanZoom, targetSize, containerSize]);
 
   return (
-    <roiContainerRefContext.Provider value={containerRef}>
-      <panZoomContext.Provider value={panzoomContextValue}>
-        <roiDispatchContext.Provider value={dispatch}>
-          <roisContext.Provider value={rois}>
-            <committedRoisContext.Provider value={committedRois}>
-              <roiStateContext.Provider value={roiState}>
-                {children}
-              </roiStateContext.Provider>
-            </committedRoisContext.Provider>
-          </roisContext.Provider>
-        </roiDispatchContext.Provider>
-      </panZoomContext.Provider>
-    </roiContainerRefContext.Provider>
+    <roiStateRefContext.Provider value={stateRef}>
+      <roiContainerRefContext.Provider value={containerRef}>
+        <panZoomContext.Provider value={panzoomContextValue}>
+          <roiDispatchContext.Provider value={dispatch}>
+            <roisContext.Provider value={rois}>
+              <committedRoisContext.Provider value={committedRois}>
+                <roiStateContext.Provider value={roiState}>
+                  {children}
+                </roiStateContext.Provider>
+              </committedRoisContext.Provider>
+            </roisContext.Provider>
+          </roiDispatchContext.Provider>
+        </panZoomContext.Provider>
+      </roiContainerRefContext.Provider>
+    </roiStateRefContext.Provider>
   );
 }

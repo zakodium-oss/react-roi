@@ -1,6 +1,9 @@
+import { ReactRoiState } from '../context/roiReducer';
+import { boundRoi, BoundStrategy } from '../context/updaters/roi';
 import { CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
+import { assert } from './assert';
 import { denormalizeBox, normalizeBox } from './coordinates';
 
 function createInitialCommittedBox(): CommittedBox {
@@ -26,7 +29,6 @@ export function createCommittedRoi<T>(
 
 export function createRoi(
   id: string,
-  size: Size,
   options: Omit<Partial<Roi>, 'id'> = {},
 ): Roi {
   const committedRoi = createCommittedRoi(id, options);
@@ -40,12 +42,38 @@ export function createRoi(
   };
 }
 
-export function createCommittedRoiFromRoi<T>(roi: Roi<T>): CommittedRoi<T> {
+export function createCommittedRoiFromRoi<T>(
+  roi: Roi<T>,
+  targetSize: Size,
+  strategy: BoundStrategy,
+): CommittedRoi<T> {
   const { action, ...obj } = roi;
   return {
     ...obj,
-    ...normalizeBox(roi),
+    ...boundRoi(normalizeBox(roi), targetSize, strategy),
   };
+}
+
+export function createCommittedRoiFromRoiIfValid<T>(
+  roi: Roi<T>,
+  options: {
+    targetSize: Size;
+    minNewRoiSize: number;
+  },
+  boundStrategy: BoundStrategy,
+): CommittedRoi<T> | null {
+  const newCommittedRoi = createCommittedRoiFromRoi(
+    roi,
+    options.targetSize,
+    boundStrategy,
+  );
+  if (
+    newCommittedRoi.width < options.minNewRoiSize ||
+    newCommittedRoi.height < options.minNewRoiSize
+  ) {
+    return null;
+  }
+  return newCommittedRoi;
 }
 
 export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
@@ -57,4 +85,15 @@ export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
     },
     ...denormalizeBox(roi),
   };
+}
+
+export function roiHasChanged(state: ReactRoiState, roi: CommittedRoi) {
+  const currentRoi = state.committedRois.find((r) => r.id === roi.id);
+  assert(currentRoi, 'roi not found');
+  return (
+    currentRoi.x !== roi.x ||
+    currentRoi.y !== roi.y ||
+    currentRoi.width !== roi.width ||
+    currentRoi.height !== roi.height
+  );
 }
