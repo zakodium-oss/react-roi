@@ -4,9 +4,12 @@ import { Roi } from '../../types/Roi';
 import { Box } from '../../types/utils';
 import { assert } from '../../utilities/assert';
 import { denormalizeBox } from '../../utilities/coordinates';
-import { ReactRoiState } from '../roiReducer';
+import { CancelActionPayload, ReactRoiState } from '../roiReducer';
 
-export function cancelAction(draft: Draft<ReactRoiState>) {
+export function cancelAction(
+  draft: Draft<ReactRoiState>,
+  payload: CancelActionPayload,
+) {
   const rois = draft.rois.filter((roi) => roi.action.type !== 'idle');
 
   if (rois.length === 0) {
@@ -18,7 +21,11 @@ export function cancelAction(draft: Draft<ReactRoiState>) {
   if (roi.action.type === 'drawing') {
     const roiIndex = draft.rois.findIndex((r) => r.id === roi.id);
     draft.rois.splice(roiIndex, 1);
-    draft.selectedRoi = null;
+    if (payload.noUnselection) {
+      draft.selectedRoi = roi.action.previousSelectedRoi;
+    } else {
+      draft.selectedRoi = undefined;
+    }
   } else {
     // Revert to the previous state
     const committedRoi = draft.committedRois.find((r) => r.id === roi.id);

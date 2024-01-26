@@ -1,24 +1,31 @@
-import { useMemo } from 'react';
+import { KeyboardEvent as ReactKeyboardEvent, useMemo } from 'react';
 
+import { CancelActionPayload } from '../context/roiReducer';
 import { CommittedRoi } from '../types/Roi';
 import { RoiMode } from '../types/utils';
 
 import { useRoiContainerRef } from './useRoiContainerRef';
 import { useRoiDispatch } from './useRoiDispatch';
 
-export type UpdateData<T = unknown> = Partial<Omit<CommittedRoi<T>, 'id'>>;
-export function useActions<T = unknown>() {
+export type UpdateData<TData = unknown> = Partial<
+  Omit<CommittedRoi<TData>, 'id'>
+>;
+export function useActions<TData = unknown>() {
   const roiDispatch = useRoiDispatch();
   const ref = useRoiContainerRef();
 
   return useMemo(() => {
     return {
-      cancelAction: (event: KeyboardEvent) => {
+      cancelAction: (
+        event: KeyboardEvent | ReactKeyboardEvent,
+        options: CancelActionPayload,
+      ) => {
         event.preventDefault();
 
         if (event.isTrusted) {
           roiDispatch({
             type: 'CANCEL_ACTION',
+            payload: options,
           });
         }
       },
@@ -36,13 +43,13 @@ export function useActions<T = unknown>() {
           },
         });
       },
-      createRoi: (roi: CommittedRoi<T>) => {
+      createRoi: (roi: CommittedRoi<TData>) => {
         roiDispatch({
           type: 'CREATE_ROI',
           payload: roi,
         });
       },
-      updateRoi: (selectedRoi: string, updatedData: UpdateData<T>) => {
+      updateRoi: (selectedRoi: string, updatedData: UpdateData<TData>) => {
         roiDispatch({
           type: 'UPDATE_ROI',
           payload: { ...updatedData, id: selectedRoi },

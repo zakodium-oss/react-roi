@@ -13,7 +13,7 @@ import { ReactRoiState, StartDrawPayload } from '../roiReducer';
  */
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
   const { event, containerBoundingRect, noUnselection, lockPan } = payload;
-  const emptyRoi = createRoi(crypto.randomUUID(), draft.targetSize);
+  const emptyRoi = createRoi(crypto.randomUUID());
 
   if (payload.isPanZooming && !lockPan) {
     draft.action = 'panning';
