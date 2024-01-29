@@ -2,6 +2,7 @@ import useResizeObserver from '@react-hook/resize-observer';
 import {
   CSSProperties,
   Dispatch,
+  JSX,
   MutableRefObject,
   ReactNode,
   useEffect,
@@ -47,6 +48,7 @@ interface ContainerProps<TData = unknown> {
   onDrawFinish?: OnFinishDrawCallback<TData>;
   onMoveFinish?: OnFinishUpdateCallback<TData>;
   onResizeFinish?: OnFinishUpdateCallback<TData>;
+  getNewRoiData?: () => TData;
 }
 
 export function ContainerComponent<TData = unknown>(
@@ -73,12 +75,19 @@ export function ContainerComponent<TData = unknown>(
   const onDrawFinishRef = useRef(props.onDrawFinish);
   const onMoveFinish = useRef(props.onMoveFinish);
   const onResizeFinish = useRef(props.onResizeFinish);
+  const getNewRoiData = useRef(props.getNewRoiData);
 
   useEffect(() => {
     onDrawFinishRef.current = props.onDrawFinish;
     onMoveFinish.current = props.onMoveFinish;
     onResizeFinish.current = props.onResizeFinish;
-  }, [props.onDrawFinish, props.onResizeFinish, props.onMoveFinish]);
+    getNewRoiData.current = props.getNewRoiData;
+  }, [
+    props.onDrawFinish,
+    props.onResizeFinish,
+    props.onMoveFinish,
+    props.getNewRoiData,
+  ]);
 
   useResizeObserver(ref, (entry) => {
     const { width, height } = entry.contentRect;
@@ -193,6 +202,7 @@ export function ContainerComponent<TData = unknown>(
               isPanZooming: event.altKey,
               lockPan,
               noUnselection,
+              data: getNewRoiData.current?.(),
             },
           });
         }}

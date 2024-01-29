@@ -34,6 +34,7 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
     case 'draw': {
       const roi: Roi = {
         ...emptyRoi,
+        data: payload.data,
         action: {
           type: 'drawing',
           xAxisCorner: 'left',
@@ -45,8 +46,6 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
         y1: y,
         x2: x,
         y2: y,
-
-        data: undefined,
       };
       draft.selectedRoi = roi.id;
       draft.rois.push(roi);
