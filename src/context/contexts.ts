@@ -1,4 +1,4 @@
-import { createContext, Dispatch, MutableRefObject, RefObject } from 'react';
+import { createContext, Dispatch, RefObject } from 'react';
 
 import { PanZoom, RoiState, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
@@ -26,7 +26,7 @@ export const committedRoisContext = createContext<CommittedRoi[] | null>(null);
 export const roisContext = createContext<Roi[] | null>(null);
 
 export const roiContainerRefContext =
-  createContext<MutableRefObject<HTMLDivElement> | null>(null);
+  createContext<RefObject<HTMLDivElement> | null>(null);
 
 export interface PanZoomContext {
   panZoom: PanZoom;

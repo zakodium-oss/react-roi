@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { RoiAction, RoiListProps, RoiMode, useRoiState } from '../..';
+import { GetStyleCallback, RoiAction, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -17,7 +17,7 @@ export interface BoxAnnotationProps {
   style?: CSSProperties;
   className?: string;
   isReadOnly: boolean;
-  getStyle: RoiListProps['getStyle'];
+  getStyle: GetStyleCallback;
 }
 
 export function Box({

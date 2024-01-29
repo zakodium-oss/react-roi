@@ -51,7 +51,9 @@ export function DisplayCommitedRois() {
           });
         }
 
-        writeCanvas(image, ref.current);
+        if (ref.current) {
+          writeCanvas(image, ref.current);
+        }
       });
   }, [rois]);
 

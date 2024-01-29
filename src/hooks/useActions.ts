@@ -30,7 +30,7 @@ export function useActions<TData = unknown>() {
         }
       },
       zoom: (factor: number) => {
-        if (!ref.current) return;
+        if (!ref?.current) return;
         const refBound = ref.current.getBoundingClientRect();
 
         roiDispatch({

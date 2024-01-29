@@ -3,8 +3,8 @@ import { useRef } from 'react';
 
 import { useRoiDispatch } from './useRoiDispatch';
 
-export function useTargetRef() {
-  const targetRef = useRef();
+export function useTargetRef<T extends HTMLElement>() {
+  const targetRef = useRef<T>(null);
   const roiDispatch = useRoiDispatch();
   useResizeObserver(targetRef, (data) => {
     roiDispatch({
