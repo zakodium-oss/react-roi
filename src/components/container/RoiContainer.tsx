@@ -41,6 +41,10 @@ export interface RoiContainerProps<TData = unknown> {
    * @returns true if the creation of the ROI should be cancelled, false otherwise.
    */
   onResizeFinish?: OnFinishUpdateCallback<TData>;
+  /**
+   * Get the data of a new ROI as it is being drawn.
+   */
+  getNewRoiData?: () => TData;
 }
 
 export type OnFinishDrawCallback<TData = unknown> = (

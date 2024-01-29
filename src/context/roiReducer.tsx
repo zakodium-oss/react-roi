@@ -1,4 +1,5 @@
 import { produce } from 'immer';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 
 import { PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
@@ -90,11 +91,12 @@ export interface ZoomPayload {
 }
 
 export interface StartDrawPayload {
-  event: MouseEvent | React.MouseEvent;
+  event: MouseEvent | ReactMouseEvent;
   containerBoundingRect: DOMRect;
   isPanZooming: boolean;
   noUnselection?: boolean;
   lockPan: boolean;
+  data?: unknown;
 }
 
 export interface StartResizePayload {
