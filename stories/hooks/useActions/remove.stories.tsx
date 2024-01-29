@@ -22,7 +22,14 @@ export function RemoveROI() {
     const { removeRoi } = useActions();
 
     return (
-      <button type="button" onClick={() => removeRoi(selectedRoi)}>
+      <button
+        type="button"
+        onClick={() => {
+          if (selectedRoi) {
+            removeRoi(selectedRoi);
+          }
+        }}
+      >
         Remove ROI
       </button>
     );

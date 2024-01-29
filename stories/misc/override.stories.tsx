@@ -9,6 +9,7 @@ import {
   useActions,
   useRoiState,
 } from '../../src';
+import { assert } from '../../src/utilities/assert';
 import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
@@ -76,13 +77,15 @@ export function WithIndividualStyles() {
     const { updateRoi } = useActions<CustomColorData>();
 
     function onClick() {
-      updateRoi(selectedRoi, {
-        data: {
-          textColor: 'white',
-          selectedBackgroundColor: 'yellowgreen',
-          backgroundColor: 'yellow',
-        },
-      });
+      if (selectedRoi) {
+        updateRoi(selectedRoi, {
+          data: {
+            textColor: 'white',
+            selectedBackgroundColor: 'yellowgreen',
+            backgroundColor: 'yellow',
+          },
+        });
+      }
     }
 
     return (
@@ -99,10 +102,9 @@ export function WithIndividualStyles() {
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             getStyle={(roi, { isSelected }) => {
-              const {
-                data: { backgroundColor, selectedBackgroundColor },
-              } = roi;
-
+              const { data } = roi;
+              assert(data);
+              const { backgroundColor, selectedBackgroundColor } = data;
               return {
                 rectAttributes: {
                   fill: isSelected ? selectedBackgroundColor : backgroundColor,
@@ -158,7 +160,7 @@ function StripePattern(props: {
     pathAttributes?: Omit<SVGAttributes<SVGPathElement>, 'strokeWidth'>;
   };
   backgroundRectAttributes?: SVGAttributes<SVGRectElement>;
-}): ReactElement<{ id: string }, 'pattern'> {
+}): ReactElement<{ id: string }, 'pattern'> | null {
   if (!props.pattern) {
     return null;
   }

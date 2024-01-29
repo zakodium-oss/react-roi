@@ -30,7 +30,9 @@ export function Position() {
         updated.y = 0;
       }
 
-      updateRoi(selectedRoi, updated);
+      if (selectedRoi) {
+        updateRoi(selectedRoi, updated);
+      }
     }
 
     return (
@@ -66,7 +68,9 @@ export function Label() {
     const { updateRoi } = useActions();
 
     function onClick() {
-      updateRoi(selectedRoi, { label: 'Hello, World!' });
+      if (selectedRoi) {
+        updateRoi(selectedRoi, { label: 'Hello, World!' });
+      }
     }
 
     return (

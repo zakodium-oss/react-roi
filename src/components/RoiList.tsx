@@ -29,16 +29,21 @@ export interface CustomRoiStyle {
   renderCustomPattern?: () => JSX.Element;
 }
 
+export type GetStyleCallback<TData = unknown> = (
+  roi: Roi<TData>,
+  roiAdditionalState: RoiAdditionalCallbackState,
+) => CustomRoiStyle;
+
+export type GetReadOnlyCallback<TData = unknown> = (roi: Roi<TData>) => boolean;
+export type RenderLabelCallback<TData = unknown> = (
+  roi: Roi<TData>,
+  roiAdditionalState: RoiAdditionalCallbackState,
+) => ReactNode;
+
 export interface RoiListProps<TData = unknown> {
-  getStyle?: (
-    roi: Roi<TData>,
-    roiAdditionalState: RoiAdditionalCallbackState,
-  ) => CustomRoiStyle;
-  getReadOnly?: (roi: Roi<TData>) => boolean;
-  renderLabel?: (
-    roi: Roi<TData>,
-    roiAdditionalState: RoiAdditionalCallbackState,
-  ) => ReactNode;
+  getStyle?: GetStyleCallback<TData>;
+  getReadOnly?: GetReadOnlyCallback<TData>;
+  renderLabel?: RenderLabelCallback<TData>;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
@@ -62,9 +67,9 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
         <RoiBox
           key={roi.id}
           roi={roi}
-          getStyle={getStyle}
-          renderLabel={renderLabel}
-          getReadOnly={getReadOnly}
+          getStyle={getStyle as GetStyleCallback}
+          renderLabel={renderLabel as RenderLabelCallback}
+          getReadOnly={getReadOnly as GetReadOnlyCallback}
           isSelected={roi.id === selectedRoi}
         />
       ))}
@@ -72,7 +77,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   );
 }
 
-const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
+const defaultGetStyle: GetStyleCallback = (roi, state) => {
   return {
     rectAttributes: {
       fill: state.isReadOnly
@@ -85,10 +90,7 @@ const defaultGetStyle: RoiListProps['getStyle'] = (roi, state) => {
   };
 };
 
-const defaultRenderLabel: RoiListProps['renderLabel'] = (
-  roi,
-  { zoomScale },
-) => {
+const defaultRenderLabel: RenderLabelCallback = (roi, { zoomScale }) => {
   return (
     <div
       style={{

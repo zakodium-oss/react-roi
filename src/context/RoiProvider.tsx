@@ -48,8 +48,11 @@ interface RoiProviderProps<T> {
   initialConfig?: RoiProviderInitialConfig<T>;
 }
 
-type CreateInitialConfigParam<T> = Required<RoiProviderInitialConfig<T>> & {
+type CreateInitialConfigParam<T> = Required<
+  Omit<RoiProviderInitialConfig<T>, 'selectedRoiId'>
+> & {
   zoom: Required<RoiProviderInitialConfig<T>['zoom']>;
+  selectedRoiId?: string;
 };
 
 function createInitialState<T>(

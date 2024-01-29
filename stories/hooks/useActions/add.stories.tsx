@@ -8,6 +8,7 @@ import {
   TargetImage,
   useActions,
 } from '../../../src';
+import { assert } from '../../../src/utilities/assert';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
 import { getInitialRois } from '../../utils/initialRois';
@@ -71,6 +72,7 @@ function OnLifecycleHooksInternal() {
           setCount(count + 1);
         }}
         onMoveFinish={(selectedRoi, roi) => {
+          assert(roi.data);
           updateRoi(selectedRoi, {
             ...roi,
             data: {
@@ -80,6 +82,7 @@ function OnLifecycleHooksInternal() {
           });
         }}
         onResizeFinish={(selectedRoi, roi) => {
+          assert(roi.data);
           updateRoi(selectedRoi, {
             ...roi,
             data: {

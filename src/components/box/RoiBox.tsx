@@ -1,6 +1,10 @@
-import { memo, useEffect } from 'react';
+import { JSX, memo, useEffect } from 'react';
 
-import { RoiListProps } from '../..';
+import {
+  GetReadOnlyCallback,
+  GetStyleCallback,
+  RenderLabelCallback,
+} from '../..';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
@@ -12,9 +16,9 @@ import { roiToFloorBox } from './util';
 interface RoiBoxProps {
   roi: Roi;
   isSelected: boolean;
-  getStyle: RoiListProps['getStyle'];
-  getReadOnly: RoiListProps['getReadOnly'];
-  renderLabel: RoiListProps['renderLabel'];
+  getStyle: GetStyleCallback;
+  getReadOnly: GetReadOnlyCallback;
+  renderLabel: RenderLabelCallback;
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
@@ -22,7 +26,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
 
   const panzoom = usePanZoom();
   const { id } = roi;
-  const isReadOnly = getReadOnly(roi);
+  const isReadOnly = getReadOnly?.(roi) || false;
 
   const scaledSizes = getScaledSizes(roi, panzoom);
   const roiDispatch = useRoiDispatch();

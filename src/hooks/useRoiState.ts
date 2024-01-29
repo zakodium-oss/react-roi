@@ -1,15 +1,9 @@
 import { useContext } from 'react';
 
-import { RoiState } from '..';
 import { roiStateContext } from '../context/contexts';
 
 export function useRoiState() {
-  /**
-   * selected roi
-   * ratio
-   * mode
-   */
-  const state = useContext<RoiState>(roiStateContext);
+  const state = useContext(roiStateContext);
   if (!state) {
     throw new Error('useRoiState must be used within a RoiProvider');
   }

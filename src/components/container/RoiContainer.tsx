@@ -1,9 +1,7 @@
-import useResizeObserver from '@react-hook/resize-observer';
-import { CSSProperties, JSX, MutableRefObject, ReactNode } from 'react';
+import { CSSProperties, JSX, ReactNode } from 'react';
 
 import { UpdateData } from '../../hooks/useActions';
 import { usePanZoom } from '../../hooks/usePanZoom';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { CommittedRoi } from '../../types/Roi';
 
 import { ContainerComponent } from './ContainerComponent';
@@ -14,7 +12,6 @@ export interface RoiContainerProps<TData = unknown> {
   style?: CSSProperties;
   className?: string;
   id?: string;
-  targetRef?: MutableRefObject<undefined>;
   lockZoom?: boolean;
   lockPan?: boolean;
   /**
@@ -57,7 +54,6 @@ export type OnFinishUpdateCallback<TData = unknown> = (
 
 export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {
   const {
-    targetRef,
     children,
     style,
     lockZoom = false,
@@ -65,18 +61,7 @@ export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {
     ...otherProps
   } = props;
 
-  const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
-
-  useResizeObserver(targetRef, (data) => {
-    roiDispatch({
-      type: 'SET_SIZE',
-      payload: {
-        width: data.contentRect.width,
-        height: data.contentRect.height,
-      },
-    });
-  });
 
   return (
     <ContainerComponent

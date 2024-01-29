@@ -70,17 +70,17 @@ export function ContainerComponent<TData = unknown>(
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const panZoomTransform = usePanZoomTransform();
-  const ref = useRoiContainerRef();
+  const containerRef = useRoiContainerRef();
   const stateRef = useCurrentState();
-  const onDrawFinishRef = useRef(props.onDrawFinish);
-  const onMoveFinish = useRef(props.onMoveFinish);
-  const onResizeFinish = useRef(props.onResizeFinish);
+  const onDrawFinishRef = useRef(props.onDrawFinish as OnFinishDrawCallback);
+  const onMoveFinish = useRef(props.onMoveFinish as OnFinishUpdateCallback);
+  const onResizeFinish = useRef(props.onResizeFinish as OnFinishUpdateCallback);
   const getNewRoiData = useRef(props.getNewRoiData);
 
   useEffect(() => {
-    onDrawFinishRef.current = props.onDrawFinish;
-    onMoveFinish.current = props.onMoveFinish;
-    onResizeFinish.current = props.onResizeFinish;
+    onDrawFinishRef.current = props.onDrawFinish as OnFinishDrawCallback;
+    onMoveFinish.current = props.onMoveFinish as OnFinishUpdateCallback;
+    onResizeFinish.current = props.onResizeFinish as OnFinishUpdateCallback;
     getNewRoiData.current = props.getNewRoiData;
   }, [
     props.onDrawFinish,
@@ -89,7 +89,7 @@ export function ContainerComponent<TData = unknown>(
     props.getNewRoiData,
   ]);
 
-  useResizeObserver(ref, (entry) => {
+  useResizeObserver(containerRef, (entry) => {
     const { width, height } = entry.contentRect;
     if (width === 0 || height === 0) return;
     roiDispatch({
@@ -110,8 +110,9 @@ export function ContainerComponent<TData = unknown>(
     }
 
     function onMouseUp() {
+      if (!stateRef.current) return;
       const endPayload = {
-        noUnselection,
+        noUnselection: noUnselection || false,
         minNewRoiSize,
       };
       const hasCancelled = callMouseUpLifeCycleHooks(
@@ -134,15 +135,17 @@ export function ContainerComponent<TData = unknown>(
     }
 
     const onZoom = throttle((event: WheelEvent) => {
-      roiDispatch({
-        type: 'ZOOM',
-        payload: {
-          scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
-          clientX: event.clientX,
-          clientY: event.clientY,
-          refBoundingClientRect: ref.current.getBoundingClientRect(),
-        },
-      });
+      if (containerRef?.current) {
+        roiDispatch({
+          type: 'ZOOM',
+          payload: {
+            scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
+            clientX: event.clientX,
+            clientY: event.clientY,
+            refBoundingClientRect: containerRef.current.getBoundingClientRect(),
+          },
+        });
+      }
     }, 25);
 
     function onWheel(event: WheelEvent) {
@@ -152,18 +155,25 @@ export function ContainerComponent<TData = unknown>(
       onZoom(event);
     }
 
-    const containerElement = ref.current;
+    const containerElement = containerRef?.current;
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-    containerElement.addEventListener('wheel', onWheel, { passive: false });
+    containerElement?.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      containerElement.removeEventListener('wheel', onWheel);
+      containerElement?.removeEventListener('wheel', onWheel);
     };
-  }, [roiDispatch, ref, lockZoom, minNewRoiSize, noUnselection, stateRef]);
+  }, [
+    roiDispatch,
+    containerRef,
+    lockZoom,
+    minNewRoiSize,
+    noUnselection,
+    stateRef,
+  ]);
 
   const lockContextValue = useMemo<LockContext>(() => {
     return { lockPan, lockZoom };
@@ -173,7 +183,7 @@ export function ContainerComponent<TData = unknown>(
     <lockContext.Provider value={lockContextValue}>
       <div
         id={id}
-        ref={ref}
+        ref={containerRef}
         style={{
           ...style,
           position: 'relative',
@@ -193,18 +203,21 @@ export function ContainerComponent<TData = unknown>(
           roiDispatch({ type: 'RESET_ZOOM' });
         }}
         onMouseDown={(event) => {
-          const containerBoundingRect = ref.current.getBoundingClientRect();
-          roiDispatch({
-            type: 'START_DRAW',
-            payload: {
-              event,
-              containerBoundingRect,
-              isPanZooming: event.altKey,
-              lockPan,
-              noUnselection,
-              data: getNewRoiData.current?.(),
-            },
-          });
+          if (containerRef?.current) {
+            const containerBoundingRect =
+              containerRef.current.getBoundingClientRect();
+            roiDispatch({
+              type: 'START_DRAW',
+              payload: {
+                event,
+                containerBoundingRect,
+                isPanZooming: event.altKey,
+                lockPan,
+                noUnselection,
+                data: getNewRoiData.current?.(),
+              },
+            });
+          }
         }}
       >
         <div
