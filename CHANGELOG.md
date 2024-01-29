@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.0](https://github.com/zakodium-oss/react-roi/compare/v0.11.0...v0.12.0) (2024-01-29)
+
+
+### Features
+
+* add getNewRoiData prop to initialize roi data on draw ([fde6a87](https://github.com/zakodium-oss/react-roi/commit/fde6a87e35ba9d97b3f9677c7495c9ea388c8a2c))
+* on create, move and resize hooks ([99c3782](https://github.com/zakodium-oss/react-roi/commit/99c3782c85377350841431782e3d3fdeb2714af8))
+* preserve spaces in label ([039084a](https://github.com/zakodium-oss/react-roi/commit/039084a2f35daef98056bb58badfff47867e7adb))
+
 ## [0.11.0](https://github.com/zakodium-oss/react-roi/compare/v0.10.1...v0.11.0) (2024-01-23)
 
 
