@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/zakodium-oss/react-roi/compare/v0.12.0...v0.12.1) (2024-01-31)
+
+
+### Bug Fixes
+
+* use strict types ([5c1094c](https://github.com/zakodium-oss/react-roi/commit/5c1094cd7eb15aaad50ce3256d3a59115e9cac1a))
+
 ## [0.12.0](https://github.com/zakodium-oss/react-roi/compare/v0.11.0...v0.12.0) (2024-01-29)
 
 
