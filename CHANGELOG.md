@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/zakodium-oss/react-roi/compare/v0.13.0...v0.13.1) (2024-02-01)
+
+
+### Bug Fixes
+
+* add vendor prefix for userSelect property ([375ec57](https://github.com/zakodium-oss/react-roi/commit/375ec5743fb22c5c38ac97b7f5ff93ed1bc84a4b))
+* disable touch action on the container ([6085bd3](https://github.com/zakodium-oss/react-roi/commit/6085bd325d4b561bf92d1c887f8fc37e7cf4faa1))
+
 ## [0.13.0](https://github.com/zakodium-oss/react-roi/compare/v0.12.1...v0.13.0) (2024-02-01)
 
 
