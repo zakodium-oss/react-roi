@@ -63,6 +63,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           pointerEvents: 'none',
           whiteSpace: 'pre',
           userSelect: 'none',
+          WebkitUserSelect: 'none',
         }}
       >
         {renderLabel(roi, {
