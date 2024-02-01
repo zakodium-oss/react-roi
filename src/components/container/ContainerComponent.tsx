@@ -197,6 +197,7 @@ export function ContainerComponent<TData = unknown>(
             lockPan,
           ),
           userSelect: 'none',
+          WebkitUserSelect: 'none',
           touchAction: 'none',
         }}
         className={className}
@@ -232,6 +233,7 @@ export function ContainerComponent<TData = unknown>(
           <div
             style={{
               userSelect: 'none',
+              WebkitUserSelect: 'none',
               width: '100%',
               height: '100%',
               position: 'absolute',
