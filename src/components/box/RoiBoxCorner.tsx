@@ -1,11 +1,11 @@
-import { CSSProperties, MouseEventHandler, useCallback } from 'react';
+import { CSSProperties, PointerEventHandler, useCallback } from 'react';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { CornerData } from '../../utilities/corners';
 
 import { CornerSizeOptions } from './sizes';
 
-type MouseDownCallback = MouseEventHandler<SVGRectElement>;
+type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
 export function RoiBoxCorner({
   corner,
@@ -19,7 +19,7 @@ export function RoiBoxCorner({
   handlerColor?: CSSProperties['color'];
 }) {
   const roiDispatch = useRoiDispatch();
-  const onMouseDown: MouseDownCallback = useCallback(
+  const onPointerDown: PointerDownCallback = useCallback(
     (event) => {
       if (event.altKey) {
         return;
@@ -40,7 +40,7 @@ export function RoiBoxCorner({
     return (
       <SideHandler
         corner={corner}
-        onMouseDown={onMouseDown}
+        onPointerDown={onPointerDown}
         scaledSizes={sizes}
         handlerColor={handlerColor}
       />
@@ -49,7 +49,7 @@ export function RoiBoxCorner({
   return (
     <CornerHandler
       corner={corner}
-      onMouseDown={onMouseDown}
+      onPointerDown={onPointerDown}
       scaledSizes={sizes}
       handlerColor={handlerColor}
     />
@@ -58,12 +58,12 @@ export function RoiBoxCorner({
 
 function SideHandler({
   corner,
-  onMouseDown,
+  onPointerDown,
   scaledSizes,
   handlerColor = 'black',
 }: {
   corner: CornerData;
-  onMouseDown: MouseDownCallback;
+  onPointerDown: PointerDownCallback;
   scaledSizes: CornerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
@@ -83,7 +83,7 @@ function SideHandler({
         cursor={corner.cursor}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
-        onMouseDown={onMouseDown}
+        onPointerDown={onPointerDown}
       />
     </g>
   );
@@ -91,12 +91,12 @@ function SideHandler({
 
 function CornerHandler({
   corner,
-  onMouseDown,
+  onPointerDown,
   scaledSizes,
   handlerColor = 'black',
 }: {
   corner: CornerData;
-  onMouseDown: MouseDownCallback;
+  onPointerDown: PointerDownCallback;
   scaledSizes: CornerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
@@ -117,7 +117,7 @@ function CornerHandler({
         cursor={corner.cursor}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
-        onMouseDown={onMouseDown}
+        onPointerDown={onPointerDown}
       />
     </g>
   );

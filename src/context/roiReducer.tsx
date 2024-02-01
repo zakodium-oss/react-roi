@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import type { MouseEvent as ReactMouseEvent } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import { PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
@@ -14,7 +14,7 @@ import {
 import { cancelAction } from './updaters/cancelAction';
 import { endAction } from './updaters/endAction';
 import { updateInitialPanZoom } from './updaters/initialPanZoom';
-import { mouseMove } from './updaters/mouseMove';
+import { pointerMove } from './updaters/pointerMove';
 import { startDraw } from './updaters/startDraw';
 import { resetZoomAction, zoomAction } from './updaters/zoom';
 
@@ -91,7 +91,7 @@ export interface ZoomPayload {
 }
 
 export interface StartDrawPayload {
-  event: MouseEvent | ReactMouseEvent;
+  event: PointerEvent | ReactPointerEvent;
   containerBoundingRect: DOMRect;
   isPanZooming: boolean;
   noUnselection?: boolean;
@@ -146,8 +146,8 @@ export type RoiReducerAction =
       payload: StartDrawPayload;
     }
   | {
-      type: 'MOUSE_MOVE';
-      payload: MouseEvent;
+      type: 'POINTER_MOVE';
+      payload: PointerEvent;
     }
   | {
       type: 'END_ACTION';
@@ -297,8 +297,8 @@ export function roiReducer(
         break;
       }
 
-      case 'MOUSE_MOVE': {
-        mouseMove(draft, action.payload);
+      case 'POINTER_MOVE': {
+        pointerMove(draft, action.payload);
         break;
       }
 

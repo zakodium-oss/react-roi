@@ -64,7 +64,7 @@ export function Box({
       }}
       viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
       className={className}
-      onMouseDown={(event) => {
+      onPointerDown={(event) => {
         if (event.altKey || isReadOnly || roiState.mode === 'draw') {
           return;
         }
