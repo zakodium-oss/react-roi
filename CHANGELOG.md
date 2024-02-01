@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/zakodium-oss/react-roi/compare/v0.12.1...v0.13.0) (2024-02-01)
+
+
+### Features
+
+* change mouse event to pointer for extended devices compatibility ([732031e](https://github.com/zakodium-oss/react-roi/commit/732031e958798968af71270cd8dd993b00f526f4))
+
 ## [0.12.1](https://github.com/zakodium-oss/react-roi/compare/v0.12.0...v0.12.1) (2024-01-31)
 
 
