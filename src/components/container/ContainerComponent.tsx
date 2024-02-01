@@ -102,20 +102,20 @@ export function ContainerComponent<TData = unknown>(
   });
 
   useEffect(() => {
-    function onMouseMove(event: MouseEvent) {
+    function onPointerMove(event: PointerEvent) {
       roiDispatch({
-        type: 'MOUSE_MOVE',
+        type: 'POINTER_MOVE',
         payload: event,
       });
     }
 
-    function onMouseUp() {
+    function onPointerUp() {
       if (!stateRef.current) return;
       const endPayload = {
         noUnselection: noUnselection || false,
         minNewRoiSize,
       };
-      const hasCancelled = callMouseUpLifeCycleHooks(
+      const hasCancelled = callPointerUpLifeCycleHooks(
         stateRef.current,
         roiDispatch,
         {
@@ -157,13 +157,13 @@ export function ContainerComponent<TData = unknown>(
 
     const containerElement = containerRef?.current;
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
     containerElement?.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
       containerElement?.removeEventListener('wheel', onWheel);
     };
   }, [
@@ -202,7 +202,7 @@ export function ContainerComponent<TData = unknown>(
         onDoubleClick={() => {
           roiDispatch({ type: 'RESET_ZOOM' });
         }}
-        onMouseDown={(event) => {
+        onPointerDown={(event) => {
           if (containerRef?.current) {
             const containerBoundingRect =
               containerRef.current.getBoundingClientRect();
@@ -279,7 +279,7 @@ function getCursor(
   return mode !== 'select' ? 'crosshair' : 'grab';
 }
 
-function callMouseUpLifeCycleHooks(
+function callPointerUpLifeCycleHooks(
   state: ReactRoiState,
   roiDispatch: Dispatch<RoiReducerAction>,
   callbacks: {

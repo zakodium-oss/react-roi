@@ -8,7 +8,7 @@ import { ReactRoiState } from '../roiReducer';
 
 import { rectifyPanZoom } from './rectifyPanZoom';
 
-export function mouseMove(draft: ReactRoiState, event: MouseEvent) {
+export function pointerMove(draft: ReactRoiState, event: PointerEvent) {
   switch (draft.action) {
     case 'idle':
       return;
