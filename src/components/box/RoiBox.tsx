@@ -62,6 +62,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           height: box.height,
           pointerEvents: 'none',
           whiteSpace: 'pre',
+          userSelect: 'none',
         }}
       >
         {renderLabel(roi, {

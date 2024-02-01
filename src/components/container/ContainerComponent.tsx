@@ -197,6 +197,7 @@ export function ContainerComponent<TData = unknown>(
             lockPan,
           ),
           userSelect: 'none',
+          touchAction: 'none',
         }}
         className={className}
         onDoubleClick={() => {
