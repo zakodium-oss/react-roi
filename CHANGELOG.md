@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.14.0](https://github.com/zakodium-oss/react-roi/compare/v0.13.1...v0.14.0) (2024-02-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* action callback defined as props of the provider instead of the container. Action callbacks like onDrawFinish no longer responsible for making the action.
+
+### Features
+
+* set initial zoom level and add onAfterZoomChange callback ([d819099](https://github.com/zakodium-oss/react-roi/commit/d819099639384c6876e7b024e2f0bfc9e4f26f3e))
+
 ## [0.13.1](https://github.com/zakodium-oss/react-roi/compare/v0.13.0...v0.13.1) (2024-02-01)
 
 
