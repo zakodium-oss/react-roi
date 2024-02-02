@@ -7,6 +7,10 @@ import {
 } from '../../utilities/panZoom';
 import { ReactRoiState } from '../roiReducer';
 
+/**
+ * Apply a translation on the zoom so that it fits the constraints given by the zoomDomain configuration
+ * @param draft
+ */
 export function rectifyPanZoom(draft: Draft<ReactRoiState>) {
   const panZoom = computeTotalPanZoom(draft);
   const minX = applyTransformX(panZoom, 0);

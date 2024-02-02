@@ -1,6 +1,6 @@
 import { CSSProperties, JSX, ReactNode } from 'react';
 
-import { UpdateData } from '../../hooks/useActions';
+import { Actions, UpdateData } from '../../hooks/useActions';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { CommittedRoi } from '../../types/Roi';
 
@@ -19,37 +19,19 @@ export interface RoiContainerProps<TData = unknown> {
    */
   noUnselection?: boolean;
   /**
-   * Called right before the ROI has finished being drawn.
-   If specified, it becomes responsible for creating the ROI based on the data provided in the arguments.
-   * @param roi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
-   */
-  onDrawFinish?: OnFinishDrawCallback<TData>;
-  /**
-   * Called right before the ROI has finished moving.
-   * If specified, it becomes responsible for updating the ROI based on the data provided in the arguments.
-   * @param roi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
-   * @returns true if the creation of the ROI should be cancelled, false otherwise.
-   */
-  onMoveFinish?: OnFinishUpdateCallback<TData>;
-  /**
-   * Called right before the ROI has finished resizing.
-   * If specified, it becomes responsible for updating the ROI based on the data provided in the arguments.
-   * @param roi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
-   * @returns true if the creation of the ROI should be cancelled, false otherwise.
-   */
-  onResizeFinish?: OnFinishUpdateCallback<TData>;
-  /**
    * Get the data of a new ROI as it is being drawn.
    */
   getNewRoiData?: () => TData;
 }
 
-export type OnFinishDrawCallback<TData = unknown> = (
+export type AfterDrawCallback<TData = unknown> = (
   roi: CommittedRoi<TData>,
+  actions: Actions,
 ) => void;
-export type OnFinishUpdateCallback<TData = unknown> = (
+export type AfterUpdateCallback<TData = unknown> = (
   selectedRoiId: string,
   roi: UpdateData<TData>,
+  actions: Actions,
 ) => void;
 
 export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {

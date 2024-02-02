@@ -56,58 +56,53 @@ interface CountData {
   count: number;
 }
 
-function OnLifecycleHooksInternal() {
-  const { createRoi, updateRoi } = useActions<CountData>();
+export function ActionHooks() {
   const [count, setCount] = useState(0);
-
   return (
-    <Layout>
-      <RoiContainer<CountData>
-        target={<TargetImage id="story-image" src="/barbara.jpg" />}
-        onDrawFinish={(roi) => {
-          createRoi({
-            ...roi,
-            data: { moveCount: 0, count: count + 1, resizeCount: 0 },
-          });
-          setCount(count + 1);
-        }}
-        onMoveFinish={(selectedRoi, roi) => {
-          assert(roi.data);
-          updateRoi(selectedRoi, {
-            ...roi,
-            data: {
-              ...roi.data,
-              moveCount: roi.data.moveCount + 1,
-            },
-          });
-        }}
-        onResizeFinish={(selectedRoi, roi) => {
-          assert(roi.data);
-          updateRoi(selectedRoi, {
-            ...roi,
-            data: {
-              ...roi.data,
-              resizeCount: roi.data.resizeCount + 1,
-            },
-          });
-        }}
-      >
-        <RoiList<CountData>
-          renderLabel={(roi) => {
-            if (!roi.data) return null;
-            return `ROI ${roi.data?.count || 0}\nMoved: ${roi.data?.moveCount || 0}\nResized: ${roi.data?.resizeCount || 0}`;
-          }}
-        />
-      </RoiContainer>
-      <CommittedRoisButton />
-    </Layout>
-  );
-}
-
-export function LifecycleHooks() {
-  return (
-    <RoiProvider>
-      <OnLifecycleHooksInternal />
+    <RoiProvider<CountData>
+      onAfterDraw={() => {
+        setCount(count + 1);
+      }}
+      onAfterMove={(selectedRoi, roi, { updateRoi }) => {
+        assert(roi.data);
+        updateRoi(selectedRoi, {
+          ...roi,
+          data: {
+            ...roi.data,
+            moveCount: roi.data.moveCount + 1,
+          },
+        });
+      }}
+      onAfterResize={(selectedRoi, roi, { updateRoi }) => {
+        assert(roi.data);
+        updateRoi(selectedRoi, {
+          ...roi,
+          data: {
+            ...roi.data,
+            resizeCount: roi.data.resizeCount + 1,
+          },
+        });
+      }}
+    >
+      <Layout>
+        <RoiContainer<CountData>
+          getNewRoiData={() => ({
+            moveCount: 0,
+            count: count + 1,
+            resizeCount: 0,
+          })}
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
+          <RoiList<CountData>
+            renderLabel={(roi) => {
+              if (roi.action.type === 'drawing') return null;
+              if (!roi.data) return null;
+              return `ROI ${roi.data?.count || 0}\nMoved: ${roi.data?.moveCount || 0}\nResized: ${roi.data?.resizeCount || 0}`;
+            }}
+          />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
     </RoiProvider>
   );
 }
