@@ -1,9 +1,13 @@
+import { produce } from 'immer';
 import { KeyboardEvent as ReactKeyboardEvent, useMemo } from 'react';
 
 import { CancelActionPayload } from '../context/roiReducer';
+import { zoomAction } from '../context/updaters/zoom';
 import { CommittedRoi } from '../types/Roi';
 import { RoiMode } from '../types/utils';
 
+import useCallbacksRef from './useCallbacksRef';
+import { useCurrentState } from './useCurrentState';
 import { useRoiContainerRef } from './useRoiContainerRef';
 import { useRoiDispatch } from './useRoiDispatch';
 
@@ -12,7 +16,9 @@ export type UpdateData<TData = unknown> = Partial<
 >;
 export function useActions<TData = unknown>() {
   const roiDispatch = useRoiDispatch();
-  const ref = useRoiContainerRef();
+  const containerRef = useRoiContainerRef();
+  const callbacksRef = useCallbacksRef();
+  const stateRef = useCurrentState();
 
   return useMemo(() => {
     return {
@@ -30,18 +36,25 @@ export function useActions<TData = unknown>() {
         }
       },
       zoom: (factor: number) => {
-        if (!ref?.current) return;
-        const refBound = ref.current.getBoundingClientRect();
-
+        if (!containerRef?.current) return;
+        const refBound = containerRef.current.getBoundingClientRect();
+        const zoomPayload = {
+          clientX: refBound.width / 2,
+          clientY: refBound.height / 2,
+          scale: factor,
+          refBoundingClientRect: refBound,
+        };
         roiDispatch({
           type: 'ZOOM',
-          payload: {
-            clientX: refBound.width / 2,
-            clientY: refBound.height / 2,
-            scale: factor,
-            refBoundingClientRect: refBound,
-          },
+          payload: zoomPayload,
         });
+
+        if (stateRef.current && callbacksRef.current?.onAfterZoomChange) {
+          const newState = produce(stateRef.current, (draft) =>
+            zoomAction(draft, zoomPayload),
+          );
+          callbacksRef.current.onAfterZoomChange(newState.panZoom);
+        }
       },
       createRoi: (roi: CommittedRoi<TData>) => {
         roiDispatch({
@@ -64,5 +77,7 @@ export function useActions<TData = unknown>() {
       setMode: (mode: RoiMode) =>
         roiDispatch({ type: 'SET_MODE', payload: mode }),
     };
-  }, [roiDispatch, ref]);
+  }, [roiDispatch, containerRef, stateRef, callbacksRef]);
 }
+
+export type Actions = ReturnType<typeof useActions>;

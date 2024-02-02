@@ -23,6 +23,22 @@ export function InitialSelectedRoi() {
   );
 }
 
+export function InitialZoomLevel() {
+  return (
+    <Layout>
+      <RoiProvider
+        initialConfig={{
+          zoom: { initial: { scale: 1.4, translation: [0, 0] } },
+        }}
+      >
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+          <RoiList />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
+}
+
 export function NoUnselection() {
   const initialRois = getInitialRois(320, 320);
   return (

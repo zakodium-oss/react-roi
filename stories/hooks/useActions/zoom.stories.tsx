@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
 
 import {
+  PanZoom,
   RoiContainer,
   RoiList,
   RoiProvider,
@@ -15,6 +16,7 @@ import { useResetOnChange } from '../../utils/useResetOnChange';
 export default {
   title: 'hooks/useActions',
   argTypes: {
+    onZoomChange: { action: 'zoom' },
     minZoom: {
       control: {
         type: 'number',
@@ -61,6 +63,7 @@ interface ZoomStoryProps {
   spaceAroundTarget: number;
   containerWidth: number;
   containerHeight: number;
+  onZoomChange: (zoom: PanZoom) => void;
 }
 
 export function Zoom({
@@ -69,6 +72,7 @@ export function Zoom({
   spaceAroundTarget,
   containerWidth,
   containerHeight,
+  onZoomChange,
 }: ZoomStoryProps) {
   const keyId = useResetOnChange([
     minZoom,
@@ -139,6 +143,7 @@ export function Zoom({
           spaceAroundTarget,
         },
       }}
+      onAfterZoomChange={onZoomChange}
     >
       <Layout fit>
         <ZoomButton />
