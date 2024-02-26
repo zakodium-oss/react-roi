@@ -35,6 +35,10 @@ export type GetStyleCallback<TData = unknown> = (
 ) => CustomRoiStyle;
 
 export type GetReadOnlyCallback<TData = unknown> = (roi: Roi<TData>) => boolean;
+export type GetOverlayOpacity<TData = unknown> = (
+  roi: Roi<TData>,
+  roiAdditionalState: RoiAdditionalCallbackState,
+) => number;
 export type RenderLabelCallback<TData = unknown> = (
   roi: Roi<TData>,
   roiAdditionalState: RoiAdditionalCallbackState,
@@ -44,12 +48,14 @@ export interface RoiListProps<TData = unknown> {
   getStyle?: GetStyleCallback<TData>;
   getReadOnly?: GetReadOnlyCallback<TData>;
   renderLabel?: RenderLabelCallback<TData>;
+  getOverlayOpacity?: GetOverlayOpacity<TData>;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   const {
     getStyle = defaultGetStyle,
     getReadOnly = () => false,
+    getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
   } = props;
   const rois = useRois().slice();
@@ -70,6 +76,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           getStyle={getStyle as GetStyleCallback}
           renderLabel={renderLabel as RenderLabelCallback}
           getReadOnly={getReadOnly as GetReadOnlyCallback}
+          getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
           isSelected={roi.id === selectedRoi}
         />
       ))}

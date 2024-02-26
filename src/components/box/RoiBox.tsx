@@ -1,6 +1,7 @@
 import { JSX, memo, useEffect } from 'react';
 
 import {
+  GetOverlayOpacity,
   GetReadOnlyCallback,
   GetStyleCallback,
   RenderLabelCallback,
@@ -19,17 +20,35 @@ interface RoiBoxProps {
   getStyle: GetStyleCallback;
   getReadOnly: GetReadOnlyCallback;
   renderLabel: RenderLabelCallback;
+  getOverlayOpacity: GetOverlayOpacity;
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
-  const { roi, getStyle, getReadOnly, isSelected, renderLabel } = props;
+  const {
+    roi,
+    getStyle,
+    getReadOnly,
+    isSelected,
+    renderLabel,
+    getOverlayOpacity,
+  } = props;
 
   const panzoom = usePanZoom();
   const { id } = roi;
-  const isReadOnly = getReadOnly?.(roi) || false;
 
   const scaledSizes = getScaledSizes(roi, panzoom);
   const roiDispatch = useRoiDispatch();
+  const isReadOnly = getReadOnly(roi) || false;
+
+  const roiAdditionalState = {
+    isReadOnly,
+    isSelected,
+    scaledSizes,
+    zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
+  };
+
+  const shadowOpacity = getOverlayOpacity(roi, roiAdditionalState);
+
   useEffect(() => {
     if (isReadOnly) {
       roiDispatch({ type: 'UNSELECT_ROI', payload: id });
@@ -48,6 +67,10 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           top: box.y,
           width: box.width,
           height: box.height,
+          boxShadow:
+            isSelected && shadowOpacity
+              ? `0 0 0 ${Math.max(panzoom.containerSize.width, panzoom.containerSize.height)}px rgba(0,0,0,${shadowOpacity})`
+              : 'none',
         }}
       >
         <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
@@ -66,12 +89,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           WebkitUserSelect: 'none',
         }}
       >
-        {renderLabel(roi, {
-          isReadOnly,
-          isSelected,
-          scaledSizes,
-          zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
-        })}
+        {renderLabel(roi, roiAdditionalState)}
       </div>
     </>
   );

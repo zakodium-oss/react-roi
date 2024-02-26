@@ -29,6 +29,27 @@ const initialRois = getInitialRois<CustomColorData>(320, 320, {
   backgroundColor: 'green',
 });
 
+export function WithShadowAroundSelectedRoi() {
+  return (
+    <Layout>
+      <RoiProvider initialConfig={{ rois: initialRois, zoom: { min: 0.1 } }}>
+        <RoiContainer
+          style={{ backgroundColor: 'black' }}
+          target={<TargetImage src="/barbara.jpg" />}
+        >
+          <RoiList<CustomColorData>
+            getOverlayOpacity={(roi, { isSelected }) =>
+              isSelected && (roi.x2 - roi.x1 > 0 || roi.y2 - roi.y1 > 0)
+                ? 0.6
+                : 0
+            }
+          />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
+}
+
 export function OverrideDefaultStyle() {
   return (
     <Layout>
