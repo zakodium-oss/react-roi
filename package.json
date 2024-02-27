@@ -42,7 +42,7 @@
     "eslint": "^8.47.0",
     "eslint-config-zakodium": "^8.1.0",
     "image-js": "0.0.0-next-74561455b0",
-    "prettier": "^3.1.0",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-kbs": "^2.1.1",
     "rimraf": "^5.0.1",

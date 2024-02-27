@@ -9,8 +9,8 @@
     "strict": true,
     "target": "ES2022",
     "types": ["vite/client", "node"],
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["./src", "./tests", "./stories"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }
