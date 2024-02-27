@@ -76,6 +76,7 @@ function initialRois() {
       y: 0,
       width: 0.5 * 500,
       height: 0.5 * 500,
+      angle: 0,
       data: { blurMethod: 'fill' },
     },
     {
@@ -85,6 +86,7 @@ function initialRois() {
       y: 0.7 * 500,
       height: 0.3 * 500,
       data: { blurMethod: 'fill' },
+      angle: 0,
       label: 'box2',
     },
   ];

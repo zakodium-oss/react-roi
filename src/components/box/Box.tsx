@@ -49,6 +49,9 @@ export function Box({
   return (
     <svg
       style={{
+        transformBox: 'fill-box',
+        transformOrigin: 'center',
+        transform: `rotate(${roi.angle}rad)`,
         display: 'block',
         overflow: 'visible',
         width: flooredBox.width,
@@ -69,14 +72,25 @@ export function Box({
           return;
         }
 
+        const isRotate = (event.target as Element).id === 'rotate-handler';
+
         event.stopPropagation();
 
-        roiDispatch({
-          type: 'SELECT_BOX_AND_START_MOVE',
-          payload: {
-            id: roi.id,
-          },
-        });
+        if (isRotate) {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_ROTATE',
+            payload: {
+              id: roi.id,
+            },
+          });
+        } else {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_MOVE',
+            payload: {
+              id: roi.id,
+            },
+          });
+        }
       }}
     >
       {styles.renderCustomPattern?.()}
@@ -107,6 +121,18 @@ export function Box({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
+      {isSelected && (
+        <circle
+          id="rotate-handler"
+          cx={flooredBox.x + flooredBox.width / 2}
+          cy={flooredBox.y - scaledSizes.handlerSize * 2}
+          fill="transparent"
+          stroke="white"
+          cursor="grab"
+          strokeWidth={scaledSizes.handlerSize / 6}
+          r={scaledSizes.handlerSize / 3}
+        />
+      )}
     </svg>
   );
 }

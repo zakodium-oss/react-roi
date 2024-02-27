@@ -26,6 +26,13 @@ export interface MoveAction {
   type: 'moving';
 }
 
+export interface RotateAction {
+  /**
+   * Action of rotating an existing ROI
+   */
+  type: 'rotating';
+}
+
 export interface IdleAction {
   /**
    * No action is being performed
@@ -38,7 +45,12 @@ export interface DrawAction extends Omit<ResizeAction, 'type'> {
   previousSelectedRoi?: string;
 }
 
-export type RoiAction = IdleAction | DrawAction | MoveAction | ResizeAction;
+export type RoiAction =
+  | IdleAction
+  | DrawAction
+  | MoveAction
+  | RotateAction
+  | ResizeAction;
 
 export interface Roi<TData = unknown> extends Box {
   /**
@@ -73,6 +85,10 @@ export interface Roi<TData = unknown> extends Box {
    * Height of the ROI box in absolute units (px).
    */
   y2: number;
+  /**
+   * Rotation angle around the center of the ROI in radians
+   */
+  angle: number;
 }
 
 export interface CommittedRoi<TData = unknown>

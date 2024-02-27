@@ -5,12 +5,12 @@ import { rectifyPanZoom } from './rectifyPanZoom';
 
 export function zoomAction(draft: ReactRoiState, zoom: ZoomPayload) {
   const { min: minZoom, max: maxZoom } = draft.zoomDomain;
-  const { scale: zoomScale, refBoundingClientRect, clientX, clientY } = zoom;
+  const { scale: zoomScale, containerBoundingRect, clientX, clientY } = zoom;
   const { scale, translation } = draft.panZoom;
   const scaleNew = Math.max(minZoom, Math.min(scale * zoomScale, maxZoom));
 
-  const x = clientX - refBoundingClientRect.left;
-  const y = clientY - refBoundingClientRect.top;
+  const x = clientX - containerBoundingRect.left;
+  const y = clientY - containerBoundingRect.top;
 
   // We apply the inverse transformation to the pointer position
   // To obtain the coordinates in the original coordinate system

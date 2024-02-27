@@ -22,6 +22,7 @@ export function createCommittedRoi<T>(
   return {
     id,
     label: '',
+    angle: 0,
     ...createInitialCommittedBox(),
     ...options,
   };

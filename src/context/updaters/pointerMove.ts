@@ -3,12 +3,19 @@ import { Draft } from 'immer';
 import { Point } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
-import { computeTotalPanZoom } from '../../utilities/panZoom';
-import { ReactRoiState } from '../roiReducer';
+import { normalizeBox } from '../../utilities/coordinates';
+import {
+  applyInverseX,
+  applyInverseY,
+  computeTotalPanZoom,
+} from '../../utilities/panZoom';
+import { computeAngleFromMousePosition } from '../../utilities/rotate';
+import { PointerMovePayload, ReactRoiState } from '../roiReducer';
 
 import { rectifyPanZoom } from './rectifyPanZoom';
 
-export function pointerMove(draft: ReactRoiState, event: PointerEvent) {
+export function pointerMove(draft: ReactRoiState, payload: PointerMovePayload) {
+  const { event } = payload;
   switch (draft.action) {
     case 'idle':
       return;
@@ -19,11 +26,12 @@ export function pointerMove(draft: ReactRoiState, event: PointerEvent) {
       return;
     case 'moving':
     case 'drawing':
+    case 'rotating':
     case 'resizing': {
       const { selectedRoi, rois } = draft;
       const roi = rois.find((roi) => roi.id === selectedRoi);
       assert(roi);
-      updateRoiBox(draft, roi, { x: event.movementX, y: event.movementY });
+      updateRoiBox(draft, roi, payload);
       return;
     }
     default:
@@ -34,20 +42,30 @@ export function pointerMove(draft: ReactRoiState, event: PointerEvent) {
 export function updateRoiBox(
   draft: Draft<ReactRoiState>,
   roi: Draft<Roi>,
-  movement: Point,
+  payload: PointerMovePayload,
 ) {
-  const totalPanZoom = computeTotalPanZoom(draft);
-  const movementX = movement.x / totalPanZoom.scale;
-  const movementY = movement.y / totalPanZoom.scale;
+  const { event, containerBoundingRect } = payload;
+  const movement = { x: event.movementX, y: event.movementY };
   switch (roi.action.type) {
     case 'idle':
       return;
     case 'moving':
-      roi.x1 += movementX;
-      roi.y1 += movementY;
-      roi.x2 += movementX;
-      roi.y2 += movementY;
+      move(draft, roi, movement);
       break;
+    case 'rotating': {
+      const totalPanZoom = computeTotalPanZoom(draft);
+      const x = applyInverseX(
+        totalPanZoom,
+        event.clientX - containerBoundingRect.x,
+      );
+      const y = applyInverseY(
+        totalPanZoom,
+        event.clientY - containerBoundingRect.y,
+      );
+
+      rotate(draft, roi, { x, y });
+      break;
+    }
     case 'resizing': {
       resize(draft, roi, movement);
       break;
@@ -58,6 +76,21 @@ export function updateRoiBox(
     default:
       assertUnreachable(roi.action, 'Invalid action type');
   }
+}
+
+function move(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
+  const totalPanZoom = computeTotalPanZoom(draft);
+  const movementX = movement.x / totalPanZoom.scale;
+  const movementY = movement.y / totalPanZoom.scale;
+  roi.x1 += movementX;
+  roi.y1 += movementY;
+  roi.x2 += movementX;
+  roi.y2 += movementY;
+}
+
+function rotate(draft: Draft<ReactRoiState>, roi: Draft<Roi>, pointer: Point) {
+  const box = normalizeBox(roi);
+  roi.angle = computeAngleFromMousePosition(pointer, box);
 }
 
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {

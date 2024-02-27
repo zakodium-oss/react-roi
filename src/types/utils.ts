@@ -22,7 +22,13 @@ export interface Size {
   height: number;
 }
 
-export type RoiAction = 'idle' | 'moving' | 'drawing' | 'panning' | 'resizing';
+export type RoiAction =
+  | 'idle'
+  | 'moving'
+  | 'rotating'
+  | 'drawing'
+  | 'panning'
+  | 'resizing';
 
 export interface PanZoom {
   scale: number;

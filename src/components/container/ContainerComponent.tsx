@@ -90,10 +90,15 @@ export function ContainerComponent<TData = unknown>(
 
   useEffect(() => {
     function onPointerMove(event: PointerEvent) {
-      roiDispatch({
-        type: 'POINTER_MOVE',
-        payload: event,
-      });
+      if (containerRef?.current) {
+        roiDispatch({
+          type: 'POINTER_MOVE',
+          payload: {
+            event,
+            containerBoundingRect: containerRef.current.getBoundingClientRect(),
+          },
+        });
+      }
     }
 
     function onPointerUp() {
@@ -120,7 +125,7 @@ export function ContainerComponent<TData = unknown>(
           scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
           clientX: event.clientX,
           clientY: event.clientY,
-          refBoundingClientRect: containerRef.current.getBoundingClientRect(),
+          containerBoundingRect: containerRef.current.getBoundingClientRect(),
         };
         roiDispatch({
           type: 'ZOOM',
@@ -320,6 +325,10 @@ function callPointerUpActionHooks(
         }
       }
       break;
+    }
+    case 'rotating': {
+      // TODO: implement this
+      throw new Error('not implemented yet');
     }
     case 'resizing': {
       if (callbacks.onAfterResize) {
