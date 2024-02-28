@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
-import { PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
+import { PanZoom, ReactRoiAction, ResizeStrategy, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -44,7 +44,7 @@ export interface ReactRoiState<TData = unknown> {
   /**
    * Current action being performed
    */
-  action: RoiAction;
+  action: ReactRoiAction;
 
   /**
    * Regions of interest

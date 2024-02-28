@@ -1,4 +1,4 @@
-import { RoiAction, RoiMode } from './utils';
+import { ReactRoiAction, RoiMode } from './utils';
 
 export interface RoiState {
   /**
@@ -14,5 +14,5 @@ export interface RoiState {
   /**
    * Current action
    */
-  action: RoiAction;
+  action: ReactRoiAction;
 }

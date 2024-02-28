@@ -1,25 +1,28 @@
-import { Box, Point } from '../types/utils';
+import { Box, CommittedBox, Point } from '../types/utils';
 
 import { assert } from './assert';
 
+const ANGLE_90_POSITIVE = Math.PI / 2;
+const ANGLE_90_NEGATIVE = -Math.PI / 2;
+
 export function rotatePoint(
   point: Point,
-  origin: Point,
-  angleRad: number,
+  rotationCenter: Point,
+  angle: number,
 ): Point {
-  const angleCos = Math.cos(angleRad);
-  const angleSin = Math.sin(angleRad);
+  const angleCos = Math.cos(angle);
+  const angleSin = Math.sin(angle);
 
   const x =
     point.x * angleCos -
     point.y * angleSin +
-    (1 - angleCos) * origin.x +
-    origin.y * angleSin;
+    (1 - angleCos) * rotationCenter.x +
+    rotationCenter.y * angleSin;
   const y =
     point.x * angleSin +
     point.y * angleCos +
-    (1 - angleCos) * origin.y -
-    origin.x * angleSin;
+    (1 - angleCos) * rotationCenter.y -
+    rotationCenter.x * angleSin;
   return { x, y };
 }
 
@@ -79,4 +82,64 @@ function mulScalar(point: Point, scalar: number): Point {
     x: point.x * scalar,
     y: point.y * scalar,
   };
+}
+
+export function rotatePointCommittedBox(point: Point, box: CommittedBox) {
+  const topLeftPoint: Point = {
+    x: box.x,
+    y: box.y,
+  };
+  return rotatePoint(point, topLeftPoint, box.angle);
+}
+
+interface Boundaries {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+export function getMBRBoundaries(box: CommittedBox): Boundaries {
+  // Box:
+  // p0 ------ p1
+  // |         |
+  // p3 ------ p2
+  const p0 = rotatePointCommittedBox({ x: box.x, y: box.y }, box);
+  const p1 = rotatePointCommittedBox({ x: box.x + box.width, y: box.y }, box);
+  const p2 = rotatePointCommittedBox(
+    { x: box.x + box.width, y: box.y + box.height },
+    box,
+  );
+
+  const p3 = rotatePointCommittedBox({ x: box.x, y: box.y + box.height }, box);
+
+  if (box.angle >= -Math.PI && box.angle < ANGLE_90_NEGATIVE) {
+    return {
+      minX: p3.x,
+      maxX: p1.x,
+      minY: p0.y,
+      maxY: p2.y,
+    };
+  } else if (box.angle >= ANGLE_90_NEGATIVE && box.angle < 0) {
+    return {
+      minX: p0.x,
+      maxX: p2.x,
+      minY: p1.y,
+      maxY: p3.y,
+    };
+  } else if (box.angle >= 0 && box.angle < ANGLE_90_POSITIVE) {
+    return {
+      minX: p3.x,
+      maxX: p1.x,
+      minY: p0.y,
+      maxY: p2.y,
+    };
+  } else if (box.angle >= ANGLE_90_POSITIVE && box.angle < Math.PI) {
+    return {
+      minX: p2.x,
+      maxX: p0.x,
+      minY: p3.y,
+      maxY: p1.y,
+    };
+  }
+  throw new Error('wrong angle value');
 }

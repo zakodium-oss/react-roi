@@ -10,7 +10,13 @@ import {
   useRef,
 } from 'react';
 
-import { Actions, RoiAction, RoiMode, useActions, useRoiState } from '../..';
+import {
+  Actions,
+  ReactRoiAction,
+  RoiMode,
+  useActions,
+  useRoiState,
+} from '../..';
 import {
   ActionCallbacks,
   LockContext,
@@ -254,7 +260,7 @@ export function ContainerComponent<TData = unknown>(
 function getCursor(
   mode: RoiMode,
   altKey: boolean,
-  action: RoiAction,
+  action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
   if (action !== 'idle') {

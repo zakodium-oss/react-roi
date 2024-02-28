@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { GetStyleCallback, RoiAction, RoiMode, useRoiState } from '../..';
+import { GetStyleCallback, ReactRoiAction, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -141,7 +141,7 @@ function getCursor(
   mode: RoiMode,
   readOnly: boolean,
   isAltKeyDown: boolean,
-  action: RoiAction,
+  action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
   if (action !== 'idle') {

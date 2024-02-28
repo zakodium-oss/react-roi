@@ -55,7 +55,7 @@ export interface Size {
   height: number;
 }
 
-export type RoiAction =
+export type ReactRoiAction =
   | 'idle'
   | 'moving'
   | 'rotating'
