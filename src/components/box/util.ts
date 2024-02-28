@@ -11,5 +11,6 @@ export function roiToFloorBox(roi: Roi): CommittedBox {
     width: x2 - x1,
     y: y1,
     height: y2 - y1,
+    angle: roi.angle,
   };
 }

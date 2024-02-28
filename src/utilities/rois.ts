@@ -12,6 +12,7 @@ function createInitialCommittedBox(): CommittedBox {
     y: 0,
     width: 0,
     height: 0,
+    angle: 0,
   };
 }
 
@@ -22,7 +23,6 @@ export function createCommittedRoi<T>(
   return {
     id,
     label: '',
-    angle: 0,
     ...createInitialCommittedBox(),
     ...options,
   };

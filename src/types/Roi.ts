@@ -69,26 +69,6 @@ export interface Roi<TData = unknown> extends Box {
    * Metadata of any kind associated with the ROI.
    */
   data?: TData;
-  /**
-   * Left position of the ROI box in absolute units (px).
-   */
-  x1: number;
-  /**
-   * Top position of the ROI box in absolute units (px).
-   */
-  y1: number;
-  /**
-   * Width of the ROI box in absolute units (px).
-   */
-  x2: number;
-  /**
-   * Height of the ROI box in absolute units (px).
-   */
-  y2: number;
-  /**
-   * Rotation angle around the center of the ROI in radians
-   */
-  angle: number;
 }
 
 export interface CommittedRoi<TData = unknown>

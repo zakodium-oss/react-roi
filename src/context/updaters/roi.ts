@@ -22,6 +22,7 @@ export function boundRoi<T extends CommittedBox>(
     y: committedBox.y,
     width: committedBox.width,
     height: committedBox.height,
+    angle: committedBox.angle,
   };
 
   if (strategy === 'resize') {

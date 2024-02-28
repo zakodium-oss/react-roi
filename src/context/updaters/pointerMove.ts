@@ -3,7 +3,6 @@ import { Draft } from 'immer';
 import { Point } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
-import { normalizeBox } from '../../utilities/coordinates';
 import {
   applyInverseX,
   applyInverseY,
@@ -63,7 +62,7 @@ export function updateRoiBox(
         event.clientY - containerBoundingRect.y,
       );
 
-      rotate(draft, roi, { x, y });
+      roi.angle = computeAngleFromMousePosition({ x, y }, roi);
       break;
     }
     case 'resizing': {
@@ -86,11 +85,6 @@ function move(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   roi.y1 += movementY;
   roi.x2 += movementX;
   roi.y2 += movementY;
-}
-
-function rotate(draft: Draft<ReactRoiState>, roi: Draft<Roi>, pointer: Point) {
-  const box = normalizeBox(roi);
-  roi.angle = computeAngleFromMousePosition(pointer, box);
 }
 
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {

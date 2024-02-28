@@ -1,4 +1,4 @@
-import { CommittedBox, Point } from '../types/utils';
+import { Box, Point } from '../types/utils';
 
 import { assert } from './assert';
 
@@ -33,22 +33,25 @@ export function rotatePoint(
  */
 export function computeAngleFromMousePosition(
   pointer: Point,
-  roi: CommittedBox,
+  roi: Box,
 ): number {
-  const centerOrigin = { x: roi.x + roi.width / 2, y: roi.y + roi.height / 2 };
+  const width = roi.x2 - roi.x1;
+  const height = roi.y2 - roi.y1;
+  const centerOrigin = { x: roi.x1 + width / 2, y: roi.y1 + height / 2 };
+  // O is the origin, P is the pointer. This is the OP vector.
   const OP: Point = {
     x: pointer.x - centerOrigin.x,
     y: pointer.y - centerOrigin.y,
   };
-  const factor = roi.height / 2 / norm(OP);
+  const factor = height / 2 / norm(OP);
 
   const topMiddleEdgeAfterRotate: Point = add(
     centerOrigin,
     mulScalar(OP, factor),
   );
   const topMiddleEdgeBeforeRotate: Point = {
-    x: roi.x + roi.width / 2,
-    y: roi.y,
+    x: roi.x1 + width / 2,
+    y: roi.y1,
   };
   const a = topMiddleEdgeBeforeRotate.x - centerOrigin.x;
   const b = centerOrigin.y - topMiddleEdgeBeforeRotate.y;

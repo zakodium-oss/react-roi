@@ -127,7 +127,7 @@ export function Box({
           cx={flooredBox.x + flooredBox.width / 2}
           cy={flooredBox.y - scaledSizes.handlerSize * 2}
           fill="transparent"
-          stroke="white"
+          stroke={styles.resizeHandlerColor}
           cursor="grab"
           strokeWidth={scaledSizes.handlerSize / 6}
           r={scaledSizes.handlerSize / 3}

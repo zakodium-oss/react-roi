@@ -128,20 +128,24 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;
-  const roiInitialState = createInitialState<TData>({
-    mode: initialMode,
-    rois: initialRois,
-    zoom: {
-      min,
-      max,
-      spaceAroundTarget,
-      initial: initialConfig.zoom?.initial ?? { scale: 1, translation: [0, 0] },
-    },
-    resizeStrategy,
-    selectedRoiId,
-  });
 
-  const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+  const [state, dispatch] = useReducer(roiReducer, null, () =>
+    createInitialState<TData>({
+      mode: initialMode,
+      rois: initialRois,
+      zoom: {
+        min,
+        max,
+        spaceAroundTarget,
+        initial: initialConfig.zoom?.initial ?? {
+          scale: 1,
+          translation: [0, 0],
+        },
+      },
+      resizeStrategy,
+      selectedRoiId,
+    }),
+  );
   const stateRef = useRef(state);
   const containerRef = useRef<HTMLDivElement>(null);
   const callbacksRef = useRef<ActionCallbacks<TData>>({
