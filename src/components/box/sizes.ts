@@ -1,16 +1,16 @@
 import { Roi } from '../../types/Roi';
 
-export interface CornerSizeOptions {
+export interface HandlerSizeOptions {
   handlerSize: number;
   handlerBorderWidth: number;
 }
 
-const baseSize: CornerSizeOptions = {
-  handlerSize: 12,
+const baseSize: HandlerSizeOptions = {
+  handlerSize: 16,
   handlerBorderWidth: 3,
 };
 
-export function getHandlerSizes(roi: Roi): CornerSizeOptions {
+export function getHandlerSizes(roi: Roi): HandlerSizeOptions {
   const minLength = Math.min(roi.width, roi.height);
   const { handlerSize, handlerBorderWidth } = baseSize;
   return {

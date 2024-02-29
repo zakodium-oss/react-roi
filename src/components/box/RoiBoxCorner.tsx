@@ -3,7 +3,7 @@ import { CSSProperties, PointerEventHandler, useCallback } from 'react';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { CornerData } from '../../utilities/corners';
 
-import { CornerSizeOptions } from './sizes';
+import { HandlerSizeOptions } from './sizes';
 
 type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
@@ -15,7 +15,7 @@ export function RoiBoxCorner({
 }: {
   corner: CornerData;
   roiId: string;
-  sizes: CornerSizeOptions;
+  sizes: HandlerSizeOptions;
   handlerColor?: CSSProperties['color'];
 }) {
   const roiDispatch = useRoiDispatch();
@@ -64,7 +64,7 @@ function SideHandler({
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
-  scaledSizes: CornerSizeOptions;
+  scaledSizes: HandlerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
   const linePoints = getSidePoints(corner, scaledSizes);
@@ -97,7 +97,7 @@ function CornerHandler({
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
-  scaledSizes: CornerSizeOptions;
+  scaledSizes: HandlerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
   const polyline = getCornerPoints(corner, scaledSizes);
@@ -123,7 +123,7 @@ function CornerHandler({
   );
 }
 
-function getSidePoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
+function getSidePoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   if (corner.xPosition === 'left' || corner.xPosition === 'right') {
     return {
       x1: corner.cx,
@@ -141,7 +141,7 @@ function getSidePoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
   }
 }
 
-function getCornerPoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
+function getCornerPoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   const { handlerSize } = scaledSizes;
 
   const startOffsetX =
@@ -155,7 +155,7 @@ function getCornerPoints(corner: CornerData, scaledSizes: CornerSizeOptions) {
   ];
 }
 
-function getHandlerRect(corner: CornerData, scaledSizes: CornerSizeOptions) {
+function getHandlerRect(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   const width = scaledSizes.handlerSize * 2;
   const height = width;
 
@@ -170,7 +170,7 @@ function getHandlerRect(corner: CornerData, scaledSizes: CornerSizeOptions) {
   };
 }
 
-function getTransform(corner: CornerData, scaledSizes: CornerSizeOptions) {
+function getTransform(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   const shift = scaledSizes.handlerBorderWidth / 2;
 
   let x = 0;

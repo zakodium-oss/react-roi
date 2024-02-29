@@ -15,6 +15,7 @@ import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
+import { RoiBoxRotateHandler } from './RoiBoxRotateHandler';
 import { getHandlerSizes } from './sizes';
 
 export interface BoxAnnotationProps {
@@ -122,15 +123,10 @@ export function BoxSvg({
           />
         ))}
       {isSelected && (
-        <circle
-          id="rotate-handler"
-          cx={box.x + box.width / 2}
-          cy={box.y - handlerSizes.handlerSize * 2}
-          fill="transparent"
-          stroke={styles.resizeHandlerColor}
-          cursor="grab"
-          strokeWidth={handlerSizes.handlerSize / 6}
-          r={handlerSizes.handlerSize / 3}
+        <RoiBoxRotateHandler
+          box={box}
+          styles={styles}
+          handlerSizes={handlerSizes}
         />
       )}
     </svg>
