@@ -26,7 +26,17 @@ export function boundRoi<T extends CommittedBox>(
     angle: committedBox.angle,
   };
 
-  if (strategy === 'resize') {
+  if (result.angle !== 0) {
+    const mbr = getMBRBoundaries(committedBox);
+    if (
+      mbr.minX < 0 ||
+      mbr.minY < 0 ||
+      mbr.maxX > targetSize.width ||
+      mbr.maxY > targetSize.height
+    ) {
+      throw new Error('Resize with rotation not implemented');
+    }
+  } else if (strategy === 'resize') {
     if (result.x < 0) {
       result.width += result.x;
       result.x = 0;
@@ -70,7 +80,7 @@ const boundStrategyMap: Record<RoiAction['type'], BoundStrategy> = {
   rotating: 'move',
 };
 
-export function updateCommitedRoiPosition(
+export function updateCommittedRoiPosition(
   draft: ReactRoiState,
   committedRoi: Draft<CommittedRoi>,
   roi: Draft<Roi>,

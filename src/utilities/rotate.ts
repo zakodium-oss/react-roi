@@ -62,39 +62,9 @@ export function computeAngleFromMousePosition(
   const c = topMiddleEdgeAfterRotate.x - centerOrigin.x;
   const d = topMiddleEdgeAfterRotate.y - centerOrigin.y;
   assert(a ** 2 + b ** 2 !== 0);
-  const denom = a ** 2 + b ** 2;
+  const denominator = a ** 2 + b ** 2;
   // The result of the equation was computed with Wolfram alpha: "solve a * cos(t) + b * ((d+b*cos(t))/a)=c for t"
-  return Math.acos((a * c - b * d) / denom) * (OP.x > 0 ? 1 : -1);
-}
-
-export function rotatePointBox(point: Point, box: Box) {
-  // Box rotates around the top left corner
-  const centerPoint: Point = {
-    x: box.x + box.width / 2,
-    y: box.y + box.height / 2,
-  };
-  return rotatePoint(point, centerPoint, box.angle);
-}
-
-type RawBox = Omit<Box, 'angle'>;
-
-export function rotateBox(box: RawBox, angle: number): Omit<Box, 'angle'> {
-  const boxCenter = {
-    x: box.x + box.width / 2,
-    y: box.y + box.height / 2,
-  };
-  const p1 = rotatePoint({ x: box.x, y: box.y }, boxCenter, angle);
-  const p2 = rotatePoint(
-    { x: box.x + box.width, y: box.y + box.height },
-    boxCenter,
-    angle,
-  );
-  return {
-    x: p1.x,
-    y: p1.y,
-    width: p2.x - p1.x,
-    height: p2.y - p1.y,
-  };
+  return Math.acos((a * c - b * d) / denominator) * (OP.x > 0 ? 1 : -1);
 }
 
 export function rotatePointCommittedBox(point: Point, box: Box | CommittedBox) {
