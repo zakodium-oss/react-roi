@@ -332,7 +332,6 @@ function callPointerUpActionHooks(
       break;
     }
     case 'rotating': {
-      // TODO: implement this
       throw new Error('not implemented yet');
     }
     case 'resizing': {
