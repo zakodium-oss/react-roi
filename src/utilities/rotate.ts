@@ -84,6 +84,41 @@ function mulScalar(point: Point, scalar: number): Point {
   };
 }
 
+export function rotatePointBox(point: Point, box: Box) {
+  // Box rotates around the top left corner
+  const centerPoint: Point = {
+    x: box.x1 + (box.x2 - box.x1) / 2,
+    y: box.y1 + (box.y2 - box.y1) / 2,
+  };
+  return rotatePoint(point, centerPoint, box.angle);
+}
+
+type RawBox = Omit<Box, 'angle'>;
+
+export function rotateBox(box: RawBox, angle: number): Omit<Box, 'angle'> {
+  const boxCenter = {
+    x: box.x1 + (box.x2 - box.x1) / 2,
+    y: box.y1 + (box.y2 - box.y1) / 2,
+  };
+  const p1 = rotatePoint({ x: box.x1, y: box.y1 }, boxCenter, angle);
+  const p2 = rotatePoint({ x: box.x2, y: box.y2 }, boxCenter, angle);
+  return {
+    x1: p1.x,
+    y1: p1.y,
+    x2: p2.x,
+    y2: p2.y,
+  };
+}
+
+export function rotatePointBoxInverse(point: Point, box: Box) {
+  // Box rotates around the top left corner
+  const centerPoint: Point = {
+    x: box.x1 + (box.x2 - box.x1) / 2,
+    y: box.y1 + (box.y2 - box.y1) / 2,
+  };
+  return rotatePoint(point, centerPoint, -box.angle);
+}
+
 export function rotatePointCommittedBox(point: Point, box: CommittedBox) {
   const topLeftPoint: Point = {
     x: box.x,

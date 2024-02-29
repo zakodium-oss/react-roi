@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Point } from '../..';
+import { Box, Point } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
 import {
@@ -8,7 +8,10 @@ import {
   applyInverseY,
   computeTotalPanZoom,
 } from '../../utilities/panZoom';
-import { computeAngleFromMousePosition } from '../../utilities/rotate';
+import {
+  computeAngleFromMousePosition,
+  rotateBox,
+} from '../../utilities/rotate';
 import { PointerMovePayload, ReactRoiState } from '../roiReducer';
 
 import { rectifyPanZoom } from './rectifyPanZoom';
@@ -66,7 +69,11 @@ export function updateRoiBox(
       break;
     }
     case 'resizing': {
-      resize(draft, roi, movement);
+      if (roi.angle === 0) {
+        resize(draft, roi, movement);
+      } else {
+        resizeWithAngle(draft, roi, movement);
+      }
       break;
     }
     case 'drawing':
@@ -85,6 +92,33 @@ function move(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   roi.y1 += movementY;
   roi.x2 += movementX;
   roi.y2 += movementY;
+}
+
+function resizeWithAngle(
+  draft: Draft<ReactRoiState>,
+  roi: Draft<Roi>,
+  movement: Point,
+) {
+  const totalPanZoom = computeTotalPanZoom(draft);
+  assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
+  const movementX = movement.x / totalPanZoom.scale;
+  const movementY = movement.y / totalPanZoom.scale;
+  const { xAxisCorner, yAxisCorner } = roi.action;
+  console.log(xAxisCorner);
+  switch (xAxisCorner) {
+    case 'left': {
+      const newBox = getMovement({ x: movementX, y: movementY }, roi);
+      console.log(newBox);
+      roi.x1 = newBox.x1;
+      roi.y1 = newBox.y1;
+      roi.x2 = newBox.x2;
+      roi.y2 = newBox.y2;
+      break;
+    }
+    default: {
+      throw new Error('todo: implement');
+    }
+  }
 }
 
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
@@ -156,4 +190,18 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
     default:
       assertUnreachable(yAxisCorner);
   }
+}
+
+function getMovement(movement: Point, box: Box): Omit<Box, 'angle'> {
+  const rotatedBox = rotateBox(box, box.angle);
+
+  const newRotatedBox = {
+    x1: rotatedBox.x1 + movement.x,
+    y1: rotatedBox.y1 + movement.y,
+    x2: rotatedBox.x2,
+    y2: rotatedBox.y2,
+  };
+  const newBox = rotateBox(newRotatedBox, -box.angle);
+
+  return newBox;
 }
