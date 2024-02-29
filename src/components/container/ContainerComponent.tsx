@@ -235,22 +235,21 @@ export function ContainerComponent<TData = unknown>(
           }}
         >
           {target}
-
-          <div
-            style={{
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              margin: 0,
-              padding: 0,
-              top: 0,
-              left: 0,
-            }}
-          >
-            {children}
-          </div>
+        </div>
+        <div
+          style={{
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            margin: 0,
+            padding: 0,
+            top: 0,
+            left: 0,
+          }}
+        >
+          {children}
         </div>
       </div>
     </lockContext.Provider>

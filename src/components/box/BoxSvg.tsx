@@ -1,6 +1,12 @@
 import { CSSProperties } from 'react';
 
-import { GetStyleCallback, ReactRoiAction, RoiMode, useRoiState } from '../..';
+import {
+  Box,
+  GetStyleCallback,
+  ReactRoiAction,
+  RoiMode,
+  useRoiState,
+} from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -9,53 +15,55 @@ import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
-import { getScaledSizes } from './sizes';
-import { roiToFloorBox } from './util';
+import { CornerSizeOptions } from './sizes';
 
 export interface BoxAnnotationProps {
   roi: Roi;
+  box: Box;
   style?: CSSProperties;
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
 }
 
-export function Box({
+const cornerSize: CornerSizeOptions = {
+  handlerSize: 12,
+  handlerBorderWidth: 3,
+};
+
+export function BoxSvg({
   roi,
   style,
   className,
   isReadOnly,
   getStyle,
+  box,
 }: BoxAnnotationProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   const roiState = useRoiState();
-  const scaledSizes = getScaledSizes(roi, panZoom);
 
   const isSelected = roi.id === roiState.selectedRoi;
   const styles = getStyle(roi, {
     isReadOnly,
     isSelected,
-    scaledSizes,
     zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
   });
 
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
 
-  const flooredBox = roiToFloorBox(roi);
-
   return (
     <svg
       style={{
         transformBox: 'fill-box',
         transformOrigin: 'center',
-        transform: `rotate(${roi.angle}rad)`,
+        transform: `rotate(${box.angle}rad)`,
         display: 'block',
         overflow: 'visible',
-        width: flooredBox.width,
-        height: flooredBox.height,
+        width: box.width,
+        height: box.height,
         cursor: getCursor(
           roiState.mode,
           isReadOnly,
@@ -65,7 +73,7 @@ export function Box({
         ),
         ...style,
       }}
-      viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
+      viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
       className={className}
       onPointerDown={(event) => {
         if (event.altKey || isReadOnly || roiState.mode === 'draw') {
@@ -96,41 +104,36 @@ export function Box({
       {styles.renderCustomPattern?.()}
 
       <clipPath id={clipPathId}>
-        <rect
-          x={flooredBox.x}
-          y={flooredBox.y}
-          width={flooredBox.width}
-          height={flooredBox.height}
-        />
+        <rect x={box.x} y={box.y} width={box.width} height={box.height} />
       </clipPath>
       <rect
         clipPath={`url(#${clipPathId})`}
-        x={flooredBox.x}
-        y={flooredBox.y}
-        width={flooredBox.width}
-        height={flooredBox.height}
+        x={box.x}
+        y={box.y}
+        width={box.width}
+        height={box.height}
         {...styles.rectAttributes}
       />
       {isSelected &&
-        getAllCorners(flooredBox).map((corner) => (
+        getAllCorners(box).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}
             roiId={roi.id}
-            sizes={scaledSizes}
+            sizes={cornerSize}
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
       {isSelected && (
         <circle
           id="rotate-handler"
-          cx={flooredBox.x + flooredBox.width / 2}
-          cy={flooredBox.y - scaledSizes.handlerSize * 2}
+          cx={box.x + box.width / 2}
+          cy={box.y - cornerSize.handlerSize * 2}
           fill="transparent"
           stroke={styles.resizeHandlerColor}
           cursor="grab"
-          strokeWidth={scaledSizes.handlerSize / 6}
-          r={scaledSizes.handlerSize / 3}
+          strokeWidth={cornerSize.handlerSize / 6}
+          r={cornerSize.handlerSize / 3}
         />
       )}
     </svg>

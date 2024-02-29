@@ -1,6 +1,7 @@
 import { Box, CommittedBox, Point } from '../types/utils';
 
 import { assert } from './assert';
+import { add, mulScalar, norm } from './point';
 
 const ANGLE_90_POSITIVE = Math.PI / 2;
 const ANGLE_90_NEGATIVE = -Math.PI / 2;
@@ -38,9 +39,9 @@ export function computeAngleFromMousePosition(
   pointer: Point,
   roi: Box,
 ): number {
-  const width = roi.x2 - roi.x1;
-  const height = roi.y2 - roi.y1;
-  const centerOrigin = { x: roi.x1 + width / 2, y: roi.y1 + height / 2 };
+  const width = roi.width;
+  const height = roi.height;
+  const centerOrigin = { x: roi.x + width / 2, y: roi.y + height / 2 };
   // O is the origin, P is the pointer. This is the OP vector.
   const OP: Point = {
     x: pointer.x - centerOrigin.x,
@@ -53,8 +54,8 @@ export function computeAngleFromMousePosition(
     mulScalar(OP, factor),
   );
   const topMiddleEdgeBeforeRotate: Point = {
-    x: roi.x1 + width / 2,
-    y: roi.y1,
+    x: roi.x + width / 2,
+    y: roi.y,
   };
   const a = topMiddleEdgeBeforeRotate.x - centerOrigin.x;
   const b = centerOrigin.y - topMiddleEdgeBeforeRotate.y;
@@ -66,29 +67,11 @@ export function computeAngleFromMousePosition(
   return Math.acos((a * c - b * d) / denom) * (OP.x > 0 ? 1 : -1);
 }
 
-function norm(point: Point): number {
-  return Math.sqrt(point.x ** 2 + point.y ** 2);
-}
-
-function add(pointA: Point, pointB: Point): Point {
-  return {
-    x: pointA.x + pointB.x,
-    y: pointA.y + pointB.y,
-  };
-}
-
-function mulScalar(point: Point, scalar: number): Point {
-  return {
-    x: point.x * scalar,
-    y: point.y * scalar,
-  };
-}
-
 export function rotatePointBox(point: Point, box: Box) {
   // Box rotates around the top left corner
   const centerPoint: Point = {
-    x: box.x1 + (box.x2 - box.x1) / 2,
-    y: box.y1 + (box.y2 - box.y1) / 2,
+    x: box.x + box.width / 2,
+    y: box.y + box.height / 2,
   };
   return rotatePoint(point, centerPoint, box.angle);
 }
@@ -97,29 +80,24 @@ type RawBox = Omit<Box, 'angle'>;
 
 export function rotateBox(box: RawBox, angle: number): Omit<Box, 'angle'> {
   const boxCenter = {
-    x: box.x1 + (box.x2 - box.x1) / 2,
-    y: box.y1 + (box.y2 - box.y1) / 2,
+    x: box.x + box.width / 2,
+    y: box.y + box.height / 2,
   };
-  const p1 = rotatePoint({ x: box.x1, y: box.y1 }, boxCenter, angle);
-  const p2 = rotatePoint({ x: box.x2, y: box.y2 }, boxCenter, angle);
+  const p1 = rotatePoint({ x: box.x, y: box.y }, boxCenter, angle);
+  const p2 = rotatePoint(
+    { x: box.x + box.width, y: box.y + box.height },
+    boxCenter,
+    angle,
+  );
   return {
-    x1: p1.x,
-    y1: p1.y,
-    x2: p2.x,
-    y2: p2.y,
+    x: p1.x,
+    y: p1.y,
+    width: p2.x - p1.x,
+    height: p2.y - p1.y,
   };
 }
 
-export function rotatePointBoxInverse(point: Point, box: Box) {
-  // Box rotates around the top left corner
-  const centerPoint: Point = {
-    x: box.x1 + (box.x2 - box.x1) / 2,
-    y: box.y1 + (box.y2 - box.y1) / 2,
-  };
-  return rotatePoint(point, centerPoint, -box.angle);
-}
-
-export function rotatePointCommittedBox(point: Point, box: CommittedBox) {
+export function rotatePointCommittedBox(point: Point, box: Box | CommittedBox) {
   const topLeftPoint: Point = {
     x: box.x,
     y: box.y,

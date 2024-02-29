@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { Box, Point } from '../..';
+import { Point } from '../..';
 import { Roi } from '../../types/Roi';
 import { assert, assertUnreachable } from '../../utilities/assert';
 import {
@@ -9,8 +9,14 @@ import {
   computeTotalPanZoom,
 } from '../../utilities/panZoom';
 import {
+  add,
+  mulScalar,
+  scalarMultiply,
+  subtract,
+} from '../../utilities/point';
+import {
   computeAngleFromMousePosition,
-  rotateBox,
+  rotatePoint,
 } from '../../utilities/rotate';
 import { PointerMovePayload, ReactRoiState } from '../roiReducer';
 
@@ -69,11 +75,7 @@ export function updateRoiBox(
       break;
     }
     case 'resizing': {
-      if (roi.angle === 0) {
-        resize(draft, roi, movement);
-      } else {
-        resizeWithAngle(draft, roi, movement);
-      }
+      resizeWithAngle(draft, roi, movement);
       break;
     }
     case 'drawing':
@@ -88,37 +90,8 @@ function move(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   const totalPanZoom = computeTotalPanZoom(draft);
   const movementX = movement.x / totalPanZoom.scale;
   const movementY = movement.y / totalPanZoom.scale;
-  roi.x1 += movementX;
-  roi.y1 += movementY;
-  roi.x2 += movementX;
-  roi.y2 += movementY;
-}
-
-function resizeWithAngle(
-  draft: Draft<ReactRoiState>,
-  roi: Draft<Roi>,
-  movement: Point,
-) {
-  const totalPanZoom = computeTotalPanZoom(draft);
-  assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
-  const movementX = movement.x / totalPanZoom.scale;
-  const movementY = movement.y / totalPanZoom.scale;
-  const { xAxisCorner, yAxisCorner } = roi.action;
-  console.log(xAxisCorner);
-  switch (xAxisCorner) {
-    case 'left': {
-      const newBox = getMovement({ x: movementX, y: movementY }, roi);
-      console.log(newBox);
-      roi.x1 = newBox.x1;
-      roi.y1 = newBox.y1;
-      roi.x2 = newBox.x2;
-      roi.y2 = newBox.y2;
-      break;
-    }
-    default: {
-      throw new Error('todo: implement');
-    }
-  }
+  roi.x += movementX;
+  roi.y += movementY;
 }
 
 function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
@@ -130,31 +103,32 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   // Handle X axis
   switch (xAxisCorner) {
     case 'left': {
-      const newX = roi.x1 + movementX;
-      if (newX <= roi.x2) {
-        roi.x1 = newX;
+      const newX = roi.x + movementX;
+      if (newX <= roi.x + roi.width) {
+        roi.x = newX;
+        roi.width -= movementX;
       } else {
-        roi.x1 = roi.x2;
-        roi.x2 = newX;
+        roi.x = roi.x + roi.width;
+        roi.width = newX - roi.x;
         roi.action.xAxisCorner = 'right';
       }
       break;
     }
     case 'right': {
-      const newX = roi.x2 + movementX;
-
-      if (newX >= roi.x1) {
-        roi.x2 = newX;
+      const newWidth = roi.width + movementX;
+      if (newWidth >= 0) {
+        roi.width = newWidth;
       } else {
-        roi.x2 = roi.x1;
-        roi.x1 = newX;
+        roi.x = roi.x + newWidth;
+        roi.width = -newWidth;
         roi.action.xAxisCorner = 'left';
       }
       break;
     }
-    case 'middle':
+    case 'middle': {
       // Don't touch x
       break;
+    }
     default:
       assertUnreachable(xAxisCorner);
   }
@@ -163,23 +137,24 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   const yAxisCorner = roi.action.yAxisCorner;
   switch (yAxisCorner) {
     case 'top': {
-      const newY = roi.y1 + movementY;
-      if (newY <= roi.y2) {
-        roi.y1 = newY;
+      const newY = roi.y + movementY;
+      if (newY <= roi.y + roi.height) {
+        roi.y = newY;
+        roi.height -= movementY;
       } else {
-        roi.y1 = roi.y2;
-        roi.y2 = newY;
+        roi.y = roi.y + roi.height;
+        roi.height = newY - roi.y;
         roi.action.yAxisCorner = 'bottom';
       }
       break;
     }
     case 'bottom': {
-      const newY = roi.y2 + movementY;
-      if (newY >= roi.y1) {
-        roi.y2 = newY;
+      const newHeight = roi.height + movementY;
+      if (newHeight >= 0) {
+        roi.height = newHeight;
       } else {
-        roi.y2 = roi.y1;
-        roi.y1 = newY;
+        roi.y = roi.y + newHeight;
+        roi.height = -newHeight;
         roi.action.yAxisCorner = 'top';
       }
       break;
@@ -192,16 +167,93 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
   }
 }
 
-function getMovement(movement: Point, box: Box): Omit<Box, 'angle'> {
-  const rotatedBox = rotateBox(box, box.angle);
+function resizeWithAngle(
+  draft: Draft<ReactRoiState>,
+  roi: Draft<Roi>,
+  movement: Point,
+) {
+  const totalPanZoom = computeTotalPanZoom(draft);
+  assert(roi.action.type === 'resizing' || roi.action.type === 'drawing');
+  const { xAxisCorner, yAxisCorner } = roi.action;
+  const movementX = movement.x / totalPanZoom.scale;
+  const movementY = movement.y / totalPanZoom.scale;
 
-  const newRotatedBox = {
-    x1: rotatedBox.x1 + movement.x,
-    y1: rotatedBox.y1 + movement.y,
-    x2: rotatedBox.x2,
-    y2: rotatedBox.y2,
+  const movementPoint = { x: movementX, y: movementY };
+  const halfMovementPoint = mulScalar(movementPoint, 0.5);
+  const rotatedDelta = rotatePoint(movementPoint, { x: 0, y: 0 }, -roi.angle);
+  const projectionBase = rotatePoint({ x: 1, y: 0 }, { x: 0, y: 0 }, roi.angle);
+  const projectionX = mulScalar(
+    projectionBase,
+    scalarMultiply(halfMovementPoint, projectionBase),
+  );
+  const projectionY = subtract(halfMovementPoint, projectionX);
+
+  let newCenter: Point = {
+    x: roi.x + roi.width / 2,
+    y: roi.y + roi.height / 2,
   };
-  const newBox = rotateBox(newRotatedBox, -box.angle);
 
-  return newBox;
+  let newWidth = roi.width;
+  let newHeight = roi.height;
+  switch (xAxisCorner) {
+    case 'right': {
+      newWidth = roi.width + rotatedDelta.x;
+      newCenter = add(newCenter, projectionX);
+      if (newWidth < 0) {
+        newWidth = -newWidth;
+        roi.action.xAxisCorner = 'left';
+      }
+      break;
+    }
+    case 'left': {
+      newWidth = roi.width - rotatedDelta.x;
+      newCenter = add(newCenter, projectionX);
+      if (newWidth < 0) {
+        newWidth = -newWidth;
+        roi.action.xAxisCorner = 'right';
+      }
+      break;
+    }
+    case 'middle': {
+      // Nothing to do on x
+      break;
+    }
+    default: {
+      // do nothing
+      assertUnreachable(xAxisCorner);
+    }
+  }
+
+  switch (yAxisCorner) {
+    case 'bottom': {
+      newHeight = roi.height + rotatedDelta.y;
+      newCenter = add(newCenter, projectionY);
+      if (newHeight < 0) {
+        newHeight = -newHeight;
+        roi.action.yAxisCorner = 'top';
+      }
+      break;
+    }
+    case 'top': {
+      newHeight = roi.height - rotatedDelta.y;
+      newCenter = add(newCenter, projectionY);
+      if (newHeight < 0) {
+        newHeight = -newHeight;
+        roi.action.yAxisCorner = 'bottom';
+      }
+      break;
+    }
+    case 'middle': {
+      // No effect on y
+      break;
+    }
+    default: {
+      assertUnreachable(yAxisCorner);
+    }
+  }
+
+  roi.x = newCenter.x - newWidth / 2;
+  roi.y = newCenter.y - newHeight / 2;
+  roi.width = newWidth;
+  roi.height = newHeight;
 }

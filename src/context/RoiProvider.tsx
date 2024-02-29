@@ -124,7 +124,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const {
     rois: initialRois = [],
     mode: initialMode = 'hybrid',
-    zoom: { min = 1, max = 20, spaceAroundTarget = 0.5 } = {},
+    zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;

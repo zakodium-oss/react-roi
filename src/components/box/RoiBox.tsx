@@ -9,10 +9,12 @@ import {
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
+import {
+  applyTransformToBox,
+  computeTotalPanZoom,
+} from '../../utilities/panZoom';
 
-import { Box } from './Box';
-import { getScaledSizes } from './sizes';
-import { roiToFloorBox } from './util';
+import { BoxSvg } from './BoxSvg';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -34,16 +36,15 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   } = props;
 
   const panzoom = usePanZoom();
+  const totalPanzoom = computeTotalPanZoom(panzoom);
   const { id } = roi;
 
-  const scaledSizes = getScaledSizes(roi, panzoom);
   const roiDispatch = useRoiDispatch();
   const isReadOnly = getReadOnly(roi) || false;
 
   const roiAdditionalState = {
     isReadOnly,
     isSelected,
-    scaledSizes,
     zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
   };
 
@@ -55,7 +56,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     }
   }, [id, isReadOnly, roiDispatch]);
 
-  const box = roiToFloorBox(roi);
+  const box = applyTransformToBox(totalPanzoom, roi);
 
   return (
     <>
@@ -73,7 +74,12 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
               : 'none',
         }}
       >
-        <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
+        <BoxSvg
+          roi={roi}
+          box={box}
+          isReadOnly={isReadOnly}
+          getStyle={getStyle}
+        />
       </div>
       <div
         data-testid={`label-${roi.id}`}

@@ -42,10 +42,10 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
           previousSelectedRoi: draft.selectedRoi,
         },
 
-        x1: x,
-        y1: y,
-        x2: x,
-        y2: y,
+        x,
+        y,
+        width: 0,
+        height: 0,
       };
       draft.selectedRoi = roi.id;
       draft.rois.push(roi);

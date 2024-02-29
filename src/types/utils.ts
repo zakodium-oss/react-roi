@@ -27,23 +27,27 @@ export interface CommittedBox {
   angle: number;
 }
 
+/**
+ * Represents the coordinates and angle of a box
+ * Units are pixels in the client's coordinates system and relative to the container's position.
+ */
 export interface Box {
   /**
-   * Left position of the ROI box in absolute units (px).
+   * Top left position of the ROI box relative to the container
    */
-  x1: number;
+  x: number;
   /**
-   * Top position of the ROI box in absolute units (px).
+   * Top position of the ROI box relative to the container
    */
-  y1: number;
+  y: number;
   /**
-   * Width of the ROI box in absolute units (px).
+   * Width of the ROI box.
    */
-  x2: number;
+  width: number;
   /**
    * Height of the ROI box in absolute units (px).
    */
-  y2: number;
+  height: number;
   /**
    * Rotation angle around the center of the ROI in radians
    */
