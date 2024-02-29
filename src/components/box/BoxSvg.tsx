@@ -15,7 +15,7 @@ import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
-import { CornerSizeOptions } from './sizes';
+import { getHandlerSizes } from './sizes';
 
 export interface BoxAnnotationProps {
   roi: Roi;
@@ -25,11 +25,6 @@ export interface BoxAnnotationProps {
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
 }
-
-const cornerSize: CornerSizeOptions = {
-  handlerSize: 12,
-  handlerBorderWidth: 3,
-};
 
 export function BoxSvg({
   roi,
@@ -50,6 +45,8 @@ export function BoxSvg({
     isSelected,
     zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
   });
+
+  const handlerSizes = getHandlerSizes(roi);
 
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
@@ -120,7 +117,7 @@ export function BoxSvg({
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}
             roiId={roi.id}
-            sizes={cornerSize}
+            sizes={handlerSizes}
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
@@ -128,12 +125,12 @@ export function BoxSvg({
         <circle
           id="rotate-handler"
           cx={box.x + box.width / 2}
-          cy={box.y - cornerSize.handlerSize * 2}
+          cy={box.y - handlerSizes.handlerSize * 2}
           fill="transparent"
           stroke={styles.resizeHandlerColor}
           cursor="grab"
-          strokeWidth={cornerSize.handlerSize / 6}
-          r={cornerSize.handlerSize / 3}
+          strokeWidth={handlerSizes.handlerSize / 6}
+          r={handlerSizes.handlerSize / 3}
         />
       )}
     </svg>
