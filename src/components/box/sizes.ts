@@ -6,7 +6,7 @@ export interface HandlerSizeOptions {
 }
 
 const baseSize: HandlerSizeOptions = {
-  handlerSize: 16,
+  handlerSize: 14,
   handlerBorderWidth: 3,
 };
 

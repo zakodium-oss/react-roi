@@ -47,6 +47,7 @@ export interface RoiListProps<TData = unknown> {
   getReadOnly?: GetReadOnlyCallback<TData>;
   renderLabel?: RenderLabelCallback<TData>;
   getOverlayOpacity?: GetOverlayOpacity<TData>;
+  allowRotate?: boolean;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
@@ -55,6 +56,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     getReadOnly = () => false,
     getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
+    allowRotate = false,
   } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
@@ -75,6 +77,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           renderLabel={renderLabel as RenderLabelCallback}
           getReadOnly={getReadOnly as GetReadOnlyCallback}
           getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
+          allowRotate={allowRotate}
           isSelected={roi.id === selectedRoi}
         />
       ))}

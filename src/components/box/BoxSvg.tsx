@@ -25,6 +25,7 @@ export interface BoxAnnotationProps {
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
+  allowRotate: boolean;
 }
 
 export function BoxSvg({
@@ -34,6 +35,7 @@ export function BoxSvg({
   isReadOnly,
   getStyle,
   box,
+  allowRotate,
 }: BoxAnnotationProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
@@ -122,7 +124,7 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
-      {isSelected && (
+      {isSelected && allowRotate && (
         <RoiBoxRotateHandler
           box={box}
           styles={styles}

@@ -22,6 +22,7 @@ interface RoiBoxProps {
   getStyle: GetStyleCallback;
   getReadOnly: GetReadOnlyCallback;
   renderLabel: RenderLabelCallback;
+  allowRotate: boolean;
   getOverlayOpacity: GetOverlayOpacity;
 }
 
@@ -33,6 +34,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     isSelected,
     renderLabel,
     getOverlayOpacity,
+    allowRotate,
   } = props;
 
   const panzoom = usePanZoom();
@@ -79,6 +81,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           box={box}
           isReadOnly={isReadOnly}
           getStyle={getStyle}
+          allowRotate={allowRotate}
         />
       </div>
       <div
