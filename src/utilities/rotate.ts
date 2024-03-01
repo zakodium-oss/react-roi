@@ -126,3 +126,10 @@ export function getMBRBoundaries(box: CommittedBox): Boundaries {
   }
   throw new Error('wrong angle value');
 }
+
+// Angle should always be between -PI and +PI
+export function normalizeAngle(angle: number) {
+  const factor = angle / (2 * Math.PI);
+  const normalized = 2 * Math.PI * (factor - Math.round(factor));
+  return normalized === Math.PI ? -Math.PI : normalized;
+}

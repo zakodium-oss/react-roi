@@ -10,6 +10,7 @@ import {
 } from '..';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
+import { normalizeAngle } from '../utilities/rotate';
 
 import {
   ActionCallbacks,
@@ -100,9 +101,12 @@ function createInitialState<T>(
     containerSize: initialSize,
     selectedRoi: initialConfig.selectedRoiId,
     committedRois: initialConfig.rois,
-    rois: initialConfig.rois.map((committedRoi) =>
-      createRoiFromCommittedRoi(committedRoi),
-    ),
+    rois: initialConfig.rois
+      .map((committedRoi) => ({
+        ...committedRoi,
+        angle: normalizeAngle(committedRoi.angle),
+      }))
+      .map((committedRoi) => createRoiFromCommittedRoi(committedRoi)),
     panZoom: initialConfig.zoom.initial,
     initialPanZoom: {
       scale: 1,
