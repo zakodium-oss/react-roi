@@ -38,9 +38,16 @@ export function WithShadowAroundSelectedRoi() {
           target={<TargetImage src="/barbara.jpg" />}
         >
           <RoiList<CustomColorData>
+            allowRotate
             getOverlayOpacity={(roi, { isSelected }) =>
               isSelected && (roi.width > 0 || roi.height > 0) ? 0.6 : 0
             }
+            getStyle={(_, { isSelected }) => ({
+              resizeHandlerColor: isSelected ? 'white' : 'black',
+              rectAttributes: {
+                fill: isSelected ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.4)',
+              },
+            })}
           />
         </RoiContainer>
       </RoiProvider>

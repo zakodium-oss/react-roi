@@ -65,6 +65,8 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
       <div
         data-testid={roi.id}
         style={{
+          transformOrigin: 'center',
+          transform: `rotate(${box.angle}rad)`,
           position: 'absolute',
           left: box.x,
           top: box.y,

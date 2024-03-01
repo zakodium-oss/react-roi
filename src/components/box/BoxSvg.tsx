@@ -57,9 +57,6 @@ export function BoxSvg({
   return (
     <svg
       style={{
-        transformBox: 'fill-box',
-        transformOrigin: 'center',
-        transform: `rotate(${box.angle}rad)`,
         display: 'block',
         overflow: 'visible',
         width: box.width,

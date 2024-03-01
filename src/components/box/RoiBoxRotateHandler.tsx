@@ -12,7 +12,9 @@ interface RoiBoxRotateHandlerProps {
 export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
   const { box, handlerSizes, styles } = props;
   const cx = box.x + box.width / 2;
-  const cy = box.y - handlerSizes.handlerSize * 1.2;
+  const r = handlerSizes.handlerSize / 2.5;
+  const offset = r * 3;
+  const cy = box.y - offset;
   return (
     <>
       <circle
@@ -21,15 +23,15 @@ export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
         fill="transparent"
         stroke={styles.resizeHandlerColor}
         cursor="grab"
-        strokeWidth={handlerSizes.handlerSize / 6}
-        r={handlerSizes.handlerSize / 3}
+        strokeWidth={2}
+        r={r}
       />
       <rect
         id="rotate-handler"
-        x={cx - handlerSizes.handlerSize}
-        y={cy - handlerSizes.handlerSize}
-        width={handlerSizes.handlerSize * 1.8}
-        height={handlerSizes.handlerSize * 1.8}
+        x={cx - 2 * r}
+        y={cy - 2 * r}
+        width={r * 4}
+        height={r * 4}
         cursor="grab"
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
