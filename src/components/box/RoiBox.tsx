@@ -74,7 +74,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           height: box.height,
           boxShadow:
             isSelected && shadowOpacity
-              ? `0 0 0 ${Math.max(panzoom.containerSize.width, panzoom.containerSize.height)}px rgba(0,0,0,${shadowOpacity})`
+              ? `0 0 0 ${Math.max(panzoom.containerSize.width * totalPanzoom.scale, panzoom.containerSize.height * totalPanzoom.scale)}px rgba(0,0,0,${shadowOpacity})`
               : 'none',
         }}
       >
