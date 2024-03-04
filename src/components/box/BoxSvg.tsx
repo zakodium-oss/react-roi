@@ -121,7 +121,7 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
-      {isSelected && allowRotate && (
+      {isSelected && allowRotate && roi.action.type !== 'drawing' && (
         <RoiBoxRotateHandler
           box={box}
           styles={styles}
