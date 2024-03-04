@@ -12,11 +12,16 @@ export interface CornerData {
   cy: number;
 }
 
-// Expects angle input ranging from -PI to +PI
+// Input: -π < angle < π
+// Add 2π so that angle is positive and modulo returns positive values
+// Add π/8 so that:
+// -π/8 <= angle < π/8 becomes 0 <= angle < π/4
+// which returns an index of 0 when dividing by π/4 and computing modulo
 function getCursorIndex(angle: number, idx: number) {
   return (Math.floor(((17 * Math.PI) / 8 + angle) / (Math.PI / 4)) + idx) % 8;
 }
 
+// List of cursors going around the rectangle, starting from the top-left position and moving to the right from there
 const cursors: Array<Exclude<CSSProperties['cursor'], undefined>> = [
   'nwse-resize',
   'ns-resize',
