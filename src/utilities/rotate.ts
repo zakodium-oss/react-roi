@@ -97,10 +97,10 @@ export function getMBRBoundaries(box: CommittedBox): Boundaries {
 
   if (box.angle >= -Math.PI && box.angle < ANGLE_90_NEGATIVE) {
     return {
-      minX: p3.x,
-      maxX: p1.x,
-      minY: p0.y,
-      maxY: p2.y,
+      minX: p1.x,
+      maxX: p3.x,
+      minY: p2.y,
+      maxY: p0.y,
     };
   } else if (box.angle >= ANGLE_90_NEGATIVE && box.angle < 0) {
     return {
