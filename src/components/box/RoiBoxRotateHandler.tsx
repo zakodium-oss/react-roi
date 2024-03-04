@@ -23,8 +23,16 @@ export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
         fill="transparent"
         stroke={styles.resizeHandlerColor}
         cursor="grab"
-        strokeWidth={2}
+        strokeWidth={3}
         r={r}
+      />
+      <line
+        x1={box.x + box.width / 2}
+        y1={box.y}
+        x2={box.x + box.width / 2}
+        y2={box.y - offset + r}
+        strokeWidth={3}
+        stroke={styles.resizeHandlerColor}
       />
       <rect
         id="rotate-handler"
