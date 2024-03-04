@@ -1,18 +1,18 @@
 import { Box } from '../../types/utils';
 import { CustomRoiStyle } from '../RoiList';
 
-import { HandlerSizeOptions } from './sizes';
+import { baseHandlerSizes } from './sizes';
 
 interface RoiBoxRotateHandlerProps {
   box: Box;
-  handlerSizes: HandlerSizeOptions;
   styles: CustomRoiStyle;
 }
 
 export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
-  const { box, handlerSizes, styles } = props;
+  const { box, styles } = props;
   const cx = box.x + box.width / 2;
-  const r = handlerSizes.handlerSize / 2.5;
+  const r = baseHandlerSizes.handlerSize / 2.5;
+
   const offset = r * 3;
   const cy = box.y - offset;
   return (
@@ -23,7 +23,7 @@ export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
         fill="transparent"
         stroke={styles.resizeHandlerColor}
         cursor="grab"
-        strokeWidth={3}
+        strokeWidth={baseHandlerSizes.handlerBorderWidth}
         r={r}
       />
       <line
@@ -31,7 +31,7 @@ export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
         y1={box.y}
         x2={box.x + box.width / 2}
         y2={box.y - offset + r}
-        strokeWidth={3}
+        strokeWidth={baseHandlerSizes.handlerBorderWidth}
         stroke={styles.resizeHandlerColor}
       />
       <rect

@@ -49,7 +49,7 @@ export function BoxSvg({
     zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
   });
 
-  const handlerSizes = getHandlerSizes(roi);
+  const handlerSizes = getHandlerSizes(roi, panZoom);
 
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
@@ -122,11 +122,7 @@ export function BoxSvg({
           />
         ))}
       {isSelected && allowRotate && roi.action.type !== 'drawing' && (
-        <RoiBoxRotateHandler
-          box={box}
-          styles={styles}
-          handlerSizes={handlerSizes}
-        />
+        <RoiBoxRotateHandler box={box} styles={styles} />
       )}
     </svg>
   );
