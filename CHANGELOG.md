@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.15.0](https://github.com/zakodium-oss/react-roi/compare/v0.14.0...v0.15.0) (2024-03-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* the ROI coordinates are no longer floored to an integer. `x`, `y`, `width` and `height` are all floating point numbers. `RoiAction` type renamed to `ReactRoiAction` to avoid name conflict.
+
+### Features
+
+* add getOverlayOpacity prop which allows to darken the container around the ROI ([#120](https://github.com/zakodium-oss/react-roi/issues/120)) ([91615df](https://github.com/zakodium-oss/react-roi/commit/91615df065eb089d1c8d9442020282778192471c))
+* rotate ROIs ([#122](https://github.com/zakodium-oss/react-roi/issues/122)) ([4e25be5](https://github.com/zakodium-oss/react-roi/commit/4e25be5f423d88e08e64e7681710e17e85be5963))
+
 ## [0.14.0](https://github.com/zakodium-oss/react-roi/compare/v0.13.1...v0.14.0) (2024-02-02)
 
 
