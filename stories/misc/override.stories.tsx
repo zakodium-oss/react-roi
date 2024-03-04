@@ -38,11 +38,16 @@ export function WithShadowAroundSelectedRoi() {
           target={<TargetImage src="/barbara.jpg" />}
         >
           <RoiList<CustomColorData>
+            allowRotate
             getOverlayOpacity={(roi, { isSelected }) =>
-              isSelected && (roi.x2 - roi.x1 > 0 || roi.y2 - roi.y1 > 0)
-                ? 0.6
-                : 0
+              isSelected && (roi.width > 0 || roi.height > 0) ? 0.6 : 0
             }
+            getStyle={(_, { isSelected }) => ({
+              resizeHandlerColor: isSelected ? 'white' : 'black',
+              rectAttributes: {
+                fill: isSelected ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.4)',
+              },
+            })}
           />
         </RoiContainer>
       </RoiProvider>
@@ -57,7 +62,7 @@ export function OverrideDefaultStyle() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
-              getStyle={(roi, { isSelected, scaledSizes }) => {
+              getStyle={(roi, { isSelected }) => {
                 const patternId = `stripe-pattern-${roi.id}`;
                 return {
                   renderCustomPattern: () => (
@@ -79,7 +84,7 @@ export function OverrideDefaultStyle() {
                   rectAttributes: {
                     fill: `url(#${patternId})`,
                     stroke: isSelected ? 'transparent' : 'black',
-                    strokeWidth: scaledSizes.handlerBorderWidth * 2,
+                    strokeWidth: 6,
                   },
                   resizeHandlerColor: 'white',
                 };

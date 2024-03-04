@@ -10,7 +10,13 @@ import {
   useRef,
 } from 'react';
 
-import { Actions, RoiAction, RoiMode, useActions, useRoiState } from '../..';
+import {
+  Actions,
+  ReactRoiAction,
+  RoiMode,
+  useActions,
+  useRoiState,
+} from '../..';
 import {
   ActionCallbacks,
   LockContext,
@@ -90,10 +96,15 @@ export function ContainerComponent<TData = unknown>(
 
   useEffect(() => {
     function onPointerMove(event: PointerEvent) {
-      roiDispatch({
-        type: 'POINTER_MOVE',
-        payload: event,
-      });
+      if (containerRef?.current) {
+        roiDispatch({
+          type: 'POINTER_MOVE',
+          payload: {
+            event,
+            containerBoundingRect: containerRef.current.getBoundingClientRect(),
+          },
+        });
+      }
     }
 
     function onPointerUp() {
@@ -120,7 +131,7 @@ export function ContainerComponent<TData = unknown>(
           scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
           clientX: event.clientX,
           clientY: event.clientY,
-          refBoundingClientRect: containerRef.current.getBoundingClientRect(),
+          containerBoundingRect: containerRef.current.getBoundingClientRect(),
         };
         roiDispatch({
           type: 'ZOOM',
@@ -224,22 +235,21 @@ export function ContainerComponent<TData = unknown>(
           }}
         >
           {target}
-
-          <div
-            style={{
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              margin: 0,
-              padding: 0,
-              top: 0,
-              left: 0,
-            }}
-          >
-            {children}
-          </div>
+        </div>
+        <div
+          style={{
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            margin: 0,
+            padding: 0,
+            top: 0,
+            left: 0,
+          }}
+        >
+          {children}
         </div>
       </div>
     </lockContext.Provider>
@@ -249,7 +259,7 @@ export function ContainerComponent<TData = unknown>(
 function getCursor(
   mode: RoiMode,
   altKey: boolean,
-  action: RoiAction,
+  action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
   if (action !== 'idle') {
@@ -320,6 +330,9 @@ function callPointerUpActionHooks(
         }
       }
       break;
+    }
+    case 'rotating': {
+      throw new Error('not implemented yet');
     }
     case 'resizing': {
       if (callbacks.onAfterResize) {

@@ -9,10 +9,12 @@ import {
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
+import {
+  applyTransformToBox,
+  computeTotalPanZoom,
+} from '../../utilities/panZoom';
 
-import { Box } from './Box';
-import { getScaledSizes } from './sizes';
-import { roiToFloorBox } from './util';
+import { BoxSvg } from './BoxSvg';
 
 interface RoiBoxProps {
   roi: Roi;
@@ -20,6 +22,7 @@ interface RoiBoxProps {
   getStyle: GetStyleCallback;
   getReadOnly: GetReadOnlyCallback;
   renderLabel: RenderLabelCallback;
+  allowRotate: boolean;
   getOverlayOpacity: GetOverlayOpacity;
 }
 
@@ -31,19 +34,19 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     isSelected,
     renderLabel,
     getOverlayOpacity,
+    allowRotate,
   } = props;
 
   const panzoom = usePanZoom();
+  const totalPanzoom = computeTotalPanZoom(panzoom);
   const { id } = roi;
 
-  const scaledSizes = getScaledSizes(roi, panzoom);
   const roiDispatch = useRoiDispatch();
   const isReadOnly = getReadOnly(roi) || false;
 
   const roiAdditionalState = {
     isReadOnly,
     isSelected,
-    scaledSizes,
     zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
   };
 
@@ -55,13 +58,15 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     }
   }, [id, isReadOnly, roiDispatch]);
 
-  const box = roiToFloorBox(roi);
+  const box = applyTransformToBox(totalPanzoom, roi);
 
   return (
     <>
       <div
         data-testid={roi.id}
         style={{
+          transformOrigin: 'center',
+          transform: `rotate(${box.angle}rad)`,
           position: 'absolute',
           left: box.x,
           top: box.y,
@@ -69,11 +74,17 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           height: box.height,
           boxShadow:
             isSelected && shadowOpacity
-              ? `0 0 0 ${Math.max(panzoom.containerSize.width, panzoom.containerSize.height)}px rgba(0,0,0,${shadowOpacity})`
+              ? `0 0 0 ${Math.max(panzoom.containerSize.width * totalPanzoom.scale * 2, panzoom.containerSize.height * totalPanzoom.scale * 2)}px rgba(0,0,0,${shadowOpacity})`
               : 'none',
         }}
       >
-        <Box roi={roi} isReadOnly={isReadOnly} getStyle={getStyle} />
+        <BoxSvg
+          roi={roi}
+          box={box}
+          isReadOnly={isReadOnly}
+          getStyle={getStyle}
+          allowRotate={allowRotate}
+        />
       </div>
       <div
         data-testid={`label-${roi.id}`}

@@ -6,12 +6,10 @@ import { Roi } from '../types/Roi';
 import { assert } from '../utilities/assert';
 
 import { RoiBox } from './box/RoiBox';
-import { CornerSizeOptions } from './box/sizes';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;
   isReadOnly: boolean;
-  scaledSizes: CornerSizeOptions;
   zoomScale: number;
 }
 
@@ -49,6 +47,7 @@ export interface RoiListProps<TData = unknown> {
   getReadOnly?: GetReadOnlyCallback<TData>;
   renderLabel?: RenderLabelCallback<TData>;
   getOverlayOpacity?: GetOverlayOpacity<TData>;
+  allowRotate?: boolean;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
@@ -57,6 +56,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     getReadOnly = () => false,
     getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
+    allowRotate = false,
   } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
@@ -77,6 +77,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           renderLabel={renderLabel as RenderLabelCallback}
           getReadOnly={getReadOnly as GetReadOnlyCallback}
           getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
+          allowRotate={allowRotate}
           isSelected={roi.id === selectedRoi}
         />
       ))}
@@ -97,7 +98,7 @@ const defaultGetStyle: GetStyleCallback = (roi, state) => {
   };
 };
 
-const defaultRenderLabel: RenderLabelCallback = (roi, { zoomScale }) => {
+const defaultRenderLabel: RenderLabelCallback = (roi) => {
   return (
     <div
       style={{
@@ -108,7 +109,7 @@ const defaultRenderLabel: RenderLabelCallback = (roi, { zoomScale }) => {
         alignItems: 'center',
         color: 'white',
         overflow: 'hidden',
-        fontSize: 16 / zoomScale,
+        fontSize: 16,
       }}
     >
       {roi.label}

@@ -1,6 +1,12 @@
 import { CSSProperties } from 'react';
 
-import { GetStyleCallback, RoiAction, RoiMode, useRoiState } from '../..';
+import {
+  Box,
+  GetStyleCallback,
+  ReactRoiAction,
+  RoiMode,
+  useRoiState,
+} from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -9,50 +15,52 @@ import { Roi } from '../../types/Roi';
 import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
-import { getScaledSizes } from './sizes';
-import { roiToFloorBox } from './util';
+import { RoiBoxRotateHandler } from './RoiBoxRotateHandler';
+import { getHandlerSizes } from './sizes';
 
 export interface BoxAnnotationProps {
   roi: Roi;
+  box: Box;
   style?: CSSProperties;
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
+  allowRotate: boolean;
 }
 
-export function Box({
+export function BoxSvg({
   roi,
   style,
   className,
   isReadOnly,
   getStyle,
+  box,
+  allowRotate,
 }: BoxAnnotationProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
   const panZoom = usePanZoom();
   const roiState = useRoiState();
-  const scaledSizes = getScaledSizes(roi, panZoom);
 
   const isSelected = roi.id === roiState.selectedRoi;
   const styles = getStyle(roi, {
     isReadOnly,
     isSelected,
-    scaledSizes,
     zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
   });
 
+  const handlerSizes = getHandlerSizes(roi, panZoom);
+
   const clipPathId = `within-roi-${roi.id}`;
   const { lockPan } = useLockContext();
-
-  const flooredBox = roiToFloorBox(roi);
 
   return (
     <svg
       style={{
         display: 'block',
         overflow: 'visible',
-        width: flooredBox.width,
-        height: flooredBox.height,
+        width: box.width,
+        height: box.height,
         cursor: getCursor(
           roiState.mode,
           isReadOnly,
@@ -62,51 +70,60 @@ export function Box({
         ),
         ...style,
       }}
-      viewBox={`${flooredBox.x} ${flooredBox.y} ${flooredBox.width} ${flooredBox.height}`}
+      viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
       className={className}
       onPointerDown={(event) => {
         if (event.altKey || isReadOnly || roiState.mode === 'draw') {
           return;
         }
 
+        const isRotate = (event.target as Element).id === 'rotate-handler';
+
         event.stopPropagation();
 
-        roiDispatch({
-          type: 'SELECT_BOX_AND_START_MOVE',
-          payload: {
-            id: roi.id,
-          },
-        });
+        if (isRotate) {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_ROTATE',
+            payload: {
+              id: roi.id,
+            },
+          });
+        } else {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_MOVE',
+            payload: {
+              id: roi.id,
+            },
+          });
+        }
       }}
     >
       {styles.renderCustomPattern?.()}
 
       <clipPath id={clipPathId}>
-        <rect
-          x={flooredBox.x}
-          y={flooredBox.y}
-          width={flooredBox.width}
-          height={flooredBox.height}
-        />
+        <rect x={box.x} y={box.y} width={box.width} height={box.height} />
       </clipPath>
       <rect
         clipPath={`url(#${clipPathId})`}
-        x={flooredBox.x}
-        y={flooredBox.y}
-        width={flooredBox.width}
-        height={flooredBox.height}
+        x={box.x}
+        y={box.y}
+        width={box.width}
+        height={box.height}
         {...styles.rectAttributes}
       />
       {isSelected &&
-        getAllCorners(flooredBox).map((corner) => (
+        getAllCorners(box).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}
             roiId={roi.id}
-            sizes={scaledSizes}
+            sizes={handlerSizes}
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
+      {isSelected && allowRotate && roi.action.type !== 'drawing' && (
+        <RoiBoxRotateHandler box={box} styles={styles} />
+      )}
     </svg>
   );
 }
@@ -115,7 +132,7 @@ function getCursor(
   mode: RoiMode,
   readOnly: boolean,
   isAltKeyDown: boolean,
-  action: RoiAction,
+  action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
   if (action !== 'idle') {

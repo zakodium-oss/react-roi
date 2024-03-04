@@ -1,4 +1,4 @@
-import { PanZoom } from '../index';
+import { Box, PanZoom } from '../index';
 
 // Inverse of scale * x + t0
 export function applyInverseX(panzoom: PanZoom, x: number) {
@@ -16,6 +16,20 @@ export function applyTransformX(panzoom: PanZoom, x: number) {
 
 export function applyTransformY(panzoom: PanZoom, y: number) {
   return panzoom.scale * y + panzoom.translation[1];
+}
+
+export function applyTransformToBox(panzoom: PanZoom, box: Box): Box {
+  const x2 = box.x + box.width;
+  const y2 = box.y + box.height;
+  const x = applyTransformX(panzoom, box.x);
+  const y = applyTransformY(panzoom, box.y);
+  return {
+    x,
+    y,
+    width: applyTransformX(panzoom, x2) - x,
+    height: applyTransformY(panzoom, y2) - y,
+    angle: box.angle,
+  };
 }
 
 /**

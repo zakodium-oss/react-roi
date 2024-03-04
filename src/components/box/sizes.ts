@@ -1,27 +1,27 @@
 import { PanZoomContext } from '../../context/contexts';
 import { Roi } from '../../types/Roi';
 
-export interface CornerSizeOptions {
+export interface HandlerSizeOptions {
   handlerSize: number;
   handlerBorderWidth: number;
 }
 
-const baseSize: CornerSizeOptions = {
-  handlerSize: 12,
+export const baseHandlerSizes: HandlerSizeOptions = {
+  handlerSize: 14,
   handlerBorderWidth: 3,
 };
 
-export function getScaledSizes(
+export function getHandlerSizes(
   roi: Roi,
   panZoom: PanZoomContext,
-): CornerSizeOptions {
-  const minLength = Math.min(roi.x2 - roi.x1, roi.y2 - roi.y1);
-  const { handlerSize, handlerBorderWidth } = baseSize;
-  const divider = panZoom.initialPanZoom.scale * panZoom.panZoom.scale;
+): HandlerSizeOptions {
+  const totalScale = panZoom.panZoom.scale * panZoom.initialPanZoom.scale;
+  const minLength = Math.min(roi.width, roi.height) * totalScale;
+  const { handlerSize, handlerBorderWidth } = baseHandlerSizes;
   return {
     handlerSize: Math.floor(
-      Math.max(Math.min(handlerSize / divider, minLength / 3 + 1), 1),
+      Math.max(Math.min(handlerSize, minLength / 3 + 1), 1),
     ),
-    handlerBorderWidth: handlerBorderWidth / divider,
+    handlerBorderWidth,
   };
 }

@@ -2,7 +2,8 @@ import { assert } from '../../utilities/assert';
 import { createCommittedRoiFromRoiIfValid } from '../../utilities/rois';
 import { EndActionPayload, ReactRoiState } from '../roiReducer';
 
-import { updateCommitedRoiPosition } from './roi';
+import { cancelAction } from './cancelAction';
+import { updateCommittedRoiPosition } from './roi';
 
 export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
   draft.action = 'idle';
@@ -18,7 +19,11 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
       roi.action.type !== 'drawing',
       'Drawing ROI should not be committed',
     );
-    updateCommitedRoiPosition(draft, committedRoi, roi);
+    try {
+      updateCommittedRoiPosition(draft, committedRoi, roi);
+    } catch {
+      return cancelAction(draft, { noUnselection: false });
+    }
   } else {
     assert(roi.action.type === 'drawing');
     const newCommittedRoi = createCommittedRoiFromRoiIfValid(
@@ -39,8 +44,12 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
         draft.selectedRoi = undefined;
       }
     } else {
-      updateCommitedRoiPosition(draft, newCommittedRoi, roi);
-      draft.committedRois.push(newCommittedRoi);
+      try {
+        updateCommittedRoiPosition(draft, newCommittedRoi, roi);
+        draft.committedRois.push(newCommittedRoi);
+      } catch {
+        return cancelAction(draft, { noUnselection: false });
+      }
     }
   }
   roi.action = {

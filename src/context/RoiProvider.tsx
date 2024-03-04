@@ -10,6 +10,7 @@ import {
 } from '..';
 import { CommittedRoi } from '../types/Roi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
+import { normalizeAngle } from '../utilities/rotate';
 
 import {
   ActionCallbacks,
@@ -100,9 +101,12 @@ function createInitialState<T>(
     containerSize: initialSize,
     selectedRoi: initialConfig.selectedRoiId,
     committedRois: initialConfig.rois,
-    rois: initialConfig.rois.map((committedRoi) =>
-      createRoiFromCommittedRoi(committedRoi),
-    ),
+    rois: initialConfig.rois
+      .map((committedRoi) => ({
+        ...committedRoi,
+        angle: normalizeAngle(committedRoi.angle),
+      }))
+      .map((committedRoi) => createRoiFromCommittedRoi(committedRoi)),
     panZoom: initialConfig.zoom.initial,
     initialPanZoom: {
       scale: 1,
@@ -124,24 +128,28 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const {
     rois: initialRois = [],
     mode: initialMode = 'hybrid',
-    zoom: { min = 1, max = 20, spaceAroundTarget = 0.5 } = {},
+    zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
   } = initialConfig;
-  const roiInitialState = createInitialState<TData>({
-    mode: initialMode,
-    rois: initialRois,
-    zoom: {
-      min,
-      max,
-      spaceAroundTarget,
-      initial: initialConfig.zoom?.initial ?? { scale: 1, translation: [0, 0] },
-    },
-    resizeStrategy,
-    selectedRoiId,
-  });
 
-  const [state, dispatch] = useReducer(roiReducer, roiInitialState);
+  const [state, dispatch] = useReducer(roiReducer, null, () =>
+    createInitialState<TData>({
+      mode: initialMode,
+      rois: initialRois,
+      zoom: {
+        min,
+        max,
+        spaceAroundTarget,
+        initial: initialConfig.zoom?.initial ?? {
+          scale: 1,
+          translation: [0, 0],
+        },
+      },
+      resizeStrategy,
+      selectedRoiId,
+    }),
+  );
   const stateRef = useRef(state);
   const containerRef = useRef<HTMLDivElement>(null);
   const callbacksRef = useRef<ActionCallbacks<TData>>({

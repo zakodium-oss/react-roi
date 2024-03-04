@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
-import { PanZoom, ResizeStrategy, RoiAction, RoiMode, Size } from '..';
+import { PanZoom, ReactRoiAction, ResizeStrategy, RoiMode, Size } from '..';
 import { CommittedRoi, Roi } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
@@ -15,6 +15,7 @@ import { cancelAction } from './updaters/cancelAction';
 import { endAction } from './updaters/endAction';
 import { updateInitialPanZoom } from './updaters/initialPanZoom';
 import { pointerMove } from './updaters/pointerMove';
+import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction';
 import { startDraw } from './updaters/startDraw';
 import { resetZoomAction, zoomAction } from './updaters/zoom';
 
@@ -43,7 +44,7 @@ export interface ReactRoiState<TData = unknown> {
   /**
    * Current action being performed
    */
-  action: RoiAction;
+  action: ReactRoiAction;
 
   /**
    * Regions of interest
@@ -85,7 +86,7 @@ export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
 
 export interface ZoomPayload {
   scale: number;
-  refBoundingClientRect: DOMRect;
+  containerBoundingRect: DOMRect;
   clientX: number;
   clientY: number;
 }
@@ -97,6 +98,11 @@ export interface StartDrawPayload {
   noUnselection?: boolean;
   lockPan: boolean;
   data?: unknown;
+}
+
+export interface PointerMovePayload {
+  event: PointerEvent;
+  containerBoundingRect: DOMRect;
 }
 
 export interface StartResizePayload {
@@ -115,6 +121,10 @@ export interface CancelActionPayload {
 }
 
 export interface SelectBoxAndStartMovePayload {
+  id: string;
+}
+
+export interface SelectBoxAndStartRotatePayload {
   id: string;
 }
 
@@ -147,7 +157,7 @@ export type RoiReducerAction =
     }
   | {
       type: 'POINTER_MOVE';
-      payload: PointerEvent;
+      payload: PointerMovePayload;
     }
   | {
       type: 'END_ACTION';
@@ -157,6 +167,10 @@ export type RoiReducerAction =
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
       payload: SelectBoxAndStartMovePayload;
+    }
+  | {
+      type: 'SELECT_BOX_AND_START_ROTATE';
+      payload: SelectBoxAndStartRotatePayload;
     }
   | {
       type: 'ZOOM';
@@ -275,20 +289,12 @@ export function roiReducer(
       }
 
       case 'SELECT_BOX_AND_START_MOVE': {
-        const { id } = action.payload;
-        if (!id) return;
-        if (draft.mode === 'draw') {
-          draft.selectedRoi = undefined;
-          return;
-        }
-        const { rois } = draft;
-        draft.selectedRoi = id;
-        const roi = rois.find((roi) => roi.id === id);
-        assert(roi, 'ROI not found');
-        draft.action = 'moving';
-        roi.action = {
-          type: 'moving',
-        };
+        selectBoxAndStartAction(draft, action.payload.id, 'moving');
+        break;
+      }
+
+      case 'SELECT_BOX_AND_START_ROTATE': {
+        selectBoxAndStartAction(draft, action.payload.id, 'rotating');
         break;
       }
 

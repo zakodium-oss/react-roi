@@ -42,7 +42,7 @@ export function useActions<TData = unknown>() {
           clientX: refBound.width / 2,
           clientY: refBound.height / 2,
           scale: factor,
-          refBoundingClientRect: refBound,
+          containerBoundingRect: refBound,
         };
         roiDispatch({
           type: 'ZOOM',
