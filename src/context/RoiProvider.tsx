@@ -55,7 +55,7 @@ export interface RoiProviderInitialConfig<TData> {
   };
   resizeStrategy?: ResizeStrategy;
   /**
-   * How should the roi should be updated before being committed to the state when created / moved / resized / rotated.
+   * How should the roi be updated before committing it when created / moved / resized / rotated.
    * It affects the final values of `x`, `y`, `width`, and `height` box properties in the committed ROI.
    * 'exact' will keep the exact, non-rounded values. This results in floating point numbers in the box properties.
    * 'round' will try as much as possible to keep integers:
