@@ -43,12 +43,16 @@ export function createRoi(
   };
 }
 
+interface CreateCommittedRoiFromRoiOptions {
+  targetSize: Size;
+  strategy: BoundStrategy;
+  commitStrategy: CommitBoxStrategy;
+}
 export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
-  targetSize: Size,
-  strategy: BoundStrategy,
-  commitStrategy: CommitBoxStrategy,
+  options: CreateCommittedRoiFromRoiOptions,
 ): CommittedRoi<T> {
+  const { targetSize, strategy, commitStrategy } = options;
   const { action, ...obj } = roi;
   return {
     ...obj,
@@ -62,19 +66,9 @@ export function createCommittedRoiFromRoi<T>(
 
 export function createCommittedRoiFromRoiIfValid<T>(
   roi: Roi<T>,
-  options: {
-    targetSize: Size;
-    minNewRoiSize: number;
-  },
-  boundStrategy: BoundStrategy,
-  commitStrategy: CommitBoxStrategy,
+  options: CreateCommittedRoiFromRoiOptions & { minNewRoiSize: number },
 ): CommittedRoi<T> | null {
-  const newCommittedRoi = createCommittedRoiFromRoi(
-    roi,
-    options.targetSize,
-    boundStrategy,
-    commitStrategy,
-  );
+  const newCommittedRoi = createCommittedRoiFromRoi(roi, options);
   if (
     newCommittedRoi.width < options.minNewRoiSize ||
     newCommittedRoi.height < options.minNewRoiSize

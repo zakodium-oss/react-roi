@@ -26,15 +26,12 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
     }
   } else {
     assert(roi.action.type === 'drawing');
-    const newCommittedRoi = createCommittedRoiFromRoiIfValid(
-      roi,
-      {
-        targetSize: draft.targetSize,
-        minNewRoiSize: payload.minNewRoiSize,
-      },
-      'resize',
-      draft.commitRoiBoxStrategy,
-    );
+    const newCommittedRoi = createCommittedRoiFromRoiIfValid(roi, {
+      targetSize: draft.targetSize,
+      minNewRoiSize: payload.minNewRoiSize,
+      strategy: 'resize',
+      commitStrategy: draft.commitRoiBoxStrategy,
+    });
     if (newCommittedRoi === null) {
       // Roi is not valid, remove it
       const index = draft.rois.findIndex((r) => r.id === roi.id);
