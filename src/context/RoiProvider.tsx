@@ -24,7 +24,7 @@ import {
   roiStateContext,
   roiStateRefContext,
 } from './contexts';
-import { ReactRoiState, roiReducer } from './roiReducer';
+import { CommitBoxStrategy, ReactRoiState, roiReducer } from './roiReducer';
 import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
 
 export interface RoiProviderInitialConfig<TData> {
@@ -54,6 +54,17 @@ export interface RoiProviderInitialConfig<TData> {
     spaceAroundTarget?: number;
   };
   resizeStrategy?: ResizeStrategy;
+  /**
+   * How should the roi should be updated before being committed to the state when created / moved / resized / rotated.
+   * It affects the final values of `x`, `y`, `width`, and `height` box properties in the committed ROI.
+   * 'exact' will keep the exact, non-rounded values. This results in floating point numbers in the box properties.
+   * 'round' will try as much as possible to keep integers:
+   *  - If the angle of rotation is 0, then x, y, width and height will be integers
+   *  - If the angle of rotation is not 0, then only width and height will be integers
+   * @default 'exact'
+   *
+   */
+  commitRoiBoxStrategy?: CommitBoxStrategy;
   rois?: Array<CommittedRoi<TData>>;
   selectedRoiId?: string;
 }
@@ -97,6 +108,7 @@ function createInitialState<T>(
     mode: initialConfig.mode,
     action: 'idle',
     resizeStrategy: initialConfig.resizeStrategy,
+    commitRoiBoxStrategy: initialConfig.commitRoiBoxStrategy || 'exact',
     targetSize: initialSize,
     containerSize: initialSize,
     selectedRoi: initialConfig.selectedRoiId,
@@ -131,6 +143,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
+    commitRoiBoxStrategy = 'exact',
   } = initialConfig;
 
   const [state, dispatch] = useReducer(roiReducer, null, () =>
@@ -147,6 +160,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
         },
       },
       resizeStrategy,
+      commitRoiBoxStrategy,
       selectedRoiId,
     }),
   );

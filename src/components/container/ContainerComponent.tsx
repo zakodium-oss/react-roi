@@ -305,6 +305,7 @@ function callPointerUpActionHooks(
             minNewRoiSize: options.minNewRoiSize,
           },
           'resize',
+          state.commitRoiBoxStrategy,
         );
         if (committedRoi) {
           callbacks.onAfterDraw(committedRoi, actions);
@@ -323,6 +324,7 @@ function callPointerUpActionHooks(
             minNewRoiSize: options.minNewRoiSize,
           },
           'move',
+          state.commitRoiBoxStrategy,
         );
         if (committedRoi && roiHasChanged(state, committedRoi)) {
           const { id, ...updateData } = committedRoi;
@@ -345,6 +347,7 @@ function callPointerUpActionHooks(
             minNewRoiSize: options.minNewRoiSize,
           },
           'resize',
+          state.commitRoiBoxStrategy,
         );
         if (committedRoi && roiHasChanged(state, committedRoi)) {
           const { id, ...updateData } = committedRoi;
