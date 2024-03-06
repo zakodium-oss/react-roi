@@ -24,7 +24,7 @@ export function normalizeBox<T extends Box>(box: T): CommittedBox {
     width,
     height,
     angle,
-  } as CommittedBox;
+  };
 }
 
 export function denormalizeBox<T extends CommittedBox>(position: T): Box {
@@ -42,7 +42,7 @@ export function denormalizeBox<T extends CommittedBox>(position: T): Box {
     width,
     height,
     angle,
-  } as Box;
+  };
 }
 
 export function commitBox(
