@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/zakodium-oss/react-roi/compare/v0.15.0...v0.16.0) (2024-03-06)
+
+
+### Features
+
+* add commitRoiBoxStrategy prop to opt in to rounding box properties ([#124](https://github.com/zakodium-oss/react-roi/issues/124)) ([897ec95](https://github.com/zakodium-oss/react-roi/commit/897ec95c5b709657f369ac254a6d1b2a2c5a2a86))
+
 ## [0.15.0](https://github.com/zakodium-oss/react-roi/compare/v0.14.0...v0.15.0) (2024-03-04)
 
 
