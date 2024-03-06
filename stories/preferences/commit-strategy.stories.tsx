@@ -7,7 +7,7 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'Preferences',
   args: {
     commitStrategy: 'exact',
     allowRotate: false,

@@ -66,7 +66,7 @@ interface ZoomStoryProps {
   onZoomChange: (zoom: PanZoom) => void;
 }
 
-export function Zoom({
+export function UpdateZoom({
   minZoom,
   maxZoom,
   spaceAroundTarget,
@@ -146,6 +146,7 @@ export function Zoom({
       onAfterZoomChange={onZoomChange}
     >
       <Layout fit>
+        <div>You can create custom UI to control the zoom</div>
         <ZoomButton />
         <RoiContainer
           style={{

@@ -14,10 +14,10 @@ import { Layout } from '../../utils/Layout';
 import { getInitialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'hooks/useActions/Update ROI',
+  title: 'hooks/useActions',
 } as Meta;
 
-export function Position() {
+export function UpdatePosition() {
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions();
@@ -62,7 +62,7 @@ export function Position() {
   );
 }
 
-export function Label() {
+export function UpdateLabel() {
   function UpdateLabelButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions();

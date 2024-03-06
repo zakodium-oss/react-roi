@@ -5,7 +5,7 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'ROI selection',
 } as Meta;
 
 export function InitialSelectedRoi() {
@@ -14,22 +14,6 @@ export function InitialSelectedRoi() {
     <Layout>
       <RoiProvider
         initialConfig={{ rois: initialRois, selectedRoiId: initialRois[2].id }}
-      >
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList />
-        </RoiContainer>
-      </RoiProvider>
-    </Layout>
-  );
-}
-
-export function InitialZoomLevel() {
-  return (
-    <Layout>
-      <RoiProvider
-        initialConfig={{
-          zoom: { initial: { scale: 1.4, translation: [0, 0] } },
-        }}
       >
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />

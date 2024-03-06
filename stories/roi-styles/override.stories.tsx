@@ -14,7 +14,10 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc/Style customization',
+  title: 'ROI custom styles',
+  args: {
+    allowRotate: false,
+  },
 } as Meta;
 
 interface CustomColorData {
@@ -29,7 +32,11 @@ const initialRois = getInitialRois<CustomColorData>(320, 320, {
   backgroundColor: 'green',
 });
 
-export function WithShadowAroundSelectedRoi() {
+interface StoryProps {
+  allowRotate: boolean;
+}
+
+export function WithShadowAroundSelectedRoi({ allowRotate }: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois, zoom: { min: 0.1 } }}>
@@ -38,7 +45,7 @@ export function WithShadowAroundSelectedRoi() {
           target={<TargetImage src="/barbara.jpg" />}
         >
           <RoiList<CustomColorData>
-            allowRotate
+            allowRotate={allowRotate}
             getOverlayOpacity={(roi, { isSelected }) =>
               isSelected && (roi.width > 0 || roi.height > 0) ? 0.6 : 0
             }
@@ -55,13 +62,14 @@ export function WithShadowAroundSelectedRoi() {
   );
 }
 
-export function OverrideDefaultStyle() {
+export function OverrideDefaultStyle({ allowRotate }: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
+              allowRotate={allowRotate}
               getStyle={(roi, { isSelected }) => {
                 const patternId = `stripe-pattern-${roi.id}`;
                 return {
@@ -97,7 +105,7 @@ export function OverrideDefaultStyle() {
   );
 }
 
-export function WithIndividualStyles() {
+export function WithIndividualStyles({ allowRotate }: StoryProps) {
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions<CustomColorData>();
@@ -127,6 +135,7 @@ export function WithIndividualStyles() {
 
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
+            allowRotate={allowRotate}
             getStyle={(roi, { isSelected }) => {
               const { data } = roi;
               assert(data);
@@ -145,12 +154,13 @@ export function WithIndividualStyles() {
   );
 }
 
-export function CustomLabelRender() {
+export function CustomLabelRender({ allowRotate }: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
+            allowRotate={allowRotate}
             renderLabel={(roi, { isSelected }) => {
               if (isSelected) {
                 return null;

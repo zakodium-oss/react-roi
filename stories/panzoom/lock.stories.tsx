@@ -5,8 +5,26 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'Pan and zoom',
 } as Meta;
+
+export function Zoom() {
+  return (
+    <Layout>
+      <div>
+        You can pan / zoom by holding the altkey and using your mouse /
+        mousewheel
+      </div>
+      <div style={{ width: 300, height: 500 }}>
+        <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
+          <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+            <RoiList />
+          </RoiContainer>
+        </RoiProvider>
+      </div>
+    </Layout>
+  );
+}
 
 export function LockZoom() {
   return (

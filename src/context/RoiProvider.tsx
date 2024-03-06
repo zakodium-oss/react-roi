@@ -83,6 +83,11 @@ interface RoiProviderProps<TData> {
    */
   onAfterMove?: AfterUpdateCallback<TData>;
   /**
+   * Called right after the ROI has finished moving.
+   * @param roi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
+   */
+  onAfterRotate?: AfterUpdateCallback<TData>;
+  /**
    * Called right before the ROI has finished resizing.
    * @param roi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
    */
@@ -136,6 +141,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     onAfterDraw,
     onAfterResize,
     onAfterMove,
+    onAfterRotate,
   } = props;
   const {
     rois: initialRois = [],
@@ -171,6 +177,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     onAfterDraw,
     onAfterResize,
     onAfterMove,
+    onAfterRotate,
   });
 
   useEffect(() => {
@@ -183,8 +190,15 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
       onAfterDraw,
       onAfterResize,
       onAfterMove,
+      onAfterRotate,
     };
-  }, [onAfterZoomChange, onAfterDraw, onAfterResize, onAfterMove]);
+  }, [
+    onAfterZoomChange,
+    onAfterDraw,
+    onAfterResize,
+    onAfterMove,
+    onAfterRotate,
+  ]);
 
   const {
     rois,

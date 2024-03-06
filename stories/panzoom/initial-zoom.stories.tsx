@@ -2,21 +2,23 @@ import { Meta } from '@storybook/react';
 
 import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'Pan and zoom',
 } as Meta;
 
-export function Scroll() {
+export function InitialZoomLevel() {
   return (
-    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
-      <div style={{ height: 1000 }} />
-      <Layout>
+    <Layout>
+      <RoiProvider
+        initialConfig={{
+          zoom: { initial: { scale: 1.4, translation: [0, 0] } },
+        }}
+      >
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList />
         </RoiContainer>
-      </Layout>
-    </RoiProvider>
+      </RoiProvider>
+    </Layout>
   );
 }

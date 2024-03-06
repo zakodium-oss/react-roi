@@ -11,7 +11,7 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'Edge cases',
 } as Meta;
 
 export function CrashWithSameId() {
