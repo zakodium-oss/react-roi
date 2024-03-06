@@ -17,6 +17,7 @@ import { getAllCorners } from '../../utilities/corners';
 import { RoiBoxCorner } from './RoiBoxCorner';
 import { RoiBoxRotateHandler } from './RoiBoxRotateHandler';
 import { getHandlerSizes } from './sizes';
+import { baseRoiStyle } from './styles';
 
 export interface BoxAnnotationProps {
   roi: Roi;
@@ -43,11 +44,14 @@ export function BoxSvg({
   const roiState = useRoiState();
 
   const isSelected = roi.id === roiState.selectedRoi;
-  const styles = getStyle(roi, {
-    isReadOnly,
-    isSelected,
-    zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
-  });
+  const styles = {
+    ...baseRoiStyle,
+    ...getStyle(roi, {
+      isReadOnly,
+      isSelected,
+      zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
+    }),
+  };
 
   const handlerSizes = getHandlerSizes(roi, panZoom);
 
