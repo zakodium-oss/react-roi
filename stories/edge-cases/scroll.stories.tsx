@@ -5,15 +5,17 @@ import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'Edge cases',
 } as Meta;
 
-export function Rotate() {
+export function Scroll() {
   return (
     <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
+      <div>Scroll down to the react-roi component</div>
+      <div style={{ height: 1000 }} />
       <Layout>
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList allowRotate />
+          <RoiList />
         </RoiContainer>
       </Layout>
     </RoiProvider>

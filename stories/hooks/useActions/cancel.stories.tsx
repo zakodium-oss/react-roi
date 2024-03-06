@@ -7,12 +7,12 @@ import {
   RoiProvider,
   TargetImage,
   useActions,
-} from '../../src';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
+} from '../../../src';
+import { Layout } from '../../utils/Layout';
+import { getInitialRois } from '../../utils/initialRois';
 
 export default {
-  title: 'Misc',
+  title: 'hooks/useActions',
   decorators: [
     (Story) => (
       <KbsProvider>
@@ -24,7 +24,7 @@ export default {
   ],
 } as Meta;
 
-export function Shortcuts() {
+export function CancelActionWithShortcut() {
   const { cancelAction } = useActions();
 
   useKbsGlobal([

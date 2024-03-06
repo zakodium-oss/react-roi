@@ -5,10 +5,17 @@ import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
 
 export default {
-  title: 'Misc',
+  title: 'ROI custom styles',
+  args: {
+    allowRotate: false,
+  },
 } as Meta;
 
-export function NewRoiData() {
+interface StoryProps {
+  allowRotate: boolean;
+}
+
+export function NewRoiData({ allowRotate }: StoryProps) {
   const [selectedColor, setSelectedColor] = useState('blue');
   return (
     <RoiProvider>
@@ -28,6 +35,7 @@ export function NewRoiData() {
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList<string>
+            allowRotate={allowRotate}
             getStyle={(roi) => {
               return {
                 rectAttributes: {

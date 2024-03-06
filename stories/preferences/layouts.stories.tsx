@@ -13,7 +13,7 @@ import { getInitialRois } from '../utils/initialRois';
 import { useResetOnChange } from '../utils/useResetOnChange';
 
 export default {
-  title: 'Layouts',
+  title: 'Preferences',
   args: {
     resizeStrategy: 'contain',
   },
@@ -27,7 +27,7 @@ export default {
   },
 } as Meta;
 
-export function TallContainer(props: { resizeStrategy: ResizeStrategy }) {
+export function ResizeStrategyTall(props: { resizeStrategy: ResizeStrategy }) {
   const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
@@ -56,7 +56,7 @@ export function TallContainer(props: { resizeStrategy: ResizeStrategy }) {
   );
 }
 
-export function WideContainer(props: { resizeStrategy: ResizeStrategy }) {
+export function ResizeStrategyWide(props: { resizeStrategy: ResizeStrategy }) {
   const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
@@ -81,7 +81,9 @@ export function WideContainer(props: { resizeStrategy: ResizeStrategy }) {
   );
 }
 
-export function SmallImage(props: { resizeStrategy: ResizeStrategy }) {
+export function ResizeStrategySmallImage(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
   const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
@@ -104,7 +106,9 @@ export function SmallImage(props: { resizeStrategy: ResizeStrategy }) {
   );
 }
 
-export function DynamicContainer(props: { resizeStrategy: ResizeStrategy }) {
+export function ResizeStrategyDynamicContainer(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
   const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
