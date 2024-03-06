@@ -3,11 +3,14 @@ import { useEffect, useReducer, useRef } from 'react';
 
 import { useCommittedRois } from '../../src';
 
-export function CommittedRoisButton(props: { showImage?: boolean }) {
+export function CommittedRoisButton(props: {
+  showImage?: boolean;
+  isDefaultShown?: boolean;
+}) {
   const { showImage = true } = props;
   const ref = useRef<HTMLCanvasElement>(null);
   const rois = useCommittedRois();
-  const [isShown, show] = useReducer((s) => !s, false);
+  const [isShown, show] = useReducer((s) => !s, props.isDefaultShown || false);
 
   useEffect(() => {
     const img = document.getElementById('story-image') as HTMLImageElement;
@@ -42,7 +45,7 @@ export function CommittedRoisButton(props: { showImage?: boolean }) {
   return (
     <>
       <button type="button" onClick={show}>
-        Show committed ROIs
+        {isShown ? 'Hide committed ROIs' : 'Show committed ROIs'}
       </button>
       {isShown && (
         <>

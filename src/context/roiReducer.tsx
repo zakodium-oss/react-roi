@@ -15,6 +15,7 @@ import { cancelAction } from './updaters/cancelAction';
 import { endAction } from './updaters/endAction';
 import { updateInitialPanZoom } from './updaters/initialPanZoom';
 import { pointerMove } from './updaters/pointerMove';
+import { sanitizeRois } from './updaters/sanitizeRois';
 import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction';
 import { startDraw } from './updaters/startDraw';
 import { resetZoomAction, zoomAction } from './updaters/zoom';
@@ -204,6 +205,7 @@ export function roiReducer(
 
         draft.targetSize = action.payload;
         updateInitialPanZoom(draft);
+        sanitizeRois(draft);
         break;
       }
       case 'SET_CONTAINER_SIZE': {

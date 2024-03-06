@@ -45,6 +45,38 @@ export function denormalizeBox<T extends CommittedBox>(position: T): Box {
   };
 }
 
+export function initBox(box: CommittedBox, strategy: CommitBoxStrategy) {
+  switch (strategy) {
+    case 'exact':
+      return box;
+    case 'round': {
+      const { x, y, width, height, angle } = box;
+      if (angle === 0) {
+        const x1 = Math.round(x);
+        const y1 = Math.round(y);
+        const x2 = Math.round(x + width);
+        const y2 = Math.round(y + height);
+        return {
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+          angle,
+        };
+      } else {
+        const denormalized = denormalizeBox(box);
+        const width = Math.round(denormalized.width);
+        const height = Math.round(denormalized.height);
+        const x = box.x + (box.width - width) / 2;
+        const y = box.y + (box.height - height) / 2;
+        return normalizeBox({ x, y, width, height, angle });
+      }
+    }
+    default:
+      assertUnreachable(strategy);
+  }
+}
+
 export function commitBox(
   roi: CommittedBox,
   action: RoiAction,
