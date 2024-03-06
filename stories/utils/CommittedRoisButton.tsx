@@ -24,11 +24,11 @@ export function CommittedRoisButton(props: { showImage?: boolean }) {
           image.drawRectangle({
             strokeColor: [255, 255, 255],
             origin: {
-              column: roi.x,
-              row: roi.y,
+              column: Math.round(roi.x),
+              row: Math.round(roi.y),
             },
-            width: roi.width,
-            height: roi.height,
+            width: Math.round(roi.width),
+            height: Math.round(roi.height),
             out: image,
           });
         }
