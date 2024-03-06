@@ -3,7 +3,8 @@ import { useEffect, useReducer, useRef } from 'react';
 
 import { useCommittedRois } from '../../src';
 
-export function CommittedRoisButton() {
+export function CommittedRoisButton(props: { showImage?: boolean }) {
+  const { showImage = true } = props;
   const ref = useRef<HTMLCanvasElement>(null);
   const rois = useCommittedRois();
   const [isShown, show] = useReducer((s) => !s, false);
@@ -45,7 +46,13 @@ export function CommittedRoisButton() {
       </button>
       {isShown && (
         <>
-          <canvas ref={ref} id="transformed-image" style={{ maxWidth: 400 }} />
+          {showImage && (
+            <canvas
+              ref={ref}
+              id="transformed-image"
+              style={{ maxWidth: 400 }}
+            />
+          )}
           <pre>{JSON.stringify(rois, null, 2)}</pre>
         </>
       )}

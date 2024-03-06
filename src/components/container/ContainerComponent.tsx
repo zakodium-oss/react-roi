@@ -298,14 +298,12 @@ function callPointerUpActionHooks(
       if (callbacks.onAfterDraw) {
         const roi = state.rois.find((roi) => roi.action.type === 'drawing');
         assert(roi, 'An roi in the "drawing" state should exist while drawing');
-        const committedRoi = createCommittedRoiFromRoiIfValid(
-          roi,
-          {
-            targetSize: state.targetSize,
-            minNewRoiSize: options.minNewRoiSize,
-          },
-          'resize',
-        );
+        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+          targetSize: state.targetSize,
+          minNewRoiSize: options.minNewRoiSize,
+          strategy: 'resize',
+          commitStrategy: state.commitRoiBoxStrategy,
+        });
         if (committedRoi) {
           callbacks.onAfterDraw(committedRoi, actions);
         }
@@ -316,14 +314,12 @@ function callPointerUpActionHooks(
       if (callbacks.onAfterMove) {
         const roi = state.rois.find((roi) => roi.action.type === 'moving');
         assert(roi, 'An roi in the "moving" state should exist while moving');
-        const committedRoi = createCommittedRoiFromRoiIfValid(
-          roi,
-          {
-            targetSize: state.targetSize,
-            minNewRoiSize: options.minNewRoiSize,
-          },
-          'move',
-        );
+        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+          targetSize: state.targetSize,
+          minNewRoiSize: options.minNewRoiSize,
+          strategy: 'move',
+          commitStrategy: state.commitRoiBoxStrategy,
+        });
         if (committedRoi && roiHasChanged(state, committedRoi)) {
           const { id, ...updateData } = committedRoi;
           callbacks.onAfterMove(id, updateData, actions);
@@ -338,14 +334,12 @@ function callPointerUpActionHooks(
       if (callbacks.onAfterResize) {
         const roi = state.rois.find((roi) => roi.action.type === 'resizing');
         assert(roi, 'An roi in the "resizing" state should exist while moving');
-        const committedRoi = createCommittedRoiFromRoiIfValid(
-          roi,
-          {
-            targetSize: state.targetSize,
-            minNewRoiSize: options.minNewRoiSize,
-          },
-          'resize',
-        );
+        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+          targetSize: state.targetSize,
+          minNewRoiSize: options.minNewRoiSize,
+          strategy: 'resize',
+          commitStrategy: state.commitRoiBoxStrategy,
+        });
         if (committedRoi && roiHasChanged(state, committedRoi)) {
           const { id, ...updateData } = committedRoi;
           callbacks.onAfterResize(id, updateData, actions);

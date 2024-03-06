@@ -24,6 +24,7 @@ interface ZoomDomain {
   max: number;
   spaceAroundTarget: number;
 }
+export type CommitBoxStrategy = 'exact' | 'round';
 
 export interface ReactRoiState<TData = unknown> {
   /**
@@ -35,6 +36,11 @@ export interface ReactRoiState<TData = unknown> {
    * Resize strategy
    */
   resizeStrategy: ResizeStrategy;
+
+  /**
+   * How box properties of the roi should be updated when committed.
+   */
+  commitRoiBoxStrategy: CommitBoxStrategy;
 
   /**
    * Identification of the selected object

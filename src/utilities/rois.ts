@@ -1,10 +1,10 @@
-import { ReactRoiState } from '../context/roiReducer';
-import { boundRoi, BoundStrategy } from '../context/updaters/roi';
+import { CommitBoxStrategy, ReactRoiState } from '../context/roiReducer';
+import { boundBox, BoundStrategy } from '../context/updaters/roi';
 import { CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
 
 import { assert } from './assert';
-import { denormalizeBox, normalizeBox } from './coordinates';
+import { commitBox, denormalizeBox, normalizeBox } from './coordinates';
 
 function createInitialCommittedBox(): CommittedBox {
   return {
@@ -43,31 +43,32 @@ export function createRoi(
   };
 }
 
+interface CreateCommittedRoiFromRoiOptions {
+  targetSize: Size;
+  strategy: BoundStrategy;
+  commitStrategy: CommitBoxStrategy;
+}
 export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
-  targetSize: Size,
-  strategy: BoundStrategy,
+  options: CreateCommittedRoiFromRoiOptions,
 ): CommittedRoi<T> {
+  const { targetSize, strategy, commitStrategy } = options;
   const { action, ...obj } = roi;
   return {
     ...obj,
-    ...boundRoi(normalizeBox(roi), targetSize, strategy),
+    ...boundBox(
+      commitBox(normalizeBox(roi), roi.action, commitStrategy),
+      targetSize,
+      strategy,
+    ),
   };
 }
 
 export function createCommittedRoiFromRoiIfValid<T>(
   roi: Roi<T>,
-  options: {
-    targetSize: Size;
-    minNewRoiSize: number;
-  },
-  boundStrategy: BoundStrategy,
+  options: CreateCommittedRoiFromRoiOptions & { minNewRoiSize: number },
 ): CommittedRoi<T> | null {
-  const newCommittedRoi = createCommittedRoiFromRoi(
-    roi,
-    options.targetSize,
-    boundStrategy,
-  );
+  const newCommittedRoi = createCommittedRoiFromRoi(roi, options);
   if (
     newCommittedRoi.width < options.minNewRoiSize ||
     newCommittedRoi.height < options.minNewRoiSize

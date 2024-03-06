@@ -1,8 +1,6 @@
 import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
 
-import { Box } from './utils';
-
-export type ActionType = 'resizing' | 'moving' | 'drawing' | 'idle';
+import { Box, CommittedBox } from './utils';
 
 export interface ResizeAction {
   /**
@@ -71,22 +69,5 @@ export interface Roi<TData = unknown> extends Box {
   data?: TData;
 }
 
-export interface CommittedRoi<TData = unknown>
-  extends Omit<Roi<TData>, 'action' | 'x1' | 'x2' | 'y1' | 'y2'> {
-  /**
-   * Left position of the ROI box relatively to the viewport of the target. The value is in the [0, 1] domain.
-   */
-  x: number;
-  /**
-   * Top position of the ROI box relatively to the viewport of the target. The value is in the [0, 1] domain.
-   */
-  y: number;
-  /**
-   * Width of the ROI box relatively to the viewport of the target. The value is in the [0, 1] domain.
-   */
-  width: number;
-  /**
-   * Height of the ROI box relatively to the viewport of the target. The value is in the [0, 1] domain.
-   */
-  height: number;
-}
+export type CommittedRoi<TData = unknown> = Omit<Roi<TData>, 'action'> &
+  CommittedBox;
