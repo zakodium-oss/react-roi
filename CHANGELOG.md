@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.16.1](https://github.com/zakodium-oss/react-roi/compare/v0.16.0...v0.16.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* add missing on rotate callback ([c6e0595](https://github.com/zakodium-oss/react-roi/commit/c6e0595002690a5d90366cc299d2adbd12fe84d1))
+* make sure handler has a default color ([a2791ce](https://github.com/zakodium-oss/react-roi/commit/a2791cec3a8c23572be09cd90b09c0957f03c6a1))
+* make sure initial roi values get rounded and bounded ([8c790f3](https://github.com/zakodium-oss/react-roi/commit/8c790f35bfefed23efaf6ef50546fee17dc2b624))
+
+
+### Documentation
+
+* improve organization of stories ([9ad7106](https://github.com/zakodium-oss/react-roi/commit/9ad7106cd6b93c69772d27f4f06c29132e8f03b4))
+* make sure committed rois are displayed even if roi coordinates are not integers ([0025d06](https://github.com/zakodium-oss/react-roi/commit/0025d06fdf0fedf29dac72b3b9e773736dc52ff1))
+
 ## [0.16.0](https://github.com/zakodium-oss/react-roi/compare/v0.15.0...v0.16.0) (2024-03-06)
 
 
