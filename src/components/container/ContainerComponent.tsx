@@ -328,7 +328,21 @@ function callPointerUpActionHooks(
       break;
     }
     case 'rotating': {
-      throw new Error('not implemented yet');
+      if (callbacks.onAfterRotate) {
+        const roi = state.rois.find((roi) => roi.action.type === 'rotating');
+        assert(roi, 'An roi in the "moving" state should exist while moving');
+        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+          targetSize: state.targetSize,
+          minNewRoiSize: options.minNewRoiSize,
+          strategy: 'move',
+          commitStrategy: state.commitRoiBoxStrategy,
+        });
+        if (committedRoi && roiHasChanged(state, committedRoi)) {
+          const { id, ...updateData } = committedRoi;
+          callbacks.onAfterRotate(id, updateData, actions);
+        }
+      }
+      break;
     }
     case 'resizing': {
       if (callbacks.onAfterResize) {

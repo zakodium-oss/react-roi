@@ -69,6 +69,7 @@ export interface ActionCallbacks<TData = unknown> {
   onAfterDraw?: AfterDrawCallback<TData>;
   onAfterMove?: AfterUpdateCallback<TData>;
   onAfterResize?: AfterUpdateCallback<TData>;
+  onAfterRotate?: AfterUpdateCallback<TData>;
   onAfterZoomChange?: (zoom: PanZoom) => void;
 }
 export const callbacksRefContext = createContext<RefObject<
