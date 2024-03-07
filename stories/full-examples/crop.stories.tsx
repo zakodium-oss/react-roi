@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react';
-import { Image, readImg, writeCanvas } from 'image-js';
-import { useEffect, useRef, useState } from 'react';
+import { writeCanvas } from 'image-js';
+import { useEffect, useRef } from 'react';
 
 import {
   Point,
@@ -12,6 +12,7 @@ import {
 } from '../../src';
 import { CommittedRoi } from '../../src/types/Roi';
 import { Layout } from '../utils/Layout';
+import { useLoadImage } from '../utils/useLoadImage';
 
 export default {
   title: 'Full examples',
@@ -62,21 +63,7 @@ export function CropImage() {
 function CroppedImage() {
   const ref = useRef<HTMLCanvasElement>(null);
   const roi = useCommittedRois()[0];
-  const [image, setImage] = useState<Image | null>(null);
-
-  // Effect to load the
-  useEffect(() => {
-    const img = document.getElementById('story-image') as HTMLImageElement;
-    if (!ref.current || !img) {
-      return;
-    }
-    function onLoad() {
-      const image = readImg(img);
-      setImage(image);
-    }
-    img.addEventListener('load', onLoad);
-    return () => img.removeEventListener('load', onLoad);
-  }, []);
+  const image = useLoadImage('story-image', ref);
 
   // Transform image
   useEffect(() => {
