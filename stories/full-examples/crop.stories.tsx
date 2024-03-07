@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react';
-import { decode, writeCanvas } from 'image-js';
-import { useEffect, useRef } from 'react';
+import { Image, readImg, writeCanvas } from 'image-js';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Point,
@@ -62,32 +62,41 @@ export function CropImage() {
 function CroppedImage() {
   const ref = useRef<HTMLCanvasElement>(null);
   const roi = useCommittedRois()[0];
+  const [image, setImage] = useState<Image | null>(null);
 
+  // Effect to load the
   useEffect(() => {
     const img = document.getElementById('story-image') as HTMLImageElement;
     if (!ref.current || !img) {
       return;
     }
+    function onLoad() {
+      const image = readImg(img);
+      setImage(image);
+    }
+    img.addEventListener('load', onLoad);
+    return () => img.removeEventListener('load', onLoad);
+  }, []);
 
-    void fetch(img.src)
-      .then((response) => response.arrayBuffer())
-      .then((buffer) => {
-        const image = decode(new DataView(buffer));
-        const matrix = getRotationMatrix(roi.angle, roi);
+  // Transform image
+  useEffect(() => {
+    if (!image) {
+      return;
+    }
+    const matrix = getRotationMatrix(roi.angle, roi);
 
-        const croppedImage = image.transform(matrix, {
-          width: roi.width,
-          height: roi.height,
-          inverse: true,
-        });
+    const croppedImage = image.transform(matrix, {
+      width: roi.width,
+      height: roi.height,
+      inverse: true,
+    });
 
-        if (ref.current) {
-          writeCanvas(croppedImage, ref.current);
-        }
-      });
-  }, [roi]);
+    if (ref.current) {
+      writeCanvas(croppedImage, ref.current);
+    }
+  }, [roi, image]);
 
-  return <canvas ref={ref} id="transformed-image" style={{ maxWidth: 400 }} />;
+  return <canvas ref={ref} id="transformed-image" />;
 }
 
 function getRotationMatrix(angle: number, point: Point) {
