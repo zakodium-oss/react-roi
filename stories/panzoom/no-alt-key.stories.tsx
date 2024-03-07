@@ -13,7 +13,7 @@ export function ZoomWithoutAltKey() {
       <RoiProvider>
         <RoiContainer
           target={<TargetImage src="/barbara.jpg" />}
-          zoomWithoutAltKey
+          zoomWithoutModifierKey
         >
           <RoiList />
         </RoiContainer>
@@ -30,7 +30,7 @@ export function ZoomWithoutAltKeyScroll() {
         <RoiProvider>
           <RoiContainer
             target={<TargetImage src="/barbara.jpg" />}
-            zoomWithoutAltKey
+            zoomWithoutModifierKey
           >
             <RoiList />
           </RoiContainer>

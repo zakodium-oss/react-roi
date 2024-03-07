@@ -26,7 +26,7 @@ export interface RoiContainerProps<TData = unknown> {
    * If enabled, the user will be able to zoom into the target just by using the mouse wheel
    * Discouraged in a scrollable container
    */
-  zoomWithoutAltKey?: boolean;
+  zoomWithoutModifierKey?: boolean;
 }
 
 export type AfterDrawCallback<TData = unknown> = (
