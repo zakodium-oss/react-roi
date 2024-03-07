@@ -22,6 +22,11 @@ export interface RoiContainerProps<TData = unknown> {
    * Get the data of a new ROI as it is being drawn.
    */
   getNewRoiData?: () => TData;
+  /**
+   * If enabled, the user will be able to zoom into the target just by using the mouse wheel
+   * Discouraged in a scrollable container
+   */
+  zoomWithoutModifierKey?: boolean;
 }
 
 export type AfterDrawCallback<TData = unknown> = (

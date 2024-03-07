@@ -46,6 +46,7 @@ interface ContainerProps<TData = unknown> {
   noUnselection?: boolean;
   lockZoom: boolean;
   lockPan: boolean;
+  zoomWithoutModifierKey?: boolean;
   minNewRoiSize?: number;
   getNewRoiData?: () => TData;
 }
@@ -62,6 +63,7 @@ export function ContainerComponent<TData = unknown>(
     noUnselection,
     lockZoom,
     lockPan,
+    zoomWithoutModifierKey = false,
     minNewRoiSize = 1,
   } = props;
 
@@ -147,7 +149,7 @@ export function ContainerComponent<TData = unknown>(
     }, 25);
 
     function onWheel(event: WheelEvent) {
-      if (!event.altKey || lockZoom) return;
+      if ((!event.altKey && !zoomWithoutModifierKey) || lockZoom) return;
       event.preventDefault();
       event.stopPropagation();
       onZoom(event);
@@ -173,6 +175,7 @@ export function ContainerComponent<TData = unknown>(
     noUnselection,
     stateRef,
     actions,
+    zoomWithoutModifierKey,
   ]);
 
   const lockContextValue = useMemo<LockContext>(() => {
