@@ -1,10 +1,11 @@
 import { CommitBoxStrategy, ReactRoiState } from '../context/roiReducer';
 import { boundBox, BoundStrategy } from '../context/updaters/roi';
-import { CommittedBox, Size } from '../index';
 import { CommittedRoi, Roi } from '../types/Roi';
+import { CommittedBox } from '../types/box';
+import { Size } from '../types/utils';
 
 import { assert } from './assert';
-import { commitBox, denormalizeBox, normalizeBox } from './coordinates';
+import { commitBox, denormalizeBox, normalizeBox } from './box';
 
 function createInitialCommittedBox(): CommittedBox {
   return {
@@ -39,7 +40,7 @@ export function createRoi(
     action: {
       type: 'idle',
     },
-    ...denormalizeBox(committedRoi),
+    box: denormalizeBox(committedRoi),
   };
 }
 
@@ -57,7 +58,7 @@ export function createCommittedRoiFromRoi<T>(
   return {
     ...obj,
     ...boundBox(
-      commitBox(normalizeBox(roi), roi.action, commitStrategy),
+      commitBox(normalizeBox(roi.box), roi.action, commitStrategy),
       targetSize,
       strategy,
     ),
@@ -85,7 +86,7 @@ export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
     action: {
       type: 'idle',
     },
-    ...denormalizeBox(roi),
+    box: denormalizeBox(roi),
   };
 }
 

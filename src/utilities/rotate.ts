@@ -1,7 +1,13 @@
-import { Box, CommittedBox, Point } from '../types/utils';
+import { CommittedBox } from '../types/box';
 
 import { assert } from './assert';
-import { add, mulScalar, norm } from './point';
+import {
+  BoxWithRotationCenter,
+  getBoxPoints,
+  getRotationCenter,
+  isBoxWithRotationCenter,
+} from './box';
+import { add, mulScalar, norm, Point } from './point';
 
 const ANGLE_90_POSITIVE = Math.PI / 2;
 const ANGLE_90_NEGATIVE = -Math.PI / 2;
@@ -37,7 +43,7 @@ export function rotatePoint(
  */
 export function computeAngleFromMousePosition(
   pointer: Point,
-  roi: Box,
+  roi: BoxWithRotationCenter,
 ): number {
   const width = roi.width;
   const height = roi.height;
@@ -67,12 +73,15 @@ export function computeAngleFromMousePosition(
   return Math.acos((a * c - b * d) / denominator) * (OP.x > 0 ? 1 : -1);
 }
 
-export function rotatePointCommittedBox(point: Point, box: Box | CommittedBox) {
-  const topLeftPoint: Point = {
-    x: box.x,
-    y: box.y,
-  };
-  return rotatePoint(point, topLeftPoint, box.angle);
+export function rotatePointCommittedBox(
+  point: Point,
+  box: CommittedBox | BoxWithRotationCenter,
+) {
+  const center = isBoxWithRotationCenter(box)
+    ? getRotationCenter(box)
+    : { x: box.x, y: box.y };
+
+  return rotatePoint(point, center, box.angle);
 }
 
 interface Boundaries {
@@ -81,19 +90,10 @@ interface Boundaries {
   maxX: number;
   maxY: number;
 }
-export function getMBRBoundaries(box: CommittedBox): Boundaries {
-  // Box:
-  // p0 ------ p1
-  // |         |
-  // p3 ------ p2
-  const p0 = rotatePointCommittedBox({ x: box.x, y: box.y }, box);
-  const p1 = rotatePointCommittedBox({ x: box.x + box.width, y: box.y }, box);
-  const p2 = rotatePointCommittedBox(
-    { x: box.x + box.width, y: box.y + box.height },
-    box,
-  );
-
-  const p3 = rotatePointCommittedBox({ x: box.x, y: box.y + box.height }, box);
+export function getMBRBoundaries(
+  box: CommittedBox | BoxWithRotationCenter,
+): Boundaries {
+  const [p0, p1, p2, p3] = getBoxPoints(box);
 
   if (box.angle >= -Math.PI && box.angle < ANGLE_90_NEGATIVE) {
     return {

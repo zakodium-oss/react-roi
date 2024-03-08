@@ -1,8 +1,8 @@
 import { CSSProperties } from 'react';
 
-import { CommittedBox } from '..';
+import { XCornerPosition, YCornerPosition } from '../types/Roi';
 
-import { XCornerPosition, YCornerPosition } from './coordinates';
+import { Box } from './box';
 
 export interface CornerData {
   xPosition: XCornerPosition;
@@ -37,7 +37,7 @@ function getCursor(angle: number, idx: number) {
 }
 // (angle + Math.PI/8) / (Math.PI / 4) => 0-7
 
-export function getAllCorners(roi: CommittedBox): CornerData[] {
+export function getAllCorners(roi: Box, angle: number): CornerData[] {
   const { x, y, width, height } = roi;
   const cursors: Array<Omit<CornerData, 'cursor'>> = [
     {
@@ -47,7 +47,7 @@ export function getAllCorners(roi: CommittedBox): CornerData[] {
       cy: y,
     },
     {
-      xPosition: 'middle',
+      xPosition: 'center',
       yPosition: 'top',
       cx: x + width / 2,
       cy: y,
@@ -60,7 +60,7 @@ export function getAllCorners(roi: CommittedBox): CornerData[] {
     },
     {
       xPosition: 'right',
-      yPosition: 'middle',
+      yPosition: 'center',
       cx: x + width,
       cy: y + height / 2,
     },
@@ -71,7 +71,7 @@ export function getAllCorners(roi: CommittedBox): CornerData[] {
       cy: y + height,
     },
     {
-      xPosition: 'middle',
+      xPosition: 'center',
       yPosition: 'bottom',
       cx: x + width / 2,
       cy: y + height,
@@ -84,13 +84,13 @@ export function getAllCorners(roi: CommittedBox): CornerData[] {
     },
     {
       xPosition: 'left',
-      yPosition: 'middle',
+      yPosition: 'center',
       cx: x,
       cy: y + height / 2,
     },
   ];
   return cursors.map((item, idx) => ({
     ...item,
-    cursor: getCursor(roi.angle, idx),
+    cursor: getCursor(angle, idx),
   }));
 }

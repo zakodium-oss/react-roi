@@ -1,6 +1,6 @@
 import { Draft } from 'immer';
 
-import { initBox } from '../../utilities/coordinates';
+import { initBox } from '../../utilities/box';
 import { ReactRoiState } from '../roiReducer';
 
 import { boundBox } from './roi';

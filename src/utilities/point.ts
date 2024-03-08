@@ -1,4 +1,7 @@
-import { Point } from '../types/utils';
+export interface Point {
+  x: number;
+  y: number;
+}
 
 export function norm(point: Point): number {
   return Math.sqrt(point.x ** 2 + point.y ** 2);

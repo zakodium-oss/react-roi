@@ -1,6 +1,10 @@
-import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
+import { BoxWithRotationCenter } from '../utilities/box';
+import { Point } from '../utilities/point';
 
-import { Box, CommittedBox } from './utils';
+import { CommittedBox } from './box';
+
+export type XCornerPosition = 'left' | 'right' | 'center';
+export type YCornerPosition = 'top' | 'bottom' | 'center';
 
 export interface ResizeAction {
   /**
@@ -15,6 +19,10 @@ export interface ResizeAction {
    * Position of the corner actioned along the y axis.
    */
   yAxisCorner: YCornerPosition;
+  /**
+   * The update of roi coordinates must happen in round increments, so we keep the remainder here for the next update.
+   */
+  remainder: Point;
 }
 
 export interface MoveAction {
@@ -50,7 +58,7 @@ export type RoiAction =
   | RotateAction
   | ResizeAction;
 
-export interface Roi<TData = unknown> extends Box {
+export interface Roi<TData = unknown> {
   /**
    * An id which uniquely identifies for the ROI.
    */
@@ -66,8 +74,10 @@ export interface Roi<TData = unknown> extends Box {
   /**
    * Metadata of any kind associated with the ROI.
    */
+
+  box: BoxWithRotationCenter;
   data?: TData;
 }
 
-export type CommittedRoi<TData = unknown> = Omit<Roi<TData>, 'action'> &
+export type CommittedRoi<TData = unknown> = Omit<Roi<TData>, 'action' | 'box'> &
   CommittedBox;

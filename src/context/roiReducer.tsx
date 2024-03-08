@@ -2,9 +2,18 @@ import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import { PanZoom, ReactRoiAction, ResizeStrategy, RoiMode, Size } from '..';
-import { CommittedRoi, Roi } from '../types/Roi';
+import {
+  CommittedRoi,
+  Roi,
+  XCornerPosition,
+  YCornerPosition,
+} from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
-import { XCornerPosition, YCornerPosition } from '../utilities/coordinates';
+import {
+  changeBoxRotationCenter,
+  xAxisCornerToCenter,
+  yAxisCornerToCenter,
+} from '../utilities/box';
 import {
   createCommittedRoi,
   createRoi,
@@ -269,16 +278,16 @@ export function roiReducer(
         const { id, ...updatedData } = action.payload;
         if (!id) return;
         const index = draft.rois.findIndex((roi) => roi.id === id);
-        const committedRois = draft.committedRois[index];
+        const committedRoi = draft.committedRois[index];
 
         assert(index !== -1, 'ROI not found');
-        assert(committedRois, 'Committed ROI not found');
+        assert(committedRoi, 'Committed ROI not found');
 
         Object.assign<CommittedRoi, Partial<CommittedRoi>>(
-          committedRois,
+          committedRoi,
           updatedData,
         );
-        draft.rois[index] = createRoiFromCommittedRoi(committedRois);
+        draft.rois[index] = createRoiFromCommittedRoi(committedRoi);
         break;
       }
 
@@ -292,7 +301,15 @@ export function roiReducer(
           type: 'resizing',
           xAxisCorner,
           yAxisCorner,
+          remainder: {
+            x: 0,
+            y: 0,
+          },
         };
+        roi.box = changeBoxRotationCenter(roi.box, {
+          xRotationCenter: xAxisCornerToCenter[xAxisCorner],
+          yRotationCenter: yAxisCornerToCenter[yAxisCorner],
+        });
         break;
       }
 

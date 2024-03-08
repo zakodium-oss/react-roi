@@ -1,4 +1,4 @@
-import { Box } from '../../types/utils';
+import { Box } from '../../utilities/box';
 import { CustomRoiStyle } from '../RoiList';
 
 import { baseHandlerSizes } from './sizes';

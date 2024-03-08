@@ -1,9 +1,8 @@
 import { Meta } from '@storybook/react';
-import { writeCanvas } from 'image-js';
+import { Point, writeCanvas } from 'image-js';
 import { useEffect, useRef } from 'react';
 
 import {
-  Point,
   RoiContainer,
   RoiList,
   RoiProvider,
@@ -46,8 +45,9 @@ export function CropImage() {
           <RoiList
             allowRotate
             getOverlayOpacity={() => 0.6}
-            getStyle={() => ({
-              resizeHandlerColor: 'white',
+            getStyle={(roi) => ({
+              resizeHandlerColor:
+                roi.action.type !== 'idle' ? 'rgba(255,255,255,0.5)' : 'white',
               rectAttributes: {
                 fill: 'rgba(0,0,0,0.2)',
               },
@@ -70,12 +70,13 @@ function CroppedImage() {
     if (!image) {
       return;
     }
-    const matrix = getRotationMatrix(roi.angle, roi);
+    const matrix = getRotationMatrix(roi.angle, { column: roi.x, row: roi.y });
 
     const croppedImage = image.transform(matrix, {
       width: roi.width,
       height: roi.height,
       inverse: true,
+      interpolationType: 'nearest',
     });
 
     if (ref.current) {
@@ -83,7 +84,17 @@ function CroppedImage() {
     }
   }, [roi, image]);
 
-  return <canvas ref={ref} id="transformed-image" />;
+  return (
+    <canvas
+      ref={ref}
+      id="transformed-image"
+      style={{
+        transform: 'scale(10)',
+        transformOrigin: 'left top',
+        imageRendering: 'pixelated',
+      }}
+    />
+  );
 }
 
 function getRotationMatrix(angle: number, point: Point) {
@@ -91,7 +102,7 @@ function getRotationMatrix(angle: number, point: Point) {
   const angleSin = Math.sin(angle);
 
   return [
-    [angleCos, -angleSin, point.x],
-    [angleSin, angleCos, point.y],
+    [angleCos, -angleSin, point.column],
+    [angleSin, angleCos, point.row],
   ];
 }

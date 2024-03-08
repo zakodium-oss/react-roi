@@ -11,6 +11,6 @@
     "types": ["vite/client", "node"],
     "skipLibCheck": true
   },
-  "include": ["./src", "./tests", "./stories"],
+  "include": ["./src", "./tests", "./stories", "./vitest.config.ts"],
   "exclude": ["node_modules"]
 }
