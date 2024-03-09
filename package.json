@@ -42,7 +42,7 @@
     "autoprefixer": "^10.4.15",
     "eslint": "^8.47.0",
     "eslint-config-zakodium": "^8.1.0",
-    "image-js": "0.0.0-next-74561455b0",
+    "image-js": "0.0.0-next-3f36e575c9",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-kbs": "^2.1.1",

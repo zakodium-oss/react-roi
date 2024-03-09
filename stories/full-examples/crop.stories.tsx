@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react';
 import { Point, writeCanvas } from 'image-js';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   RoiContainer,
@@ -64,6 +64,7 @@ function CroppedImage() {
   const ref = useRef<HTMLCanvasElement>(null);
   const roi = useCommittedRois()[0];
   const image = useLoadImage('story-image', ref);
+  const [scale, setScale] = useState(2);
 
   // Transform image
   useEffect(() => {
@@ -85,15 +86,28 @@ function CroppedImage() {
   }, [roi, image]);
 
   return (
-    <canvas
-      ref={ref}
-      id="transformed-image"
-      style={{
-        transform: 'scale(10)',
-        transformOrigin: 'left top',
-        imageRendering: 'pixelated',
-      }}
-    />
+    <>
+      <select
+        style={{ display: 'block' }}
+        defaultValue={2}
+        onChange={(event) => setScale(+event.target.value)}
+      >
+        <option value={1}>1x</option>
+        <option value={2}>2x</option>
+        <option value={4}>4x</option>
+        <option value={8}>8x</option>
+        <option value={16}>16x</option>
+      </select>
+      <canvas
+        ref={ref}
+        id="transformed-image"
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: 'left top',
+          imageRendering: 'pixelated',
+        }}
+      />
+    </>
   );
 }
 
