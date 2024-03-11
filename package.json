@@ -3,16 +3,14 @@
   "version": "0.16.1",
   "types": "lib-esm/index.d.ts",
   "files": [
-    "lib",
     "lib-esm",
     "src"
   ],
-  "main": "./lib/index.js",
   "module": "./lib-esm/index.js",
   "scripts": {
     "build": "storybook build",
     "check-types": "tsc --noEmit",
-    "clean": "rimraf lib lib-esm",
+    "clean": "rimraf lib-esm",
     "dev": "storybook dev -p 6006",
     "eslint": "eslint src stories --cache",
     "eslint-fix": "npm run eslint -- --fix",
