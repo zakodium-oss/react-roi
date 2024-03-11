@@ -120,9 +120,11 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
-      {isSelected && allowRotate && roi.action.type !== 'drawing' && (
-        <RoiBoxRotateHandler box={box} styles={styles} />
-      )}
+      {isSelected &&
+        allowRotate &&
+        (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
+          <RoiBoxRotateHandler box={box} styles={styles} />
+        )}
     </svg>
   );
 }
