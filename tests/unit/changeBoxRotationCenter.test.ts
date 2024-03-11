@@ -5,7 +5,7 @@ import {
   changeBoxRotationCenter,
 } from '../../src/utilities/box';
 
-test('changeBoxRotationCenter left-top to right-bottom and vice versa', () => {
+test('left-top to right-bottom and vice versa', () => {
   const originalBox: BoxWithRotationCenter = {
     x: 0,
     y: 0,
@@ -37,7 +37,7 @@ test('changeBoxRotationCenter left-top to right-bottom and vice versa', () => {
   expectBoxTeBeCloseTo(backToOriginal, originalBox);
 });
 
-test('changeBoxRotationCenter left-top to center-center and vice versa', () => {
+test('left-top to center-center and vice versa', () => {
   const originalBox: BoxWithRotationCenter = {
     x: 10,
     y: -20,
