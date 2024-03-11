@@ -1,7 +1,9 @@
 import { expect, test } from 'vitest';
 
-import { BoxWithRotationCenter } from '../../src';
-import { changeBoxRotationCenter } from '../../src/utilities/box';
+import {
+  BoxWithRotationCenter,
+  changeBoxRotationCenter,
+} from '../../src/utilities/box';
 
 test('changeBoxRotationCenter left-top to right-bottom and vice versa', () => {
   const originalBox: BoxWithRotationCenter = {
