@@ -149,7 +149,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
     resizeStrategy = 'contain',
-    commitRoiBoxStrategy = 'exact',
+    commitRoiBoxStrategy = 'round',
   } = initialConfig;
 
   const [state, dispatch] = useReducer(roiReducer, null, () =>

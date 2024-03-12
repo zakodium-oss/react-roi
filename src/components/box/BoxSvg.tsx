@@ -1,17 +1,12 @@
 import { CSSProperties } from 'react';
 
-import {
-  Box,
-  GetStyleCallback,
-  ReactRoiAction,
-  RoiMode,
-  useRoiState,
-} from '../..';
+import { GetStyleCallback, ReactRoiAction, RoiMode, useRoiState } from '../..';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown';
 import { useLockContext } from '../../hooks/useLockContext';
 import { usePanZoom } from '../../hooks/usePanZoom';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
+import { Box } from '../../utilities/box';
 import { getAllCorners } from '../../utilities/corners';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
@@ -116,7 +111,7 @@ export function BoxSvg({
         {...styles.rectAttributes}
       />
       {isSelected &&
-        getAllCorners(box).map((corner) => (
+        getAllCorners(box, roi.box.angle).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             corner={corner}
@@ -125,9 +120,11 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
-      {isSelected && allowRotate && roi.action.type !== 'drawing' && (
-        <RoiBoxRotateHandler box={box} styles={styles} />
-      )}
+      {isSelected &&
+        allowRotate &&
+        (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
+          <RoiBoxRotateHandler box={box} styles={styles} />
+        )}
     </svg>
   );
 }

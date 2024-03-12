@@ -1,9 +1,8 @@
 import { Meta } from '@storybook/react';
-import { writeCanvas } from 'image-js';
-import { useEffect, useRef } from 'react';
+import { Point, writeCanvas } from 'image-js';
+import { useEffect, useRef, useState } from 'react';
 
 import {
-  Point,
   RoiContainer,
   RoiList,
   RoiProvider,
@@ -46,8 +45,9 @@ export function CropImage() {
           <RoiList
             allowRotate
             getOverlayOpacity={() => 0.6}
-            getStyle={() => ({
-              resizeHandlerColor: 'white',
+            getStyle={(roi) => ({
+              resizeHandlerColor:
+                roi.action.type !== 'idle' ? 'rgba(255,255,255,0.5)' : 'white',
               rectAttributes: {
                 fill: 'rgba(0,0,0,0.2)',
               },
@@ -64,18 +64,20 @@ function CroppedImage() {
   const ref = useRef<HTMLCanvasElement>(null);
   const roi = useCommittedRois()[0];
   const image = useLoadImage('story-image', ref);
+  const [scale, setScale] = useState(2);
 
   // Transform image
   useEffect(() => {
     if (!image) {
       return;
     }
-    const matrix = getRotationMatrix(roi.angle, roi);
+    const matrix = getRotationMatrix(roi.angle, { column: roi.x, row: roi.y });
 
     const croppedImage = image.transform(matrix, {
       width: roi.width,
       height: roi.height,
       inverse: true,
+      interpolationType: 'nearest',
     });
 
     if (ref.current) {
@@ -83,7 +85,30 @@ function CroppedImage() {
     }
   }, [roi, image]);
 
-  return <canvas ref={ref} id="transformed-image" />;
+  return (
+    <>
+      <select
+        style={{ display: 'block' }}
+        defaultValue={2}
+        onChange={(event) => setScale(+event.target.value)}
+      >
+        <option value={1}>1x</option>
+        <option value={2}>2x</option>
+        <option value={4}>4x</option>
+        <option value={8}>8x</option>
+        <option value={16}>16x</option>
+      </select>
+      <canvas
+        ref={ref}
+        id="transformed-image"
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: 'left top',
+          imageRendering: 'pixelated',
+        }}
+      />
+    </>
+  );
 }
 
 function getRotationMatrix(angle: number, point: Point) {
@@ -91,7 +116,7 @@ function getRotationMatrix(angle: number, point: Point) {
   const angleSin = Math.sin(angle);
 
   return [
-    [angleCos, -angleSin, point.x],
-    [angleSin, angleCos, point.y],
+    [angleCos, -angleSin, point.column],
+    [angleSin, angleCos, point.row],
   ];
 }

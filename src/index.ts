@@ -6,6 +6,7 @@ export * from './context/RoiProvider';
 
 export * from './types/state';
 export * from './types/utils';
+export * from './types/box';
 
 export * from './hooks/useActions';
 export * from './hooks/useCommittedRois';

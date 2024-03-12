@@ -1,19 +1,16 @@
 import { Draft } from 'immer';
 
-import { Box, CommittedBox, Size } from '../..';
+import { Size } from '../..';
 import { CommittedRoi, Roi, RoiAction } from '../../types/Roi';
-import {
-  commitBox,
-  denormalizeBox,
-  normalizeBox,
-} from '../../utilities/coordinates';
+import { CommittedBox } from '../../types/box';
+import { commitBox, denormalizeBox, normalizeBox } from '../../utilities/box';
 import { getMBRBoundaries } from '../../utilities/rotate';
 import { ReactRoiState } from '../roiReducer';
 
 export type BoundStrategy = 'move' | 'resize';
 
-export function boundBox<T extends CommittedBox>(
-  committedBox: T,
+export function boundBox(
+  committedBox: CommittedBox,
   targetSize: Size,
   /**
    * Strategy to bound the ROI box. If `move`, the ROI box will be moved so that it fits inside the target.
@@ -81,6 +78,7 @@ const boundStrategyMap: Record<RoiAction['type'], BoundStrategy> = {
   drawing: 'resize',
   idle: 'move',
   moving: 'move',
+  // If rotating, use move since it does not change the overall size of the ROI
   rotating: 'move',
 };
 
@@ -90,16 +88,12 @@ export function updateCommittedRoiPosition(
   roi: Draft<Roi>,
 ) {
   const normalizedBox = boundBox(
-    commitBox(normalizeBox(roi), roi.action, draft.commitRoiBoxStrategy),
+    commitBox(normalizeBox(roi.box), roi.action, draft.commitRoiBoxStrategy),
     draft.targetSize,
-    // If rotating, use move since it does not change the overall size of the ROI
     boundStrategyMap[roi.action.type],
   );
-  if (normalizedBox.height === 0 || normalizedBox.width === 0) {
-    // Revert changes since the ROI is no longer visible
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi));
-  } else {
+  if (normalizedBox.height !== 0 && normalizedBox.width !== 0) {
     Object.assign<CommittedRoi, CommittedBox>(committedRoi, normalizedBox);
-    Object.assign<Roi, Box>(roi, denormalizeBox(committedRoi));
   }
+  roi.box = denormalizeBox(committedRoi);
 }

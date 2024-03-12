@@ -40,12 +40,20 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
           xAxisCorner: 'left',
           yAxisCorner: 'top',
           previousSelectedRoi: draft.selectedRoi,
+          remainder: {
+            x: 0,
+            y: 0,
+          },
         },
-
-        x,
-        y,
-        width: 0,
-        height: 0,
+        box: {
+          xRotationCenter: 'left',
+          yRotationCenter: 'top',
+          x,
+          y,
+          width: 0,
+          height: 0,
+          angle: 0,
+        },
       };
       draft.selectedRoi = roi.id;
       draft.rois.push(roi);

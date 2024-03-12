@@ -36,7 +36,7 @@ export function RoiBoxCorner({
     },
     [roiDispatch, corner, roiId],
   );
-  if (corner.xPosition === 'middle' || corner.yPosition === 'middle') {
+  if (corner.xPosition === 'center' || corner.yPosition === 'center') {
     return (
       <SideHandler
         corner={corner}

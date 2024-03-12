@@ -16,7 +16,7 @@ export function getHandlerSizes(
   panZoom: PanZoomContext,
 ): HandlerSizeOptions {
   const totalScale = panZoom.panZoom.scale * panZoom.initialPanZoom.scale;
-  const minLength = Math.min(roi.width, roi.height) * totalScale;
+  const minLength = Math.min(roi.box.width, roi.box.height) * totalScale;
   const { handlerSize, handlerBorderWidth } = baseHandlerSizes;
   return {
     handlerSize: Math.floor(

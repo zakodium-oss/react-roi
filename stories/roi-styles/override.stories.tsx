@@ -47,7 +47,7 @@ export function WithShadowAroundSelectedRoi({ allowRotate }: StoryProps) {
           <RoiList<CustomColorData>
             allowRotate={allowRotate}
             getOverlayOpacity={(roi, { isSelected }) =>
-              isSelected && (roi.width > 0 || roi.height > 0) ? 0.6 : 0
+              isSelected && (roi.box.width > 0 || roi.box.height > 0) ? 0.6 : 0
             }
             getStyle={(_, { isSelected }) => ({
               resizeHandlerColor: isSelected ? 'white' : 'black',
