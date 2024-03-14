@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0](https://github.com/zakodium-oss/react-roi/compare/v0.16.1...v1.0.0) (2024-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* make round the default commit box strategy
+
+### Features
+
+* add prop to opt into zooming with mouse wheel without the alt key ([#131](https://github.com/zakodium-oss/react-roi/issues/131)) ([c79e779](https://github.com/zakodium-oss/react-roi/commit/c79e779c62d4686d214dc7c8a285da1a5a661e6b))
+
+
+### Bug Fixes
+
+* no jittering with "round" commit strategy ([#133](https://github.com/zakodium-oss/react-roi/issues/133)) ([71dd546](https://github.com/zakodium-oss/react-roi/commit/71dd54637666b5423528f8b3b34a85f0eeee6434))
+
 ## [0.16.1](https://github.com/zakodium-oss/react-roi/compare/v0.16.0...v0.16.1) (2024-03-06)
 
 
