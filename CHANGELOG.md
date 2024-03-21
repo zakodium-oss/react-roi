@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/zakodium-oss/react-roi/compare/v1.0.0...v1.0.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* better shadow size ([#138](https://github.com/zakodium-oss/react-roi/issues/138)) ([2b02887](https://github.com/zakodium-oss/react-roi/commit/2b0288764c4edff4c2e2f3f94c64cb0dbcf599f0))
+* don't update on mouse up if roi state is idle ([#136](https://github.com/zakodium-oss/react-roi/issues/136)) ([4bd09ce](https://github.com/zakodium-oss/react-roi/commit/4bd09ceeebcb634e88854d11459ee96fc673a2ac))
+
 ## [1.0.0](https://github.com/zakodium-oss/react-roi/compare/v0.16.1...v1.0.0) (2024-03-12)
 
 
