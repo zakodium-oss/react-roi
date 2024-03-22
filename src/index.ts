@@ -12,3 +12,5 @@ export * from './hooks/useActions';
 export * from './hooks/useCommittedRois';
 export * from './hooks/useRoiState';
 export * from './hooks/useTargetRef';
+
+export * from './libHelpers/image';
