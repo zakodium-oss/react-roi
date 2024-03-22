@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/zakodium-oss/react-roi/compare/v1.0.1...v1.1.0) (2024-03-22)
+
+
+### Features
+
+* export helper to help appropriately build image styles ([98b4b6c](https://github.com/zakodium-oss/react-roi/commit/98b4b6ccc60744fab4f44ec47e3e95534568c29e))
+
 ## [1.0.1](https://github.com/zakodium-oss/react-roi/compare/v1.0.0...v1.0.1) (2024-03-21)
 
 
