@@ -1,6 +1,8 @@
 import { CSSProperties, PointerEventHandler, useCallback } from 'react';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
+import { useRoiState } from '../../hooks/useRoiState';
+import { RoiState } from '../../types/state';
 import { CornerData } from '../../utilities/corners';
 
 import { HandlerSizeOptions } from './sizes';
@@ -19,9 +21,10 @@ export function RoiBoxCorner({
   handlerColor?: CSSProperties['color'];
 }) {
   const roiDispatch = useRoiDispatch();
+  const roiState = useRoiState();
   const onPointerDown: PointerDownCallback = useCallback(
     (event) => {
-      if (event.altKey) {
+      if (event.altKey || event.button !== 0 || roiState.mode === 'draw') {
         return;
       }
       event.stopPropagation();
@@ -34,7 +37,7 @@ export function RoiBoxCorner({
         },
       });
     },
-    [roiDispatch, corner, roiId],
+    [roiDispatch, corner, roiId, roiState],
   );
   if (corner.xPosition === 'center' || corner.yPosition === 'center') {
     return (
@@ -67,6 +70,8 @@ function SideHandler({
   scaledSizes: HandlerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
+  const roiState = useRoiState();
+
   const linePoints = getSidePoints(corner, scaledSizes);
   const handlerRect = getHandlerRect(corner, scaledSizes);
   const transform = getTransform(corner, scaledSizes);
@@ -80,7 +85,7 @@ function SideHandler({
       />
       <rect
         {...handlerRect}
-        cursor={corner.cursor}
+        cursor={getCursor(roiState, corner)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}
@@ -100,6 +105,8 @@ function CornerHandler({
   scaledSizes: HandlerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
+  const roiState = useRoiState();
+
   const polyline = getCornerPoints(corner, scaledSizes);
   const handlerRect = getHandlerRect(corner, scaledSizes);
   const transform = getTransform(corner, scaledSizes);
@@ -114,7 +121,7 @@ function CornerHandler({
       />
       <rect
         {...handlerRect}
-        cursor={corner.cursor}
+        cursor={getCursor(roiState, corner)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}
@@ -189,4 +196,20 @@ function getTransform(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   }
 
   return `translate(${x}, ${y})`;
+}
+
+function getCursor(
+  roiState: RoiState,
+  corner: CornerData,
+): CSSProperties['cursor'] {
+  if (roiState.mode === 'draw') {
+    return 'crosshair';
+  }
+
+  // In practice, panning should be unreachable here
+  // So no need to handle other actions
+  if (roiState.action === 'panning') {
+    return 'grab';
+  }
+  return corner.cursor;
 }
