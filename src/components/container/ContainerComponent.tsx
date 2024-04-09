@@ -216,19 +216,24 @@ export function ContainerComponent<TData = unknown>(
         onPointerDown={(event) => {
           event.preventDefault();
           if (containerRef?.current) {
-            const containerBoundingRect =
-              containerRef.current.getBoundingClientRect();
-            roiDispatch({
-              type: 'START_DRAW',
-              payload: {
-                event,
-                containerBoundingRect,
-                isPanZooming: event.altKey,
-                lockPan,
-                noUnselection,
-                data: getNewRoiData.current?.(),
-              },
-            });
+            // Left mouse button
+            if (event.button === 0) {
+              const containerBoundingRect =
+                containerRef.current.getBoundingClientRect();
+              roiDispatch({
+                type: 'START_DRAW',
+                payload: {
+                  event,
+                  containerBoundingRect,
+                  isPanZooming: event.altKey,
+                  lockPan,
+                  noUnselection,
+                  data: getNewRoiData.current?.(),
+                },
+              });
+            } else if (!lockPan) {
+              roiDispatch({ type: 'START_PAN' });
+            }
           }
         }}
       >

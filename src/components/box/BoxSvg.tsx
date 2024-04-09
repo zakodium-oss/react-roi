@@ -72,7 +72,12 @@ export function BoxSvg({
       viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
       className={className}
       onPointerDown={(event) => {
-        if (event.altKey || isReadOnly || roiState.mode === 'draw') {
+        if (
+          event.altKey ||
+          isReadOnly ||
+          roiState.mode === 'draw' ||
+          event.button !== 0
+        ) {
           return;
         }
 

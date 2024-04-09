@@ -27,6 +27,7 @@ import { pointerMove } from './updaters/pointerMove';
 import { sanitizeRois } from './updaters/sanitizeRois';
 import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction';
 import { startDraw } from './updaters/startDraw';
+import { startPan } from './updaters/startPan';
 import { resetZoomAction, zoomAction } from './updaters/zoom';
 
 interface ZoomDomain {
@@ -180,6 +181,7 @@ export type RoiReducerAction =
       payload: EndActionPayload;
     }
   | { type: 'CANCEL_ACTION'; payload: CancelActionPayload }
+  | { type: 'START_PAN' }
   | {
       type: 'SELECT_BOX_AND_START_MOVE';
       payload: SelectBoxAndStartMovePayload;
@@ -313,6 +315,10 @@ export function roiReducer(
         break;
       }
 
+      case 'START_PAN': {
+        startPan(draft);
+        break;
+      }
       case 'SELECT_BOX_AND_START_MOVE': {
         selectBoxAndStartAction(draft, action.payload.id, 'moving');
         break;
