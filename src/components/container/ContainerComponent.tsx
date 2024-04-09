@@ -214,6 +214,7 @@ export function ContainerComponent<TData = unknown>(
           }
         }}
         onPointerDown={(event) => {
+          event.preventDefault();
           if (containerRef?.current) {
             const containerBoundingRect =
               containerRef.current.getBoundingClientRect();
@@ -240,6 +241,7 @@ export function ContainerComponent<TData = unknown>(
           {target}
         </div>
         <div
+          onContextMenu={(event) => event.preventDefault()}
           style={{
             userSelect: 'none',
             WebkitUserSelect: 'none',
