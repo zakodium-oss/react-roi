@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/zakodium-oss/react-roi/compare/v1.1.0...v1.2.0) (2024-04-09)
+
+
+### Features
+
+* pan with middle or right mouse ([f4df4ed](https://github.com/zakodium-oss/react-roi/commit/f4df4ed0268536386318007bbd02728b6ba6805e))
+
+
+### Bug Fixes
+
+* prevent context menu from appearing when using right click ([c4a45de](https://github.com/zakodium-oss/react-roi/commit/c4a45de9b716163a60c5b2f53cdbe9c83ed7cce1))
+
 ## [1.1.0](https://github.com/zakodium-oss/react-roi/compare/v1.0.1...v1.1.0) (2024-03-22)
 
 
