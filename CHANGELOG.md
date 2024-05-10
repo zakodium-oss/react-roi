@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/zakodium-oss/react-roi/compare/v1.2.0...v1.3.0) (2024-05-10)
+
+
+### Features
+
+* add getRectanglePoints method to committed roi ([ca58b1a](https://github.com/zakodium-oss/react-roi/commit/ca58b1ac2b043c3f0a6876b37a89204095c807ec))
+
 ## [1.2.0](https://github.com/zakodium-oss/react-roi/compare/v1.1.0...v1.2.0) (2024-04-09)
 
 
