@@ -1,9 +1,9 @@
 import { produce } from 'immer';
 import { KeyboardEvent as ReactKeyboardEvent, useMemo } from 'react';
 
+import { CommittedRoiProperties } from '..';
 import { CancelActionPayload } from '../context/roiReducer';
 import { zoomAction } from '../context/updaters/zoom';
-import { CommittedRoi } from '../types/Roi';
 import { RoiMode } from '../types/utils';
 
 import useCallbacksRef from './useCallbacksRef';
@@ -12,7 +12,7 @@ import { useRoiContainerRef } from './useRoiContainerRef';
 import { useRoiDispatch } from './useRoiDispatch';
 
 export type UpdateData<TData = unknown> = Partial<
-  Omit<CommittedRoi<TData>, 'id'>
+  Omit<CommittedRoiProperties<TData>, 'id'>
 >;
 export function useActions<TData = unknown>() {
   const roiDispatch = useRoiDispatch();
@@ -56,7 +56,7 @@ export function useActions<TData = unknown>() {
           callbacksRef.current.onAfterZoomChange(newState.panZoom);
         }
       },
-      createRoi: (roi: CommittedRoi<TData>) => {
+      createRoi: (roi: CommittedRoiProperties<TData>) => {
         roiDispatch({
           type: 'CREATE_ROI',
           payload: roi,

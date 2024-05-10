@@ -1,10 +1,10 @@
-import { CommittedRoi } from '../../src/types/Roi';
+import { CommittedRoiProperties } from '../../src';
 
 export function getInitialRois<T>(
   width: number,
   height: number,
   data?: T,
-): Array<CommittedRoi<T>> {
+): Array<CommittedRoiProperties<T>> {
   return [
     {
       id: '0000-1111-2222-3333',

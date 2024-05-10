@@ -8,7 +8,7 @@ import {
   RoiMode,
   RoiState,
 } from '..';
-import { CommittedRoi } from '../types/Roi';
+import { CommittedRoiProperties } from '../types/CommittedRoi';
 import { createRoiFromCommittedRoi } from '../utilities/rois';
 import { normalizeAngle } from '../utilities/rotate';
 
@@ -65,7 +65,7 @@ export interface RoiProviderInitialConfig<TData> {
    *
    */
   commitRoiBoxStrategy?: CommitBoxStrategy;
-  rois?: Array<CommittedRoi<TData>>;
+  rois?: Array<CommittedRoiProperties<TData>>;
   selectedRoiId?: string;
 }
 

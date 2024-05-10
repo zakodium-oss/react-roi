@@ -1,7 +1,7 @@
+import { CommittedBox, CommittedRoiProperties } from '..';
 import { CommitBoxStrategy, ReactRoiState } from '../context/roiReducer';
 import { boundBox, BoundStrategy } from '../context/updaters/roi';
-import { CommittedRoi, Roi } from '../types/Roi';
-import { CommittedBox } from '../types/box';
+import { Roi } from '../types/Roi';
 import { Size } from '../types/utils';
 
 import { assert } from './assert';
@@ -19,8 +19,8 @@ function createInitialCommittedBox(): CommittedBox {
 
 export function createCommittedRoi<T>(
   id: string,
-  options: Omit<Partial<CommittedRoi<T>>, 'id'> = {},
-): CommittedRoi<T> {
+  options: Omit<Partial<CommittedRoiProperties<T>>, 'id'> = {},
+): CommittedRoiProperties<T> {
   return {
     id,
     label: '',
@@ -52,7 +52,7 @@ interface CreateCommittedRoiFromRoiOptions {
 export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
   options: CreateCommittedRoiFromRoiOptions,
-): CommittedRoi<T> {
+): CommittedRoiProperties<T> {
   const { targetSize, strategy, commitStrategy } = options;
   const { action, ...obj } = roi;
   return {
@@ -68,7 +68,7 @@ export function createCommittedRoiFromRoi<T>(
 export function createCommittedRoiFromRoiIfValid<T>(
   roi: Roi<T>,
   options: CreateCommittedRoiFromRoiOptions & { minNewRoiSize: number },
-): CommittedRoi<T> | null {
+): CommittedRoiProperties<T> | null {
   const newCommittedRoi = createCommittedRoiFromRoi(roi, options);
   if (
     newCommittedRoi.width < options.minNewRoiSize ||
@@ -79,7 +79,9 @@ export function createCommittedRoiFromRoiIfValid<T>(
   return newCommittedRoi;
 }
 
-export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
+export function createRoiFromCommittedRoi<T>(
+  roi: CommittedRoiProperties<T>,
+): Roi<T> {
   const { x, y, width, height, ...otherRoiProps } = roi;
   return {
     ...otherRoiProps,
@@ -90,7 +92,10 @@ export function createRoiFromCommittedRoi<T>(roi: CommittedRoi<T>): Roi<T> {
   };
 }
 
-export function roiHasChanged(state: ReactRoiState, roi: CommittedRoi) {
+export function roiHasChanged(
+  state: ReactRoiState,
+  roi: CommittedRoiProperties,
+) {
   const currentRoi = state.committedRois.find((r) => r.id === roi.id);
   assert(currentRoi, 'roi not found');
   return (

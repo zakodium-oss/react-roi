@@ -3,11 +3,12 @@ import { createContext, Dispatch, RefObject } from 'react';
 import {
   AfterDrawCallback,
   AfterUpdateCallback,
+  CommittedRoiProperties,
   PanZoom,
   RoiState,
   Size,
 } from '..';
-import { CommittedRoi, Roi } from '../types/Roi';
+import { Roi } from '../types/Roi';
 
 import { ReactRoiState, RoiReducerAction } from './roiReducer';
 import { initialSize } from './updaters/initialPanZoom';
@@ -27,7 +28,9 @@ export const lockContext = createContext<LockContext>({
 export const roiDispatchContext =
   createContext<Dispatch<RoiReducerAction> | null>(null);
 
-export const committedRoisContext = createContext<CommittedRoi[] | null>(null);
+export const committedRoisContext = createContext<
+  CommittedRoiProperties[] | null
+>(null);
 
 export const roisContext = createContext<Roi[] | null>(null);
 

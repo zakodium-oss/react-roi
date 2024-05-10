@@ -2,7 +2,7 @@ import { CSSProperties, JSX, ReactNode } from 'react';
 
 import { Actions, UpdateData } from '../../hooks/useActions';
 import { usePanZoom } from '../../hooks/usePanZoom';
-import { CommittedRoi } from '../../types/Roi';
+import { CommittedRoi } from '../../types/CommittedRoi';
 
 import { ContainerComponent } from './ContainerComponent';
 

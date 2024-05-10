@@ -1,7 +1,12 @@
 import { Meta } from '@storybook/react';
 
-import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { CommittedRoi } from '../../src/types/Roi';
+import {
+  CommittedRoiProperties,
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src';
 import { CommittedRoisButton } from '../utils/CommittedRoisButton';
 import { Layout } from '../utils/Layout';
 
@@ -10,7 +15,7 @@ export default {
 } as Meta;
 const width = 320;
 const height = 320;
-const initialRois: CommittedRoi[] = [
+const initialRois: CommittedRoiProperties[] = [
   {
     id: '0000-1111-2222-3333',
     x: 0.1 * width + Math.random(),
