@@ -1,8 +1,6 @@
 import { BoxWithRotationCenter } from '../utilities/box';
 import { Point } from '../utilities/point';
 
-import { CommittedBox } from './box';
-
 export type XCornerPosition = 'left' | 'right' | 'center';
 export type YCornerPosition = 'top' | 'bottom' | 'center';
 
@@ -78,6 +76,3 @@ export interface Roi<TData = unknown> {
   box: BoxWithRotationCenter;
   data?: TData;
 }
-
-export type CommittedRoi<TData = unknown> = Omit<Roi<TData>, 'action' | 'box'> &
-  CommittedBox;

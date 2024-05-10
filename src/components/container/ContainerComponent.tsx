@@ -12,6 +12,7 @@ import {
 
 import {
   Actions,
+  CommittedRoi,
   ReactRoiAction,
   RoiMode,
   useActions,
@@ -315,7 +316,7 @@ function callPointerUpActionHooks(
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi) {
-          callbacks.onAfterDraw(committedRoi, actions);
+          callbacks.onAfterDraw(new CommittedRoi(committedRoi), actions);
         }
       }
       break;

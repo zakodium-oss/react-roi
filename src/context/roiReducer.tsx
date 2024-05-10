@@ -2,12 +2,8 @@ import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import { PanZoom, ReactRoiAction, ResizeStrategy, RoiMode, Size } from '..';
-import {
-  CommittedRoi,
-  Roi,
-  XCornerPosition,
-  YCornerPosition,
-} from '../types/Roi';
+import { CommittedRoiProperties } from '../types/CommittedRoi';
+import { Roi, XCornerPosition, YCornerPosition } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
 import {
   changeBoxRotationCenter,
@@ -71,7 +67,7 @@ export interface ReactRoiState<TData = unknown> {
   /**
    * Committed regions of interest
    */
-  committedRois: Array<CommittedRoi<TData>>;
+  committedRois: Array<CommittedRoiProperties<TData>>;
 
   /**
    * Size of the target on which the rois are drawn
@@ -99,7 +95,9 @@ export interface ReactRoiState<TData = unknown> {
   zoomDomain: ZoomDomain;
 }
 
-export type CreateUpdateRoiPayload = Partial<CommittedRoi> & { id: string };
+export type CreateUpdateRoiPayload = Partial<CommittedRoiProperties> & {
+  id: string;
+};
 
 export interface ZoomPayload {
   scale: number;
@@ -285,7 +283,7 @@ export function roiReducer(
         assert(index !== -1, 'ROI not found');
         assert(committedRoi, 'Committed ROI not found');
 
-        Object.assign<CommittedRoi, Partial<CommittedRoi>>(
+        Object.assign<CommittedRoiProperties, Partial<CommittedRoiProperties>>(
           committedRoi,
           updatedData,
         );

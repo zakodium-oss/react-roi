@@ -1,15 +1,15 @@
 import { Meta } from '@storybook/react';
-import { Point, writeCanvas } from 'image-js';
+import { writeCanvas } from 'image-js';
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  CommittedRoiProperties,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
   useCommittedRois,
 } from '../../src';
-import { CommittedRoi } from '../../src/types/Roi';
 import { Layout } from '../utils/Layout';
 import { useLoadImage } from '../utils/useLoadImage';
 
@@ -17,7 +17,7 @@ export default {
   title: 'Full examples',
 } as Meta;
 
-const startRoi: CommittedRoi = {
+const startRoi: CommittedRoiProperties = {
   id: '0000-1111-2222-3333',
   x: 0.35 * 320,
   y: 0.35 * 320,
@@ -71,14 +71,14 @@ function CroppedImage() {
     if (!image) {
       return;
     }
-    const matrix = getRotationMatrix(roi.angle, { column: roi.x, row: roi.y });
 
-    const croppedImage = image.transform(matrix, {
-      width: roi.width,
-      height: roi.height,
-      inverse: true,
-      interpolationType: 'nearest',
-    });
+    const points = roi.getRectanglePoints();
+    const croppedImage = image.cropRectangle(
+      points.map((p) => ({
+        column: p.x,
+        row: p.y,
+      })),
+    );
 
     if (ref.current) {
       writeCanvas(croppedImage, ref.current);
@@ -109,14 +109,4 @@ function CroppedImage() {
       />
     </>
   );
-}
-
-function getRotationMatrix(angle: number, point: Point) {
-  const angleCos = Math.cos(angle);
-  const angleSin = Math.sin(angle);
-
-  return [
-    [angleCos, -angleSin, point.column],
-    [angleSin, angleCos, point.row],
-  ];
 }

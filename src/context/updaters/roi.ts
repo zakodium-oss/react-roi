@@ -1,8 +1,7 @@
 import { Draft } from 'immer';
 
-import { Size } from '../..';
-import { CommittedRoi, Roi, RoiAction } from '../../types/Roi';
-import { CommittedBox } from '../../types/box';
+import { CommittedBox, CommittedRoiProperties, Size } from '../..';
+import { Roi, RoiAction } from '../../types/Roi';
 import { commitBox, denormalizeBox, normalizeBox } from '../../utilities/box';
 import { getMBRBoundaries } from '../../utilities/rotate';
 import { ReactRoiState } from '../roiReducer';
@@ -84,7 +83,7 @@ const boundStrategyMap: Record<RoiAction['type'], BoundStrategy> = {
 
 export function updateCommittedRoiPosition(
   draft: ReactRoiState,
-  committedRoi: Draft<CommittedRoi>,
+  committedRoi: Draft<CommittedRoiProperties>,
   roi: Draft<Roi>,
 ) {
   const normalizedBox = boundBox(
@@ -93,7 +92,10 @@ export function updateCommittedRoiPosition(
     boundStrategyMap[roi.action.type],
   );
   if (normalizedBox.height !== 0 && normalizedBox.width !== 0) {
-    Object.assign<CommittedRoi, CommittedBox>(committedRoi, normalizedBox);
+    Object.assign<CommittedRoiProperties, CommittedBox>(
+      committedRoi,
+      normalizedBox,
+    );
   }
   roi.box = denormalizeBox(committedRoi);
 }
