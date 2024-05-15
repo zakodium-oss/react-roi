@@ -2,11 +2,13 @@ import { Meta } from '@storybook/react';
 
 import {
   PanZoom,
+  ResizeStrategy,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
   useActions,
+  useCommittedRois,
 } from '../../../src';
 import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
 import { Layout } from '../../utils/Layout';
@@ -47,6 +49,10 @@ export default {
     containerHeight: {
       control: 'number',
     },
+    resizeStrategy: {
+      control: 'select',
+      options: ['contain', 'cover', 'center', 'none'],
+    },
   },
   args: {
     minZoom: 0.1,
@@ -54,6 +60,7 @@ export default {
     spaceAroundTarget: 0.5,
     containerWidth: 500,
     containerHeight: 500,
+    resizeStrategy: 'cover',
   },
 } as Meta;
 
@@ -63,6 +70,7 @@ interface ZoomStoryProps {
   spaceAroundTarget: number;
   containerWidth: number;
   containerHeight: number;
+  resizeStrategy: ResizeStrategy;
   onZoomChange: (zoom: PanZoom) => void;
 }
 
@@ -73,14 +81,17 @@ export function UpdateZoom({
   containerWidth,
   containerHeight,
   onZoomChange,
+  resizeStrategy,
 }: ZoomStoryProps) {
   const keyId = useResetOnChange([
     minZoom,
     maxZoom,
+    resizeStrategy,
     spaceAroundTarget,
     containerWidth,
     containerHeight,
   ]);
+
   function ZoomButton() {
     const { zoom } = useActions();
 
@@ -142,6 +153,7 @@ export function UpdateZoom({
           max: maxZoom,
           spaceAroundTarget,
         },
+        resizeStrategy,
       }}
       onAfterZoomChange={onZoomChange}
     >
@@ -161,5 +173,78 @@ export function UpdateZoom({
       </Layout>
       <CommittedRoisButton />
     </RoiProvider>
+  );
+}
+
+export function ZoomIntoROI({
+  minZoom,
+  maxZoom,
+  resizeStrategy,
+  spaceAroundTarget,
+  containerWidth,
+  containerHeight,
+  onZoomChange,
+}: ZoomStoryProps) {
+  const keyId = useResetOnChange([
+    minZoom,
+    maxZoom,
+    resizeStrategy,
+    spaceAroundTarget,
+    containerWidth,
+    containerHeight,
+  ]);
+
+  return (
+    <RoiProvider
+      key={keyId}
+      initialConfig={{
+        rois: getInitialRois(320, 320),
+        zoom: {
+          min: minZoom,
+          max: maxZoom,
+          spaceAroundTarget,
+        },
+        resizeStrategy,
+      }}
+      onAfterZoomChange={onZoomChange}
+    >
+      <Layout fit>
+        <div style={{ display: 'flex', gap: '3px' }}>
+          <RoiContainer
+            style={{
+              width: containerWidth,
+              height: containerHeight,
+              border: '2px red solid',
+            }}
+            target={<TargetImage id="story-image" src="/barbara.jpg" />}
+          >
+            <RoiList />
+          </RoiContainer>
+
+          <ZoomTargetButtons />
+        </div>
+      </Layout>
+      <CommittedRoisButton />
+    </RoiProvider>
+  );
+}
+
+function ZoomTargetButtons() {
+  const rois = useCommittedRois();
+  const { zoomIntoROI } = useActions();
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {rois.map((roi, idx) => (
+        <button
+          type="button"
+          key={roi.id}
+          onClick={() => {
+            zoomIntoROI(roi);
+          }}
+        >
+          Zoom into ROI {idx}
+        </button>
+      ))}
+    </div>
   );
 }
