@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/zakodium-oss/react-roi/compare/v1.3.0...v1.4.0) (2024-05-15)
+
+
+### Features
+
+* add zoomIntoROI action ([#151](https://github.com/zakodium-oss/react-roi/issues/151)) ([319e2b2](https://github.com/zakodium-oss/react-roi/commit/319e2b261e4261fb85f62b574ba6f8f381f4090b))
+
 ## [1.3.0](https://github.com/zakodium-oss/react-roi/compare/v1.2.0...v1.3.0) (2024-05-10)
 
 
