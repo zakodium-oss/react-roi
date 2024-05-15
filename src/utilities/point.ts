@@ -24,7 +24,7 @@ export function mulScalar(point: Point, scalar: number): Point {
 }
 
 export function getBoundaries(points: Point[]) {
-  assert(points.length === 4, 'must pass exactly 4 points');
+  assert(points.length > 1, 'must pass at least 2 points');
   let maxX = 0;
   let minX = Number.MAX_VALUE;
   let maxY = 0;
