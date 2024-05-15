@@ -123,7 +123,7 @@ export interface ZoomIntoROIOptions {
 }
 
 export interface ZoomIntoROIPayload {
-  roi: CommittedRoi | Point[];
+  roiOrPoints: CommittedRoi | Point[];
   options: ZoomIntoROIOptions;
 }
 

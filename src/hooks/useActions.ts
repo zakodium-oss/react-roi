@@ -5,6 +5,7 @@ import { CommittedRoi, CommittedRoiProperties } from '..';
 import { CancelActionPayload, ZoomIntoROIOptions } from '../context/roiReducer';
 import { zoomAction } from '../context/updaters/zoom';
 import { RoiMode } from '../types/utils';
+import { Point } from '../utilities/point';
 
 import useCallbacksRef from './useCallbacksRef';
 import { useCurrentState } from './useCurrentState';
@@ -36,13 +37,13 @@ export function useActions<TData = unknown>() {
         }
       },
       zoomIntoROI: (
-        roi: CommittedRoi,
+        roiOrPoints: CommittedRoi | Point[],
         options: ZoomIntoROIOptions = { margin: 0.2 },
       ) => {
         roiDispatch({
           type: 'ZOOM_INTO_ROI',
           payload: {
-            roi,
+            roiOrPoints,
             options,
           },
         });
