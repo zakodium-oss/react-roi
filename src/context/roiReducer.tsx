@@ -1,7 +1,14 @@
 import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
-import { PanZoom, ReactRoiAction, ResizeStrategy, RoiMode, Size } from '..';
+import {
+  CommittedRoi,
+  PanZoom,
+  ReactRoiAction,
+  ResizeStrategy,
+  RoiMode,
+  Size,
+} from '..';
 import { CommittedRoiProperties } from '../types/CommittedRoi';
 import { Roi, XCornerPosition, YCornerPosition } from '../types/Roi';
 import { assert, assertUnreachable } from '../utilities/assert';
@@ -10,6 +17,7 @@ import {
   xAxisCornerToCenter,
   yAxisCornerToCenter,
 } from '../utilities/box';
+import { Point } from '../utilities/point';
 import {
   createCommittedRoi,
   createRoi,
@@ -24,7 +32,7 @@ import { sanitizeRois } from './updaters/sanitizeRois';
 import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction';
 import { startDraw } from './updaters/startDraw';
 import { startPan } from './updaters/startPan';
-import { resetZoomAction, zoomAction } from './updaters/zoom';
+import { resetZoomAction, zoomAction, zoomIntoROI } from './updaters/zoom';
 
 interface ZoomDomain {
   min: number;
@@ -104,6 +112,19 @@ export interface ZoomPayload {
   containerBoundingRect: DOMRect;
   clientX: number;
   clientY: number;
+}
+
+export interface ZoomIntoROIOptions {
+  /**
+   * A margin relative to the viewport to leave around the zoomed in ROI
+   * 0 means no margin. A value of 0.5 means 50% of the viewport is for the margin and the remaining 50% for the ROI.
+   */
+  margin: number;
+}
+
+export interface ZoomIntoROIPayload {
+  roiOrPoints: CommittedRoi | Point[];
+  options: ZoomIntoROIOptions;
 }
 
 export interface StartDrawPayload {
@@ -192,6 +213,7 @@ export type RoiReducerAction =
       type: 'ZOOM';
       payload: ZoomPayload;
     }
+  | { type: 'ZOOM_INTO_ROI'; payload: ZoomIntoROIPayload }
   | {
       type: 'RESET_ZOOM';
     }
@@ -348,6 +370,9 @@ export function roiReducer(
       }
       case 'ZOOM':
         zoomAction(draft, action.payload);
+        break;
+      case 'ZOOM_INTO_ROI':
+        zoomIntoROI(draft, action.payload);
         break;
       case 'RESET_ZOOM':
         resetZoomAction(draft);

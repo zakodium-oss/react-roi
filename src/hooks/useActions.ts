@@ -1,10 +1,11 @@
 import { produce } from 'immer';
 import { KeyboardEvent as ReactKeyboardEvent, useMemo } from 'react';
 
-import { CommittedRoiProperties } from '..';
-import { CancelActionPayload } from '../context/roiReducer';
+import { CommittedRoi, CommittedRoiProperties } from '..';
+import { CancelActionPayload, ZoomIntoROIOptions } from '../context/roiReducer';
 import { zoomAction } from '../context/updaters/zoom';
 import { RoiMode } from '../types/utils';
+import { Point } from '../utilities/point';
 
 import useCallbacksRef from './useCallbacksRef';
 import { useCurrentState } from './useCurrentState';
@@ -34,6 +35,18 @@ export function useActions<TData = unknown>() {
             payload: options,
           });
         }
+      },
+      zoomIntoROI: (
+        roiOrPoints: CommittedRoi | Point[],
+        options: ZoomIntoROIOptions = { margin: 0.2 },
+      ) => {
+        roiDispatch({
+          type: 'ZOOM_INTO_ROI',
+          payload: {
+            roiOrPoints,
+            options,
+          },
+        });
       },
       zoom: (factor: number) => {
         if (!containerRef?.current) return;

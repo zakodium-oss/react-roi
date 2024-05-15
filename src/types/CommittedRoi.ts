@@ -1,5 +1,5 @@
+import { getRectanglePoints } from '../utilities/box';
 import { Point } from '../utilities/point';
-import { rotatePoint } from '../utilities/rotate';
 
 import { Roi } from './Roi';
 import { CommittedBox } from './box';
@@ -30,13 +30,6 @@ export class CommittedRoi<TData = unknown>
     this.data = properties.data;
   }
   public getRectanglePoints(): Point[] {
-    const { x, y, width, height, angle } = this;
-    const center: Point = { x, y };
-    return [
-      center,
-      rotatePoint({ x: x + width, y }, center, angle),
-      rotatePoint({ x: x + width, y: y + height }, center, angle),
-      rotatePoint({ x, y: y + height }, center, angle),
-    ];
+    return getRectanglePoints(this);
   }
 }
