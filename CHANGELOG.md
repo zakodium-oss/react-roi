@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/zakodium-oss/react-roi/compare/v1.4.0...v1.4.1) (2024-05-18)
+
+
+### Bug Fixes
+
+* export usePanZoomTransform ([#153](https://github.com/zakodium-oss/react-roi/issues/153)) ([39cec6a](https://github.com/zakodium-oss/react-roi/commit/39cec6ac08be0a3beb16ba8a5b86bb18595ab1e4))
+
 ## [1.4.0](https://github.com/zakodium-oss/react-roi/compare/v1.3.0...v1.4.0) (2024-05-15)
 
 
