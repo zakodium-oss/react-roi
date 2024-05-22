@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/zakodium-oss/react-roi/compare/v1.4.1...v1.4.2) (2024-05-22)
+
+
+### Bug Fixes
+
+* do not preventDefault on mouse down, only on context menu ([#155](https://github.com/zakodium-oss/react-roi/issues/155)) ([b8c514a](https://github.com/zakodium-oss/react-roi/commit/b8c514a720463d2ba809b31da49533fb8d304b71))
+
 ## [1.4.1](https://github.com/zakodium-oss/react-roi/compare/v1.4.0...v1.4.1) (2024-05-18)
 
 
