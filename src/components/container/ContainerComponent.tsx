@@ -215,7 +215,6 @@ export function ContainerComponent<TData = unknown>(
           }
         }}
         onPointerDown={(event) => {
-          // event.preventDefault();
           if (containerRef?.current) {
             // Left mouse button
             if (event.button === 0) {
