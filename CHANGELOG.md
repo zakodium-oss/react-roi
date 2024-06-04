@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/zakodium-oss/react-roi/compare/v1.4.2...v1.5.0) (2024-06-04)
+
+
+### Features
+
+* add showGrid prop to RoiList component ([#159](https://github.com/zakodium-oss/react-roi/issues/159)) ([3b99bce](https://github.com/zakodium-oss/react-roi/commit/3b99bce082e40999ffee38e046176719436b5fe2))
+
 ## [1.4.2](https://github.com/zakodium-oss/react-roi/compare/v1.4.1...v1.4.2) (2024-05-22)
 
 
