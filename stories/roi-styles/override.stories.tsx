@@ -234,3 +234,15 @@ function StripePattern(props: {
     </pattern>
   );
 }
+
+export function ShowGrid({ allowRotate }: StoryProps) {
+  return (
+    <Layout>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+          <RoiList<CustomColorData> allowRotate={allowRotate} showGrid />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
+}

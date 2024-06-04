@@ -2,10 +2,11 @@ import { CSSProperties, PointerEventHandler, useCallback } from 'react';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { useRoiState } from '../../hooks/useRoiState';
-import { RoiState } from '../../types/state';
 import { CornerData } from '../../utilities/corners';
+import { defaultHandlerColor } from '../constants';
 
 import { HandlerSizeOptions } from './sizes';
+import { getCursor } from './utils';
 
 type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
@@ -63,7 +64,7 @@ function SideHandler({
   corner,
   onPointerDown,
   scaledSizes,
-  handlerColor = 'black',
+  handlerColor = defaultHandlerColor,
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
@@ -85,7 +86,7 @@ function SideHandler({
       />
       <rect
         {...handlerRect}
-        cursor={getCursor(roiState, corner)}
+        cursor={getCursor(roiState, corner.cursor)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}
@@ -98,7 +99,7 @@ function CornerHandler({
   corner,
   onPointerDown,
   scaledSizes,
-  handlerColor = 'black',
+  handlerColor = defaultHandlerColor,
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
@@ -121,7 +122,7 @@ function CornerHandler({
       />
       <rect
         {...handlerRect}
-        cursor={getCursor(roiState, corner)}
+        cursor={getCursor(roiState, corner.cursor)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}
@@ -196,20 +197,4 @@ function getTransform(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   }
 
   return `translate(${x}, ${y})`;
-}
-
-function getCursor(
-  roiState: RoiState,
-  corner: CornerData,
-): CSSProperties['cursor'] {
-  if (roiState.mode === 'draw') {
-    return 'crosshair';
-  }
-
-  // In practice, panning should be unreachable here
-  // So no need to handle other actions
-  if (roiState.action === 'panning') {
-    return 'grab';
-  }
-  return corner.cursor;
 }

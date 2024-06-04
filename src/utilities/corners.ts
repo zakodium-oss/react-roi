@@ -32,7 +32,10 @@ const cursors: Array<Exclude<CSSProperties['cursor'], undefined>> = [
   'nesw-resize',
   'ew-resize',
 ];
-function getCursor(angle: number, idx: number) {
+export function getCornerCursor(
+  angle: number,
+  idx: number,
+): CSSProperties['cursor'] {
   return cursors[getCursorIndex(angle, idx)];
 }
 // (angle + Math.PI/8) / (Math.PI / 4) => 0-7
@@ -91,6 +94,6 @@ export function getAllCorners(roi: Box, angle: number): CornerData[] {
   ];
   return cursors.map((item, idx) => ({
     ...item,
-    cursor: getCursor(angle, idx),
+    cursor: getCornerCursor(angle, idx),
   }));
 }

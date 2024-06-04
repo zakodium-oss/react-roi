@@ -24,6 +24,7 @@ interface RoiBoxProps {
   renderLabel: RenderLabelCallback;
   allowRotate: boolean;
   getOverlayOpacity: GetOverlayOpacity;
+  showGrid: boolean;
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
@@ -35,6 +36,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     renderLabel,
     getOverlayOpacity,
     allowRotate,
+    showGrid,
   } = props;
 
   const panzoom = usePanZoom();
@@ -84,6 +86,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           isReadOnly={isReadOnly}
           getStyle={getStyle}
           allowRotate={allowRotate}
+          showGrid={showGrid}
         />
       </div>
       <LabelBox roi={roi} label={label} panZoom={totalPanzoom} />

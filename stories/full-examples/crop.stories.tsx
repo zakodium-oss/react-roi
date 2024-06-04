@@ -44,6 +44,7 @@ export function CropImage() {
         >
           <RoiList
             allowRotate
+            showGrid
             getOverlayOpacity={() => 0.6}
             getStyle={(roi) => ({
               resizeHandlerColor:
