@@ -6,6 +6,7 @@ import { Roi } from '../types/Roi';
 import { assert } from '../utilities/assert';
 
 import { RoiBox } from './box/RoiBox';
+import { defaultGridLineOpacity, defaultHandlerColor } from './constants';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;
@@ -19,6 +20,7 @@ export interface CustomRoiStyle {
    */
   rectAttributes?: SVGAttributes<SVGRectElement>;
   resizeHandlerColor?: CSSProperties['color'];
+  gridLineOpacity?: CSSProperties['opacity'];
   /**
    * This property allows to render custom markup inside the ROI SVG
    * This can be used for example to render an svg pattern that can then be used as a fill in `rectAttributes`
@@ -48,6 +50,7 @@ export interface RoiListProps<TData = unknown> {
   renderLabel?: RenderLabelCallback<TData>;
   getOverlayOpacity?: GetOverlayOpacity<TData>;
   allowRotate?: boolean;
+  showGrid?: boolean;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
@@ -57,6 +60,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
     allowRotate = false,
+    showGrid = false,
   } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
@@ -79,6 +83,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
           allowRotate={allowRotate}
           isSelected={roi.id === selectedRoi}
+          showGrid={showGrid}
         />
       ))}
     </>
@@ -94,7 +99,8 @@ const defaultGetStyle: GetStyleCallback = (roi, state) => {
           ? 'rgba(0,0,0,0.2)'
           : 'rgba(0,0,0,0.4)',
     },
-    resizeHandlerColor: 'black',
+    resizeHandlerColor: defaultHandlerColor,
+    gridLineOpacity: defaultGridLineOpacity,
   };
 };
 

@@ -8,8 +8,11 @@ import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { Box } from '../../utilities/box';
 import { getAllCorners } from '../../utilities/corners';
+import { getAllEdges, getAllGridLines } from '../../utilities/grid';
 
 import { RoiBoxCorner } from './RoiBoxCorner';
+import { RoiBoxEdge } from './RoiBoxEdge';
+import { RoiBoxGridLine } from './RoiBoxGridLine';
 import { RoiBoxRotateHandler } from './RoiBoxRotateHandler';
 import { getHandlerSizes } from './sizes';
 import { baseRoiStyle } from './styles';
@@ -22,6 +25,7 @@ export interface BoxAnnotationProps {
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
   allowRotate: boolean;
+  showGrid: boolean;
 }
 
 export function BoxSvg({
@@ -32,6 +36,7 @@ export function BoxSvg({
   getStyle,
   box,
   allowRotate,
+  showGrid,
 }: BoxAnnotationProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
@@ -116,6 +121,30 @@ export function BoxSvg({
         {...styles.rectAttributes}
       />
       {isSelected &&
+        showGrid &&
+        getAllEdges(box, roi.box.angle).map((edge) => (
+          <RoiBoxEdge
+            key={`border-${edge.position}`}
+            roiId={roi.id}
+            sizes={handlerSizes}
+            handlerColor={styles.resizeHandlerColor}
+            edge={edge}
+            gridLineOpacity={styles.gridLineOpacity}
+          />
+        ))}
+      {isSelected &&
+        showGrid &&
+        getAllGridLines(box).map((gridLine, idx) => (
+          <RoiBoxGridLine
+            // eslint-disable-next-line react/no-array-index-key
+            key={idx}
+            line={gridLine}
+            sizes={handlerSizes}
+            gridLineOpacity={styles.gridLineOpacity}
+            handlerColor={styles.resizeHandlerColor}
+          />
+        ))}
+      {isSelected &&
         getAllCorners(box, roi.box.angle).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
@@ -125,6 +154,7 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
+
       {isSelected &&
         allowRotate &&
         (roi.action.type === 'rotating' || roi.action.type === 'idle') && (

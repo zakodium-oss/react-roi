@@ -1,2 +1,2 @@
-export const cornerColor = '#44aaff';
-export const cursorSize = 4;
+export const defaultGridLineOpacity = 0.4;
+export const defaultHandlerColor = 'black';
