@@ -122,18 +122,6 @@ export function BoxSvg({
       />
       {isSelected &&
         showGrid &&
-        getAllEdges(box, roi.box.angle).map((edge) => (
-          <RoiBoxEdge
-            key={`border-${edge.position}`}
-            roiId={roi.id}
-            sizes={handlerSizes}
-            handlerColor={styles.resizeHandlerColor}
-            edge={edge}
-            gridLineOpacity={styles.gridLineOpacity}
-          />
-        ))}
-      {isSelected &&
-        showGrid &&
         getAllGridLines(box).map((gridLine, idx) => (
           <RoiBoxGridLine
             // eslint-disable-next-line react/no-array-index-key
@@ -144,6 +132,19 @@ export function BoxSvg({
             handlerColor={styles.resizeHandlerColor}
           />
         ))}
+      {isSelected &&
+        showGrid &&
+        getAllEdges(box, roi.box.angle).map((edge) => (
+          <RoiBoxEdge
+            key={`border-${edge.position}`}
+            roiId={roi.id}
+            sizes={handlerSizes}
+            handlerColor={styles.resizeHandlerColor}
+            edge={edge}
+            gridLineOpacity={styles.gridLineOpacity}
+          />
+        ))}
+
       {isSelected &&
         getAllCorners(box, roi.box.angle).map((corner) => (
           <RoiBoxCorner
