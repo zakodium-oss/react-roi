@@ -19,8 +19,9 @@ export function CommittedRoisButton(props: {
     if (!image) {
       return;
     }
+    const newImage = image.clone();
     for (const roi of rois) {
-      image.drawRectangle({
+      newImage.drawRectangle({
         strokeColor: [255, 255, 255],
         origin: {
           column: Math.round(roi.x),
@@ -28,12 +29,12 @@ export function CommittedRoisButton(props: {
         },
         width: Math.round(roi.width),
         height: Math.round(roi.height),
-        out: image,
+        out: newImage,
       });
     }
 
     if (ref.current) {
-      writeCanvas(image, ref.current);
+      writeCanvas(newImage, ref.current);
     }
   }, [rois, isShown, image]);
 
