@@ -1,12 +1,14 @@
 {
   "name": "react-roi",
   "version": "1.5.0",
-  "types": "lib-esm/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./lib-esm/index.js"
+  },
   "files": [
     "lib-esm",
     "src"
   ],
-  "module": "./lib-esm/index.js",
   "scripts": {
     "build": "storybook build",
     "check-types": "tsc --noEmit",
