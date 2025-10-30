@@ -1,13 +1,6 @@
 import { Meta } from '@storybook/react';
-import { useEffect } from 'react';
 
-import {
-  RoiContainer,
-  RoiList,
-  RoiProvider,
-  TargetImage,
-  useActions,
-} from '../../src';
+import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
 import { Layout } from '../utils/Layout';
 import { getInitialRois } from '../utils/initialRois';
 
@@ -16,21 +9,10 @@ export default {
 } as Meta;
 
 export function DrawReadOnlyAndEditable() {
-  function ChangeModePlugin() {
-    const { setMode } = useActions();
-
-    useEffect(() => {
-      setMode('draw');
-    }, [setMode]);
-
-    return null;
-  }
-
   const initialRois = getInitialRois(320, 320);
   return (
-    <RoiProvider initialConfig={{ rois: initialRois }}>
+    <RoiProvider initialConfig={{ rois: initialRois, mode: 'draw' }}>
       <Layout>
-        <ChangeModePlugin />
         <RoiContainer
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >

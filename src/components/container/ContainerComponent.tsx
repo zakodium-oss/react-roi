@@ -81,6 +81,7 @@ export function ContainerComponent<TData = unknown>(
 
   const getNewRoiData = useRef(props.getNewRoiData);
 
+  // TODO: useEffectEvent once we migrate to React 19
   useEffect(() => {
     getNewRoiData.current = props.getNewRoiData;
   }, [props.getNewRoiData]);
