@@ -28,44 +28,52 @@ export function ActionHooks() {
   const [count, setCount] = useState(0);
   return (
     <RoiProvider<CountData>
-      onAfterDraw={() => {
-        setCount(count + 1);
-      }}
-      onAfterMove={(roi, { updateRoi }) => {
+      onAfterChange={(roi, actions, type) => {
         assert(roi.data);
-        updateRoi(roi.id, {
-          data: {
-            ...roi.data,
-            moveCount: roi.data.moveCount + 1,
-          },
-        });
-      }}
-      onAfterRotate={(roi, { updateRoi }) => {
-        assert(roi.data);
-        updateRoi(roi.id, {
-          data: {
-            ...roi.data,
-            rotateCount: roi.data.rotateCount + 1,
-          },
-        });
-      }}
-      onAfterResize={(roi, { updateRoi }) => {
-        assert(roi.data);
-        updateRoi(roi.id, {
-          data: {
-            ...roi.data,
-            resizeCount: roi.data.resizeCount + 1,
-          },
-        });
+        switch (type) {
+          case 'drawing': {
+            setCount(count + 1);
+            break;
+          }
+          case 'moving': {
+            actions.updateRoi(roi.id, {
+              data: {
+                ...roi.data,
+                moveCount: roi.data.moveCount + 1,
+              },
+            });
+            break;
+          }
+          case 'resizing': {
+            actions.updateRoi(roi.id, {
+              data: {
+                ...roi.data,
+                resizeCount: roi.data.resizeCount + 1,
+              },
+            });
+            break;
+          }
+          case 'rotating': {
+            actions.updateRoi(roi.id, {
+              data: {
+                ...roi.data,
+                rotateCount: roi.data.rotateCount + 1,
+              },
+            });
+            break;
+          }
+          default:
+            break;
+        }
       }}
     >
       <Layout>
         <RoiContainer<CountData>
           getNewRoiData={() => ({
-            moveCount: 0,
-            rotateCount: 0,
             count: count + 1,
+            moveCount: 0,
             resizeCount: 0,
+            rotateCount: 0,
           })}
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
@@ -137,6 +145,7 @@ export function SyncRoisAfterUpdate() {
   const updateRois: OnChangeCallback<SideData> = (
     roi,
     actions,
+    type,
     roisBeforeUpdate,
   ) => {
     if (roi.data?.side === 'LEFT') {
@@ -164,8 +173,7 @@ export function SyncRoisAfterUpdate() {
   return (
     <RoiProvider<SideData>
       initialConfig={{ mode: 'select', rois: syncInitialRois }}
-      onAfterMove={updateRois}
-      onAfterResize={updateRois}
+      onAfterChange={updateRois}
     >
       <Layout>
         <RoiContainer<SideData>
@@ -190,6 +198,7 @@ export function SyncRoisDuringUpdate() {
   const updateRois: OnChangeCallback<SideData> = (
     roi,
     actions,
+    _,
     roisBeforeUpdate,
   ) => {
     if (roi.data?.side === 'LEFT') {
@@ -217,11 +226,8 @@ export function SyncRoisDuringUpdate() {
   return (
     <RoiProvider<SideData>
       initialConfig={{ mode: 'select', rois: syncInitialRois }}
-      onAfterMove={updateRois}
-      onAfterResize={updateRois}
-      onChangeResize={updateRois}
-      onChangeRotate={updateRois}
-      onChangeMove={updateRois}
+      onAfterChange={updateRois}
+      onChange={updateRois}
     >
       <Layout>
         <RoiContainer<SideData>

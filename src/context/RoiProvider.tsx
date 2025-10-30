@@ -72,61 +72,21 @@ interface RoiProviderProps<TData> {
   children: ReactNode;
   initialConfig?: RoiProviderInitialConfig<TData>;
   /**
-   * Called right after the ROI has finished being drawn, and before it is committed.
-   * @param updatedRoi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
+   * Called right after the ROI has finished being drawn, moved, resized or rotated, and before it is committed.
+   * @param updatedRoi The ROI that was created or updated. The position and size are already normalized and bounded to the target size.
    * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeDraw All committed ROIs, before the new one is added.
+   * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
    */
-  onAfterDraw?: OnChangeCallback<TData>;
+  onAfterChange?: OnChangeCallback<TData>;
+
   /**
-   * Called right after the ROI has been moved, and before it is committed.
-   * @param updatedRoi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
+   * Called everytime the ROI has been updated (including newly drawn ROIs), and before it is committed.
+   * @param updatedRoi The ROI that is being updated or created. The position and size are already normalized and bounded to the target size.
    * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was moved.
+   * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
    */
-  onAfterMove?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has been rotated, and before it is committed.
-   * @param updatedRoi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was rotated.
-   */
-  onAfterRotate?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has been resized, and before it is committed.
-   * @param updatedRoi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was resized.
-   */
-  onAfterResize?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has finished being drawn, and before it is committed.
-   * @param updatedRoi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeDraw All committed ROIs, before the new one is added.
-   */
-  onChangeDraw?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has been moved, and before it is committed.
-   * @param updatedRoi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was moved.
-   */
-  onChangeMove?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has been rotated, and before it is committed.
-   * @param updatedRoi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was rotated.
-   */
-  onChangeRotate?: OnChangeCallback<TData>;
-  /**
-   * Called right after the ROI has been resized, and before it is committed.
-   * @param updatedRoi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeUpdate All committed ROIs, before the ROI was resized.
-   */
-  onChangeResize?: OnChangeCallback<TData>;
+  onChange?: OnChangeCallback<TData>;
+
   /**
    * Called after zoom or pan actions
    * @param zoom The new pan and zoom state.
@@ -173,14 +133,8 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     children,
     initialConfig = {},
     onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
-    onChangeDraw,
-    onChangeResize,
-    onChangeMove,
-    onChangeRotate,
+    onAfterChange,
+    onChange,
   } = props;
   const {
     rois: initialRois = [],
@@ -212,15 +166,9 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const stateRef = useRef(state);
   const containerRef = useRef<HTMLDivElement>(null);
   const callbacksRef = useRef<ActionCallbacks<TData>>({
-    onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
-    onChangeDraw,
-    onChangeResize,
-    onChangeMove,
-    onChangeRotate,
+    onZoom: onAfterZoomChange,
+    onAfterChange,
+    onChange,
   });
 
   useEffect(() => {
@@ -229,27 +177,11 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
 
   useEffect(() => {
     callbacksRef.current = {
-      onAfterZoomChange,
-      onAfterDraw,
-      onAfterResize,
-      onAfterMove,
-      onAfterRotate,
-      onChangeDraw,
-      onChangeResize,
-      onChangeMove,
-      onChangeRotate,
+      onZoom: onAfterZoomChange,
+      onAfterChange,
+      onChange,
     };
-  }, [
-    onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
-    onChangeDraw,
-    onChangeResize,
-    onChangeMove,
-    onChangeRotate,
-  ]);
+  }, [onAfterZoomChange, onAfterChange, onChange]);
 
   const {
     rois,

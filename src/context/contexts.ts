@@ -68,15 +68,9 @@ export const roiStateRefContext =
   createContext<RefObject<ReactRoiState> | null>(null);
 
 export interface ActionCallbacks<TData = unknown> {
-  onAfterDraw?: OnChangeCallback<TData>;
-  onAfterMove?: OnChangeCallback<TData>;
-  onAfterResize?: OnChangeCallback<TData>;
-  onAfterRotate?: OnChangeCallback<TData>;
-  onChangeDraw?: OnChangeCallback<TData>;
-  onChangeMove?: OnChangeCallback<TData>;
-  onChangeResize?: OnChangeCallback<TData>;
-  onChangeRotate?: OnChangeCallback<TData>;
-  onAfterZoomChange?: (zoom: PanZoom) => void;
+  onAfterChange?: OnChangeCallback<TData>;
+  onChange?: OnChangeCallback<TData>;
+  onZoom?: (zoom: PanZoom) => void;
 }
 export const callbacksRefContext = createContext<RefObject<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

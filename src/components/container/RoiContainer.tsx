@@ -44,6 +44,10 @@ export type OnChangeCallback<TData = unknown> = (
    */
   actions: Actions<TData>,
   /**
+   * The type of action leading to the onChange call.
+   */
+  type: 'drawing' | 'moving' | 'resizing' | 'rotating',
+  /**
    * All committed ROIs, before the update / creation is applied.
    */
   roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,

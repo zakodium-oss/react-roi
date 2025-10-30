@@ -156,11 +156,11 @@ export function ContainerComponent<TData = unknown>(
           type: 'ZOOM',
           payload: zoomPayload,
         });
-        if (stateRef.current && callbacksRef.current?.onAfterZoomChange) {
+        if (stateRef.current && callbacksRef.current?.onZoom) {
           const newState = produce(stateRef.current, (draft) =>
             zoomAction(draft, zoomPayload),
           );
-          callbacksRef.current.onAfterZoomChange(newState.panZoom);
+          callbacksRef.current.onZoom(newState.panZoom);
         }
       }
     }, 25);
@@ -223,11 +223,11 @@ export function ContainerComponent<TData = unknown>(
         className={className}
         onDoubleClick={() => {
           roiDispatch({ type: 'RESET_ZOOM' });
-          if (stateRef.current && callbacksRef.current?.onAfterZoomChange) {
+          if (stateRef.current && callbacksRef.current?.onZoom) {
             const newState = produce(stateRef.current, (draft) =>
               resetZoomAction(draft),
             );
-            callbacksRef.current.onAfterZoomChange(newState.panZoom);
+            callbacksRef.current.onZoom(newState.panZoom);
           }
         }}
         onPointerDown={(event) => {
@@ -320,56 +320,26 @@ function callPointerMoveActionHooks(
   endPayload: EndActionPayload,
   actions: Actions,
 ) {
-  if (
-    callbacks.onChangeDraw ||
-    callbacks.onChangeMove ||
-    callbacks.onChangeResize ||
-    callbacks.onChangeRotate
-  ) {
+  if (callbacks.onChange) {
     const newState = produce(state, (draft) => {
       pointerMove(draft, payload);
     });
     const roi = newState.rois.find((roi) => roi.id === state.selectedRoi);
     assert(roi);
+    assert(roi.action.type !== 'idle');
     const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
       targetSize: state.targetSize,
       minNewRoiSize: endPayload.minNewRoiSize,
       strategy: 'resize',
       commitStrategy: state.commitRoiBoxStrategy,
     });
-    if (committedRoi) {
-      switch (state.action) {
-        case 'moving':
-          if (callbacks.onChangeMove) {
-            callbacks.onChangeMove(committedRoi, actions, state.committedRois);
-          }
-          break;
-        case 'drawing':
-          if (callbacks.onChangeDraw) {
-            callbacks.onChangeDraw(committedRoi, actions, state.committedRois);
-          }
-          break;
-        case 'rotating':
-          if (callbacks.onChangeRotate) {
-            callbacks.onChangeRotate(
-              committedRoi,
-              actions,
-              state.committedRois,
-            );
-          }
-          break;
-        case 'resizing':
-          if (callbacks.onChangeResize) {
-            callbacks.onChangeResize(
-              committedRoi,
-              actions,
-              state.committedRois,
-            );
-          }
-          break;
-        default:
-          break;
-      }
+    if (committedRoi && roiHasChanged(state, committedRoi)) {
+      callbacks.onChange(
+        committedRoi,
+        actions,
+        roi.action.type,
+        state.committedRois,
+      );
     }
   }
 }
@@ -380,79 +350,46 @@ function callPointerUpActionHooks(
   payload: EndActionPayload,
   actions: Actions,
 ) {
-  switch (state.action) {
-    case 'drawing': {
-      if (callbacks.onAfterDraw) {
-        const roi = state.rois.find((roi) => roi.action.type === 'drawing');
-        assert(roi, 'An roi in the "drawing" state should exist while drawing');
-        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-          targetSize: state.targetSize,
-          minNewRoiSize: payload.minNewRoiSize,
-          strategy: 'resize',
-          commitStrategy: state.commitRoiBoxStrategy,
-        });
-        if (committedRoi) {
-          callbacks.onAfterDraw(committedRoi, actions, state.committedRois);
+  if (callbacks.onAfterChange) {
+    switch (state.action) {
+      case 'drawing':
+      case 'moving':
+      case 'resizing':
+      case 'rotating':
+        {
+          const roi = state.rois.find(
+            (roi) => roi.action.type === state.action,
+          );
+          assert(
+            roi,
+            `An ROI in the current "${state.action} state should exist`,
+          );
+          const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+            targetSize: state.targetSize,
+            minNewRoiSize: payload.minNewRoiSize,
+            strategy: 'resize',
+            commitStrategy: state.commitRoiBoxStrategy,
+          });
+          if (committedRoi) {
+            callbacks.onAfterChange(
+              committedRoi,
+              actions,
+              state.action,
+              state.committedRois,
+            );
+          }
         }
+        break;
+
+      case 'panning': {
+        callbacks.onZoom?.(state.panZoom);
+        break;
       }
-      break;
-    }
-    case 'moving': {
-      if (callbacks.onAfterMove) {
-        const roi = state.rois.find((roi) => roi.action.type === 'moving');
-        assert(roi, 'An roi in the "moving" state should exist while moving');
-        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-          targetSize: state.targetSize,
-          minNewRoiSize: payload.minNewRoiSize,
-          strategy: 'move',
-          commitStrategy: state.commitRoiBoxStrategy,
-        });
-        if (committedRoi && roiHasChanged(state, committedRoi)) {
-          callbacks.onAfterMove(committedRoi, actions, state.committedRois);
-        }
+      case 'idle': {
+        break;
       }
-      break;
+      default:
+        assertUnreachable(state.action);
     }
-    case 'rotating': {
-      if (callbacks.onAfterRotate) {
-        const roi = state.rois.find((roi) => roi.action.type === 'rotating');
-        assert(roi, 'An roi in the "moving" state should exist while moving');
-        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-          targetSize: state.targetSize,
-          minNewRoiSize: payload.minNewRoiSize,
-          strategy: 'move',
-          commitStrategy: state.commitRoiBoxStrategy,
-        });
-        if (committedRoi && roiHasChanged(state, committedRoi)) {
-          callbacks.onAfterRotate(committedRoi, actions, state.committedRois);
-        }
-      }
-      break;
-    }
-    case 'resizing': {
-      if (callbacks.onAfterResize) {
-        const roi = state.rois.find((roi) => roi.action.type === 'resizing');
-        assert(roi, 'An roi in the "resizing" state should exist while moving');
-        const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-          targetSize: state.targetSize,
-          minNewRoiSize: payload.minNewRoiSize,
-          strategy: 'resize',
-          commitStrategy: state.commitRoiBoxStrategy,
-        });
-        if (committedRoi && roiHasChanged(state, committedRoi)) {
-          callbacks.onAfterResize(committedRoi, actions, state.committedRois);
-        }
-      }
-      break;
-    }
-    case 'panning': {
-      callbacks.onAfterZoomChange?.(state.panZoom);
-      break;
-    }
-    case 'idle': {
-      break;
-    }
-    default:
-      assertUnreachable(state.action);
   }
 }
