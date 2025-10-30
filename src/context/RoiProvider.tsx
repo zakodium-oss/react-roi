@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import {
+  OnAfterChangeCallback,
   OnChangeCallback,
   PanZoom,
   ResizeStrategy,
@@ -77,7 +78,7 @@ interface RoiProviderProps<TData> {
    * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
    * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
    */
-  onAfterChange?: OnChangeCallback<TData>;
+  onAfterChange?: OnAfterChangeCallback<TData>;
 
   /**
    * Called everytime the ROI has been updated (including newly drawn ROIs), and before it is committed.

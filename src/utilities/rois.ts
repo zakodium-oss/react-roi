@@ -1,7 +1,7 @@
 import { CommittedBox, CommittedRoiProperties } from '..';
-import { CommitBoxStrategy, ReactRoiState } from '../context/roiReducer';
+import { CommitBoxStrategy } from '../context/roiReducer';
 import { boundBox, BoundStrategy } from '../context/updaters/roi';
-import { Roi } from '../types/Roi';
+import { Roi, RoiAction } from '../types/Roi';
 import { Size } from '../types/utils';
 
 import { assert } from './assert';
@@ -46,14 +46,23 @@ export function createRoi(
 
 interface CreateCommittedRoiFromRoiOptions {
   targetSize: Size;
-  strategy: BoundStrategy;
   commitStrategy: CommitBoxStrategy;
 }
+
+function getBoundStrategyFromAction(action: RoiAction): BoundStrategy {
+  if (action.type === 'moving' || action.type === 'rotating') {
+    return 'move';
+  } else {
+    return 'resize';
+  }
+}
+
 export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
   options: CreateCommittedRoiFromRoiOptions,
 ): CommittedRoiProperties<T> {
-  const { targetSize, strategy, commitStrategy } = options;
+  const strategy = getBoundStrategyFromAction(roi.action);
+  const { targetSize, commitStrategy } = options;
   const { action, ...obj } = roi;
   return {
     ...obj,
@@ -93,16 +102,21 @@ export function createRoiFromCommittedRoi<T>(
 }
 
 export function roiHasChanged(
-  state: ReactRoiState,
-  roi: CommittedRoiProperties,
+  previous: CommittedRoiProperties | undefined,
+  next: CommittedRoiProperties | undefined,
 ) {
-  const currentRoi = state.committedRois.find((r) => r.id === roi.id);
-  assert(currentRoi, 'roi not found');
+  if (previous === undefined && next === undefined) {
+    return false;
+  }
+  if (previous === undefined || next === undefined) {
+    return true;
+  }
+  assert(previous.id === next.id, 'roi not found');
   return (
-    currentRoi.x !== roi.x ||
-    currentRoi.y !== roi.y ||
-    currentRoi.width !== roi.width ||
-    currentRoi.height !== roi.height ||
-    currentRoi.angle !== roi.angle
+    previous.x !== next.x ||
+    previous.y !== next.y ||
+    previous.width !== next.width ||
+    previous.height !== next.height ||
+    previous.angle !== next.angle
   );
 }

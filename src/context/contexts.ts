@@ -2,6 +2,7 @@ import { createContext, Dispatch, RefObject } from 'react';
 
 import {
   CommittedRoiProperties,
+  OnAfterChangeCallback,
   OnChangeCallback,
   PanZoom,
   RoiState,
@@ -68,7 +69,7 @@ export const roiStateRefContext =
   createContext<RefObject<ReactRoiState> | null>(null);
 
 export interface ActionCallbacks<TData = unknown> {
-  onAfterChange?: OnChangeCallback<TData>;
+  onAfterChange?: OnAfterChangeCallback<TData>;
   onChange?: OnChangeCallback<TData>;
   onZoom?: (zoom: PanZoom) => void;
 }

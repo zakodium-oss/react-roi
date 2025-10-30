@@ -33,7 +33,7 @@ export interface RoiContainerProps<TData = unknown> {
  * Hook which gets called after a user has updated (move, resize, rotate) or created an  ROI, before it is committed.
  * This hook is not called if an existing ROI is created or updated through the actions API.
  */
-export type OnChangeCallback<TData = unknown> = (
+export type OnAfterChangeCallback<TData = unknown> = (
   /**
    * The new ROI which just got updated / created through user interaction, before it is committed.
    */
@@ -46,7 +46,33 @@ export type OnChangeCallback<TData = unknown> = (
   /**
    * The type of action leading to the onChange call.
    */
-  type: 'drawing' | 'moving' | 'resizing' | 'rotating',
+  action: 'drawing' | 'moving' | 'resizing' | 'rotating',
+  /**
+   * All committed ROIs, before the update / creation is applied.
+   */
+  roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,
+) => void;
+
+/**
+ * Hook which gets called after a user has updated (move, resize, rotate) or created an  ROI, before it is committed.
+ * This hook is not called if an existing ROI is created or updated through the actions API.
+ */
+export type OnChangeCallback<TData = unknown> = (
+  /**
+   * The new ROI which just got updated / created through user interaction
+   * before it is committed. It can be null when drawing a new ROI which is
+   * smaller than the minimum size, which results in the ROI not being committed.
+   */
+  updatedRoi: CommittedRoiProperties<TData> | null,
+  /**
+   * The actions API to manipulate the state of react-roi, same as the one
+   * returned by the `useActions` hook.
+   */
+  actions: Actions<TData>,
+  /**
+   * The type of action leading to the onChange call.
+   */
+  action: 'drawing' | 'moving' | 'resizing' | 'rotating',
   /**
    * All committed ROIs, before the update / creation is applied.
    */

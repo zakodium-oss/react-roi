@@ -27,6 +27,7 @@ import {
   PointerMovePayload,
   ReactRoiState,
 } from '../../context/roiReducer';
+import { endAction } from '../../context/updaters/endAction';
 import { pointerMove } from '../../context/updaters/pointerMove';
 import { resetZoomAction, zoomAction } from '../../context/updaters/zoom';
 import useCallbacksRef from '../../hooks/useCallbacksRef';
@@ -36,10 +37,7 @@ import { usePanZoomTransform } from '../../hooks/usePanZoom';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { assert, assertUnreachable } from '../../utilities/assert';
-import {
-  createCommittedRoiFromRoiIfValid,
-  roiHasChanged,
-} from '../../utilities/rois';
+import { roiHasChanged } from '../../utilities/rois';
 import { throttle } from '../../utilities/throttle';
 
 interface ContainerProps<TData = unknown> {
@@ -321,23 +319,29 @@ function callPointerMoveActionHooks(
   actions: Actions,
 ) {
   if (callbacks.onChange) {
+    const selectedRoi = state.rois.find((roi) => roi.id === state.selectedRoi);
+    if (!selectedRoi || selectedRoi.action.type === 'idle') {
+      return;
+    }
     const newState = produce(state, (draft) => {
       pointerMove(draft, payload);
+      endAction(draft, endPayload);
     });
-    const roi = newState.rois.find((roi) => roi.id === state.selectedRoi);
-    assert(roi);
-    assert(roi.action.type !== 'idle');
-    const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-      targetSize: state.targetSize,
-      minNewRoiSize: endPayload.minNewRoiSize,
-      strategy: 'resize',
-      commitStrategy: state.commitRoiBoxStrategy,
-    });
-    if (committedRoi && roiHasChanged(state, committedRoi)) {
+
+    // It is possible that the roi does not exist (eg. drawing a new, too small ROI)
+    const newRoi = newState.committedRois.find(
+      (roi) => roi.id === state.selectedRoi,
+    );
+
+    const previousRoi = state.committedRois.find(
+      (committedRoi) => committedRoi.id === state.selectedRoi,
+    );
+
+    if (roiHasChanged(previousRoi, newRoi)) {
       callbacks.onChange(
-        committedRoi,
+        newRoi ?? null,
         actions,
-        roi.action.type,
+        selectedRoi.action.type,
         state.committedRois,
       );
     }
@@ -364,19 +368,27 @@ function callPointerUpActionHooks(
             roi,
             `An ROI in the current "${state.action} state should exist`,
           );
-          const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
-            targetSize: state.targetSize,
-            minNewRoiSize: payload.minNewRoiSize,
-            strategy: 'resize',
-            commitStrategy: state.commitRoiBoxStrategy,
+          const newState = produce(state, (draft) => {
+            endAction(draft, payload);
           });
-          if (committedRoi) {
-            callbacks.onAfterChange(
-              committedRoi,
-              actions,
-              state.action,
-              state.committedRois,
-            );
+
+          // It is possible that the roi does not exist (eg. drawing a new, too small ROI)
+          const newRoi = newState.committedRois.find(
+            (newRoi) => newRoi.id === roi.id,
+          );
+          const previousRoi = state.committedRois.find(
+            (committedRoi) => committedRoi.id === roi.id,
+          );
+
+          if (newRoi) {
+            if (roiHasChanged(previousRoi, newRoi)) {
+              callbacks.onAfterChange(
+                newRoi,
+                actions,
+                state.action,
+                state.committedRois,
+              );
+            }
           }
         }
         break;

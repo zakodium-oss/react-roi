@@ -1,8 +1,11 @@
 import { Meta } from '@storybook/react';
 import { useState } from 'react';
+import { v4 } from 'uuid';
 
 import {
   CommittedRoiProperties,
+  LabelContainer,
+  OnAfterChangeCallback,
   OnChangeCallback,
   RoiContainer,
   RoiList,
@@ -28,9 +31,9 @@ export function ActionHooks() {
   const [count, setCount] = useState(0);
   return (
     <RoiProvider<CountData>
-      onAfterChange={(roi, actions, type) => {
+      onAfterChange={(roi, actions, action) => {
         assert(roi.data);
-        switch (type) {
+        switch (action) {
           case 'drawing': {
             setCount(count + 1);
             break;
@@ -88,18 +91,9 @@ export function ActionHooks() {
               if (roi.action.type === 'drawing') return null;
               if (!roi.data) return null;
               return (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: 'white',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  {`ROI ${roi.data.count}\nMoved: ${roi.data.moveCount}\nResized: ${roi.data.resizeCount}\nRotated: ${roi.data.rotateCount}`}
-                </div>
+                <LabelContainer style={{ fontSize: 12 }}>
+                  {`ROI ${roi.data.count}\nMoved: ${roi.data.moveCount}\nResized:${roi.data.resizeCount}\nRotated: ${roi.data.rotateCount}`}
+                </LabelContainer>
               );
             }}
           />
@@ -112,6 +106,7 @@ export function ActionHooks() {
 
 interface SideData {
   side: 'LEFT' | 'RIGHT';
+  pairId: string;
 }
 
 const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
@@ -125,6 +120,7 @@ const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
     label: 'LEFT',
     data: {
       side: 'LEFT',
+      pairId: 'pair-1',
     },
   },
   {
@@ -137,19 +133,36 @@ const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
     label: 'RIGHT',
     data: {
       side: 'RIGHT',
+      pairId: 'pair-1',
     },
   },
 ];
 
 export function SyncRoisAfterUpdate() {
-  const updateRois: OnChangeCallback<SideData> = (
+  const updateRois: OnAfterChangeCallback<SideData> = (
     roi,
     actions,
-    type,
+    action,
     roisBeforeUpdate,
   ) => {
-    if (roi.data?.side === 'LEFT') {
-      const rightRoi = roisBeforeUpdate.find((r) => r.data?.side === 'RIGHT');
+    assert(roi.data);
+    if (action === 'drawing') {
+      actions.createRoi({
+        id: v4(),
+        x: roi.x + roi.width,
+        y: roi.y,
+        width: roi.width,
+        height: roi.height,
+        angle: roi.angle,
+        data: {
+          ...roi.data,
+          side: 'RIGHT',
+        },
+      });
+    } else if (roi.data.side === 'LEFT') {
+      const rightRoi = roisBeforeUpdate.find(
+        (r) => r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
+      );
       assert(rightRoi);
       actions.updateRoi(rightRoi.id, {
         x: roi.x + roi.width,
@@ -159,7 +172,9 @@ export function SyncRoisAfterUpdate() {
         angle: roi.angle,
       });
     } else {
-      const leftRoi = roisBeforeUpdate.find((r) => r.data?.side === 'LEFT');
+      const leftRoi = roisBeforeUpdate.find(
+        (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
+      );
       assert(leftRoi);
       actions.updateRoi(leftRoi.id, {
         x: roi.x - roi.width,
@@ -172,14 +187,19 @@ export function SyncRoisAfterUpdate() {
   };
   return (
     <RoiProvider<SideData>
-      initialConfig={{ mode: 'select', rois: syncInitialRois }}
+      initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
       onAfterChange={updateRois}
     >
       <Layout>
         <RoiContainer<SideData>
+          getNewRoiData={() => ({
+            side: 'LEFT',
+            pairId: v4(),
+          })}
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList<SideData>
+            renderLabel={(roi) => roi.data?.side}
             getStyle={(roi) => ({
               rectAttributes: {
                 fill: roi.data?.side === 'LEFT' ? 'lightyellow' : 'blue',
@@ -198,11 +218,17 @@ export function SyncRoisDuringUpdate() {
   const updateRois: OnChangeCallback<SideData> = (
     roi,
     actions,
-    _,
+    actionType,
     roisBeforeUpdate,
   ) => {
-    if (roi.data?.side === 'LEFT') {
-      const rightRoi = roisBeforeUpdate.find((r) => r.data?.side === 'RIGHT');
+    if (!roi || actionType === 'drawing') {
+      return;
+    }
+    assert(roi.data);
+    if (roi.data.side === 'LEFT') {
+      const rightRoi = roisBeforeUpdate.find(
+        (r) => r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
+      );
       assert(rightRoi);
       actions.updateRoi(rightRoi.id, {
         x: roi.x + roi.width,
@@ -212,7 +238,9 @@ export function SyncRoisDuringUpdate() {
         angle: roi.angle,
       });
     } else {
-      const leftRoi = roisBeforeUpdate.find((r) => r.data?.side === 'LEFT');
+      const leftRoi = roisBeforeUpdate.find(
+        (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
+      );
       assert(leftRoi);
       actions.updateRoi(leftRoi.id, {
         x: roi.x - roi.width,
@@ -225,15 +253,38 @@ export function SyncRoisDuringUpdate() {
   };
   return (
     <RoiProvider<SideData>
-      initialConfig={{ mode: 'select', rois: syncInitialRois }}
-      onAfterChange={updateRois}
+      initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
+      onAfterChange={(roi, actions, actionType, roisBeforeUpdate) => {
+        assert(roi.data);
+        if (actionType === 'drawing') {
+          actions.createRoi({
+            id: v4(),
+            x: roi.x + roi.width,
+            y: roi.y,
+            width: roi.width,
+            height: roi.height,
+            angle: roi.angle,
+            data: {
+              ...roi.data,
+              side: 'RIGHT',
+            },
+          });
+        } else {
+          updateRois(roi, actions, actionType, roisBeforeUpdate);
+        }
+      }}
       onChange={updateRois}
     >
       <Layout>
         <RoiContainer<SideData>
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
+          getNewRoiData={() => ({
+            side: 'LEFT',
+            pairId: v4(),
+          })}
         >
           <RoiList<SideData>
+            renderLabel={(roi) => roi.data?.side}
             allowRotate
             getStyle={(roi) => ({
               rectAttributes: {

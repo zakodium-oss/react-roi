@@ -29,7 +29,6 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
     const newCommittedRoi = createCommittedRoiFromRoiIfValid(roi, {
       targetSize: draft.targetSize,
       minNewRoiSize: payload.minNewRoiSize,
-      strategy: 'resize',
       commitStrategy: draft.commitRoiBoxStrategy,
     });
     if (newCommittedRoi === null) {
