@@ -1,7 +1,14 @@
 import { Meta } from '@storybook/react';
 import { useState } from 'react';
 
-import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
+import {
+  AfterUpdateCallback,
+  CommittedRoiProperties,
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src';
 import { assert } from '../../src/utilities/assert';
 import { CommittedRoisButton } from '../utils/CommittedRoisButton';
 import { Layout } from '../utils/Layout';
@@ -24,30 +31,27 @@ export function ActionHooks() {
       onAfterDraw={() => {
         setCount(count + 1);
       }}
-      onAfterMove={(selectedRoi, roi, { updateRoi }) => {
+      onAfterMove={(roi, { updateRoi }) => {
         assert(roi.data);
-        updateRoi(selectedRoi, {
-          ...roi,
+        updateRoi(roi.id, {
           data: {
             ...roi.data,
             moveCount: roi.data.moveCount + 1,
           },
         });
       }}
-      onAfterRotate={(selectedRoi, roi, { updateRoi }) => {
+      onAfterRotate={(roi, { updateRoi }) => {
         assert(roi.data);
-        updateRoi(selectedRoi, {
-          ...roi,
+        updateRoi(roi.id, {
           data: {
             ...roi.data,
             rotateCount: roi.data.rotateCount + 1,
           },
         });
       }}
-      onAfterResize={(selectedRoi, roi, { updateRoi }) => {
+      onAfterResize={(roi, { updateRoi }) => {
         assert(roi.data);
-        updateRoi(selectedRoi, {
-          ...roi,
+        updateRoi(roi.id, {
           data: {
             ...roi.data,
             resizeCount: roi.data.resizeCount + 1,
@@ -90,6 +94,88 @@ export function ActionHooks() {
                 </div>
               );
             }}
+          />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
+  );
+}
+
+interface SideData {
+  side: 'LEFT' | 'RIGHT';
+}
+
+const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
+  {
+    id: 'roi-left',
+    x: 50,
+    y: 100,
+    width: 100,
+    height: 100,
+    angle: 0,
+    label: 'LEFT',
+    data: {
+      side: 'LEFT',
+    },
+  },
+  {
+    id: 'roi-right',
+    x: 150,
+    y: 100,
+    width: 100,
+    height: 100,
+    angle: 0,
+    label: 'RIGHT',
+    data: {
+      side: 'RIGHT',
+    },
+  },
+];
+
+export function SyncRois() {
+  const updateRois: AfterUpdateCallback<SideData> = (
+    roi,
+    actions,
+    roisBeforeUpdate,
+  ) => {
+    if (roi.data?.side === 'LEFT') {
+      const rightRoi = roisBeforeUpdate.find((r) => r.data?.side === 'RIGHT');
+      assert(rightRoi);
+      actions.updateRoi(rightRoi.id, {
+        x: roi.x + roi.width,
+        y: roi.y,
+        width: roi.width,
+        height: roi.height,
+      });
+    } else {
+      const leftRoi = roisBeforeUpdate.find((r) => r.data?.side === 'LEFT');
+      assert(leftRoi);
+      actions.updateRoi(leftRoi.id, {
+        x: roi.x - roi.width,
+        y: roi.y,
+        width: roi.width,
+        height: roi.height,
+      });
+    }
+  };
+  return (
+    <RoiProvider<SideData>
+      initialConfig={{ mode: 'select', rois: syncInitialRois }}
+      onAfterMove={updateRois}
+      onAfterResize={updateRois}
+    >
+      <Layout>
+        <RoiContainer<SideData>
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
+          <RoiList<SideData>
+            getStyle={(roi) => ({
+              rectAttributes: {
+                fill: roi.data?.side === 'LEFT' ? 'lightyellow' : 'blue',
+                opacity: 0.5,
+              },
+            })}
           />
         </RoiContainer>
         <CommittedRoisButton />

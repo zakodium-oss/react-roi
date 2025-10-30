@@ -93,4 +93,4 @@ export function useActions<TData = unknown>() {
   }, [roiDispatch, containerRef, stateRef, callbacksRef]);
 }
 
-export type Actions = ReturnType<typeof useActions>;
+export type Actions<TData = unknown> = ReturnType<typeof useActions<TData>>;

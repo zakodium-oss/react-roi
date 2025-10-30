@@ -316,7 +316,11 @@ function callPointerUpActionHooks(
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi) {
-          callbacks.onAfterDraw(new CommittedRoi(committedRoi), actions);
+          callbacks.onAfterDraw(
+            new CommittedRoi(committedRoi),
+            actions,
+            state.committedRois,
+          );
         }
       }
       break;
@@ -332,8 +336,7 @@ function callPointerUpActionHooks(
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi && roiHasChanged(state, committedRoi)) {
-          const { id, ...updateData } = committedRoi;
-          callbacks.onAfterMove(id, updateData, actions);
+          callbacks.onAfterMove(committedRoi, actions, state.committedRois);
         }
       }
       break;
@@ -349,8 +352,7 @@ function callPointerUpActionHooks(
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi && roiHasChanged(state, committedRoi)) {
-          const { id, ...updateData } = committedRoi;
-          callbacks.onAfterRotate(id, updateData, actions);
+          callbacks.onAfterRotate(committedRoi, actions, state.committedRois);
         }
       }
       break;
@@ -366,8 +368,7 @@ function callPointerUpActionHooks(
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi && roiHasChanged(state, committedRoi)) {
-          const { id, ...updateData } = committedRoi;
-          callbacks.onAfterResize(id, updateData, actions);
+          callbacks.onAfterResize(committedRoi, actions, state.committedRois);
         }
       }
       break;

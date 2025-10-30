@@ -73,28 +73,36 @@ interface RoiProviderProps<TData> {
   children: ReactNode;
   initialConfig?: RoiProviderInitialConfig<TData>;
   /**
-   * Called right after the ROI has finished being drawn and has been created.
-   * @param roi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
+   * Called right after the ROI has finished being drawn, and before it is committed.
+   * @param updatedRoi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
+   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
+   * @param roisBeforeDraw All committed ROIs, before the new one is added.
    */
   onAfterDraw?: AfterDrawCallback<TData>;
   /**
-   * Called right after the ROI has finished moving.
-   * @param roi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
+   * Called right after the ROI has been moved, and before it is committed.
+   * @param updatedRoi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
+   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
+   * @param roisBeforeUpdate All committed ROIs, before the ROI was moved.
    */
   onAfterMove?: AfterUpdateCallback<TData>;
   /**
-   * Called right after the ROI has finished moving.
-   * @param roi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
+   * Called right after the ROI has been rotated, and before it is committed.
+   * @param updatedRoi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
+   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
+   * @param roisBeforeUpdate All committed ROIs, before the ROI was rotated.
    */
   onAfterRotate?: AfterUpdateCallback<TData>;
   /**
-   * Called right before the ROI has finished resizing.
-   * @param roi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
+   * Called right after the ROI has been resized, and before it is committed.
+   * @param updatedRoi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
+   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
+   * @param roisBeforeUpdate All committed ROIs, before the ROI was resized.
    */
   onAfterResize?: AfterUpdateCallback<TData>;
   /**
-   * Called when after zoom or pan actions
-   * @param zoom
+   * Called after zoom or pan actions
+   * @param zoom The new pan and zoom state.
    */
   onAfterZoomChange?: (zoom: PanZoom) => void;
 }

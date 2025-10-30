@@ -1,8 +1,8 @@
 import { CSSProperties, JSX, ReactNode } from 'react';
 
-import { Actions, UpdateData } from '../../hooks/useActions';
+import { Actions } from '../../hooks/useActions';
 import { usePanZoom } from '../../hooks/usePanZoom';
-import { CommittedRoi } from '../../types/CommittedRoi';
+import { CommittedRoi, CommittedRoiProperties } from '../../types/CommittedRoi';
 
 import { ContainerComponent } from './ContainerComponent';
 
@@ -29,14 +29,44 @@ export interface RoiContainerProps<TData = unknown> {
   zoomWithoutModifierKey?: boolean;
 }
 
+/**
+ * Hook which gets called after a user has drawn a new ROI, just before it is committed.
+ * This hook is not called if a new ROI is created through the actions API.
+ */
 export type AfterDrawCallback<TData = unknown> = (
+  /**
+   * The ROI which just got drawn through user interaction, before it is committed.
+   */
   roi: CommittedRoi<TData>,
-  actions: Actions,
+  /**
+   * The actions API to manipulate the state of react-roi, same as the one
+   * returned by the `useActions` hook.
+   */
+  actions: Actions<TData>,
+  /**
+   * All committed ROIs, before the new one is added.
+   */
+  roisBeforeDraw: Array<CommittedRoiProperties<TData>>,
 ) => void;
+
+/**
+ * Hook which gets called after a user has updated an existing ROI (move, resize, rotate), just before it is committed.
+ * This hook is not called if an existing ROI is updated through the actions API.
+ */
 export type AfterUpdateCallback<TData = unknown> = (
-  selectedRoiId: string,
-  roi: UpdateData<TData>,
-  actions: Actions,
+  /**
+   * The new ROI which just got updated through user interaction, before it is committed.
+   */
+  updatedRoi: CommittedRoiProperties<TData>,
+  /**
+   * The actions API to manipulate the state of react-roi, same as the one
+   * returned by the `useActions` hook.
+   */
+  actions: Actions<TData>,
+  /**
+   * All committed ROIs, before the update is applied.
+   */
+  roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,
 ) => void;
 
 export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {
