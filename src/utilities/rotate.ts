@@ -116,7 +116,7 @@ export function getMBRBoundaries(
       minY: p0.y,
       maxY: p2.y,
     };
-  } else if (box.angle >= ANGLE_90_POSITIVE && box.angle < Math.PI) {
+  } else if (box.angle >= ANGLE_90_POSITIVE && box.angle <= Math.PI) {
     return {
       minX: p2.x,
       maxX: p0.x,
