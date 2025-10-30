@@ -102,6 +102,7 @@ export function roiHasChanged(
     currentRoi.x !== roi.x ||
     currentRoi.y !== roi.y ||
     currentRoi.width !== roi.width ||
-    currentRoi.height !== roi.height
+    currentRoi.height !== roi.height ||
+    currentRoi.angle !== roi.angle
   );
 }

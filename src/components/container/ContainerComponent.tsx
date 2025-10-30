@@ -12,7 +12,6 @@ import {
 
 import {
   Actions,
-  CommittedRoi,
   ReactRoiAction,
   RoiMode,
   useActions,
@@ -23,7 +22,12 @@ import {
   LockContext,
   lockContext,
 } from '../../context/contexts';
-import { EndActionPayload, ReactRoiState } from '../../context/roiReducer';
+import {
+  EndActionPayload,
+  PointerMovePayload,
+  ReactRoiState,
+} from '../../context/roiReducer';
+import { pointerMove } from '../../context/updaters/pointerMove';
 import { resetZoomAction, zoomAction } from '../../context/updaters/zoom';
 import useCallbacksRef from '../../hooks/useCallbacksRef';
 import { useCurrentState } from '../../hooks/useCurrentState';
@@ -100,15 +104,26 @@ export function ContainerComponent<TData = unknown>(
 
   useEffect(() => {
     function onPointerMove(event: PointerEvent) {
-      if (containerRef?.current) {
-        roiDispatch({
-          type: 'POINTER_MOVE',
-          payload: {
-            event,
-            containerBoundingRect: containerRef.current.getBoundingClientRect(),
-          },
-        });
-      }
+      if (!stateRef.current || !containerRef?.current) return;
+      const endPayload = {
+        noUnselection: noUnselection || false,
+        minNewRoiSize,
+      };
+      const movePayload = {
+        event,
+        containerBoundingRect: containerRef.current.getBoundingClientRect(),
+      };
+      roiDispatch({
+        type: 'POINTER_MOVE',
+        payload: movePayload,
+      });
+      callPointerMoveActionHooks(
+        stateRef.current,
+        callbacksRef.current || {},
+        movePayload,
+        endPayload,
+        actions,
+      );
     }
 
     function onPointerUp() {
@@ -298,10 +313,71 @@ function getCursor(
   return mode !== 'select' ? 'crosshair' : 'grab';
 }
 
+function callPointerMoveActionHooks(
+  state: ReactRoiState,
+  callbacks: ActionCallbacks,
+  payload: PointerMovePayload,
+  endPayload: EndActionPayload,
+  actions: Actions,
+) {
+  if (
+    callbacks.onChangeDraw ||
+    callbacks.onChangeMove ||
+    callbacks.onChangeResize ||
+    callbacks.onChangeRotate
+  ) {
+    const newState = produce(state, (draft) => {
+      pointerMove(draft, payload);
+    });
+    const roi = newState.rois.find((roi) => roi.id === state.selectedRoi);
+    assert(roi);
+    const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
+      targetSize: state.targetSize,
+      minNewRoiSize: endPayload.minNewRoiSize,
+      strategy: 'resize',
+      commitStrategy: state.commitRoiBoxStrategy,
+    });
+    if (committedRoi) {
+      switch (state.action) {
+        case 'moving':
+          if (callbacks.onChangeMove) {
+            callbacks.onChangeMove(committedRoi, actions, state.committedRois);
+          }
+          break;
+        case 'drawing':
+          if (callbacks.onChangeDraw) {
+            callbacks.onChangeDraw(committedRoi, actions, state.committedRois);
+          }
+          break;
+        case 'rotating':
+          if (callbacks.onChangeRotate) {
+            callbacks.onChangeRotate(
+              committedRoi,
+              actions,
+              state.committedRois,
+            );
+          }
+          break;
+        case 'resizing':
+          if (callbacks.onChangeResize) {
+            callbacks.onChangeResize(
+              committedRoi,
+              actions,
+              state.committedRois,
+            );
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
+
 function callPointerUpActionHooks(
   state: ReactRoiState,
   callbacks: ActionCallbacks,
-  options: EndActionPayload,
+  payload: EndActionPayload,
   actions: Actions,
 ) {
   switch (state.action) {
@@ -311,16 +387,12 @@ function callPointerUpActionHooks(
         assert(roi, 'An roi in the "drawing" state should exist while drawing');
         const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
           targetSize: state.targetSize,
-          minNewRoiSize: options.minNewRoiSize,
+          minNewRoiSize: payload.minNewRoiSize,
           strategy: 'resize',
           commitStrategy: state.commitRoiBoxStrategy,
         });
         if (committedRoi) {
-          callbacks.onAfterDraw(
-            new CommittedRoi(committedRoi),
-            actions,
-            state.committedRois,
-          );
+          callbacks.onAfterDraw(committedRoi, actions, state.committedRois);
         }
       }
       break;
@@ -331,7 +403,7 @@ function callPointerUpActionHooks(
         assert(roi, 'An roi in the "moving" state should exist while moving');
         const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
           targetSize: state.targetSize,
-          minNewRoiSize: options.minNewRoiSize,
+          minNewRoiSize: payload.minNewRoiSize,
           strategy: 'move',
           commitStrategy: state.commitRoiBoxStrategy,
         });
@@ -347,7 +419,7 @@ function callPointerUpActionHooks(
         assert(roi, 'An roi in the "moving" state should exist while moving');
         const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
           targetSize: state.targetSize,
-          minNewRoiSize: options.minNewRoiSize,
+          minNewRoiSize: payload.minNewRoiSize,
           strategy: 'move',
           commitStrategy: state.commitRoiBoxStrategy,
         });
@@ -363,7 +435,7 @@ function callPointerUpActionHooks(
         assert(roi, 'An roi in the "resizing" state should exist while moving');
         const committedRoi = createCommittedRoiFromRoiIfValid(roi, {
           targetSize: state.targetSize,
-          minNewRoiSize: options.minNewRoiSize,
+          minNewRoiSize: payload.minNewRoiSize,
           strategy: 'resize',
           commitStrategy: state.commitRoiBoxStrategy,
         });

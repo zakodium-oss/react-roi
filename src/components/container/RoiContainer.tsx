@@ -2,7 +2,7 @@ import { CSSProperties, JSX, ReactNode } from 'react';
 
 import { Actions } from '../../hooks/useActions';
 import { usePanZoom } from '../../hooks/usePanZoom';
-import { CommittedRoi, CommittedRoiProperties } from '../../types/CommittedRoi';
+import { CommittedRoiProperties } from '../../types/CommittedRoi';
 
 import { ContainerComponent } from './ContainerComponent';
 
@@ -30,32 +30,12 @@ export interface RoiContainerProps<TData = unknown> {
 }
 
 /**
- * Hook which gets called after a user has drawn a new ROI, just before it is committed.
- * This hook is not called if a new ROI is created through the actions API.
+ * Hook which gets called after a user has updated (move, resize, rotate) or created an  ROI, before it is committed.
+ * This hook is not called if an existing ROI is created or updated through the actions API.
  */
-export type AfterDrawCallback<TData = unknown> = (
+export type OnChangeCallback<TData = unknown> = (
   /**
-   * The ROI which just got drawn through user interaction, before it is committed.
-   */
-  roi: CommittedRoi<TData>,
-  /**
-   * The actions API to manipulate the state of react-roi, same as the one
-   * returned by the `useActions` hook.
-   */
-  actions: Actions<TData>,
-  /**
-   * All committed ROIs, before the new one is added.
-   */
-  roisBeforeDraw: Array<CommittedRoiProperties<TData>>,
-) => void;
-
-/**
- * Hook which gets called after a user has updated an existing ROI (move, resize, rotate), just before it is committed.
- * This hook is not called if an existing ROI is updated through the actions API.
- */
-export type AfterUpdateCallback<TData = unknown> = (
-  /**
-   * The new ROI which just got updated through user interaction, before it is committed.
+   * The new ROI which just got updated / created through user interaction, before it is committed.
    */
   updatedRoi: CommittedRoiProperties<TData>,
   /**
@@ -64,7 +44,7 @@ export type AfterUpdateCallback<TData = unknown> = (
    */
   actions: Actions<TData>,
   /**
-   * All committed ROIs, before the update is applied.
+   * All committed ROIs, before the update / creation is applied.
    */
   roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,
 ) => void;

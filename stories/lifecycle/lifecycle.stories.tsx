@@ -2,8 +2,8 @@ import { Meta } from '@storybook/react';
 import { useState } from 'react';
 
 import {
-  AfterUpdateCallback,
   CommittedRoiProperties,
+  OnChangeCallback,
   RoiContainer,
   RoiList,
   RoiProvider,
@@ -133,8 +133,8 @@ const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
   },
 ];
 
-export function SyncRois() {
-  const updateRois: AfterUpdateCallback<SideData> = (
+export function SyncRoisAfterUpdate() {
+  const updateRois: OnChangeCallback<SideData> = (
     roi,
     actions,
     roisBeforeUpdate,
@@ -147,6 +147,7 @@ export function SyncRois() {
         y: roi.y,
         width: roi.width,
         height: roi.height,
+        angle: roi.angle,
       });
     } else {
       const leftRoi = roisBeforeUpdate.find((r) => r.data?.side === 'LEFT');
@@ -156,6 +157,7 @@ export function SyncRois() {
         y: roi.y,
         width: roi.width,
         height: roi.height,
+        angle: roi.angle,
       });
     }
   };
@@ -170,6 +172,63 @@ export function SyncRois() {
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList<SideData>
+            getStyle={(roi) => ({
+              rectAttributes: {
+                fill: roi.data?.side === 'LEFT' ? 'lightyellow' : 'blue',
+                opacity: 0.5,
+              },
+            })}
+          />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
+  );
+}
+
+export function SyncRoisDuringUpdate() {
+  const updateRois: OnChangeCallback<SideData> = (
+    roi,
+    actions,
+    roisBeforeUpdate,
+  ) => {
+    if (roi.data?.side === 'LEFT') {
+      const rightRoi = roisBeforeUpdate.find((r) => r.data?.side === 'RIGHT');
+      assert(rightRoi);
+      actions.updateRoi(rightRoi.id, {
+        x: roi.x + roi.width,
+        y: roi.y,
+        width: roi.width,
+        height: roi.height,
+        angle: roi.angle,
+      });
+    } else {
+      const leftRoi = roisBeforeUpdate.find((r) => r.data?.side === 'LEFT');
+      assert(leftRoi);
+      actions.updateRoi(leftRoi.id, {
+        x: roi.x - roi.width,
+        y: roi.y,
+        width: roi.width,
+        height: roi.height,
+        angle: roi.angle,
+      });
+    }
+  };
+  return (
+    <RoiProvider<SideData>
+      initialConfig={{ mode: 'select', rois: syncInitialRois }}
+      onAfterMove={updateRois}
+      onAfterResize={updateRois}
+      onChangeResize={updateRois}
+      onChangeRotate={updateRois}
+      onChangeMove={updateRois}
+    >
+      <Layout>
+        <RoiContainer<SideData>
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
+          <RoiList<SideData>
+            allowRotate
             getStyle={(roi) => ({
               rectAttributes: {
                 fill: roi.data?.side === 'LEFT' ? 'lightyellow' : 'blue',

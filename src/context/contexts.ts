@@ -1,9 +1,8 @@
 import { createContext, Dispatch, RefObject } from 'react';
 
 import {
-  AfterDrawCallback,
-  AfterUpdateCallback,
   CommittedRoiProperties,
+  OnChangeCallback,
   PanZoom,
   RoiState,
   Size,
@@ -69,10 +68,14 @@ export const roiStateRefContext =
   createContext<RefObject<ReactRoiState> | null>(null);
 
 export interface ActionCallbacks<TData = unknown> {
-  onAfterDraw?: AfterDrawCallback<TData>;
-  onAfterMove?: AfterUpdateCallback<TData>;
-  onAfterResize?: AfterUpdateCallback<TData>;
-  onAfterRotate?: AfterUpdateCallback<TData>;
+  onAfterDraw?: OnChangeCallback<TData>;
+  onAfterMove?: OnChangeCallback<TData>;
+  onAfterResize?: OnChangeCallback<TData>;
+  onAfterRotate?: OnChangeCallback<TData>;
+  onChangeDraw?: OnChangeCallback<TData>;
+  onChangeMove?: OnChangeCallback<TData>;
+  onChangeResize?: OnChangeCallback<TData>;
+  onChangeRotate?: OnChangeCallback<TData>;
   onAfterZoomChange?: (zoom: PanZoom) => void;
 }
 export const callbacksRefContext = createContext<RefObject<
