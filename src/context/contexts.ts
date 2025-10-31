@@ -1,17 +1,18 @@
-import { createContext, Dispatch, RefObject } from 'react';
+import type { Dispatch, RefObject } from 'react';
+import { createContext } from 'react';
 
-import {
+import type {
   CommittedRoiProperties,
-  OnCommitCallback,
   OnChangeCallback,
+  OnCommitCallback,
   PanZoom,
   RoiState,
   Size,
-} from '..';
-import { Roi } from '../types/Roi';
+} from '../index.js';
+import type { Roi } from '../types/Roi.js';
 
-import { ReactRoiState, RoiReducerAction } from './roiReducer';
-import { initialSize } from './updaters/initialPanZoom';
+import type { ReactRoiState, RoiReducerAction } from './roiReducer.js';
+import { initialSize } from './updaters/initialPanZoom.js';
 
 export const roiStateContext = createContext<RoiState | null>(null);
 

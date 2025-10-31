@@ -1,9 +1,13 @@
-import { getRectanglePoints } from '../../utilities/box';
-import { applyInverseX, applyInverseY } from '../../utilities/panZoom';
-import { getBoundaries } from '../../utilities/point';
-import { ReactRoiState, ZoomIntoROIPayload, ZoomPayload } from '../roiReducer';
+import { getRectanglePoints } from '../../utilities/box.js';
+import { applyInverseX, applyInverseY } from '../../utilities/panZoom.js';
+import { getBoundaries } from '../../utilities/point.js';
+import type {
+  ReactRoiState,
+  ZoomIntoROIPayload,
+  ZoomPayload,
+} from '../roiReducer.js';
 
-import { rectifyPanZoom } from './rectifyPanZoom';
+import { rectifyPanZoom } from './rectifyPanZoom.js';
 
 export function zoomAction(draft: ReactRoiState, zoom: ZoomPayload) {
   const { min: minZoom, max: maxZoom } = draft.zoomDomain;

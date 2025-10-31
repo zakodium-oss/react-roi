@@ -1,24 +1,24 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { DrawAction, ResizeAction, Roi } from '../../types/Roi';
-import { assert, assertUnreachable } from '../../utilities/assert';
+import type { DrawAction, ResizeAction, Roi } from '../../types/Roi.js';
+import { assert, assertUnreachable } from '../../utilities/assert.js';
 import {
   applyInverseX,
   applyInverseY,
   computeTotalPanZoom,
-} from '../../utilities/panZoom';
-import { Point } from '../../utilities/point';
+} from '../../utilities/panZoom.js';
+import type { Point } from '../../utilities/point.js';
 import {
   computeAngleFromMousePosition,
   rotatePoint,
-} from '../../utilities/rotate';
-import {
+} from '../../utilities/rotate.js';
+import type {
   CommitBoxStrategy,
   PointerMovePayload,
   ReactRoiState,
-} from '../roiReducer';
+} from '../roiReducer.js';
 
-import { rectifyPanZoom } from './rectifyPanZoom';
+import { rectifyPanZoom } from './rectifyPanZoom.js';
 
 export function pointerMove(draft: ReactRoiState, payload: PointerMovePayload) {
   const { event } = payload;

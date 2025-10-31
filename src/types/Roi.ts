@@ -1,5 +1,5 @@
-import { BoxWithRotationCenter } from '../utilities/box';
-import { Point } from '../utilities/point';
+import type { BoxWithRotationCenter } from '../utilities/box.js';
+import type { Point } from '../utilities/point.js';
 
 export type XCornerPosition = 'left' | 'right' | 'center';
 export type YCornerPosition = 'top' | 'bottom' | 'center';

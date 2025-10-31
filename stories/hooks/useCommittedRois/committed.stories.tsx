@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { decode, writeCanvas } from 'image-js';
 import { useEffect, useRef } from 'react';
 
@@ -8,9 +8,9 @@ import {
   RoiProvider,
   TargetImage,
   useCommittedRois,
-} from '../../../src';
-import { Layout } from '../../utils/Layout';
-import { getInitialRois } from '../../utils/initialRois';
+} from '../../../src/index.ts';
+import { Layout } from '../../utils/Layout.tsx';
+import { getInitialRois } from '../../utils/initialRois.ts';
 
 export default {
   title: 'hooks/useCommittedRois',

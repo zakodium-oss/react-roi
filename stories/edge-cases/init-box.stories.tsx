@@ -1,14 +1,14 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
+import type { CommittedRoiProperties } from '../../src/index.ts';
 import {
-  CommittedRoiProperties,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
-} from '../../src';
-import { CommittedRoisButton } from '../utils/CommittedRoisButton';
-import { Layout } from '../utils/Layout';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
 
 export default {
   title: 'Edge cases',

@@ -1,19 +1,18 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
+import type { PanZoom, ResizeStrategy } from '../../../src/index.ts';
 import {
-  PanZoom,
-  ResizeStrategy,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
   useActions,
   useCommittedRois,
-} from '../../../src';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Layout } from '../../utils/Layout';
-import { getInitialRois } from '../../utils/initialRois';
-import { useResetOnChange } from '../../utils/useResetOnChange';
+} from '../../../src/index.ts';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
+import { Layout } from '../../utils/Layout.tsx';
+import { getInitialRois } from '../../utils/initialRois.ts';
+import { useResetOnChange } from '../../utils/useResetOnChange.ts';
 
 export default {
   title: 'hooks/useActions',

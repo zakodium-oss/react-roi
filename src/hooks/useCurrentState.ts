@@ -1,7 +1,8 @@
-import { RefObject, useContext } from 'react';
+import type { RefObject } from 'react';
+import { useContext } from 'react';
 
-import { roiStateRefContext } from '../context/contexts';
-import { ReactRoiState } from '../context/roiReducer';
+import { roiStateRefContext } from '../context/contexts.js';
+import type { ReactRoiState } from '../context/roiReducer.js';
 
 export function useCurrentState<T>() {
   const context = useContext(roiStateRefContext);

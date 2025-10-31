@@ -1,5 +1,5 @@
-import { Meta } from '@storybook/react';
-import { CSSProperties, ReactElement, SVGAttributes } from 'react';
+import type { Meta } from '@storybook/react-vite';
+import type { CSSProperties, ReactElement, SVGAttributes } from 'react';
 
 import {
   RoiContainer,
@@ -8,10 +8,10 @@ import {
   TargetImage,
   useActions,
   useRoiState,
-} from '../../src';
-import { assert } from '../../src/utilities/assert';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
+} from '../../src/index.ts';
+import { assert } from '../../src/utilities/assert.ts';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
   title: 'ROI custom styles',

@@ -1,12 +1,12 @@
-import { Roi } from '../../types/Roi';
-import { assertUnreachable } from '../../utilities/assert';
+import type { Roi } from '../../types/Roi.js';
+import { assertUnreachable } from '../../utilities/assert.js';
 import {
   applyInverseX,
   applyInverseY,
   computeTotalPanZoom,
-} from '../../utilities/panZoom';
-import { createRoi } from '../../utilities/rois';
-import { ReactRoiState, StartDrawPayload } from '../roiReducer';
+} from '../../utilities/panZoom.js';
+import { createRoi } from '../../utilities/rois.js';
+import type { ReactRoiState, StartDrawPayload } from '../roiReducer.js';
 
 /**
  * The draw action is executed when the user starts interacting with the container

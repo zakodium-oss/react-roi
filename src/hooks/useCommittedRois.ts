@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { committedRoisContext } from '../context/contexts';
-import { CommittedRoi } from '../types/CommittedRoi';
+import { committedRoisContext } from '../context/contexts.js';
+import { CommittedRoi } from '../types/CommittedRoi.js';
 
 export function useCommittedRois<T>() {
   const committedRois = useContext(committedRoisContext);

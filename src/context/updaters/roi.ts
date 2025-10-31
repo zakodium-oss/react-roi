@@ -1,10 +1,18 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { CommittedBox, CommittedRoiProperties, Size } from '../..';
-import { Roi, RoiAction } from '../../types/Roi';
-import { commitBox, denormalizeBox, normalizeBox } from '../../utilities/box';
-import { getMBRBoundaries } from '../../utilities/rotate';
-import { ReactRoiState } from '../roiReducer';
+import type {
+  CommittedBox,
+  CommittedRoiProperties,
+  Size,
+} from '../../index.js';
+import type { Roi, RoiAction } from '../../types/Roi.js';
+import {
+  commitBox,
+  denormalizeBox,
+  normalizeBox,
+} from '../../utilities/box.js';
+import { getMBRBoundaries } from '../../utilities/rotate.js';
+import type { ReactRoiState } from '../roiReducer.js';
 
 export type BoundStrategy = 'move' | 'resize';
 

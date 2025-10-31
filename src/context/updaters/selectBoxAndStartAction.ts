@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { assert } from '../../utilities/assert';
-import { changeBoxRotationCenter } from '../../utilities/box';
-import { ReactRoiState } from '../roiReducer';
+import { assert } from '../../utilities/assert.js';
+import { changeBoxRotationCenter } from '../../utilities/box.js';
+import type { ReactRoiState } from '../roiReducer.js';
 
 export function selectBoxAndStartAction(
   draft: Draft<ReactRoiState>,

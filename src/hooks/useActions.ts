@@ -1,16 +1,20 @@
 import { produce } from 'immer';
-import { KeyboardEvent as ReactKeyboardEvent, useMemo } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useMemo } from 'react';
 
-import { CommittedRoi, CommittedRoiProperties } from '..';
-import { CancelActionPayload, ZoomIntoROIOptions } from '../context/roiReducer';
-import { zoomAction } from '../context/updaters/zoom';
-import { RoiMode } from '../types/utils';
-import { Point } from '../utilities/point';
+import type {
+  CancelActionPayload,
+  ZoomIntoROIOptions,
+} from '../context/roiReducer.js';
+import { zoomAction } from '../context/updaters/zoom.js';
+import type { CommittedRoi, CommittedRoiProperties } from '../index.js';
+import type { RoiMode } from '../types/utils.js';
+import type { Point } from '../utilities/point.js';
 
-import useCallbacksRef from './useCallbacksRef';
-import { useCurrentState } from './useCurrentState';
-import { useRoiContainerRef } from './useRoiContainerRef';
-import { useRoiDispatch } from './useRoiDispatch';
+import useCallbacksRef from './useCallbacksRef.js';
+import { useCurrentState } from './useCurrentState.js';
+import { useRoiContainerRef } from './useRoiContainerRef.js';
+import { useRoiDispatch } from './useRoiDispatch.js';
 
 export type UpdateData<TData = unknown> = Partial<
   Omit<CommittedRoiProperties<TData>, 'id'>

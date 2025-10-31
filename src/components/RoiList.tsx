@@ -1,13 +1,13 @@
-import { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
+import type { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
 
-import { useRoiState } from '..';
-import { useRois } from '../hooks/useRois';
-import { Roi } from '../types/Roi';
-import { assert } from '../utilities/assert';
+import { useRois } from '../hooks/useRois.js';
+import { useRoiState } from '../index.js';
+import type { Roi } from '../types/Roi.js';
+import { assert } from '../utilities/assert.js';
 
-import { RoiBox } from './box/RoiBox';
-import { defaultGridLineOpacity, defaultHandlerColor } from './constants';
-import { LabelContainer } from './label/LabelContainer';
+import { RoiBox } from './box/RoiBox.js';
+import { defaultGridLineOpacity, defaultHandlerColor } from './constants.js';
+import { LabelContainer } from './label/LabelContainer.js';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;

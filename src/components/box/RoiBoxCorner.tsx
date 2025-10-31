@@ -1,12 +1,13 @@
-import { CSSProperties, PointerEventHandler, useCallback } from 'react';
+import type { CSSProperties, PointerEventHandler } from 'react';
+import { useCallback } from 'react';
 
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { useRoiState } from '../../hooks/useRoiState';
-import { CornerData } from '../../utilities/corners';
-import { defaultHandlerColor } from '../constants';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
+import { useRoiState } from '../../hooks/useRoiState.js';
+import type { CornerData } from '../../utilities/corners.js';
+import { defaultHandlerColor } from '../constants.js';
 
-import { HandlerSizeOptions } from './sizes';
-import { getCursor } from './utils';
+import type { HandlerSizeOptions } from './sizes.js';
+import { getCursor } from './utils.js';
 
 type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
@@ -152,10 +153,9 @@ function getSidePoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
 function getCornerPoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
   const { handlerSize } = scaledSizes;
 
-  const startOffsetX =
-    corner.xPosition === 'left' ? +handlerSize : -handlerSize;
+  const startOffsetX = corner.xPosition === 'left' ? handlerSize : -handlerSize;
 
-  const endOffsetY = corner.yPosition === 'top' ? +handlerSize : -handlerSize;
+  const endOffsetY = corner.yPosition === 'top' ? handlerSize : -handlerSize;
   return [
     [corner.cx + startOffsetX, corner.cy],
     [corner.cx, corner.cy],

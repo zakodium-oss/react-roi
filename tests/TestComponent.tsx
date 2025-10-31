@@ -1,4 +1,9 @@
-import { RoiContainer, RoiList, RoiProvider, useTargetRef } from '../src';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  useTargetRef,
+} from '../src/index.ts';
 
 export function TestComponent() {
   return (
@@ -54,7 +59,7 @@ export function TestComponent() {
 }
 
 function Target() {
-  const ref = useTargetRef<HTMLDivElement>();
+  const ref = useTargetRef();
   return (
     <div
       ref={ref}

@@ -1,5 +1,7 @@
-import { Image, readImg } from 'image-js';
-import { RefObject, useEffect, useState } from 'react';
+import type { Image } from 'image-js';
+import { readImg } from 'image-js';
+import type { RefObject } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useLoadImage(
   imgId: string,

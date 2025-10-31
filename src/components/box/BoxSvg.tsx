@@ -1,21 +1,22 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { GetStyleCallback, ReactRoiAction, RoiMode, useRoiState } from '../..';
-import { useIsKeyDown } from '../../hooks/useIsKeyDown';
-import { useLockContext } from '../../hooks/useLockContext';
-import { usePanZoom } from '../../hooks/usePanZoom';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { Roi } from '../../types/Roi';
-import { Box } from '../../utilities/box';
-import { getAllCorners } from '../../utilities/corners';
-import { getAllEdges, getAllGridLines } from '../../utilities/grid';
+import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
+import { useLockContext } from '../../hooks/useLockContext.js';
+import { usePanZoom } from '../../hooks/usePanZoom.js';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
+import type { GetStyleCallback, ReactRoiAction, RoiMode } from '../../index.js';
+import { useRoiState } from '../../index.js';
+import type { Roi } from '../../types/Roi.js';
+import type { Box } from '../../utilities/box.js';
+import { getAllCorners } from '../../utilities/corners.js';
+import { getAllEdges, getAllGridLines } from '../../utilities/grid.js';
 
-import { RoiBoxCorner } from './RoiBoxCorner';
-import { RoiBoxEdge } from './RoiBoxEdge';
-import { RoiBoxGridLine } from './RoiBoxGridLine';
-import { RoiBoxRotateHandler } from './RoiBoxRotateHandler';
-import { getHandlerSizes } from './sizes';
-import { baseRoiStyle } from './styles';
+import { RoiBoxCorner } from './RoiBoxCorner.js';
+import { RoiBoxEdge } from './RoiBoxEdge.js';
+import { RoiBoxGridLine } from './RoiBoxGridLine.js';
+import { RoiBoxRotateHandler } from './RoiBoxRotateHandler.js';
+import { getHandlerSizes } from './sizes.js';
+import { baseRoiStyle } from './styles.js';
 
 export interface BoxAnnotationProps {
   roi: Roi;

@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { assert } from '../../utilities/assert';
-import { denormalizeBox } from '../../utilities/box';
-import { CancelActionPayload, ReactRoiState } from '../roiReducer';
+import { assert } from '../../utilities/assert.js';
+import { denormalizeBox } from '../../utilities/box.js';
+import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
 
 export function cancelAction(
   draft: Draft<ReactRoiState>,

@@ -1,10 +1,15 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
-import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { CommitBoxStrategy } from '../../src/context/roiReducer';
-import { CommittedRoisButton } from '../utils/CommittedRoisButton';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
+import type { CommitBoxStrategy } from '../../src/context/roiReducer.ts';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
   title: 'Preferences',

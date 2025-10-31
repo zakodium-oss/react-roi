@@ -1,13 +1,14 @@
-import { CommittedBox } from '../types/box';
+import type { CommittedBox } from '../types/box.js';
 
-import { assert } from './assert';
+import { assert } from './assert.js';
+import type { BoxWithRotationCenter } from './box.js';
 import {
-  BoxWithRotationCenter,
   getBoxPoints,
   getRotationCenter,
   isBoxWithRotationCenter,
-} from './box';
-import { add, mulScalar, norm, Point } from './point';
+} from './box.js';
+import type { Point } from './point.js';
+import { add, mulScalar, norm } from './point.js';
 
 const ANGLE_90_POSITIVE = Math.PI / 2;
 const ANGLE_90_NEGATIVE = -Math.PI / 2;

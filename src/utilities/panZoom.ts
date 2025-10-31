@@ -1,4 +1,4 @@
-import { PanZoom } from '../index';
+import type { PanZoom } from '../index.js';
 
 // Inverse of scale * x + t0
 export function applyInverseX(panzoom: PanZoom, x: number) {

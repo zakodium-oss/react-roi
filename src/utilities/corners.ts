@@ -1,8 +1,8 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { XCornerPosition, YCornerPosition } from '../types/Roi';
+import type { XCornerPosition, YCornerPosition } from '../types/Roi.js';
 
-import { Box } from './box';
+import type { Box } from './box.js';
 
 export interface CornerData {
   xPosition: XCornerPosition;

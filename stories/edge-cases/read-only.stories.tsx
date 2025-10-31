@@ -1,9 +1,14 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
-import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { Roi } from '../../src/types/Roi';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src/index.ts';
+import type { Roi } from '../../src/types/Roi.ts';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
   title: 'Edge cases',

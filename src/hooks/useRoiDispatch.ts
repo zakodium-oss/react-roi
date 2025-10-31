@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { roiDispatchContext } from '../context/contexts';
+import { roiDispatchContext } from '../context/contexts.js';
 
 export function useRoiDispatch() {
   const roiDispatch = useContext(roiDispatchContext);

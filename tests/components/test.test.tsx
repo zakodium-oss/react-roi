@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 
-import { TestComponent } from '../TestComponent';
+import { TestComponent } from '../TestComponent.tsx';
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 test('load initial rois', async ({ mount, page }) => {
   await mount(<TestComponent />);
   const label1 = page.getByTestId('label-box-1');

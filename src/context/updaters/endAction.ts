@@ -1,9 +1,9 @@
-import { assert } from '../../utilities/assert';
-import { createCommittedRoiFromRoiIfValid } from '../../utilities/rois';
-import { EndActionPayload, ReactRoiState } from '../roiReducer';
+import { assert } from '../../utilities/assert.js';
+import { createCommittedRoiFromRoiIfValid } from '../../utilities/rois.js';
+import type { EndActionPayload, ReactRoiState } from '../roiReducer.js';
 
-import { cancelAction } from './cancelAction';
-import { updateCommittedRoiPosition } from './roi';
+import { cancelAction } from './cancelAction.js';
+import { updateCommittedRoiPosition } from './roi.js';
 
 export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
   draft.action = 'idle';
