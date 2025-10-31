@@ -7,7 +7,6 @@ export function useTargetRef<T extends HTMLElement>() {
   const targetRef = useRef<T>(null);
   const roiDispatch = useRoiDispatch();
 
-  // @ts-expect-error types are wrongly exported by library
   useResizeObserver(targetRef, (data) => {
     roiDispatch({
       type: 'SET_SIZE',

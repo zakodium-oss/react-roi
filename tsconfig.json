@@ -1,9 +1,7 @@
 {
   "extends": "@zakodium/tsconfig/jsx",
   "compilerOptions": {
-    "noUncheckedIndexedAccess": false,
-    "types": ["vite/client", "node"],
-    "skipLibCheck": true
+    "noUncheckedIndexedAccess": false
   },
   "include": [
     "./src",
