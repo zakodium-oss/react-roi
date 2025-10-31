@@ -1,38 +1,38 @@
 import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
-import {
+import type {
   CommittedRoi,
   PanZoom,
   ReactRoiAction,
   ResizeStrategy,
   RoiMode,
   Size,
-} from '..';
-import { CommittedRoiProperties } from '../types/CommittedRoi';
-import { Roi, XCornerPosition, YCornerPosition } from '../types/Roi';
-import { assert, assertUnreachable } from '../utilities/assert';
+} from '../index.js';
+import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
+import type { Roi, XCornerPosition, YCornerPosition } from '../types/Roi.js';
+import { assert, assertUnreachable } from '../utilities/assert.js';
 import {
   changeBoxRotationCenter,
   xAxisCornerToCenter,
   yAxisCornerToCenter,
-} from '../utilities/box';
-import { Point } from '../utilities/point';
+} from '../utilities/box.js';
+import type { Point } from '../utilities/point.js';
 import {
   createCommittedRoi,
   createRoi,
   createRoiFromCommittedRoi,
-} from '../utilities/rois';
+} from '../utilities/rois.js';
 
-import { cancelAction } from './updaters/cancelAction';
-import { endAction } from './updaters/endAction';
-import { updateInitialPanZoom } from './updaters/initialPanZoom';
-import { pointerMove } from './updaters/pointerMove';
-import { sanitizeRois } from './updaters/sanitizeRois';
-import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction';
-import { startDraw } from './updaters/startDraw';
-import { startPan } from './updaters/startPan';
-import { resetZoomAction, zoomAction, zoomIntoROI } from './updaters/zoom';
+import { cancelAction } from './updaters/cancelAction.js';
+import { endAction } from './updaters/endAction.js';
+import { updateInitialPanZoom } from './updaters/initialPanZoom.js';
+import { pointerMove } from './updaters/pointerMove.js';
+import { sanitizeRois } from './updaters/sanitizeRois.js';
+import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction.js';
+import { startDraw } from './updaters/startDraw.js';
+import { startPan } from './updaters/startPan.js';
+import { resetZoomAction, zoomAction, zoomIntoROI } from './updaters/zoom.js';
 
 interface ZoomDomain {
   min: number;

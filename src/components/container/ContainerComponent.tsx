@@ -1,44 +1,29 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
-import {
-  CSSProperties,
-  JSX,
-  MutableRefObject,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import type { CSSProperties, JSX, MutableRefObject, ReactNode } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import {
-  Actions,
-  ReactRoiAction,
-  RoiMode,
-  useActions,
-  useRoiState,
-} from '../..';
-import {
-  ActionCallbacks,
-  LockContext,
-  lockContext,
-} from '../../context/contexts';
-import {
+import type { ActionCallbacks, LockContext } from '../../context/contexts.js';
+import { lockContext } from '../../context/contexts.js';
+import type {
   EndActionPayload,
   PointerMovePayload,
   ReactRoiState,
-} from '../../context/roiReducer';
-import { endAction } from '../../context/updaters/endAction';
-import { pointerMove } from '../../context/updaters/pointerMove';
-import { resetZoomAction, zoomAction } from '../../context/updaters/zoom';
-import useCallbacksRef from '../../hooks/useCallbacksRef';
-import { useCurrentState } from '../../hooks/useCurrentState';
-import { useIsKeyDown } from '../../hooks/useIsKeyDown';
-import { usePanZoomTransform } from '../../hooks/usePanZoom';
-import { useRoiContainerRef } from '../../hooks/useRoiContainerRef';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { assert, assertUnreachable } from '../../utilities/assert';
-import { roiHasChanged } from '../../utilities/rois';
-import { throttle } from '../../utilities/throttle';
+} from '../../context/roiReducer.js';
+import { endAction } from '../../context/updaters/endAction.js';
+import { pointerMove } from '../../context/updaters/pointerMove.js';
+import { resetZoomAction, zoomAction } from '../../context/updaters/zoom.js';
+import useCallbacksRef from '../../hooks/useCallbacksRef.js';
+import { useCurrentState } from '../../hooks/useCurrentState.js';
+import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
+import { usePanZoomTransform } from '../../hooks/usePanZoom.js';
+import { useRoiContainerRef } from '../../hooks/useRoiContainerRef.js';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
+import type { Actions, ReactRoiAction, RoiMode } from '../../index.js';
+import { useActions, useRoiState } from '../../index.js';
+import { assert, assertUnreachable } from '../../utilities/assert.js';
+import { roiHasChanged } from '../../utilities/rois.js';
+import { throttle } from '../../utilities/throttle.js';
 
 interface ContainerProps<TData = unknown> {
   target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
@@ -88,6 +73,7 @@ export function ContainerComponent<TData = unknown>(
     getNewRoiData.current = props.getNewRoiData;
   }, [props.getNewRoiData]);
 
+  // @ts-expect-error types are wrongly exported by library
   useResizeObserver(containerRef, (entry) => {
     const { width, height } = entry.contentRect;
     if (width === 0 || height === 0) return;

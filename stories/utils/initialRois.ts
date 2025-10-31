@@ -1,4 +1,4 @@
-import { CommittedRoiProperties } from '../../src';
+import type { CommittedRoiProperties } from '../../src/index.js';
 
 export function getInitialRois<T>(
   width: number,

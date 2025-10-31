@@ -1,16 +1,16 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
+import type { ResizeStrategy } from '../../src/index.ts';
 import {
-  ResizeStrategy,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
-} from '../../src';
-import { CommittedRoisButton } from '../utils/CommittedRoisButton';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
-import { useResetOnChange } from '../utils/useResetOnChange';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
+import { useResetOnChange } from '../utils/useResetOnChange.ts';
 
 export default {
   title: 'Preferences',

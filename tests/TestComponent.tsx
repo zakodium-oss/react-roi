@@ -1,4 +1,9 @@
-import { RoiContainer, RoiList, RoiProvider, useTargetRef } from '../src';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  useTargetRef,
+} from '../src/index.ts';
 
 export function TestComponent() {
   return (

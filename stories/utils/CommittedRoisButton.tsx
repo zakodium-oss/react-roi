@@ -1,9 +1,9 @@
 import { writeCanvas } from 'image-js';
 import { useEffect, useReducer, useRef } from 'react';
 
-import { useCommittedRois } from '../../src';
+import { useCommittedRois } from '../../src/index.ts';
 
-import { useLoadImage } from './useLoadImage';
+import { useLoadImage } from './useLoadImage.ts';
 
 export function CommittedRoisButton(props: {
   showImage?: boolean;

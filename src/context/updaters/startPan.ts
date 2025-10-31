@@ -1,6 +1,6 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { ReactRoiState } from '../roiReducer';
+import type { ReactRoiState } from '../roiReducer.js';
 
 export function startPan(draft: Draft<ReactRoiState>) {
   if (draft.action !== 'idle') {

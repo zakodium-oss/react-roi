@@ -1,12 +1,13 @@
-import { CSSProperties, PointerEventHandler, useCallback } from 'react';
+import type { CSSProperties, PointerEventHandler } from 'react';
+import { useCallback } from 'react';
 
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { useRoiState } from '../../hooks/useRoiState';
-import { EdgeData } from '../../utilities/grid';
-import { defaultGridLineOpacity } from '../constants';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
+import { useRoiState } from '../../hooks/useRoiState.js';
+import type { EdgeData } from '../../utilities/grid.js';
+import { defaultGridLineOpacity } from '../constants.js';
 
-import { HandlerSizeOptions } from './sizes';
-import { getCursor } from './utils';
+import type { HandlerSizeOptions } from './sizes.js';
+import { getCursor } from './utils.js';
 
 interface RoiBoxEdgeProps {
   edge: EdgeData;

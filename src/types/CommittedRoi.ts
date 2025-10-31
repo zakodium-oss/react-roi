@@ -1,8 +1,8 @@
-import { getRectanglePoints } from '../utilities/box';
-import { Point } from '../utilities/point';
+import { getRectanglePoints } from '../utilities/box.js';
+import type { Point } from '../utilities/point.js';
 
-import { Roi } from './Roi';
-import { CommittedBox } from './box';
+import type { Roi } from './Roi.js';
+import type { CommittedBox } from './box.js';
 
 export type CommittedRoiProperties<TData = unknown> = Omit<
   Roi<TData>,

@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { useState } from 'react';
 
 import {
@@ -7,10 +7,10 @@ import {
   RoiProvider,
   TargetImage,
   useRoiState,
-} from '../../src';
-import { Roi } from '../../src/types/Roi';
-import { Layout } from '../utils/Layout';
-import { getInitialRois } from '../utils/initialRois';
+} from '../../src/index.ts';
+import type { Roi } from '../../src/types/Roi.ts';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
   title: 'Edge cases',

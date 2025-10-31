@@ -1,7 +1,7 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { Box } from './box';
-import { getCornerCursor } from './corners';
+import type { Box } from './box.js';
+import { getCornerCursor } from './corners.js';
 
 type EdgePosition = 'top' | 'bottom' | 'left' | 'right';
 

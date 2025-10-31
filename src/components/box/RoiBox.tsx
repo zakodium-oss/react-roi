@@ -1,19 +1,20 @@
-import { JSX, memo, useEffect } from 'react';
+import type { JSX } from 'react';
+import { memo, useEffect } from 'react';
 
-import {
+import { usePanZoom } from '../../hooks/usePanZoom.js';
+import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
+import type {
   GetOverlayOpacity,
   GetReadOnlyCallback,
   GetStyleCallback,
   RenderLabelCallback,
-} from '../..';
-import { usePanZoom } from '../../hooks/usePanZoom';
-import { useRoiDispatch } from '../../hooks/useRoiDispatch';
-import { Roi } from '../../types/Roi';
-import { applyTransformToBox } from '../../utilities/box';
-import { computeTotalPanZoom } from '../../utilities/panZoom';
-import { LabelBox } from '../label/LabelBox';
+} from '../../index.js';
+import type { Roi } from '../../types/Roi.js';
+import { applyTransformToBox } from '../../utilities/box.js';
+import { computeTotalPanZoom } from '../../utilities/panZoom.js';
+import { LabelBox } from '../label/LabelBox.js';
 
-import { BoxSvg } from './BoxSvg';
+import { BoxSvg } from './BoxSvg.js';
 
 interface RoiBoxProps {
   roi: Roi;

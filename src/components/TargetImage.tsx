@@ -1,7 +1,7 @@
-import { HTMLProps, MutableRefObject } from 'react';
+import type { HTMLProps, MutableRefObject } from 'react';
 
-import { useTargetRef } from '..';
-import { getTargetImageStyle } from '../libHelpers/image';
+import { useTargetRef } from '../index.js';
+import { getTargetImageStyle } from '../libHelpers/image.js';
 
 interface TargetImageProps extends Omit<HTMLProps<HTMLImageElement>, 'src'> {
   src: string;

@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Roi } from '../../types/Roi';
-import { PanZoom } from '../../types/utils';
-import { applyTransformToBox } from '../../utilities/box';
-import { getMBRBoundaries } from '../../utilities/rotate';
+import type { Roi } from '../../types/Roi.js';
+import type { PanZoom } from '../../types/utils.js';
+import { applyTransformToBox } from '../../utilities/box.js';
+import { getMBRBoundaries } from '../../utilities/rotate.js';
 
-import { LabelContainer } from './LabelContainer';
+import { LabelContainer } from './LabelContainer.js';
 
 export function LabelBox(props: {
   roi: Roi;

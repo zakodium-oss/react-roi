@@ -1,12 +1,16 @@
-import { CommitBoxStrategy } from '../context/roiReducer';
-import { RoiAction, XCornerPosition, YCornerPosition } from '../types/Roi';
-import { CommittedBox } from '../types/box';
-import { PanZoom } from '../types/utils';
+import type { CommitBoxStrategy } from '../context/roiReducer.js';
+import type {
+  RoiAction,
+  XCornerPosition,
+  YCornerPosition,
+} from '../types/Roi.js';
+import type { CommittedBox } from '../types/box.js';
+import type { PanZoom } from '../types/utils.js';
 
-import { assertUnreachable } from './assert';
-import { applyTransformX, applyTransformY } from './panZoom';
-import { Point } from './point';
-import { rotatePoint, rotatePointCommittedBox } from './rotate';
+import { assertUnreachable } from './assert.js';
+import { applyTransformX, applyTransformY } from './panZoom.js';
+import type { Point } from './point.js';
+import { rotatePoint, rotatePointCommittedBox } from './rotate.js';
 
 export interface Box {
   /**
@@ -248,6 +252,9 @@ function commitRound(roi: CommittedBox, action: RoiAction): CommittedBox {
         height,
         angle,
       };
+    }
+    case 'idle': {
+      throw new Error('Idle action type should not be reachable here');
     }
     default: {
       // Idle or other action types are unreachable

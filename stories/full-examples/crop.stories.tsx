@@ -1,17 +1,17 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { writeCanvas } from 'image-js';
 import { useEffect, useRef, useState } from 'react';
 
+import type { CommittedRoiProperties } from '../../src/index.ts';
 import {
-  CommittedRoiProperties,
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
   useCommittedRois,
-} from '../../src';
-import { Layout } from '../utils/Layout';
-import { useLoadImage } from '../utils/useLoadImage';
+} from '../../src/index.ts';
+import { Layout } from '../utils/Layout.tsx';
+import { useLoadImage } from '../utils/useLoadImage.ts';
 
 export default {
   title: 'Full examples',

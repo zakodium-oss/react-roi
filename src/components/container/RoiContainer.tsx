@@ -1,10 +1,10 @@
-import { CSSProperties, JSX, ReactNode } from 'react';
+import type { CSSProperties, JSX, ReactNode } from 'react';
 
-import { Actions } from '../../hooks/useActions';
-import { usePanZoom } from '../../hooks/usePanZoom';
-import { CommittedRoiProperties } from '../../types/CommittedRoi';
+import type { Actions } from '../../hooks/useActions.js';
+import { usePanZoom } from '../../hooks/usePanZoom.js';
+import type { CommittedRoiProperties } from '../../types/CommittedRoi.js';
 
-import { ContainerComponent } from './ContainerComponent';
+import { ContainerComponent } from './ContainerComponent.js';
 
 export interface RoiContainerProps<TData = unknown> {
   target: JSX.Element;

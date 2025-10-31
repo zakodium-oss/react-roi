@@ -1,8 +1,13 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 import { useState } from 'react';
 
-import { RoiContainer, RoiList, RoiProvider, TargetImage } from '../../src';
-import { Layout } from '../utils/Layout';
+import {
+  RoiContainer,
+  RoiList,
+  RoiProvider,
+  TargetImage,
+} from '../../src/index.ts';
+import { Layout } from '../utils/Layout.tsx';
 
 export default {
   title: 'ROI custom styles',

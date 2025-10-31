@@ -1,9 +1,9 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { GridLineData } from '../../utilities/grid';
-import { defaultGridLineOpacity } from '../constants';
+import type { GridLineData } from '../../utilities/grid.js';
+import { defaultGridLineOpacity } from '../constants.js';
 
-import { HandlerSizeOptions } from './sizes';
+import type { HandlerSizeOptions } from './sizes.js';
 
 export interface RoiBoxGridLineProps {
   line: GridLineData;
