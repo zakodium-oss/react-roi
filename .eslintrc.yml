@@ -1,8 +1,0 @@
-root: true
-extends:
-  - 'zakodium/react'
-  - 'zakodium/ts'
-overrides:
-  - files: ['stories/**/*.tsx']
-    rules:
-      react/no-unstable-nested-components: 0
