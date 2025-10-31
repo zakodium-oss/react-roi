@@ -72,20 +72,8 @@ export interface RoiProviderInitialConfig<TData> {
 interface RoiProviderProps<TData> {
   children: ReactNode;
   initialConfig?: RoiProviderInitialConfig<TData>;
-  /**
-   * Called right after the ROI has finished being drawn, moved, resized or rotated, and before it is committed.
-   * @param updatedRoi The ROI that was created or updated. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
-   */
   onCommit?: OnCommitCallback<TData>;
 
-  /**
-   * Called everytime the ROI has been updated (including newly drawn ROIs), and before it is committed.
-   * @param updatedRoi The ROI that is being updated or created. The position and size are already normalized and bounded to the target size.
-   * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
-   * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
-   */
   onChange?: OnChangeCallback<TData>;
 
   /**
