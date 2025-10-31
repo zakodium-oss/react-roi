@@ -1,9 +1,9 @@
 import { createContext, Dispatch, RefObject } from 'react';
 
 import {
-  AfterDrawCallback,
-  AfterUpdateCallback,
   CommittedRoiProperties,
+  OnCommitCallback,
+  OnChangeCallback,
   PanZoom,
   RoiState,
   Size,
@@ -69,11 +69,9 @@ export const roiStateRefContext =
   createContext<RefObject<ReactRoiState> | null>(null);
 
 export interface ActionCallbacks<TData = unknown> {
-  onAfterDraw?: AfterDrawCallback<TData>;
-  onAfterMove?: AfterUpdateCallback<TData>;
-  onAfterResize?: AfterUpdateCallback<TData>;
-  onAfterRotate?: AfterUpdateCallback<TData>;
-  onAfterZoomChange?: (zoom: PanZoom) => void;
+  onAfterChange?: OnCommitCallback<TData>;
+  onChange?: OnChangeCallback<TData>;
+  onZoom?: (zoom: PanZoom) => void;
 }
 export const callbacksRefContext = createContext<RefObject<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

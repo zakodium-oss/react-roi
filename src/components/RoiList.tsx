@@ -7,6 +7,7 @@ import { assert } from '../utilities/assert';
 
 import { RoiBox } from './box/RoiBox';
 import { defaultGridLineOpacity, defaultHandlerColor } from './constants';
+import { LabelContainer } from './label/LabelContainer';
 
 export interface RoiAdditionalCallbackState {
   isSelected: boolean;
@@ -105,20 +106,5 @@ const defaultGetStyle: GetStyleCallback = (roi, state) => {
 };
 
 const defaultRenderLabel: RenderLabelCallback = (roi) => {
-  return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        placeContent: 'center',
-        alignItems: 'center',
-        color: 'white',
-        overflow: 'hidden',
-        fontSize: 16,
-      }}
-    >
-      {roi.label}
-    </div>
-  );
+  return <LabelContainer>{roi.label}</LabelContainer>;
 };

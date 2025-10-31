@@ -1,6 +1,7 @@
 export * from './components/container/RoiContainer';
 export * from './components/RoiList';
 export * from './components/TargetImage';
+export * from './components/label/LabelContainer';
 
 export * from './context/RoiProvider';
 

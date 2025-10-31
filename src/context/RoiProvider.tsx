@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import {
-  AfterDrawCallback,
-  AfterUpdateCallback,
+  OnCommitCallback,
+  OnChangeCallback,
   PanZoom,
   ResizeStrategy,
   RoiMode,
@@ -72,29 +72,13 @@ export interface RoiProviderInitialConfig<TData> {
 interface RoiProviderProps<TData> {
   children: ReactNode;
   initialConfig?: RoiProviderInitialConfig<TData>;
+  onCommit?: OnCommitCallback<TData>;
+
+  onChange?: OnChangeCallback<TData>;
+
   /**
-   * Called right after the ROI has finished being drawn and has been created.
-   * @param roi The ROI that was just drawn. The position and size are already normalized and bounded to the target size.
-   */
-  onAfterDraw?: AfterDrawCallback<TData>;
-  /**
-   * Called right after the ROI has finished moving.
-   * @param roi The ROI that was just moved. The position and size are already normalized and bounded to the target size.
-   */
-  onAfterMove?: AfterUpdateCallback<TData>;
-  /**
-   * Called right after the ROI has finished moving.
-   * @param roi The ROI that was just rotated. The position and size are already normalized and bounded to the target size.
-   */
-  onAfterRotate?: AfterUpdateCallback<TData>;
-  /**
-   * Called right before the ROI has finished resizing.
-   * @param roi The ROI that was just resized. The position and size are already normalized and bounded to the target size.
-   */
-  onAfterResize?: AfterUpdateCallback<TData>;
-  /**
-   * Called when after zoom or pan actions
-   * @param zoom
+   * Called after zoom or pan actions
+   * @param zoom The new pan and zoom state.
    */
   onAfterZoomChange?: (zoom: PanZoom) => void;
 }
@@ -138,10 +122,8 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     children,
     initialConfig = {},
     onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
+    onCommit,
+    onChange,
   } = props;
   const {
     rois: initialRois = [],
@@ -173,11 +155,9 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const stateRef = useRef(state);
   const containerRef = useRef<HTMLDivElement>(null);
   const callbacksRef = useRef<ActionCallbacks<TData>>({
-    onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
+    onZoom: onAfterZoomChange,
+    onAfterChange: onCommit,
+    onChange,
   });
 
   useEffect(() => {
@@ -186,19 +166,11 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
 
   useEffect(() => {
     callbacksRef.current = {
-      onAfterZoomChange,
-      onAfterDraw,
-      onAfterResize,
-      onAfterMove,
-      onAfterRotate,
+      onZoom: onAfterZoomChange,
+      onAfterChange: onCommit,
+      onChange,
     };
-  }, [
-    onAfterZoomChange,
-    onAfterDraw,
-    onAfterResize,
-    onAfterMove,
-    onAfterRotate,
-  ]);
+  }, [onAfterZoomChange, onCommit, onChange]);
 
   const {
     rois,

@@ -1,10 +1,9 @@
-import { JSX, memo, ReactNode, useEffect } from 'react';
+import { JSX, memo, useEffect } from 'react';
 
 import {
   GetOverlayOpacity,
   GetReadOnlyCallback,
   GetStyleCallback,
-  PanZoom,
   RenderLabelCallback,
 } from '../..';
 import { usePanZoom } from '../../hooks/usePanZoom';
@@ -12,7 +11,7 @@ import { useRoiDispatch } from '../../hooks/useRoiDispatch';
 import { Roi } from '../../types/Roi';
 import { applyTransformToBox } from '../../utilities/box';
 import { computeTotalPanZoom } from '../../utilities/panZoom';
-import { getMBRBoundaries } from '../../utilities/rotate';
+import { LabelBox } from '../label/LabelBox';
 
 import { BoxSvg } from './BoxSvg';
 
@@ -91,36 +90,6 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
       </div>
       <LabelBox roi={roi} label={label} panZoom={totalPanzoom} />
     </>
-  );
-}
-
-function LabelBox(props: { roi: Roi; label: ReactNode; panZoom: PanZoom }) {
-  const { roi, label, panZoom } = props;
-  if (!label) return null;
-  const mbr = getMBRBoundaries(roi.box);
-  const box = applyTransformToBox(panZoom, {
-    x: mbr.minX,
-    y: mbr.minY,
-    width: mbr.maxX - mbr.minX,
-    height: mbr.maxY - mbr.minY,
-  });
-  return (
-    <div
-      data-testid={`label-${roi.id}`}
-      style={{
-        position: 'absolute',
-        left: box.x,
-        top: box.y,
-        width: box.width,
-        height: box.height,
-        pointerEvents: 'none',
-        whiteSpace: 'pre',
-        userSelect: 'none',
-        WebkitUserSelect: 'none',
-      }}
-    >
-      {label}
-    </div>
   );
 }
 

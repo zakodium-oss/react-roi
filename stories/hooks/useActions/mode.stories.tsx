@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 
 import {
   RoiContainer,
@@ -20,10 +20,6 @@ export function ChangeMode() {
   function ChangeModeButton() {
     const { setMode } = useActions();
 
-    useEffect(() => {
-      setMode('hybrid');
-    }, [setMode]);
-
     function onChange(event: ChangeEvent<HTMLSelectElement>) {
       setMode(event.target.value as RoiMode);
     }
@@ -38,7 +34,7 @@ export function ChangeMode() {
   }
 
   return (
-    <RoiProvider>
+    <RoiProvider initialConfig={{}}>
       <Layout>
         <ChangeModeButton />
         <RoiContainer

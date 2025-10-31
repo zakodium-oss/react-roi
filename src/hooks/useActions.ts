@@ -62,11 +62,11 @@ export function useActions<TData = unknown>() {
           payload: zoomPayload,
         });
 
-        if (stateRef.current && callbacksRef.current?.onAfterZoomChange) {
+        if (stateRef.current && callbacksRef.current?.onZoom) {
           const newState = produce(stateRef.current, (draft) =>
             zoomAction(draft, zoomPayload),
           );
-          callbacksRef.current.onAfterZoomChange(newState.panZoom);
+          callbacksRef.current.onZoom(newState.panZoom);
         }
       },
       createRoi: (roi: CommittedRoiProperties<TData>) => {
@@ -93,4 +93,4 @@ export function useActions<TData = unknown>() {
   }, [roiDispatch, containerRef, stateRef, callbacksRef]);
 }
 
-export type Actions = ReturnType<typeof useActions>;
+export type Actions<TData = unknown> = ReturnType<typeof useActions<TData>>;
