@@ -338,12 +338,12 @@ function callPointerMoveActionHooks(
     );
 
     if (roiHasChanged(previousRoi, newRoi)) {
-      callbacks.onChange(
-        newRoi ?? null,
+      callbacks.onChange({
+        roi: newRoi ?? null,
         actions,
-        selectedRoi.action.type,
-        state.committedRois,
-      );
+        actionType: selectedRoi.action.type,
+        roisBeforeCommit: state.committedRois,
+      });
     }
   }
 }
@@ -382,12 +382,12 @@ function callPointerUpActionHooks(
 
           if (newRoi) {
             if (roiHasChanged(previousRoi, newRoi)) {
-              callbacks.onAfterChange(
-                newRoi,
+              callbacks.onAfterChange({
+                roi: newRoi,
                 actions,
-                state.action,
-                state.committedRois,
-              );
+                actionType: state.action,
+                roisBeforeCommit: state.committedRois,
+              });
             }
           }
         }

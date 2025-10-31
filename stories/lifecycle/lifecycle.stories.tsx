@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import {
   CommittedRoiProperties,
   LabelContainer,
-  OnAfterChangeCallback,
+  OnCommitCallback,
   OnChangeCallback,
   RoiContainer,
   RoiList,
@@ -31,9 +31,9 @@ export function ActionHooks() {
   const [count, setCount] = useState(0);
   return (
     <RoiProvider<CountData>
-      onAfterChange={(roi, actions, action) => {
+      onCommit={({ roi, actions, actionType }) => {
         assert(roi.data);
-        switch (action) {
+        switch (actionType) {
           case 'drawing': {
             setCount(count + 1);
             break;
@@ -139,14 +139,10 @@ const syncInitialRois: Array<CommittedRoiProperties<SideData>> = [
 ];
 
 export function SyncRoisAfterUpdate() {
-  const updateRois: OnAfterChangeCallback<SideData> = (
-    roi,
-    actions,
-    action,
-    roisBeforeUpdate,
-  ) => {
+  const updateRois: OnCommitCallback<SideData> = (param) => {
+    const { roi, actions, actionType, roisBeforeCommit } = param;
     assert(roi.data);
-    if (action === 'drawing') {
+    if (actionType === 'drawing') {
       actions.createRoi({
         id: v4(),
         x: roi.x + roi.width,
@@ -160,7 +156,7 @@ export function SyncRoisAfterUpdate() {
         },
       });
     } else if (roi.data.side === 'LEFT') {
-      const rightRoi = roisBeforeUpdate.find(
+      const rightRoi = roisBeforeCommit.find(
         (r) => r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
       );
       assert(rightRoi);
@@ -172,7 +168,7 @@ export function SyncRoisAfterUpdate() {
         angle: roi.angle,
       });
     } else {
-      const leftRoi = roisBeforeUpdate.find(
+      const leftRoi = roisBeforeCommit.find(
         (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
       );
       assert(leftRoi);
@@ -188,7 +184,7 @@ export function SyncRoisAfterUpdate() {
   return (
     <RoiProvider<SideData>
       initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
-      onAfterChange={updateRois}
+      onCommit={updateRois}
     >
       <Layout>
         <RoiContainer<SideData>
@@ -215,18 +211,14 @@ export function SyncRoisAfterUpdate() {
 }
 
 export function SyncRoisDuringUpdate() {
-  const updateRois: OnChangeCallback<SideData> = (
-    roi,
-    actions,
-    actionType,
-    roisBeforeUpdate,
-  ) => {
+  const updateRois: OnChangeCallback<SideData> = (param) => {
+    const { roi, actions, actionType, roisBeforeCommit } = param;
     if (!roi || actionType === 'drawing') {
       return;
     }
     assert(roi.data);
     if (roi.data.side === 'LEFT') {
-      const rightRoi = roisBeforeUpdate.find(
+      const rightRoi = roisBeforeCommit.find(
         (r) => r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
       );
       assert(rightRoi);
@@ -238,7 +230,7 @@ export function SyncRoisDuringUpdate() {
         angle: roi.angle,
       });
     } else {
-      const leftRoi = roisBeforeUpdate.find(
+      const leftRoi = roisBeforeCommit.find(
         (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
       );
       assert(leftRoi);
@@ -254,7 +246,8 @@ export function SyncRoisDuringUpdate() {
   return (
     <RoiProvider<SideData>
       initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
-      onAfterChange={(roi, actions, actionType, roisBeforeUpdate) => {
+      onCommit={(param) => {
+        const { roi, actions, actionType } = param;
         assert(roi.data);
         if (actionType === 'drawing') {
           actions.createRoi({
@@ -270,7 +263,7 @@ export function SyncRoisDuringUpdate() {
             },
           });
         } else {
-          updateRois(roi, actions, actionType, roisBeforeUpdate);
+          updateRois(param);
         }
       }}
       onChange={updateRois}

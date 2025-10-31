@@ -29,54 +29,58 @@ export interface RoiContainerProps<TData = unknown> {
   zoomWithoutModifierKey?: boolean;
 }
 
-/**
- * Hook which gets called after a user has updated (move, resize, rotate) or created an  ROI, before it is committed.
- * This hook is not called if an existing ROI is created or updated through the actions API.
- */
-export type OnAfterChangeCallback<TData = unknown> = (
-  /**
-   * The new ROI which just got updated / created through user interaction, before it is committed.
-   */
-  updatedRoi: CommittedRoiProperties<TData>,
+interface CallbackParameterBase<TData = unknown> {
   /**
    * The actions API to manipulate the state of react-roi, same as the one
    * returned by the `useActions` hook.
    */
-  actions: Actions<TData>,
+  actions: Actions<TData>;
   /**
-   * The type of action leading to the onChange call.
+   * The type of action leading to the callback being called.
+   * - `drawing`: A new ROI is being drawn.
+   * - `moving`: An existing ROI is being moved.
+   * - `resizing`: An existing ROI is being resized.
+   * - `rotating`: An existing ROI is being rotated.
    */
-  action: 'drawing' | 'moving' | 'resizing' | 'rotating',
+  actionType: 'drawing' | 'moving' | 'resizing' | 'rotating';
   /**
    * All committed ROIs, before the update / creation is applied.
    */
-  roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,
-) => void;
+  roisBeforeCommit: Array<CommittedRoiProperties<TData>>;
+}
 
-/**
- * Hook which gets called after a user has updated (move, resize, rotate) or created an  ROI, before it is committed.
- * This hook is not called if an existing ROI is created or updated through the actions API.
- */
-export type OnChangeCallback<TData = unknown> = (
+export interface OnCommitCallbackParameter<TData = unknown>
+  extends CallbackParameterBase<TData> {
+  /**
+   * The ROI which just got updated / created through user interaction, before it is committed.
+   */
+  roi: CommittedRoiProperties<TData>;
+}
+
+export interface OnChangeCallbackParameter<TData = unknown>
+  extends CallbackParameterBase<TData> {
   /**
    * The new ROI which just got updated / created through user interaction
    * before it is committed. It can be null when drawing a new ROI which is
    * smaller than the minimum size, which results in the ROI not being committed.
    */
-  updatedRoi: CommittedRoiProperties<TData> | null,
-  /**
-   * The actions API to manipulate the state of react-roi, same as the one
-   * returned by the `useActions` hook.
-   */
-  actions: Actions<TData>,
-  /**
-   * The type of action leading to the onChange call.
-   */
-  action: 'drawing' | 'moving' | 'resizing' | 'rotating',
-  /**
-   * All committed ROIs, before the update / creation is applied.
-   */
-  roisBeforeUpdate: Array<CommittedRoiProperties<TData>>,
+  roi: CommittedRoiProperties<TData> | null;
+}
+
+/**
+ * Hook which gets called just before a user edition (draw new, move, resize, rotate) is committed.
+ * This hook is not called if an existing ROI is created or updated through the actions API.
+ */
+export type OnCommitCallback<TData = unknown> = (
+  param: OnCommitCallbackParameter<TData>,
+) => void;
+
+/**
+ * Hook which gets called every time an ROI is changed by user interaction (draw new, move, resize, rotate).
+ * This hook is not called if an existing ROI is created or updated through the actions API.
+ */
+export type OnChangeCallback<TData = unknown> = (
+  param: OnChangeCallbackParameter<TData>,
 ) => void;
 
 export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {

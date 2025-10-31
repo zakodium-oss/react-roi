@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import {
-  OnAfterChangeCallback,
+  OnCommitCallback,
   OnChangeCallback,
   PanZoom,
   ResizeStrategy,
@@ -78,7 +78,7 @@ interface RoiProviderProps<TData> {
    * @param actions The actions API to manipulate the state of react-roi, same as the one returned by the `useActions` hook.
    * @param roisBeforeDraw All committed ROIs, which do not include changes of the current user interaction.
    */
-  onAfterChange?: OnAfterChangeCallback<TData>;
+  onCommit?: OnCommitCallback<TData>;
 
   /**
    * Called everytime the ROI has been updated (including newly drawn ROIs), and before it is committed.
@@ -134,7 +134,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     children,
     initialConfig = {},
     onAfterZoomChange,
-    onAfterChange,
+    onCommit,
     onChange,
   } = props;
   const {
@@ -168,7 +168,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const callbacksRef = useRef<ActionCallbacks<TData>>({
     onZoom: onAfterZoomChange,
-    onAfterChange,
+    onAfterChange: onCommit,
     onChange,
   });
 
@@ -179,10 +179,10 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   useEffect(() => {
     callbacksRef.current = {
       onZoom: onAfterZoomChange,
-      onAfterChange,
+      onAfterChange: onCommit,
       onChange,
     };
-  }, [onAfterZoomChange, onAfterChange, onChange]);
+  }, [onAfterZoomChange, onCommit, onChange]);
 
   const {
     rois,
