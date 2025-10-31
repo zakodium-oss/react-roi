@@ -1,7 +1,6 @@
 import { produce } from 'immer';
 import type { CSSProperties, JSX, MutableRefObject, ReactNode } from 'react';
-import { useEffect, useMemo, useRef } from 'react';
-import useResizeObserver from 'use-resize-observer';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import type { ActionCallbacks, LockContext } from '../../context/contexts.js';
 import { lockContext } from '../../context/contexts.js';
@@ -17,6 +16,7 @@ import useCallbacksRef from '../../hooks/useCallbacksRef.js';
 import { useCurrentState } from '../../hooks/useCurrentState.js';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
 import { usePanZoomTransform } from '../../hooks/usePanZoom.js';
+import { useResizeObserver } from '../../hooks/useResizeObserver.ts';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import type { Actions, ReactRoiAction, RoiMode } from '../../index.js';
 import { useActions, useRoiState } from '../../index.js';
@@ -62,6 +62,7 @@ export function ContainerComponent<TData = unknown>(
 
   // Refs
   // const containerRef = useRoiContainerRef();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const callbacksRef = useCallbacksRef();
   const stateRef = useCurrentState();
 
@@ -72,30 +73,36 @@ export function ContainerComponent<TData = unknown>(
     getNewRoiData.current = props.getNewRoiData;
   }, [props.getNewRoiData]);
 
-  const { ref: containerRef } = useResizeObserver<HTMLDivElement>({
-    onResize: (size) => {
-      const { width, height } = size;
-      if (width === 0 || height === 0) return;
-      roiDispatch({
-        type: 'SET_CONTAINER_SIZE',
-        payload: {
-          width,
-          height,
-        },
-      });
-    },
+  const [resizeCallback, containerRect] = useResizeObserver((size) => {
+    const { width, height } = size;
+    if (width === 0 || height === 0) return;
+    roiDispatch({
+      type: 'SET_CONTAINER_SIZE',
+      payload: {
+        width,
+        height,
+      },
+    });
   });
+
+  const containerCallbackRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+      resizeCallback(node);
+    },
+    [resizeCallback],
+  );
 
   useEffect(() => {
     function onPointerMove(event: PointerEvent) {
-      if (!stateRef.current || !containerRef?.current) return;
+      if (!stateRef.current || !containerRect) return;
       const endPayload = {
         noUnselection: noUnselection || false,
         minNewRoiSize,
       };
       const movePayload = {
         event,
-        containerBoundingRect: containerRef.current.getBoundingClientRect(),
+        containerBoundingRect: containerRect,
       };
       roiDispatch({
         type: 'POINTER_MOVE',
@@ -129,12 +136,12 @@ export function ContainerComponent<TData = unknown>(
     }
 
     const onZoom = throttle((event: WheelEvent) => {
-      if (containerRef?.current) {
+      if (containerRect) {
         const zoomPayload = {
           scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
           clientX: event.clientX,
           clientY: event.clientY,
-          containerBoundingRect: containerRef.current.getBoundingClientRect(),
+          containerBoundingRect: containerRect,
         };
         roiDispatch({
           type: 'ZOOM',
@@ -177,6 +184,7 @@ export function ContainerComponent<TData = unknown>(
     stateRef,
     actions,
     zoomWithoutModifierKey,
+    containerRect,
   ]);
 
   const lockContextValue = useMemo<LockContext>(() => {
@@ -187,7 +195,7 @@ export function ContainerComponent<TData = unknown>(
     <lockContext.Provider value={lockContextValue}>
       <div
         id={id}
-        ref={containerRef}
+        ref={containerCallbackRef}
         style={{
           ...style,
           position: 'relative',

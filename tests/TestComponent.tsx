@@ -59,7 +59,7 @@ export function TestComponent() {
 }
 
 function Target() {
-  const ref = useTargetRef<HTMLDivElement>();
+  const ref = useTargetRef();
   return (
     <div
       ref={ref}
