@@ -26,6 +26,9 @@
     "tsc": "npm run clean && npm run tsc-esm",
     "tsc-esm": "tsc --project tsconfig.esm.json"
   },
+  "peerDependencies": {
+    "react": ">=18"
+  },
   "dependencies": {
     "immer": "^10.2.0"
   },
