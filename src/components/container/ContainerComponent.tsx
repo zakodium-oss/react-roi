@@ -73,7 +73,8 @@ export function ContainerComponent<TData = unknown>(
     getNewRoiData.current = props.getNewRoiData;
   }, [props.getNewRoiData]);
 
-  // @ts-expect-error types are wrongly exported by library
+  // TODO: https://github.com/zakodium-oss/react-roi/issues/164
+  // @ts-expect-error This can be ignored for now
   useResizeObserver(containerRef, (entry) => {
     const { width, height } = entry.contentRect;
     if (width === 0 || height === 0) return;
