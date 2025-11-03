@@ -1,11 +1,12 @@
-import { CommittedBox, CommittedRoiProperties } from '..';
-import { CommitBoxStrategy } from '../context/roiReducer';
-import { boundBox, BoundStrategy } from '../context/updaters/roi';
-import { Roi, RoiAction } from '../types/Roi';
-import { Size } from '../types/utils';
+import type { CommitBoxStrategy } from '../context/roiReducer.js';
+import type { BoundStrategy } from '../context/updaters/roi.js';
+import { boundBox } from '../context/updaters/roi.js';
+import type { CommittedBox, CommittedRoiProperties } from '../index.js';
+import type { Roi, RoiAction } from '../types/Roi.js';
+import type { Size } from '../types/utils.js';
 
-import { assert } from './assert';
-import { commitBox, denormalizeBox, normalizeBox } from './box';
+import { assert } from './assert.js';
+import { commitBox, denormalizeBox, normalizeBox } from './box.js';
 
 function createInitialCommittedBox(): CommittedBox {
   return {

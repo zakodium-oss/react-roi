@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { roisContext } from '../context/contexts';
-import { Roi } from '../types/Roi';
+import { roisContext } from '../context/contexts.js';
+import type { Roi } from '../types/Roi.js';
 
 export function useRois<T>() {
   const rois = useContext(roisContext);

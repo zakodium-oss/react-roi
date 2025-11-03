@@ -1,31 +1,32 @@
-import { ReactNode, useEffect, useMemo, useReducer, useRef } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 
-import {
-  OnCommitCallback,
+import type {
   OnChangeCallback,
+  OnCommitCallback,
   PanZoom,
   ResizeStrategy,
   RoiMode,
   RoiState,
-} from '..';
-import { CommittedRoiProperties } from '../types/CommittedRoi';
-import { createRoiFromCommittedRoi } from '../utilities/rois';
-import { normalizeAngle } from '../utilities/rotate';
+} from '../index.js';
+import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
+import { createRoiFromCommittedRoi } from '../utilities/rois.js';
+import { normalizeAngle } from '../utilities/rotate.js';
 
+import type { ActionCallbacks, PanZoomContext } from './contexts.js';
 import {
-  ActionCallbacks,
   callbacksRefContext,
   committedRoisContext,
-  PanZoomContext,
   panZoomContext,
   roiContainerRefContext,
   roiDispatchContext,
-  roisContext,
   roiStateContext,
   roiStateRefContext,
-} from './contexts';
-import { CommitBoxStrategy, ReactRoiState, roiReducer } from './roiReducer';
-import { initialSize, isSizeObserved } from './updaters/initialPanZoom';
+  roisContext,
+} from './contexts.js';
+import type { CommitBoxStrategy, ReactRoiState } from './roiReducer.js';
+import { roiReducer } from './roiReducer.js';
+import { initialSize, isSizeObserved } from './updaters/initialPanZoom.js';
 
 export interface RoiProviderInitialConfig<TData> {
   mode?: RoiMode;

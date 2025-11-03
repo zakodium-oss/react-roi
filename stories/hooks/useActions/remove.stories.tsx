@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-vite';
 
 import {
   RoiContainer,
@@ -7,10 +7,10 @@ import {
   TargetImage,
   useActions,
   useRoiState,
-} from '../../../src';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Layout } from '../../utils/Layout';
-import { getInitialRois } from '../../utils/initialRois';
+} from '../../../src/index.ts';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
+import { Layout } from '../../utils/Layout.tsx';
+import { getInitialRois } from '../../utils/initialRois.ts';
 
 export default {
   title: 'hooks/useActions',

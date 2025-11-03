@@ -1,9 +1,9 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { initBox } from '../../utilities/box';
-import { ReactRoiState } from '../roiReducer';
+import { initBox } from '../../utilities/box.js';
+import type { ReactRoiState } from '../roiReducer.js';
 
-import { boundBox } from './roi';
+import { boundBox } from './roi.js';
 
 export function sanitizeRois(draft: Draft<ReactRoiState>) {
   for (let idx = 0; idx < draft.committedRois.length; idx++) {

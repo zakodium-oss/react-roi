@@ -1,5 +1,5 @@
-import { PanZoomContext } from '../../context/contexts';
-import { Roi } from '../../types/Roi';
+import type { PanZoomContext } from '../../context/contexts.js';
+import type { Roi } from '../../types/Roi.js';
 
 export interface HandlerSizeOptions {
   handlerSize: number;

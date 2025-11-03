@@ -1,11 +1,11 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
 import {
   applyTransformX,
   applyTransformY,
   computeTotalPanZoom,
-} from '../../utilities/panZoom';
-import { ReactRoiState } from '../roiReducer';
+} from '../../utilities/panZoom.js';
+import type { ReactRoiState } from '../roiReducer.js';
 
 /**
  * Apply a translation on the zoom so that it fits the constraints given by the zoomDomain configuration

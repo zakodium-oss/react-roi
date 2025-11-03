@@ -1,6 +1,6 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { RoiState } from '../../types/state';
+import type { RoiState } from '../../types/state.js';
 
 export function getCursor(
   roiState: RoiState,

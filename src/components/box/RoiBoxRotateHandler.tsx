@@ -1,7 +1,7 @@
-import { Box } from '../../utilities/box';
-import { CustomRoiStyle } from '../RoiList';
+import type { Box } from '../../utilities/box.js';
+import type { CustomRoiStyle } from '../RoiList.js';
 
-import { baseHandlerSizes } from './sizes';
+import { baseHandlerSizes } from './sizes.js';
 
 interface RoiBoxRotateHandlerProps {
   box: Box;

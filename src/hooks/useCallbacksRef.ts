@@ -1,6 +1,8 @@
-import { RefObject, useContext } from 'react';
+import type { RefObject } from 'react';
+import { useContext } from 'react';
 
-import { ActionCallbacks, callbacksRefContext } from '../context/contexts';
+import type { ActionCallbacks } from '../context/contexts.js';
+import { callbacksRefContext } from '../context/contexts.js';
 
 export default function useCallbacksRef<TData = unknown>() {
   const callbacks = useContext(callbacksRefContext);

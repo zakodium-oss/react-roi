@@ -1,16 +1,16 @@
-import { Meta } from '@storybook/react';
-import { ChangeEvent } from 'react';
+import type { Meta } from '@storybook/react-vite';
+import type { ChangeEvent } from 'react';
 
+import type { RoiMode } from '../../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
-  RoiMode,
   RoiProvider,
   TargetImage,
   useActions,
-} from '../../../src';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton';
-import { Layout } from '../../utils/Layout';
+} from '../../../src/index.ts';
+import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
+import { Layout } from '../../utils/Layout.tsx';
 
 export default {
   title: 'hooks/useActions',

@@ -1,16 +1,15 @@
 {
+  "extends": "@zakodium/tsconfig/jsx",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "ESNext"],
-    "module": "ES2022",
-    "moduleResolution": "Node",
-    "outDir": "lib",
-    "sourceMap": true,
-    "strict": true,
-    "target": "ES2022",
-    "types": ["vite/client", "node"],
-    "skipLibCheck": true
+    "noUncheckedIndexedAccess": false
   },
-  "include": ["./src", "./tests", "./stories", "./vitest.config.ts"],
+  "include": [
+    "./src",
+    "./tests",
+    "./stories",
+    "./vitest.config.ts",
+    "./playwright-base.config.ts",
+    "./playwright-ct.config.ts"
+  ],
   "exclude": ["node_modules"]
 }

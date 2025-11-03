@@ -1,4 +1,4 @@
-import { ReactRoiAction, RoiMode } from './utils';
+import type { ReactRoiAction, RoiMode } from './utils.js';
 
 export interface RoiState {
   /**

@@ -1,17 +1,15 @@
-import useResizeObserver from '@react-hook/resize-observer';
-import { useRef } from 'react';
+import { useResizeObserver } from './useResizeObserver.ts';
+import { useRoiDispatch } from './useRoiDispatch.js';
 
-import { useRoiDispatch } from './useRoiDispatch';
-
-export function useTargetRef<T extends HTMLElement>() {
-  const targetRef = useRef<T>(null);
+export function useTargetRef() {
   const roiDispatch = useRoiDispatch();
-  useResizeObserver(targetRef, (data) => {
+
+  const [targetRef] = useResizeObserver((rect) => {
     roiDispatch({
       type: 'SET_SIZE',
       payload: {
-        width: data.contentRect.width,
-        height: data.contentRect.height,
+        width: rect.width,
+        height: rect.height,
       },
     });
   });

@@ -1,8 +1,8 @@
-import { Draft } from 'immer';
+import type { Draft } from 'immer';
 
-import { Size } from '../../types/utils';
-import { assertUnreachable } from '../../utilities/assert';
-import { ReactRoiState } from '../roiReducer';
+import type { Size } from '../../types/utils.js';
+import { assertUnreachable } from '../../utilities/assert.js';
+import type { ReactRoiState } from '../roiReducer.js';
 
 // Initial values are set to 1 and not 0 to avoid division by 0
 export const initialSize: Size = {
