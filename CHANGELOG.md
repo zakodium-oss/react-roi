@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/zakodium-oss/react-roi/compare/v2.0.0...v2.0.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* revert to using a mutable ref in useResizeObserver hook ([#165](https://github.com/zakodium-oss/react-roi/issues/165)) ([b5a8f06](https://github.com/zakodium-oss/react-roi/commit/b5a8f06e6ba8ee0ffc523a6d90cbedcfb89ac43c))
+
 ## [2.0.0](https://github.com/zakodium-oss/react-roi/compare/v1.5.0...v2.0.0) (2025-11-03)
 
 
