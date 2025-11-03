@@ -31,8 +31,7 @@
   },
   "dependencies": {
     "@react-hook/resize-observer": "^2.0.2",
-    "immer": "^10.2.0",
-    "use-resize-observer": "^9.1.0"
+    "immer": "^10.2.0"
   },
   "devDependencies": {
     "@playwright/experimental-ct-react": "^1.56.1",

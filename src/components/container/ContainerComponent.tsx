@@ -1,7 +1,7 @@
+import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
 import type { CSSProperties, JSX, MutableRefObject, ReactNode } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import useResizeObserver from 'use-resize-observer';
 
 import type { ActionCallbacks, LockContext } from '../../context/contexts.js';
 import { lockContext } from '../../context/contexts.js';
@@ -17,6 +17,7 @@ import useCallbacksRef from '../../hooks/useCallbacksRef.js';
 import { useCurrentState } from '../../hooks/useCurrentState.js';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
 import { usePanZoomTransform } from '../../hooks/usePanZoom.js';
+import { useRoiContainerRef } from '../../hooks/useRoiContainerRef.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import type { Actions, ReactRoiAction, RoiMode } from '../../index.js';
 import { useActions, useRoiState } from '../../index.js';
@@ -61,7 +62,7 @@ export function ContainerComponent<TData = unknown>(
   const actions = useActions();
 
   // Refs
-  // const containerRef = useRoiContainerRef();
+  const containerRef = useRoiContainerRef();
   const callbacksRef = useCallbacksRef();
   const stateRef = useCurrentState();
 
@@ -72,18 +73,17 @@ export function ContainerComponent<TData = unknown>(
     getNewRoiData.current = props.getNewRoiData;
   }, [props.getNewRoiData]);
 
-  const { ref: containerRef } = useResizeObserver<HTMLDivElement>({
-    onResize: (size) => {
-      const { width, height } = size;
-      if (width === 0 || height === 0) return;
-      roiDispatch({
-        type: 'SET_CONTAINER_SIZE',
-        payload: {
-          width,
-          height,
-        },
-      });
-    },
+  // @ts-expect-error types are wrongly exported by library
+  useResizeObserver(containerRef, (entry) => {
+    const { width, height } = entry.contentRect;
+    if (width === 0 || height === 0) return;
+    roiDispatch({
+      type: 'SET_CONTAINER_SIZE',
+      payload: {
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      },
+    });
   });
 
   useEffect(() => {
