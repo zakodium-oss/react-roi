@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/zakodium-oss/react-roi/compare/v1.5.0...v2.0.0) (2025-11-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* the API for lifecycle callbacks has changed, but still support the same features
+
+### Features
+
+* improve and add lifecycle callback and some fixes ([#161](https://github.com/zakodium-oss/react-roi/issues/161)) ([89620dc](https://github.com/zakodium-oss/react-roi/commit/89620dca96774eaed5edd19ffde940dfb071005c))
+
 ## [1.5.0](https://github.com/zakodium-oss/react-roi/compare/v1.4.2...v1.5.0) (2024-06-04)
 
 
