@@ -30,6 +30,7 @@
     "react": ">=18"
   },
   "dependencies": {
+    "@react-hook/resize-observer": "^2.0.2",
     "immer": "^10.2.0"
   },
   "devDependencies": {
