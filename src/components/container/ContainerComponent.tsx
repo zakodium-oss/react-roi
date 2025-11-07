@@ -307,7 +307,12 @@ function callPointerMoveActionHooks(
 ) {
   if (callbacks.onChange) {
     const selectedRoi = state.rois.find((roi) => roi.id === state.selectedRoi);
-    if (!selectedRoi || selectedRoi.action.type === 'idle') {
+
+    if (
+      !selectedRoi ||
+      selectedRoi.action.type === 'idle' ||
+      selectedRoi.action.type === 'external'
+    ) {
       return;
     }
     const newState = produce(state, (draft) => {

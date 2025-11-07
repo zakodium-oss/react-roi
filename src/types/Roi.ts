@@ -44,6 +44,13 @@ export interface IdleAction {
   type: 'idle';
 }
 
+export interface ExternalAction {
+  /**
+   * The roi is being updated through an external action
+   */
+  type: 'external';
+}
+
 export interface DrawAction extends Omit<ResizeAction, 'type'> {
   type: 'drawing';
   previousSelectedRoi?: string;
@@ -54,7 +61,8 @@ export type RoiAction =
   | DrawAction
   | MoveAction
   | RotateAction
-  | ResizeAction;
+  | ResizeAction
+  | ExternalAction;
 
 export interface Roi<TData = unknown> {
   /**

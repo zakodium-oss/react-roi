@@ -103,7 +103,22 @@ export interface ReactRoiState<TData = unknown> {
   zoomDomain: ZoomDomain;
 }
 
-export type CreateUpdateRoiPayload = Partial<CommittedRoiProperties> & {
+export interface CreateUpdateRoiOptions {
+  /**
+   * Whether to update should be committed immediately.
+   * In both cases, the ROI will move immediately on screen.
+   * If set to false, the ROI will enter a mode where it can't be modified through user interactions until committed.
+   * Setting it to false also prevents having frequent updates to committed ROIs when those can trigger expensive operations.
+   */
+  commit: boolean;
+}
+
+export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
+  id: string;
+  options?: CreateUpdateRoiOptions;
+};
+
+export type CreateRoiPayload = Partial<CommittedRoiProperties> & {
   id: string;
 };
 
@@ -168,7 +183,7 @@ export type RoiReducerAction =
   | { type: 'SET_MODE'; payload: RoiMode }
   | {
       type: 'CREATE_ROI';
-      payload: CreateUpdateRoiPayload;
+      payload: CreateRoiPayload;
     }
   | {
       type: 'SET_SIZE';
@@ -180,7 +195,7 @@ export type RoiReducerAction =
     }
   | {
       type: 'UPDATE_ROI';
-      payload: CreateUpdateRoiPayload;
+      payload: UpdateRoiPayload;
     }
   | { type: 'REMOVE_ROI'; payload?: string }
   | {
@@ -297,19 +312,36 @@ export function roiReducer(
       }
 
       case 'UPDATE_ROI': {
-        const { id, ...updatedData } = action.payload;
+        const {
+          id,
+          options = { commit: true, boundingStrategy: 'none' },
+          ...updatedData
+        } = action.payload;
         if (!id) return;
         const index = draft.rois.findIndex((roi) => roi.id === id);
-        const committedRoi = draft.committedRois[index];
-
         assert(index !== -1, 'ROI not found');
-        assert(committedRoi, 'Committed ROI not found');
+        if (options.commit) {
+          const committedRoi = draft.committedRois[index];
+          assert(committedRoi, 'Committed ROI not found');
+          Object.assign<
+            CommittedRoiProperties,
+            Partial<CommittedRoiProperties>
+          >(committedRoi, updatedData);
+          draft.rois[index] = createRoiFromCommittedRoi(committedRoi);
+        } else {
+          const roi = draft.rois[index];
+          const { x, y, width, height, angle, ...otherData } = updatedData;
+          Object.assign<Roi, Partial<Roi>>(roi, {
+            ...otherData,
+            action: { type: 'external' },
+          });
+          roi.box.x = x ?? roi.box.x;
+          roi.box.y = y ?? roi.box.y;
+          roi.box.width = width ?? roi.box.width;
+          roi.box.height = height ?? roi.box.height;
+          roi.box.angle = angle ?? roi.box.angle;
+        }
 
-        Object.assign<CommittedRoiProperties, Partial<CommittedRoiProperties>>(
-          committedRoi,
-          updatedData,
-        );
-        draft.rois[index] = createRoiFromCommittedRoi(committedRoi);
         break;
       }
 

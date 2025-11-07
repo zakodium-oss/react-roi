@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 
 import type {
   CancelActionPayload,
+  CreateUpdateRoiOptions,
   ZoomIntoROIOptions,
 } from '../context/roiReducer.js';
 import { zoomAction } from '../context/updaters/zoom.js';
@@ -79,10 +80,14 @@ export function useActions<TData = unknown>() {
           payload: roi,
         });
       },
-      updateRoi: (selectedRoi: string, updatedData: UpdateData<TData>) => {
+      updateRoi: (
+        selectedRoi: string,
+        updatedData: UpdateData<TData>,
+        options?: CreateUpdateRoiOptions,
+      ) => {
         roiDispatch({
           type: 'UPDATE_ROI',
-          payload: { ...updatedData, id: selectedRoi },
+          payload: { ...updatedData, id: selectedRoi, options },
         });
       },
       removeRoi: (selectedRoi: string) => {

@@ -79,6 +79,9 @@ export function updateRoiBox(
     case 'drawing':
       resize(draft, roi, movement);
       break;
+    case 'external':
+      // Ignore pointer move events during external actions
+      return;
     default:
       assertUnreachable(roi.action, 'Invalid action type');
   }
