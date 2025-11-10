@@ -105,7 +105,7 @@ export interface ReactRoiState<TData = unknown> {
 
 export interface UpdateRoiOptions {
   /**
-   * Whether to update should be committed immediately.
+   * Whether the update should be committed immediately.
    * In both cases, the ROI will move immediately on screen.
    * If set to false, the ROI will enter a mode where it can't be modified through user interactions until committed.
    * Setting it to false also prevents having frequent updates to committed ROIs when those can trigger expensive operations.
