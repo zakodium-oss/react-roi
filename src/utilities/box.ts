@@ -253,6 +253,9 @@ function commitRound(roi: CommittedBox, action: RoiAction): CommittedBox {
         angle,
       };
     }
+    case 'external': {
+      throw new Error('External action type should not be reachable here');
+    }
     case 'idle': {
       throw new Error('Idle action type should not be reachable here');
     }

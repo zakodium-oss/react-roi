@@ -14,7 +14,7 @@ import {
 import { getMBRBoundaries } from '../../utilities/rotate.js';
 import type { ReactRoiState } from '../roiReducer.js';
 
-export type BoundStrategy = 'move' | 'resize';
+export type BoundingStrategy = 'move' | 'resize' | 'none';
 
 export function boundBox(
   committedBox: CommittedBox,
@@ -23,8 +23,12 @@ export function boundBox(
    * Strategy to bound the ROI box. If `move`, the ROI box will be moved so that it fits inside the target.
    * If `resize`, the ROI box will be resized so that it fits inside the target.
    */
-  strategy: BoundStrategy,
+  strategy: BoundingStrategy,
 ): CommittedBox {
+  if (strategy === 'none') {
+    return committedBox;
+  }
+
   // Bound points and recalculate width and height
   const result: CommittedBox = {
     x: committedBox.x,
@@ -80,13 +84,14 @@ export function boundBox(
   return result;
 }
 
-const boundStrategyMap: Record<RoiAction['type'], BoundStrategy> = {
+const boundingStrategyMap: Record<RoiAction['type'], BoundingStrategy> = {
   resizing: 'resize',
   drawing: 'resize',
   idle: 'move',
   moving: 'move',
   // If rotating, use move since it does not change the overall size of the ROI
   rotating: 'move',
+  external: 'none',
 };
 
 export function updateCommittedRoiPosition(
@@ -97,7 +102,7 @@ export function updateCommittedRoiPosition(
   const normalizedBox = boundBox(
     commitBox(normalizeBox(roi.box), roi.action, draft.commitRoiBoxStrategy),
     draft.targetSize,
-    boundStrategyMap[roi.action.type],
+    boundingStrategyMap[roi.action.type],
   );
   if (normalizedBox.height !== 0 && normalizedBox.width !== 0) {
     Object.assign<CommittedRoiProperties, CommittedBox>(

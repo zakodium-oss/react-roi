@@ -1,5 +1,5 @@
 import type { CommitBoxStrategy } from '../context/roiReducer.js';
-import type { BoundStrategy } from '../context/updaters/roi.js';
+import type { BoundingStrategy } from '../context/updaters/roi.js';
 import { boundBox } from '../context/updaters/roi.js';
 import type { CommittedBox, CommittedRoiProperties } from '../index.js';
 import type { Roi, RoiAction } from '../types/Roi.js';
@@ -50,7 +50,10 @@ interface CreateCommittedRoiFromRoiOptions {
   commitStrategy: CommitBoxStrategy;
 }
 
-function getBoundStrategyFromAction(action: RoiAction): BoundStrategy {
+function getBoundStrategyFromAction(action: RoiAction): BoundingStrategy {
+  if (action.type === 'external') {
+    return 'none';
+  }
   if (action.type === 'moving' || action.type === 'rotating') {
     return 'move';
   } else {

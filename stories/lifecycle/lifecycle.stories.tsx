@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/react-vite';
 import { useState } from 'react';
+import { KbsProvider, useKbsGlobal } from 'react-kbs';
 import { v4 } from 'uuid';
 
 import type {
@@ -13,6 +14,7 @@ import {
   RoiList,
   RoiProvider,
   TargetImage,
+  useActions,
 } from '../../src/index.ts';
 import { assert } from '../../src/utilities/assert.ts';
 import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
@@ -20,6 +22,13 @@ import { Layout } from '../utils/Layout.tsx';
 
 export default {
   title: 'Lifecycle callbacks',
+  decorators: [
+    (Story) => (
+      <KbsProvider>
+        <Story />
+      </KbsProvider>
+    ),
+  ],
 } as Meta;
 
 interface CountData {
@@ -208,43 +217,55 @@ export function SyncRoisAfterUpdate() {
         </RoiContainer>
         <CommittedRoisButton />
       </Layout>
+      <CancelWithShortcut />
     </RoiProvider>
   );
 }
 
 export function SyncRoisDuringUpdate() {
-  const updateRois: OnChangeCallback<SideData> = (param) => {
-    const { roi, actions, actionType, roisBeforeCommit } = param;
-    if (!roi || actionType === 'drawing') {
-      return;
-    }
-    assert(roi.data);
-    if (roi.data.side === 'LEFT') {
-      const rightRoi = roisBeforeCommit.find(
-        (r) => r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
-      );
-      assert(rightRoi);
-      actions.updateRoi(rightRoi.id, {
-        x: roi.x + roi.width,
-        y: roi.y,
-        width: roi.width,
-        height: roi.height,
-        angle: roi.angle,
-      });
-    } else {
-      const leftRoi = roisBeforeCommit.find(
-        (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
-      );
-      assert(leftRoi);
-      actions.updateRoi(leftRoi.id, {
-        x: roi.x - roi.width,
-        y: roi.y,
-        width: roi.width,
-        height: roi.height,
-        angle: roi.angle,
-      });
-    }
-  };
+  const updateRois: (commit: boolean) => OnChangeCallback<SideData> =
+    (commit: boolean) => (param) => {
+      const { roi, actions, actionType, roisBeforeCommit } = param;
+      if (!roi || actionType === 'drawing') {
+        return;
+      }
+      assert(roi.data);
+      if (roi.data.side === 'LEFT') {
+        const rightRoi = roisBeforeCommit.find(
+          (r) =>
+            r.data?.side === 'RIGHT' && r.data?.pairId === roi.data?.pairId,
+        );
+        assert(rightRoi);
+        actions.updateRoi(
+          rightRoi.id,
+          {
+            x: roi.x + roi.width,
+            y: roi.y,
+            width: roi.width,
+            height: roi.height,
+            angle: roi.angle,
+          },
+          { commit },
+        );
+      } else {
+        const leftRoi = roisBeforeCommit.find(
+          (r) => r.data?.side === 'LEFT' && r.data?.pairId === roi.data?.pairId,
+        );
+        assert(leftRoi);
+        actions.updateRoi(
+          leftRoi.id,
+          {
+            x: roi.x - roi.width,
+            y: roi.y,
+            width: roi.width,
+            height: roi.height,
+            angle: roi.angle,
+          },
+          { commit },
+        );
+      }
+    };
+
   return (
     <RoiProvider<SideData>
       initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
@@ -265,10 +286,10 @@ export function SyncRoisDuringUpdate() {
             },
           });
         } else {
-          updateRois(param);
+          updateRois(true)(param);
         }
       }}
-      onChange={updateRois}
+      onChange={(param) => updateRois(false)(param)}
     >
       <Layout>
         <RoiContainer<SideData>
@@ -291,6 +312,21 @@ export function SyncRoisDuringUpdate() {
         </RoiContainer>
         <CommittedRoisButton />
       </Layout>
+      <CancelWithShortcut />
     </RoiProvider>
   );
+}
+
+function CancelWithShortcut() {
+  const { cancelAction } = useActions();
+  useKbsGlobal([
+    {
+      shortcut: ['Escape'],
+      handler: (event) =>
+        cancelAction(event, {
+          noUnselection: false,
+        }),
+    },
+  ]);
+  return null;
 }
