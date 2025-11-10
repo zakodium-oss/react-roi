@@ -103,7 +103,7 @@ export interface ReactRoiState<TData = unknown> {
   zoomDomain: ZoomDomain;
 }
 
-export interface CreateUpdateRoiOptions {
+export interface UpdateRoiOptions {
   /**
    * Whether to update should be committed immediately.
    * In both cases, the ROI will move immediately on screen.
@@ -115,7 +115,7 @@ export interface CreateUpdateRoiOptions {
 
 export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
   id: string;
-  options?: CreateUpdateRoiOptions;
+  options?: UpdateRoiOptions;
 };
 
 export type CreateRoiPayload = Partial<CommittedRoiProperties> & {
