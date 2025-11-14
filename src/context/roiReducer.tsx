@@ -58,6 +58,13 @@ export interface ReactRoiState<TData = unknown> {
   commitRoiBoxStrategy: CommitBoxStrategy;
 
   /**
+   * When in select_rotate mode, this defines how much the mouse movement transnlates to a rotation angle.
+   * It is expressed in number of pixels for a full 360 degree rotation.
+   * @default 1200
+   */
+  rotationResolution: number;
+
+  /**
    * Identification of the selected object
    */
   selectedRoi?: string;
@@ -177,6 +184,11 @@ export interface SelectBoxAndStartMovePayload {
 
 export interface SelectBoxAndStartRotatePayload {
   id: string;
+}
+
+export interface SelectBoxAndStartRotateFreePayload {
+  id: string;
+  rotationResolution: number;
 }
 
 export type RoiReducerAction =
@@ -372,16 +384,14 @@ export function roiReducer(
         break;
       }
       case 'SELECT_BOX_AND_START_MOVE': {
-        selectBoxAndStartAction(
-          draft,
-          action.payload.id,
-          draft.mode === 'select_rotate' ? 'rotating_free' : 'moving',
-        );
+        selectBoxAndStartAction(draft, action.payload.id, {
+          type: draft.mode === 'select_rotate' ? 'rotating_free' : 'moving',
+        });
         break;
       }
 
       case 'SELECT_BOX_AND_START_ROTATE': {
-        selectBoxAndStartAction(draft, action.payload.id, 'rotating');
+        selectBoxAndStartAction(draft, action.payload.id, { type: 'rotating' });
         break;
       }
 

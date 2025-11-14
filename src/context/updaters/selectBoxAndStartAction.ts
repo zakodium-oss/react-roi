@@ -1,5 +1,10 @@
 import type { Draft } from 'immer';
 
+import type {
+  MoveAction,
+  RotateAction,
+  RotateFreeAction,
+} from '../../types/Roi.ts';
 import { assert } from '../../utilities/assert.js';
 import { changeBoxRotationCenter } from '../../utilities/box.js';
 import type { ReactRoiState } from '../roiReducer.js';
@@ -7,7 +12,7 @@ import type { ReactRoiState } from '../roiReducer.js';
 export function selectBoxAndStartAction(
   draft: Draft<ReactRoiState>,
   id: string,
-  action: 'moving' | 'rotating_free' | 'rotating',
+  action: RotateFreeAction | RotateAction | MoveAction,
 ) {
   if (draft.mode === 'draw') {
     draft.selectedRoi = undefined;
@@ -17,11 +22,9 @@ export function selectBoxAndStartAction(
   draft.selectedRoi = id;
   const roi = rois.find((roi) => roi.id === id);
   assert(roi, 'ROI not found');
-  draft.action = action === 'rotating_free' ? 'rotating' : action;
+  draft.action = action.type === 'rotating_free' ? 'rotating' : action.type;
 
-  roi.action = {
-    type: action,
-  };
+  roi.action = action;
   roi.box = changeBoxRotationCenter(roi.box, {
     xRotationCenter: 'center',
     yRotationCenter: 'center',

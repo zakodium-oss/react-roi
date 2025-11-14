@@ -15,7 +15,12 @@ export default {
   title: 'hooks/useActions',
   decorators: [
     (Story) => (
-      <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
+      <RoiProvider
+        initialConfig={{
+          rois: getInitialRois(320, 320),
+          rotationResolution: 2500,
+        }}
+      >
         <Story />
       </RoiProvider>
     ),

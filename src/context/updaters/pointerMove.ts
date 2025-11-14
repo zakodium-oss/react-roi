@@ -73,7 +73,7 @@ export function updateRoiBox(
       break;
     }
     case 'rotating_free': {
-      const angleDelta = (movement.x / 1000) * 2 * Math.PI;
+      const angleDelta = (movement.x / draft.rotationResolution) * 2 * Math.PI;
       roi.box.angle += angleDelta;
       if (roi.box.angle > Math.PI) {
         roi.box.angle -=
