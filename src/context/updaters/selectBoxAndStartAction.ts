@@ -7,7 +7,7 @@ import type { ReactRoiState } from '../roiReducer.js';
 export function selectBoxAndStartAction(
   draft: Draft<ReactRoiState>,
   id: string,
-  action: 'rotating' | 'moving',
+  action: 'moving' | 'rotating_free' | 'rotating',
 ) {
   if (draft.mode === 'draw') {
     draft.selectedRoi = undefined;
@@ -17,7 +17,7 @@ export function selectBoxAndStartAction(
   draft.selectedRoi = id;
   const roi = rois.find((roi) => roi.id === id);
   assert(roi, 'ROI not found');
-  draft.action = action;
+  draft.action = action === 'rotating_free' ? 'rotating' : action;
 
   roi.action = {
     type: action,

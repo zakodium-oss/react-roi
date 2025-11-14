@@ -60,6 +60,7 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       draft.action = 'drawing';
       break;
     }
+    case 'select_rotate':
     case 'select': {
       if (!noUnselection) {
         draft.selectedRoi = undefined;
@@ -68,7 +69,6 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       if (!lockPan) {
         draft.action = 'panning';
       }
-
       break;
     }
     default:

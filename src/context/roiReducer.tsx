@@ -372,7 +372,11 @@ export function roiReducer(
         break;
       }
       case 'SELECT_BOX_AND_START_MOVE': {
-        selectBoxAndStartAction(draft, action.payload.id, 'moving');
+        selectBoxAndStartAction(
+          draft,
+          action.payload.id,
+          draft.mode === 'select_rotate' ? 'rotating_free' : 'moving',
+        );
         break;
       }
 
