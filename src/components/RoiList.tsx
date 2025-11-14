@@ -1,4 +1,5 @@
 import type { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
+import { useMemo } from 'react';
 
 import { useRois } from '../hooks/useRois.js';
 import { useRoiState } from '../index.js';
@@ -52,6 +53,28 @@ export interface RoiListProps<TData = unknown> {
   getOverlayOpacity?: GetOverlayOpacity<TData>;
   allowRotate?: boolean;
   showGrid?: boolean;
+  /**
+   * Spacing (in device pixels) between vertical grid lines along the horizontal axis.
+   * If not provided, grid lines will be spaced by `horizontalGridSize` pixels.
+   */
+  gridSpacingX?: number;
+  /**
+   * Spacing (in device pixels) between horizontal grid lines along the vertical axis.
+   * If not provided, grid lines will be spaced by `verticalGridSize` pixels.
+   */
+  gridSpacingY?: number;
+  /**
+   * Number of horizontal grid lines.
+   * horizontalGridSpacing takes precedence if both are provided.
+   * @default 2
+   */
+  gridHorizontalLineCount?: number;
+  /**
+   * Number of vertical grid lines
+   * verticalGridSpacing takes precedence if both are provided.
+   * @default 2
+   */
+  gridVerticalLineCount?: number;
 }
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
@@ -62,6 +85,10 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     renderLabel = defaultRenderLabel,
     allowRotate = false,
     showGrid = false,
+    gridHorizontalLineCount = 2,
+    gridVerticalLineCount = 2,
+    gridSpacingX,
+    gridSpacingY,
   } = props;
   const rois = useRois().slice();
   const { selectedRoi } = useRoiState();
@@ -71,6 +98,19 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     const roi = rois.splice(index, 1)[0];
     rois.push(roi);
   }
+  const gridOptions = useMemo(() => {
+    return {
+      gridHorizontalLineCount,
+      gridVerticalLineCount,
+      gridSpacingX,
+      gridSpacingY,
+    };
+  }, [
+    gridHorizontalLineCount,
+    gridVerticalLineCount,
+    gridSpacingX,
+    gridSpacingY,
+  ]);
 
   return (
     <>
@@ -85,6 +125,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           allowRotate={allowRotate}
           isSelected={roi.id === selectedRoi}
           showGrid={showGrid}
+          gridOptions={gridOptions}
         />
       ))}
     </>

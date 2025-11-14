@@ -60,23 +60,47 @@ export function getAllEdges(roi: Box, angle: number): EdgeData[] {
 
 export type GridLineData = Pick<EdgeData, 'x1' | 'x2' | 'y1' | 'y2'>;
 
-export function getAllGridLines(roi: Box): GridLineData[] {
-  const gridSize = 3;
+export interface GetGridLinesOptions {
+  gridSpacingX?: number;
+  gridSpacingY?: number;
+  gridHorizontalLineCount: number;
+  gridVerticalLineCount: number;
+}
+
+export function getAllGridLines(
+  roi: Box,
+  options: GetGridLinesOptions,
+): GridLineData[] {
+  const {
+    gridHorizontalLineCount,
+    gridVerticalLineCount,
+    gridSpacingY,
+    gridSpacingX,
+  } = options;
+
+  const gridSizeY = gridSpacingY
+    ? Math.max(2, Math.floor(roi.height / gridSpacingY))
+    : gridHorizontalLineCount + 1;
+  const gridSizeX = gridSpacingX
+    ? Math.max(2, Math.floor(roi.width / gridSpacingX))
+    : gridVerticalLineCount + 1;
+
+  // const gridSize = 3;
   const lines = [];
-  for (let i = 1; i < gridSize; i++) {
+  for (let i = 1; i < gridSizeX; i++) {
     lines.push({
-      x1: roi.x + (roi.width * i) / gridSize,
+      x1: roi.x + (roi.width * i) / gridSizeX,
       y1: roi.y,
-      x2: roi.x + (roi.width * i) / gridSize,
+      x2: roi.x + (roi.width * i) / gridSizeX,
       y2: roi.y + roi.height,
     });
   }
-  for (let j = 1; j < gridSize; j++) {
+  for (let j = 1; j < gridSizeY; j++) {
     lines.push({
       x1: roi.x,
-      y1: roi.y + (roi.height * j) / gridSize,
+      y1: roi.y + (roi.height * j) / gridSizeY,
       x2: roi.x + roi.width,
-      y2: roi.y + (roi.height * j) / gridSize,
+      y2: roi.y + (roi.height * j) / gridSizeY,
     });
   }
   return lines;

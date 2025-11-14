@@ -9,6 +9,7 @@ import { useRoiState } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
 import type { Box } from '../../utilities/box.js';
 import { getAllCorners } from '../../utilities/corners.js';
+import type { GetGridLinesOptions } from '../../utilities/grid.js';
 import { getAllEdges, getAllGridLines } from '../../utilities/grid.js';
 
 import { RoiBoxCorner } from './RoiBoxCorner.js';
@@ -27,6 +28,7 @@ export interface BoxAnnotationProps {
   getStyle: GetStyleCallback;
   allowRotate: boolean;
   showGrid: boolean;
+  gridOptions: GetGridLinesOptions;
 }
 
 export function BoxSvg({
@@ -38,6 +40,7 @@ export function BoxSvg({
   box,
   allowRotate,
   showGrid,
+  gridOptions,
 }: BoxAnnotationProps) {
   const isAltKeyDown = useIsKeyDown('Alt');
   const roiDispatch = useRoiDispatch();
@@ -123,7 +126,7 @@ export function BoxSvg({
       />
       {isSelected &&
         showGrid &&
-        getAllGridLines(box).map((gridLine, idx) => (
+        getAllGridLines(box, gridOptions).map((gridLine, idx) => (
           <RoiBoxGridLine
             // eslint-disable-next-line react/no-array-index-key
             key={idx}
