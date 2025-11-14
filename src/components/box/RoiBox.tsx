@@ -11,6 +11,7 @@ import type {
 } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
 import { applyTransformToBox } from '../../utilities/box.js';
+import type { GetGridLinesOptions } from '../../utilities/grid.ts';
 import { computeTotalPanZoom } from '../../utilities/panZoom.js';
 import { LabelBox } from '../label/LabelBox.js';
 
@@ -25,6 +26,7 @@ interface RoiBoxProps {
   allowRotate: boolean;
   getOverlayOpacity: GetOverlayOpacity;
   showGrid: boolean;
+  gridOptions: GetGridLinesOptions;
 }
 
 function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
@@ -37,6 +39,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     getOverlayOpacity,
     allowRotate,
     showGrid,
+    gridOptions,
   } = props;
 
   const panzoom = usePanZoom();
@@ -87,6 +90,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           getStyle={getStyle}
           allowRotate={allowRotate}
           showGrid={showGrid}
+          gridOptions={gridOptions}
         />
       </div>
       <LabelBox roi={roi} label={label} panZoom={totalPanzoom} />

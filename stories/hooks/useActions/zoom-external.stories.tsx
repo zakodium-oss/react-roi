@@ -120,7 +120,7 @@ export function UpdateZoom({
             justifyContent: 'center',
           }}
           type="button"
-          onClick={() => onClick(1.2)}
+          onClick={() => onClick(2)}
         >
           +
         </button>
@@ -134,7 +134,7 @@ export function UpdateZoom({
             justifyContent: 'center',
           }}
           type="button"
-          onClick={() => onClick(0.8)}
+          onClick={() => onClick(0.5)}
         >
           -
         </button>
@@ -167,7 +167,7 @@ export function UpdateZoom({
           }}
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
-          <RoiList />
+          <RoiList showGrid />
         </RoiContainer>
       </Layout>
       <CommittedRoisButton />

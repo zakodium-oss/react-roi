@@ -1,6 +1,8 @@
 import type { Meta } from '@storybook/react-vite';
 import type { CSSProperties, ReactElement, SVGAttributes } from 'react';
+import { useState } from 'react';
 
+import type { RoiListProps } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
@@ -16,7 +18,12 @@ import { getInitialRois } from '../utils/initialRois.ts';
 export default {
   title: 'ROI custom styles',
   args: {
+    showGrid: false,
     allowRotate: false,
+    gridHorizontalLineCount: 2,
+    gridVerticalLineCount: 2,
+    gridSpacingX: 0,
+    gridSpacingY: 0,
   },
 } as Meta;
 
@@ -32,11 +39,29 @@ const initialRois = getInitialRois<CustomColorData>(320, 320, {
   backgroundColor: 'green',
 });
 
-interface StoryProps {
-  allowRotate: boolean;
+type StoryProps = Pick<
+  RoiListProps,
+  | 'allowRotate'
+  | 'showGrid'
+  | 'gridHorizontalLineCount'
+  | 'gridVerticalLineCount'
+  | 'gridSpacingX'
+  | 'gridSpacingY'
+>;
+
+export function ControlGrid(props: StoryProps) {
+  return (
+    <Layout>
+      <RoiProvider initialConfig={{ rois: initialRois }}>
+        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+          <RoiList<CustomColorData> {...props} />
+        </RoiContainer>
+      </RoiProvider>
+    </Layout>
+  );
 }
 
-export function WithShadowAroundSelectedRoi({ allowRotate }: StoryProps) {
+export function WithShadowAroundSelectedRoi(props: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois, zoom: { min: 0.1 } }}>
@@ -45,7 +70,7 @@ export function WithShadowAroundSelectedRoi({ allowRotate }: StoryProps) {
           target={<TargetImage src="/barbara.jpg" />}
         >
           <RoiList<CustomColorData>
-            allowRotate={allowRotate}
+            {...props}
             getOverlayOpacity={(roi, { isSelected }) =>
               isSelected && (roi.box.width > 0 || roi.box.height > 0) ? 0.6 : 0
             }
@@ -62,14 +87,14 @@ export function WithShadowAroundSelectedRoi({ allowRotate }: StoryProps) {
   );
 }
 
-export function OverrideDefaultStyle({ allowRotate }: StoryProps) {
+export function OverrideDefaultStyle(props: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
-              allowRotate={allowRotate}
+              {...props}
               getStyle={(roi, { isSelected }) => {
                 const patternId = `stripe-pattern-${roi.id}`;
                 return {
@@ -105,7 +130,7 @@ export function OverrideDefaultStyle({ allowRotate }: StoryProps) {
   );
 }
 
-export function WithIndividualStyles({ allowRotate }: StoryProps) {
+export function WithIndividualStyles(props: StoryProps) {
   function UpdateStyleButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions<CustomColorData>();
@@ -135,7 +160,7 @@ export function WithIndividualStyles({ allowRotate }: StoryProps) {
 
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
-            allowRotate={allowRotate}
+            {...props}
             getStyle={(roi, { isSelected }) => {
               const { data } = roi;
               assert(data);
@@ -235,14 +260,37 @@ function StripePattern(props: {
   );
 }
 
-export function ShowGrid({ allowRotate }: StoryProps) {
+export function StyleNewRoi(props: StoryProps) {
+  const [selectedColor, setSelectedColor] = useState('blue');
   return (
-    <Layout>
-      <RoiProvider initialConfig={{ rois: initialRois }}>
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList<CustomColorData> allowRotate={allowRotate} showGrid />
+    <RoiProvider>
+      <Layout>
+        <select
+          value={selectedColor}
+          onChange={(event) => setSelectedColor(event.target.value)}
+        >
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+          <option value="green">Green</option>
+        </select>
+        <RoiContainer<string>
+          getNewRoiData={() => {
+            return selectedColor;
+          }}
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
+          <RoiList<string>
+            {...props}
+            getStyle={(roi) => {
+              return {
+                rectAttributes: {
+                  fill: roi.data,
+                },
+              };
+            }}
+          />
         </RoiContainer>
-      </RoiProvider>
-    </Layout>
+      </Layout>
+    </RoiProvider>
   );
 }
