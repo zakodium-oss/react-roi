@@ -1,11 +1,15 @@
 import type { CommitBoxStrategy } from '../context/roiReducer.js';
-import type { BoundingStrategy } from '../context/updaters/roi.js';
 import { boundBox } from '../context/updaters/roi.js';
-import type { CommittedBox, CommittedRoiProperties } from '../index.js';
-import type { Roi, RoiAction } from '../types/Roi.js';
+import type {
+  BoundaryStrategy,
+  CommittedBox,
+  CommittedRoiProperties,
+} from '../index.js';
+import type { Roi } from '../types/Roi.js';
 import type { Size } from '../types/utils.js';
 
 import { assert } from './assert.js';
+import { getBoundaryStrategyFromAction } from './boundary.ts';
 import { commitBox, denormalizeBox, normalizeBox } from './box.js';
 
 function createInitialCommittedBox(): CommittedBox {
@@ -48,24 +52,14 @@ export function createRoi(
 interface CreateCommittedRoiFromRoiOptions {
   targetSize: Size;
   commitStrategy: CommitBoxStrategy;
-}
-
-function getBoundStrategyFromAction(action: RoiAction): BoundingStrategy {
-  if (action.type === 'external') {
-    return 'none';
-  }
-  if (action.type === 'moving' || action.type === 'rotating') {
-    return 'move';
-  } else {
-    return 'resize';
-  }
+  boundaryStrategy: BoundaryStrategy;
 }
 
 export function createCommittedRoiFromRoi<T>(
   roi: Roi<T>,
   options: CreateCommittedRoiFromRoiOptions,
 ): CommittedRoiProperties<T> {
-  const strategy = getBoundStrategyFromAction(roi.action);
+  const strategy = getBoundaryStrategyFromAction(roi, options.boundaryStrategy);
   const { targetSize, commitStrategy } = options;
   const { action, ...obj } = roi;
   return {

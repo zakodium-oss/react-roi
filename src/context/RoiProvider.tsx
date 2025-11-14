@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 
 import type {
+  BoundaryStrategy,
   OnChangeCallback,
   OnCommitCallback,
   PanZoom,
@@ -54,6 +55,15 @@ export interface RoiProviderInitialConfig<TData> {
      */
     spaceAroundTarget?: number;
   };
+  /**
+   * On commit, ROI's position will be updated such as to satisfy the given boundary strategy:
+   * - `inside_auto`: the whole ROI must be inside the target. If not, it will be moved or resized accordingly, or reverted.
+   * - `inside`: the whole ROI must be inside the target. If not, it will be reverted.
+   * - `partially_inside`: at least part of the ROI must be inside the target. If not, it will be reverted.
+   * - `none`: no boundary check is performed. The ROI can be anywhere.
+   * @default 'inside'
+   */
+  commitRoiBoundaryStrategy?: BoundaryStrategy;
   resizeStrategy?: ResizeStrategy;
   /**
    * How should the roi be updated before committing it when created / moved / resized / rotated.
@@ -98,7 +108,8 @@ function createInitialState<T>(
     mode: initialConfig.mode,
     action: 'idle',
     resizeStrategy: initialConfig.resizeStrategy,
-    commitRoiBoxStrategy: initialConfig.commitRoiBoxStrategy || 'exact',
+    commitRoiBoxStrategy: initialConfig.commitRoiBoxStrategy,
+    commitRoiBoundaryStrategy: initialConfig.commitRoiBoundaryStrategy,
     targetSize: initialSize,
     containerSize: initialSize,
     selectedRoi: initialConfig.selectedRoiId,
@@ -131,6 +142,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     mode: initialMode = 'hybrid',
     zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
     selectedRoiId,
+    commitRoiBoundaryStrategy = 'inside_auto',
     resizeStrategy = 'contain',
     commitRoiBoxStrategy = 'round',
   } = initialConfig;
@@ -148,6 +160,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
           translation: [0, 0],
         },
       },
+      commitRoiBoundaryStrategy,
       resizeStrategy,
       commitRoiBoxStrategy,
       selectedRoiId,
