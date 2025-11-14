@@ -72,6 +72,18 @@ export function updateRoiBox(
       roi.box.angle = computeAngleFromMousePosition({ x, y }, roi.box);
       break;
     }
+    case 'rotating_free': {
+      const angleDelta = (movement.x / draft.rotationResolution) * 2 * Math.PI;
+      roi.box.angle += angleDelta;
+      if (roi.box.angle > Math.PI) {
+        roi.box.angle -=
+          2 * Math.PI * Math.floor(roi.box.angle / (2 * Math.PI) + 1);
+      } else if (roi.box.angle < -Math.PI) {
+        roi.box.angle +=
+          2 * Math.PI * Math.floor(-roi.box.angle / (2 * Math.PI) + 1);
+      }
+      break;
+    }
     case 'resizing': {
       resize(draft, roi, movement);
       break;

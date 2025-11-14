@@ -52,7 +52,7 @@ export function RoundInitialValues() {
     >
       <Layout>
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-          <RoiList allowRotate />
+          <RoiList displayRotationHandle />
         </RoiContainer>
       </Layout>
       <CommittedRoisButton showImage={false} isDefaultShown />

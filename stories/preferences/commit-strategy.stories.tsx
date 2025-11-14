@@ -15,7 +15,7 @@ export default {
   title: 'Preferences',
   args: {
     commitStrategy: 'exact',
-    allowRotate: false,
+    displayRotationHandle: false,
   },
   argTypes: {
     commitStrategy: {
@@ -27,10 +27,12 @@ export default {
   },
 } as Meta;
 
-export function CommitStrategy(props: {
+interface StoryProps {
   commitStrategy: CommitBoxStrategy;
-  allowRotate: boolean;
-}) {
+  displayRotationHandle: boolean;
+}
+
+export function CommitStrategy(props: StoryProps) {
   const initialRois = getInitialRois(320, 320);
   return (
     <RoiProvider
@@ -44,7 +46,7 @@ export function CommitStrategy(props: {
         <RoiContainer
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
-          <RoiList allowRotate={props.allowRotate} />
+          <RoiList displayRotationHandle={props.displayRotationHandle} />
         </RoiContainer>
       </Layout>
       <CommittedRoisButton showImage={false} />

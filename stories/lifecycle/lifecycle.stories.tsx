@@ -97,7 +97,7 @@ export function ActionHooks() {
                 fill: 'rgba(0, 0, 0, 0.7)',
               },
             })}
-            allowRotate
+            displayRotationHandle
             renderLabel={(roi) => {
               if (roi.action.type === 'drawing') return null;
               if (!roi.data) return null;
@@ -301,7 +301,7 @@ export function SyncRoisDuringUpdate() {
         >
           <RoiList<SideData>
             renderLabel={(roi) => roi.data?.side}
-            allowRotate
+            displayRotationHandle
             getStyle={(roi) => ({
               rectAttributes: {
                 fill: roi.data?.side === 'LEFT' ? 'lightyellow' : 'blue',

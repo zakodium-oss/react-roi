@@ -26,7 +26,7 @@ export interface BoxAnnotationProps {
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
-  allowRotate: boolean;
+  displayRotationHandle: boolean;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
 }
@@ -38,7 +38,7 @@ export function BoxSvg({
   isReadOnly,
   getStyle,
   box,
-  allowRotate,
+  displayRotationHandle,
   showGrid,
   gridOptions,
 }: BoxAnnotationProps) {
@@ -161,7 +161,7 @@ export function BoxSvg({
         ))}
 
       {isSelected &&
-        allowRotate &&
+        displayRotationHandle &&
         (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
           <RoiBoxRotateHandler box={box} styles={styles} />
         )}
@@ -181,6 +181,8 @@ function getCursor(
       return 'crosshair';
     } else if (action === 'moving') {
       return 'move';
+    } else if (action === 'rotating') {
+      return 'ew-resize';
     } else if (action === 'panning') {
       return 'grab';
     }
@@ -200,5 +202,13 @@ function getCursor(
     }
   }
 
-  return mode === 'draw' ? 'crosshair' : 'move';
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+  switch (mode) {
+    case 'draw':
+      return 'crosshair';
+    case 'select_rotate':
+      return 'ew-resize';
+    default:
+      return 'move';
+  }
 }

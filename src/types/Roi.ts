@@ -32,9 +32,19 @@ export interface MoveAction {
 
 export interface RotateAction {
   /**
-   * Action of rotating an existing ROI
+   * Action of rotating an existing ROI, by using the ROI's rotation handle.
+   * The rotation is computed such that the line between the rotation center
+   * and the pointer is a line parallel to the rectangle's sides.
    */
   type: 'rotating';
+}
+
+export interface RotateFreeAction {
+  /**
+   * Action of rotating the ROI by computing the angle only from the pointer's
+   * movement on the X axis.
+   */
+  type: 'rotating_free';
 }
 
 export interface IdleAction {
@@ -61,6 +71,7 @@ export type RoiAction =
   | DrawAction
   | MoveAction
   | RotateAction
+  | RotateFreeAction
   | ResizeAction
   | ExternalAction;
 

@@ -273,6 +273,7 @@ function getCursor(
   action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
+  const isSelect = mode.startsWith('select');
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
@@ -287,7 +288,7 @@ function getCursor(
   }
 
   // No action, return cursor based on mode, lockPan and altKey
-  if (mode === 'select' && lockPan) {
+  if (isSelect && lockPan) {
     return 'default';
   }
 
@@ -295,7 +296,7 @@ function getCursor(
     return 'grab';
   }
 
-  return mode !== 'select' ? 'crosshair' : 'grab';
+  return !isSelect ? 'crosshair' : 'grab';
 }
 
 function callPointerMoveActionHooks(
@@ -333,7 +334,10 @@ function callPointerMoveActionHooks(
       callbacks.onChange({
         roi: newRoi ?? null,
         actions,
-        actionType: selectedRoi.action.type,
+        actionType:
+          selectedRoi.action.type === 'rotating_free'
+            ? 'rotating'
+            : selectedRoi.action.type,
         roisBeforeCommit: state.committedRois,
       });
     }

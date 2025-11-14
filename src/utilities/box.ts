@@ -200,6 +200,7 @@ function commitRound(roi: CommittedBox, action: RoiAction): CommittedBox {
         return commitExact(roi);
       }
     }
+    case 'rotating_free':
     case 'rotating': {
       return commitExact(roi);
     }

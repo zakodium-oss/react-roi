@@ -91,6 +91,8 @@ const boundingStrategyMap: Record<RoiAction['type'], BoundingStrategy> = {
   moving: 'move',
   // If rotating, use move since it does not change the overall size of the ROI
   rotating: 'move',
+  // eslint-disable-next-line camelcase
+  rotating_free: 'move',
   external: 'none',
 };
 
