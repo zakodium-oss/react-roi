@@ -41,7 +41,7 @@ export function RotationMode() {
       document.removeEventListener('keyup', onKeyUp);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, []);
+  }, [actions]);
   return (
     <Layout>
       <p>
