@@ -26,7 +26,7 @@ export interface BoxAnnotationProps {
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
-  allowRotate: boolean;
+  displayRotationHandle: boolean;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
 }
@@ -38,7 +38,7 @@ export function BoxSvg({
   isReadOnly,
   getStyle,
   box,
-  allowRotate,
+  displayRotationHandle,
   showGrid,
   gridOptions,
 }: BoxAnnotationProps) {
@@ -161,7 +161,7 @@ export function BoxSvg({
         ))}
 
       {isSelected &&
-        allowRotate &&
+        displayRotationHandle &&
         (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
           <RoiBoxRotateHandler box={box} styles={styles} />
         )}
