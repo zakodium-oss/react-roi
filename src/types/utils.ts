@@ -19,3 +19,9 @@ export interface PanZoom {
 export type RoiMode = 'select' | 'draw' | 'hybrid';
 
 export type ResizeStrategy = 'cover' | 'contain' | 'center' | 'none';
+
+export type BoundaryStrategy =
+  | 'inside_auto'
+  | 'inside'
+  | 'partially_inside'
+  | 'none';

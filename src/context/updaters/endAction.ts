@@ -30,6 +30,7 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
       targetSize: draft.targetSize,
       minNewRoiSize: payload.minNewRoiSize,
       commitStrategy: draft.commitRoiBoxStrategy,
+      boundaryStrategy: draft.commitRoiBoundaryStrategy,
     });
     if (newCommittedRoi === null) {
       // Roi is not valid, remove it
