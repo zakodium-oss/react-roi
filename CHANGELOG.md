@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/zakodium-oss/react-roi/compare/v2.0.1...v2.1.0) (2025-11-14)
+
+
+### Features
+
+* add option not to commit when updating through actions api ([#168](https://github.com/zakodium-oss/react-roi/issues/168)) ([168dc05](https://github.com/zakodium-oss/react-roi/commit/168dc05a1bfc277cceddc4b1ee037fdf9f7a4a2f))
+* add options to customize the number of grid lines in select ROIs ([#170](https://github.com/zakodium-oss/react-roi/issues/170)) ([ba318fc](https://github.com/zakodium-oss/react-roi/commit/ba318fc3e19b2a208e42767a04eade6b5d5127af))
+
 ## [2.0.1](https://github.com/zakodium-oss/react-roi/compare/v2.0.0...v2.0.1) (2025-11-03)
 
 
