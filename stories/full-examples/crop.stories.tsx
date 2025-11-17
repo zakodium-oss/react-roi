@@ -46,9 +46,9 @@ export function CropImage() {
             displayRotationHandle
             showGrid
             getOverlayOpacity={() => 0.6}
-            getStyle={(roi) => ({
+            getStyle={({ action }) => ({
               resizeHandlerColor:
-                roi.action.type !== 'idle' ? 'rgba(255,255,255,0.5)' : 'white',
+                action !== 'idle' ? 'rgba(255,255,255,0.5)' : 'white',
               rectAttributes: {
                 fill: 'rgba(0,0,0,0.2)',
               },

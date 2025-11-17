@@ -17,7 +17,7 @@ export function TestComponent() {
       >
         <RoiContainer target={<Target />}>
           <RoiList
-            renderLabel={(roi) => {
+            renderLabel={({ label }) => {
               return (
                 <div
                   style={{
@@ -30,12 +30,12 @@ export function TestComponent() {
                     fontSize: 12,
                   }}
                 >
-                  {roi.label}
+                  {label}
                 </div>
               );
             }}
-            getStyle={(roi, { isSelected }) => {
-              if (roi.id === 'box-1') {
+            getStyle={({ id, isSelected }) => {
+              if (id === 'box-1') {
                 return {
                   rectAttributes: {
                     fill: isSelected ? 'blue' : 'black',

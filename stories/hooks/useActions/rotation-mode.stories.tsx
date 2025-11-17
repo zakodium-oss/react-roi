@@ -56,11 +56,8 @@ export function RotationMode() {
       </p>
       <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
         <RoiList
-          getStyle={(roi, roiAdditionalState) => {
-            if (
-              roi.action.type === 'rotating_free' &&
-              roiAdditionalState.isSelected
-            ) {
+          getStyle={({ isSelected, action }) => {
+            if (action === 'rotating_free' && isSelected) {
               return {
                 rectAttributes: {
                   stroke: 'red',
