@@ -19,7 +19,7 @@ export default {
   title: 'ROI custom styles',
   args: {
     showGrid: false,
-    allowRotate: false,
+    displayRotationHandle: false,
     gridHorizontalLineCount: 2,
     gridVerticalLineCount: 2,
     gridSpacingX: 0,
@@ -41,7 +41,7 @@ const initialRois = getInitialRois<CustomColorData>(320, 320, {
 
 type StoryProps = Pick<
   RoiListProps,
-  | 'allowRotate'
+  | 'displayRotationHandle'
   | 'showGrid'
   | 'gridHorizontalLineCount'
   | 'gridVerticalLineCount'
@@ -179,13 +179,13 @@ export function WithIndividualStyles(props: StoryProps) {
   );
 }
 
-export function CustomLabelRender({ allowRotate }: StoryProps) {
+export function CustomLabelRender(props: StoryProps) {
   return (
     <Layout>
       <RoiProvider initialConfig={{ rois: initialRois }}>
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
-            allowRotate={allowRotate}
+            {...props}
             renderLabel={(roi, { isSelected }) => {
               if (isSelected) {
                 return null;

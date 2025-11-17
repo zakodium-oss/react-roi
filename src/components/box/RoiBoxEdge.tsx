@@ -13,6 +13,7 @@ interface RoiBoxEdgeProps {
   edge: EdgeData;
   roiId: string;
   sizes: HandlerSizeOptions;
+  disabled: boolean;
   handlerColor?: CSSProperties['color'];
   gridLineOpacity?: CSSProperties['opacity'];
 }
@@ -25,6 +26,7 @@ export function RoiBoxEdge(props: RoiBoxEdgeProps) {
     sizes,
     handlerColor,
     roiId,
+    disabled,
     gridLineOpacity = defaultGridLineOpacity,
   } = props;
   const roiDispatch = useRoiDispatch();
@@ -35,7 +37,12 @@ export function RoiBoxEdge(props: RoiBoxEdgeProps) {
 
   const onPointerDown: PointerDownCallback = useCallback(
     (event) => {
-      if (event.altKey || event.button !== 0 || roiState.mode === 'draw') {
+      if (
+        event.altKey ||
+        event.button !== 0 ||
+        roiState.mode === 'draw' ||
+        disabled
+      ) {
         return;
       }
       event.stopPropagation();
@@ -54,7 +61,7 @@ export function RoiBoxEdge(props: RoiBoxEdgeProps) {
         },
       });
     },
-    [roiDispatch, edge, roiId, roiState],
+    [roiDispatch, edge, roiId, roiState, disabled],
   );
   return (
     <g transform={transform}>
@@ -68,7 +75,7 @@ export function RoiBoxEdge(props: RoiBoxEdgeProps) {
       <rect
         {...handlerRect}
         onPointerDown={onPointerDown}
-        cursor={getCursor(roiState, edge.cursor)}
+        cursor={getCursor(roiState, edge.cursor, disabled)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
       />

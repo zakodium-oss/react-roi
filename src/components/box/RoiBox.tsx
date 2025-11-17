@@ -23,7 +23,7 @@ interface RoiBoxProps {
   getStyle: GetStyleCallback;
   getReadOnly: GetReadOnlyCallback;
   renderLabel: RenderLabelCallback;
-  allowRotate: boolean;
+  displayRotationHandle: boolean;
   getOverlayOpacity: GetOverlayOpacity;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
@@ -37,7 +37,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
     isSelected,
     renderLabel,
     getOverlayOpacity,
-    allowRotate,
+    displayRotationHandle,
     showGrid,
     gridOptions,
   } = props;
@@ -88,7 +88,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
           box={box}
           isReadOnly={isReadOnly}
           getStyle={getStyle}
-          allowRotate={allowRotate}
+          displayRotationHandle={displayRotationHandle}
           showGrid={showGrid}
           gridOptions={gridOptions}
         />

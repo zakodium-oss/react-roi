@@ -5,7 +5,11 @@ import type { RoiState } from '../../types/state.js';
 export function getCursor(
   roiState: RoiState,
   cursor: CSSProperties['cursor'],
+  disabled: boolean,
 ): CSSProperties['cursor'] {
+  if (disabled) {
+    return undefined;
+  }
   if (roiState.mode === 'draw') {
     return 'crosshair';
   }

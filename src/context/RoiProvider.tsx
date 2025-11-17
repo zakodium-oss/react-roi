@@ -68,6 +68,12 @@ export interface RoiProviderInitialConfig<TData> {
   commitRoiBoxStrategy?: CommitBoxStrategy;
   rois?: Array<CommittedRoiProperties<TData>>;
   selectedRoiId?: string;
+  /**
+   * When in select_rotate mode, this defines how much the mouse movement transnlates to a rotation angle.
+   * It is expressed in number of pixels for a full 360 degree rotation.
+   * @default 1200
+   */
+  rotationResolution?: number;
 }
 
 interface RoiProviderProps<TData> {
@@ -115,6 +121,7 @@ function createInitialState<T>(
       translation: [0, 0],
     },
     zoomDomain: initialConfig.zoom,
+    rotationResolution: initialConfig.rotationResolution,
   };
 }
 
@@ -133,6 +140,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     selectedRoiId,
     resizeStrategy = 'contain',
     commitRoiBoxStrategy = 'round',
+    rotationResolution = 1200,
   } = initialConfig;
 
   const [state, dispatch] = useReducer(roiReducer, null, () =>
@@ -151,6 +159,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
       resizeStrategy,
       commitRoiBoxStrategy,
       selectedRoiId,
+      rotationResolution,
     }),
   );
   const stateRef = useRef(state);

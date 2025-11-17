@@ -19,7 +19,7 @@ import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
 import { usePanZoomTransform } from '../../hooks/usePanZoom.js';
 import { useRoiContainerRef } from '../../hooks/useRoiContainerRef.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
-import type { Actions, ReactRoiAction, RoiMode } from '../../index.js';
+import type { Actions, ReactRoiAction, RoiState } from '../../index.js';
 import { useActions, useRoiState } from '../../index.js';
 import { assert, assertUnreachable } from '../../utilities/assert.js';
 import { roiHasChanged } from '../../utilities/rois.js';
@@ -195,12 +195,7 @@ export function ContainerComponent<TData = unknown>(
           overflow: 'hidden',
           margin: 0,
           padding: 0,
-          cursor: getCursor(
-            roiState.mode,
-            isAltKeyDown,
-            roiState.action,
-            lockPan,
-          ),
+          cursor: getCursor(roiState, isAltKeyDown, roiState.action, lockPan),
           userSelect: 'none',
           WebkitUserSelect: 'none',
           touchAction: 'none',
@@ -268,11 +263,15 @@ export function ContainerComponent<TData = unknown>(
 }
 
 function getCursor(
-  mode: RoiMode,
+  state: RoiState,
   altKey: boolean,
   action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
+  const { mode, selectedRoi } = state;
+  if (mode === 'rotate_selected' && selectedRoi) {
+    return 'ew-resize';
+  }
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
@@ -333,7 +332,10 @@ function callPointerMoveActionHooks(
       callbacks.onChange({
         roi: newRoi ?? null,
         actions,
-        actionType: selectedRoi.action.type,
+        actionType:
+          selectedRoi.action.type === 'rotating_free'
+            ? 'rotating'
+            : selectedRoi.action.type,
         roisBeforeCommit: state.committedRois,
       });
     }
