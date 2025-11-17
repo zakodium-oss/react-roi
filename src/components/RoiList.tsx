@@ -51,7 +51,7 @@ export interface RoiListProps<TData = unknown> {
   getReadOnly?: GetReadOnlyCallback<TData>;
   renderLabel?: RenderLabelCallback<TData>;
   getOverlayOpacity?: GetOverlayOpacity<TData>;
-  allowRotate?: boolean;
+  displayRotationHandle?: boolean;
   showGrid?: boolean;
   /**
    * Spacing (in device pixels) between vertical grid lines along the horizontal axis.
@@ -83,7 +83,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     getReadOnly = () => false,
     getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
-    allowRotate = false,
+    displayRotationHandle = false,
     showGrid = false,
     gridHorizontalLineCount = 2,
     gridVerticalLineCount = 2,
@@ -122,7 +122,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           renderLabel={renderLabel as RenderLabelCallback}
           getReadOnly={getReadOnly as GetReadOnlyCallback}
           getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
-          allowRotate={allowRotate}
+          displayRotationHandle={displayRotationHandle}
           isSelected={roi.id === selectedRoi}
           showGrid={showGrid}
           gridOptions={gridOptions}

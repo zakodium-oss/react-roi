@@ -4,7 +4,12 @@ import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
 import { useLockContext } from '../../hooks/useLockContext.js';
 import { usePanZoom } from '../../hooks/usePanZoom.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
-import type { GetStyleCallback, ReactRoiAction, RoiMode } from '../../index.js';
+import type {
+  GetStyleCallback,
+  ReactRoiAction,
+  RoiMode,
+  RoiState,
+} from '../../index.js';
 import { useRoiState } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
 import type { Box } from '../../utilities/box.js';
@@ -26,7 +31,7 @@ export interface BoxAnnotationProps {
   className?: string;
   isReadOnly: boolean;
   getStyle: GetStyleCallback;
-  allowRotate: boolean;
+  displayRotationHandle: boolean;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
 }
@@ -38,7 +43,7 @@ export function BoxSvg({
   isReadOnly,
   getStyle,
   box,
-  allowRotate,
+  displayRotationHandle,
   showGrid,
   gridOptions,
 }: BoxAnnotationProps) {
@@ -70,7 +75,7 @@ export function BoxSvg({
         width: box.width,
         height: box.height,
         cursor: getCursor(
-          roiState.mode,
+          roiState,
           isReadOnly,
           isAltKeyDown,
           roiState.action,
@@ -103,7 +108,7 @@ export function BoxSvg({
           });
         } else {
           roiDispatch({
-            type: 'SELECT_BOX_AND_START_MOVE',
+            type: 'SELECT_BOX_AND_START_ACTION',
             payload: {
               id: roi.id,
             },
@@ -145,6 +150,7 @@ export function BoxSvg({
             sizes={handlerSizes}
             handlerColor={styles.resizeHandlerColor}
             edge={edge}
+            disabled={isResizableMode(roiState.mode)}
             gridLineOpacity={styles.gridLineOpacity}
           />
         ))}
@@ -153,6 +159,7 @@ export function BoxSvg({
         getAllCorners(box, roi.box.angle).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
+            disabled={!isResizableMode(roiState.mode)}
             corner={corner}
             roiId={roi.id}
             sizes={handlerSizes}
@@ -161,7 +168,7 @@ export function BoxSvg({
         ))}
 
       {isSelected &&
-        allowRotate &&
+        displayRotationHandle &&
         (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
           <RoiBoxRotateHandler box={box} styles={styles} />
         )}
@@ -170,17 +177,23 @@ export function BoxSvg({
 }
 
 function getCursor(
-  mode: RoiMode,
+  state: RoiState,
   readOnly: boolean,
   isAltKeyDown: boolean,
   action: ReactRoiAction,
   lockPan: boolean,
 ): CSSProperties['cursor'] {
+  const { mode, selectedRoi } = state;
+  if (mode === 'rotate_selected' && selectedRoi) {
+    return 'ew-resize';
+  }
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
     } else if (action === 'moving') {
       return 'move';
+    } else if (action === 'rotating') {
+      return 'ew-resize';
     } else if (action === 'panning') {
       return 'grab';
     }
@@ -200,5 +213,15 @@ function getCursor(
     }
   }
 
-  return mode === 'draw' ? 'crosshair' : 'move';
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+  switch (mode) {
+    case 'draw':
+      return 'crosshair';
+    default:
+      return 'move';
+  }
+}
+
+function isResizableMode(mode: RoiMode) {
+  return mode === 'select' || mode === 'hybrid';
 }
