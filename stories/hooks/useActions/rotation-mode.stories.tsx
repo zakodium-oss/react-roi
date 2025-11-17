@@ -32,7 +32,7 @@ export function RotationMode() {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Shift') {
-        actions.setMode('select_rotate');
+        actions.setMode('rotate_selected');
       }
     }
     function onKeyUp(event: KeyboardEvent) {
@@ -55,7 +55,26 @@ export function RotationMode() {
         }
       </p>
       <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
-        <RoiList />
+        <RoiList
+          getStyle={(roi, roiAdditionalState) => {
+            if (
+              roi.action.type === 'rotating_free' ||
+              roiAdditionalState.isSelected
+            ) {
+              return {
+                rectAttributes: {
+                  stroke: 'red',
+                  fill: 'rgba(255,0,0,0.3)',
+                },
+              };
+            }
+            return {
+              rectAttributes: {
+                fill: 'rgba(0,0,0,0.3)',
+              },
+            };
+          }}
+        />
       </RoiContainer>
     </Layout>
   );

@@ -18,9 +18,18 @@ export function selectBoxAndStartAction(
     draft.selectedRoi = undefined;
     return;
   }
-  const { rois } = draft;
   draft.selectedRoi = id;
-  const roi = rois.find((roi) => roi.id === id);
+  prepareSelectedBoxForAction(draft, action);
+}
+
+export function prepareSelectedBoxForAction(
+  draft: Draft<ReactRoiState>,
+  action: RotateFreeAction | RotateAction | MoveAction,
+) {
+  if (!draft.selectedRoi) {
+    return;
+  }
+  const roi = draft.rois.find((roi) => roi.id === draft.selectedRoi);
   assert(roi, 'ROI not found');
   draft.action = action.type === 'rotating_free' ? 'rotating' : action.type;
 

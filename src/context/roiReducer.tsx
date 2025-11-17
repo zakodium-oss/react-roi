@@ -29,7 +29,10 @@ import { endAction } from './updaters/endAction.js';
 import { updateInitialPanZoom } from './updaters/initialPanZoom.js';
 import { pointerMove } from './updaters/pointerMove.js';
 import { sanitizeRois } from './updaters/sanitizeRois.js';
-import { selectBoxAndStartAction } from './updaters/selectBoxAndStartAction.js';
+import {
+  prepareSelectedBoxForAction,
+  selectBoxAndStartAction,
+} from './updaters/selectBoxAndStartAction.js';
 import { startDraw } from './updaters/startDraw.js';
 import { startPan } from './updaters/startPan.js';
 import { resetZoomAction, zoomAction, zoomIntoROI } from './updaters/zoom.js';
@@ -178,7 +181,7 @@ export interface CancelActionPayload {
   noUnselection: boolean;
 }
 
-export interface SelectBoxAndStartMovePayload {
+export interface SelectBoxAndStartActionPayload {
   id: string;
 }
 
@@ -229,8 +232,8 @@ export type RoiReducerAction =
   | { type: 'CANCEL_ACTION'; payload: CancelActionPayload }
   | { type: 'START_PAN' }
   | {
-      type: 'SELECT_BOX_AND_START_MOVE';
-      payload: SelectBoxAndStartMovePayload;
+      type: 'SELECT_BOX_AND_START_ACTION';
+      payload: SelectBoxAndStartActionPayload;
     }
   | {
       type: 'SELECT_BOX_AND_START_ROTATE';
@@ -383,10 +386,25 @@ export function roiReducer(
         startPan(draft);
         break;
       }
-      case 'SELECT_BOX_AND_START_MOVE': {
-        selectBoxAndStartAction(draft, action.payload.id, {
-          type: draft.mode === 'select_rotate' ? 'rotating_free' : 'moving',
-        });
+      case 'SELECT_BOX_AND_START_ACTION': {
+        switch (draft.mode) {
+          case 'select':
+          case 'hybrid': {
+            selectBoxAndStartAction(draft, action.payload.id, {
+              type: 'moving',
+            });
+            break;
+          }
+          case 'rotate_selected': {
+            prepareSelectedBoxForAction(draft, { type: 'rotating_free' });
+            break;
+          }
+          case 'draw':
+          default: {
+            // The draw action does not select the box
+            break;
+          }
+        }
         break;
       }
 

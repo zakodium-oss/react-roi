@@ -11,22 +11,31 @@ import { getCursor } from './utils.js';
 
 type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
+interface RoiBoxCornerProps {
+  corner: CornerData;
+  roiId: string;
+  sizes: HandlerSizeOptions;
+  handlerColor?: CSSProperties['color'];
+  disabled: boolean;
+}
+
 export function RoiBoxCorner({
   corner,
   roiId,
   sizes,
   handlerColor,
-}: {
-  corner: CornerData;
-  roiId: string;
-  sizes: HandlerSizeOptions;
-  handlerColor?: CSSProperties['color'];
-}) {
+  disabled,
+}: RoiBoxCornerProps) {
   const roiDispatch = useRoiDispatch();
   const roiState = useRoiState();
   const onPointerDown: PointerDownCallback = useCallback(
     (event) => {
-      if (event.altKey || event.button !== 0 || roiState.mode === 'draw') {
+      if (
+        event.altKey ||
+        event.button !== 0 ||
+        roiState.mode === 'draw' ||
+        disabled
+      ) {
         return;
       }
       event.stopPropagation();
@@ -39,7 +48,7 @@ export function RoiBoxCorner({
         },
       });
     },
-    [roiDispatch, corner, roiId, roiState],
+    [roiDispatch, corner, roiId, roiState, disabled],
   );
   if (corner.xPosition === 'center' || corner.yPosition === 'center') {
     return (
@@ -48,6 +57,7 @@ export function RoiBoxCorner({
         onPointerDown={onPointerDown}
         scaledSizes={sizes}
         handlerColor={handlerColor}
+        disabled={disabled}
       />
     );
   }
@@ -56,6 +66,7 @@ export function RoiBoxCorner({
       corner={corner}
       onPointerDown={onPointerDown}
       scaledSizes={sizes}
+      disabled={disabled}
       handlerColor={handlerColor}
     />
   );
@@ -65,11 +76,13 @@ function SideHandler({
   corner,
   onPointerDown,
   scaledSizes,
+  disabled,
   handlerColor = defaultHandlerColor,
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
   scaledSizes: HandlerSizeOptions;
+  disabled: boolean;
   handlerColor: CSSProperties['color'] | undefined;
 }) {
   const roiState = useRoiState();
@@ -87,7 +100,7 @@ function SideHandler({
       />
       <rect
         {...handlerRect}
-        cursor={getCursor(roiState, corner.cursor)}
+        cursor={getCursor(roiState, corner.cursor, disabled)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}
@@ -100,12 +113,14 @@ function CornerHandler({
   corner,
   onPointerDown,
   scaledSizes,
+  disabled,
   handlerColor = defaultHandlerColor,
 }: {
   corner: CornerData;
   onPointerDown: PointerDownCallback;
   scaledSizes: HandlerSizeOptions;
   handlerColor: CSSProperties['color'] | undefined;
+  disabled: boolean;
 }) {
   const roiState = useRoiState();
 
@@ -123,7 +138,7 @@ function CornerHandler({
       />
       <rect
         {...handlerRect}
-        cursor={getCursor(roiState, corner.cursor)}
+        cursor={getCursor(roiState, corner.cursor, disabled)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
         onPointerDown={onPointerDown}

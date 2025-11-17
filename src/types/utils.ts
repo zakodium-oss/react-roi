@@ -16,6 +16,6 @@ export interface PanZoom {
   translation: [number, number];
 }
 
-export type RoiMode = 'select' | 'draw' | 'hybrid' | 'select_rotate';
+export type RoiMode = 'select' | 'draw' | 'hybrid' | 'rotate_selected';
 
 export type ResizeStrategy = 'cover' | 'contain' | 'center' | 'none';

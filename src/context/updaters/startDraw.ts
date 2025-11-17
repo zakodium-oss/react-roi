@@ -8,6 +8,8 @@ import {
 import { createRoi } from '../../utilities/rois.js';
 import type { ReactRoiState, StartDrawPayload } from '../roiReducer.js';
 
+import { prepareSelectedBoxForAction } from './selectBoxAndStartAction.ts';
+
 /**
  * The draw action is executed when the user starts interacting with the container
  */
@@ -60,7 +62,10 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       draft.action = 'drawing';
       break;
     }
-    case 'select_rotate':
+    case 'rotate_selected': {
+      prepareSelectedBoxForAction(draft, { type: 'rotating_free' });
+      break;
+    }
     case 'select': {
       if (!noUnselection) {
         draft.selectedRoi = undefined;
