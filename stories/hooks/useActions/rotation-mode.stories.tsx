@@ -58,7 +58,7 @@ export function RotationMode() {
         <RoiList
           getStyle={(roi, roiAdditionalState) => {
             if (
-              roi.action.type === 'rotating_free' ||
+              roi.action.type === 'rotating_free' &&
               roiAdditionalState.isSelected
             ) {
               return {

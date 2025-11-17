@@ -269,12 +269,8 @@ function getCursor(
   lockPan: boolean,
 ): CSSProperties['cursor'] {
   const { mode, selectedRoi } = state;
-  if (mode === 'rotate_selected') {
-    if (selectedRoi) {
-      return 'ew-resize';
-    } else {
-      return 'default';
-    }
+  if (mode === 'rotate_selected' && selectedRoi) {
+    return 'ew-resize';
   }
   if (action !== 'idle') {
     if (action === 'drawing') {
