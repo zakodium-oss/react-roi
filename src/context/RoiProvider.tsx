@@ -61,7 +61,7 @@ export interface RoiProviderInitialConfig<TData> {
    * - `inside`: the whole ROI must be inside the target. If not, it will be reverted.
    * - `partially_inside`: at least part of the ROI must be inside the target. If not, it will be reverted.
    * - `none`: no boundary check is performed. The ROI can be anywhere.
-   * @default 'inside'
+   * @default 'inside_auto'
    */
   commitRoiBoundaryStrategy?: BoundaryStrategy;
   resizeStrategy?: ResizeStrategy;
