@@ -29,7 +29,7 @@ export function ChangeMode() {
         <option value="hybrid">Hybrid</option>
         <option value="draw">Draw</option>
         <option value="select">Select</option>
-        <option value="select_rotate">Rotate selected</option>
+        <option value="rotate_selected">Rotate selected</option>
       </select>
     );
   }
