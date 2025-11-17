@@ -13,7 +13,7 @@ export function sanitizeRois(draft: Draft<ReactRoiState>) {
       ...boundBox(
         initBox(roi, draft.commitRoiBoxStrategy),
         draft.targetSize,
-        'move',
+        'move_inside',
       ),
     };
   }

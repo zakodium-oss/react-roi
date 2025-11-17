@@ -2,6 +2,7 @@ import { produce } from 'immer';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import type {
+  BoundaryStrategy,
   CommittedRoi,
   PanZoom,
   ReactRoiAction,
@@ -59,6 +60,11 @@ export interface ReactRoiState<TData = unknown> {
    * How box properties of the roi should be updated when committed.
    */
   commitRoiBoxStrategy: CommitBoxStrategy;
+
+  /**
+   * Boundary strategy to use when updating ROI's coordinates when it is committed
+   */
+  commitRoiBoundaryStrategy: BoundaryStrategy;
 
   /**
    * When in select_rotate mode, this defines how much the mouse movement transnlates to a rotation angle.
