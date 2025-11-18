@@ -71,10 +71,10 @@ export function WithShadowAroundSelectedRoi(props: StoryProps) {
         >
           <RoiList<CustomColorData>
             {...props}
-            getOverlayOpacity={(roi, { isSelected }) =>
-              isSelected && (roi.box.width > 0 || roi.box.height > 0) ? 0.6 : 0
+            getOverlayOpacity={({ isSelected, box }) =>
+              isSelected && (box.width > 0 || box.height > 0) ? 0.6 : 0
             }
-            getStyle={(_, { isSelected }) => ({
+            getStyle={({ isSelected }) => ({
               resizeHandlerColor: isSelected ? 'white' : 'black',
               rectAttributes: {
                 fill: isSelected ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.4)',
@@ -95,8 +95,8 @@ export function OverrideDefaultStyle(props: StoryProps) {
           <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
             <RoiList<CustomColorData>
               {...props}
-              getStyle={(roi, { isSelected }) => {
-                const patternId = `stripe-pattern-${roi.id}`;
+              getStyle={({ id, isSelected }) => {
+                const patternId = `stripe-pattern-${id}`;
                 return {
                   renderCustomPattern: () => (
                     <StripePattern
@@ -161,8 +161,7 @@ export function WithIndividualStyles(props: StoryProps) {
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             {...props}
-            getStyle={(roi, { isSelected }) => {
-              const { data } = roi;
+            getStyle={({ isSelected, data }) => {
               assert(data);
               const { backgroundColor, selectedBackgroundColor } = data;
               return {
@@ -186,7 +185,7 @@ export function CustomLabelRender(props: StoryProps) {
         <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
           <RoiList<CustomColorData>
             {...props}
-            renderLabel={(roi, { isSelected }) => {
+            renderLabel={({ isSelected, label }) => {
               if (isSelected) {
                 return null;
               }
@@ -202,7 +201,7 @@ export function CustomLabelRender(props: StoryProps) {
                     fontSize: 28,
                   }}
                 >
-                  {roi.label}
+                  {label}
                 </div>
               );
             }}

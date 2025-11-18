@@ -8,6 +8,7 @@ import type {
   GetReadOnlyCallback,
   GetStyleCallback,
   RenderLabelCallback,
+  RoiCallbackPayload,
 } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
 import { applyTransformToBox } from '../../utilities/box.js';
@@ -49,13 +50,21 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   const roiDispatch = useRoiDispatch();
   const isReadOnly = getReadOnly(roi) || false;
 
-  const roiAdditionalState = {
+  const roiPayload: RoiCallbackPayload = {
+    id,
     isReadOnly,
     isSelected,
+    box: roi.box,
+    label: roi.label,
+    action: roi.action.type,
+    data: roi.data,
+  };
+
+  const globalStatePayload = {
     zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
   };
 
-  const shadowOpacity = getOverlayOpacity(roi, roiAdditionalState);
+  const shadowOpacity = getOverlayOpacity(roiPayload, globalStatePayload);
 
   useEffect(() => {
     if (isReadOnly) {
@@ -64,7 +73,7 @@ function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
   }, [id, isReadOnly, roiDispatch]);
 
   const box = applyTransformToBox(totalPanzoom, roi.box);
-  const label = renderLabel(roi, roiAdditionalState);
+  const label = renderLabel(roiPayload, globalStatePayload);
   return (
     <>
       <div

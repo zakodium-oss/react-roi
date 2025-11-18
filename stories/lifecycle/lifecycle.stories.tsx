@@ -98,12 +98,12 @@ export function ActionHooks() {
               },
             })}
             displayRotationHandle
-            renderLabel={(roi) => {
-              if (roi.action.type === 'drawing') return null;
-              if (!roi.data) return null;
+            renderLabel={({ action, data }) => {
+              if (action === 'drawing') return null;
+              if (!data) return null;
               return (
                 <LabelContainer style={{ fontSize: 12 }}>
-                  {`ROI ${roi.data.count}\nMoved: ${roi.data.moveCount}\nResized:${roi.data.resizeCount}\nRotated: ${roi.data.rotateCount}`}
+                  {`ROI ${data.count}\nMoved: ${data.moveCount}\nResized:${data.resizeCount}\nRotated: ${data.rotateCount}`}
                 </LabelContainer>
               );
             }}
