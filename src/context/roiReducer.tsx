@@ -29,6 +29,7 @@ import { cancelAction } from './updaters/cancelAction.js';
 import { endAction } from './updaters/endAction.js';
 import { updateInitialPanZoom } from './updaters/initialPanZoom.js';
 import { pointerMove } from './updaters/pointerMove.js';
+import { updateCommittedRoiPosition } from './updaters/roi.ts';
 import { sanitizeRois } from './updaters/sanitizeRois.js';
 import {
   prepareSelectedBoxForAction,
@@ -119,14 +120,23 @@ export interface ReactRoiState<TData = unknown> {
   zoomDomain: ZoomDomain;
 }
 
-export interface UpdateRoiOptions {
+export type UpdateRoiOptions =
+  | UpdateRoiOptionsNoCommit
+  | UpdateRoiOptionsWithCommit;
+
+export interface UpdateRoiOptionsNoCommit {
   /**
    * Whether the update should be committed immediately.
    * In both cases, the ROI will move immediately on screen.
    * If set to false, the ROI will enter a mode where it can't be modified through user interactions until committed.
    * Setting it to false also prevents having frequent updates to committed ROIs when those can trigger expensive operations.
    */
-  commit: boolean;
+  commit: false;
+}
+
+export interface UpdateRoiOptionsWithCommit {
+  commit: true;
+  boundaryStrategy?: BoundaryStrategy;
 }
 
 export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
@@ -335,7 +345,7 @@ export function roiReducer(
       case 'UPDATE_ROI': {
         const {
           id,
-          options = { commit: true, boundingStrategy: 'none' },
+          options = { commit: true, boundaryStrategy: 'none' },
           ...updatedData
         } = action.payload;
         if (!id) return;
@@ -349,6 +359,10 @@ export function roiReducer(
             Partial<CommittedRoiProperties>
           >(committedRoi, updatedData);
           draft.rois[index] = createRoiFromCommittedRoi(committedRoi);
+          updateCommittedRoiPosition(draft, committedRoi, draft.rois[index], {
+            boundaryStrategy: options.boundaryStrategy ?? 'none',
+            boxStrategy: 'exact',
+          });
         } else {
           const roi = draft.rois[index];
           const { x, y, width, height, angle, ...otherData } = updatedData;

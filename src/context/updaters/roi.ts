@@ -1,6 +1,7 @@
 import type { Draft } from 'immer';
 
 import type {
+  BoundaryStrategy,
   CommittedBox,
   CommittedRoiProperties,
   Size,
@@ -15,7 +16,7 @@ import {
   normalizeBox,
 } from '../../utilities/box.js';
 import { getMBRBoundaries } from '../../utilities/rotate.js';
-import type { ReactRoiState } from '../roiReducer.js';
+import type { CommitBoxStrategy, ReactRoiState } from '../roiReducer.js';
 
 export function boundBox(
   committedBox: CommittedBox,
@@ -114,13 +115,21 @@ export function updateCommittedRoiPosition(
   draft: ReactRoiState,
   committedRoi: Draft<CommittedRoiProperties>,
   roi: Draft<Roi>,
+  strategies?: {
+    boxStrategy?: CommitBoxStrategy;
+    boundaryStrategy?: BoundaryStrategy;
+  },
 ) {
   const strategy = getBoundaryStrategyFromAction(
     roi,
-    draft.commitRoiBoundaryStrategy,
+    strategies?.boundaryStrategy ?? draft.commitRoiBoundaryStrategy,
   );
   const normalizedBox = boundBox(
-    commitBox(normalizeBox(roi.box), roi.action, draft.commitRoiBoxStrategy),
+    commitBox(
+      normalizeBox(roi.box),
+      roi.action,
+      strategies?.boxStrategy ?? draft.commitRoiBoxStrategy,
+    ),
     draft.targetSize,
     strategy,
   );
