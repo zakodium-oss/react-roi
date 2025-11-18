@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/react-vite';
 
+import type { GetReadOnlyCallback, GetStyleCallback } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
 } from '../../src/index.ts';
-import type { Roi } from '../../src/types/Roi.ts';
 import { Layout } from '../utils/Layout.tsx';
 import { getInitialRois } from '../utils/initialRois.ts';
 
@@ -16,18 +16,18 @@ export default {
 
 export function canInteractThroughReadOnlyRoi() {
   const initialRois = getInitialRois(320, 320);
-  function getReadOnly(roi: Roi) {
-    return roi.id === initialRois[0].id;
-  }
+  const getReadOnly: GetReadOnlyCallback = ({ id }) => {
+    return id === initialRois[0].id;
+  };
 
-  function getStyle(roi: Roi) {
+  const getStyle: GetStyleCallback = ({ id }) => {
     return {
       rectAttributes: {
-        fill: roi.id === initialRois[0].id ? 'darkgreen' : 'red',
-        opacity: roi.id === initialRois[0].id ? 0.4 : 0.6,
+        fill: id === initialRois[0].id ? 'darkgreen' : 'red',
+        opacity: id === initialRois[0].id ? 0.4 : 0.6,
       },
     };
-  }
+  };
 
   return (
     <RoiProvider initialConfig={{ rois: initialRois }}>

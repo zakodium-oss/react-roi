@@ -1,50 +1,18 @@
-import type { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
 import { useMemo } from 'react';
 
 import { useRois } from '../hooks/useRois.js';
 import { useRoiState } from '../index.js';
-import type { Roi } from '../types/Roi.js';
+import type {
+  GetOverlayOpacity,
+  GetReadOnlyCallback,
+  GetStyleCallback,
+  RenderLabelCallback,
+} from '../types/RoiList.ts';
 import { assert } from '../utilities/assert.js';
 
 import { RoiBox } from './box/RoiBox.js';
 import { defaultGridLineOpacity, defaultHandlerColor } from './constants.js';
 import { LabelContainer } from './label/LabelContainer.js';
-
-export interface RoiAdditionalCallbackState {
-  isSelected: boolean;
-  isReadOnly: boolean;
-  zoomScale: number;
-}
-
-export interface CustomRoiStyle {
-  /**
-   * The attributes to forward to the SVG rect element which draws the ROI
-   */
-  rectAttributes?: SVGAttributes<SVGRectElement>;
-  resizeHandlerColor?: CSSProperties['color'];
-  gridLineOpacity?: CSSProperties['opacity'];
-  /**
-   * This property allows to render custom markup inside the ROI SVG
-   * This can be used for example to render an svg pattern that can then be used as a fill in `rectAttributes`
-   * It is not meant to be used to render markup that will be displayed on screen, see `rectAttributes` to customize the ROI appearance
-   */
-  renderCustomPattern?: () => JSX.Element;
-}
-
-export type GetStyleCallback<TData = unknown> = (
-  roi: Roi<TData>,
-  roiAdditionalState: RoiAdditionalCallbackState,
-) => CustomRoiStyle;
-
-export type GetReadOnlyCallback<TData = unknown> = (roi: Roi<TData>) => boolean;
-export type GetOverlayOpacity<TData = unknown> = (
-  roi: Roi<TData>,
-  roiAdditionalState: RoiAdditionalCallbackState,
-) => number;
-export type RenderLabelCallback<TData = unknown> = (
-  roi: Roi<TData>,
-  roiAdditionalState: RoiAdditionalCallbackState,
-) => ReactNode;
 
 export interface RoiListProps<TData = unknown> {
   getStyle?: GetStyleCallback<TData>;
@@ -132,12 +100,12 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   );
 }
 
-const defaultGetStyle: GetStyleCallback = (roi, state) => {
+const defaultGetStyle: GetStyleCallback = ({ isReadOnly, isSelected }) => {
   return {
     rectAttributes: {
-      fill: state.isReadOnly
+      fill: isReadOnly
         ? 'rgba(0,0,0,0.6)'
-        : state.isSelected
+        : isSelected
           ? 'rgba(0,0,0,0.2)'
           : 'rgba(0,0,0,0.4)',
     },

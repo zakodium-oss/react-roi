@@ -68,7 +68,7 @@ export interface ReactRoiState<TData = unknown> {
   commitRoiBoundaryStrategy: BoundaryStrategy;
 
   /**
-   * When in select_rotate mode, this defines how much the mouse movement transnlates to a rotation angle.
+   * When in rotate_selected mode, this defines how much the mouse movement transnlates to a rotation angle.
    * It is expressed in number of pixels for a full 360 degree rotation.
    * @default 1200
    */

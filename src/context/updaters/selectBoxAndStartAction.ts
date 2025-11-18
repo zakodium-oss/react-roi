@@ -4,7 +4,7 @@ import type {
   MoveAction,
   RotateAction,
   RotateFreeAction,
-} from '../../types/Roi.ts';
+} from '../../types/Roi.js';
 import { assert } from '../../utilities/assert.js';
 import { changeBoxRotationCenter } from '../../utilities/box.js';
 import type { ReactRoiState } from '../roiReducer.js';

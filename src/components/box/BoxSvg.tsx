@@ -55,11 +55,20 @@ export function BoxSvg({
   const isSelected = roi.id === roiState.selectedRoi;
   const styles = {
     ...baseRoiStyle,
-    ...getStyle(roi, {
-      isReadOnly,
-      isSelected,
-      zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
-    }),
+    ...getStyle(
+      {
+        isReadOnly,
+        isSelected,
+        id: roi.id,
+        box: roi.box,
+        label: roi.label,
+        data: roi.data,
+        action: roi.action.type,
+      },
+      {
+        zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
+      },
+    ),
   };
 
   const handlerSizes = getHandlerSizes(roi, panZoom);

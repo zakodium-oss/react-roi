@@ -1,5 +1,5 @@
+import type { CustomRoiStyle } from '../../types/RoiList.ts';
 import type { Box } from '../../utilities/box.js';
-import type { CustomRoiStyle } from '../RoiList.js';
 
 import { baseHandlerSizes } from './sizes.js';
 
