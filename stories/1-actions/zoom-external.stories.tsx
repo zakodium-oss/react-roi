@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react-vite';
 
-import type { PanZoom, ResizeStrategy } from '../../../src/index.ts';
+import type { PanZoom, ResizeStrategy } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
@@ -8,14 +8,14 @@ import {
   TargetImage,
   useActions,
   useCommittedRois,
-} from '../../../src/index.ts';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
-import { Layout } from '../../utils/Layout.tsx';
-import { getInitialRois } from '../../utils/initialRois.ts';
-import { useResetOnChange } from '../../utils/useResetOnChange.ts';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
+import { useResetOnChange } from '../utils/useResetOnChange.ts';
 
 export default {
-  title: 'hooks/useActions',
+  title: 'Actions',
   argTypes: {
     onZoomChange: { action: 'zoom' },
     minZoom: {

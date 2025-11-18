@@ -6,13 +6,13 @@ import {
   RoiProvider,
   TargetImage,
   useActions,
-} from '../../../src/index.ts';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
-import { Layout } from '../../utils/Layout.tsx';
-import { getInitialRois } from '../../utils/initialRois.ts';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
-  title: 'hooks/useActions',
+  title: 'Actions',
 } as Meta;
 
 export function AddROI() {

@@ -1,19 +1,19 @@
 import type { Meta } from '@storybook/react-vite';
 import type { ChangeEvent } from 'react';
 
-import type { RoiMode } from '../../../src/index.ts';
+import type { RoiMode } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
   RoiProvider,
   TargetImage,
   useActions,
-} from '../../../src/index.ts';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
-import { Layout } from '../../utils/Layout.tsx';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
 
 export default {
-  title: 'hooks/useActions',
+  title: 'Actions',
 } as Meta;
 
 export function ChangeMode() {

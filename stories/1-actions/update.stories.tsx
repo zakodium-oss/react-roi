@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react-vite';
 
-import type { UpdateData } from '../../../src/index.ts';
+import type { UpdateData } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
@@ -8,13 +8,13 @@ import {
   TargetImage,
   useActions,
   useRoiState,
-} from '../../../src/index.ts';
-import { CommittedRoisButton } from '../../utils/CommittedRoisButton.tsx';
-import { Layout } from '../../utils/Layout.tsx';
-import { getInitialRois } from '../../utils/initialRois.ts';
+} from '../../src/index.ts';
+import { CommittedRoisButton } from '../utils/CommittedRoisButton.tsx';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
-  title: 'hooks/useActions',
+  title: 'Actions',
 } as Meta;
 
 export function UpdatePosition() {
