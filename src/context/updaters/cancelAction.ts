@@ -7,8 +7,15 @@ import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
 export function cancelAction(
   draft: Draft<ReactRoiState>,
   payload: CancelActionPayload,
+  /**
+   * If you want to cancel action for a specific ROI, provide its ID here.
+   * Otherwise, all ROIs with non-idle actions will be cancelled.
+   */
+  roiId?: string,
 ) {
-  const rois = draft.rois.filter((roi) => roi.action.type !== 'idle');
+  const rois = draft.rois.filter((roi) =>
+    roiId ? roi.id === roiId : roi.action.type !== 'idle',
+  );
 
   if (rois.length === 0) {
     return;
