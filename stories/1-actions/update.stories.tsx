@@ -86,7 +86,7 @@ const initialRois: Array<CommittedRoiProperties<BoundaryStrategy>> = [
   baseRoi,
 ];
 
-export function UpdatePositionWithCommitStrategy() {
+export function UpdatePositionWithCommitStrategyDebug() {
   const [strategy, setStrategy] =
     useState<UpdateRoiOptionsBoundaryStrategy>('partially_inside');
   function SelectStrategy() {
@@ -147,6 +147,15 @@ export function UpdatePositionWithCommitStrategy() {
       }}
     >
       <Layout>
+        <p>
+          Update the black / transparent ROI and see how it affects the orange
+          ROI.
+          <br />
+          {
+            "On commit, the black / transparent ROI's coordinate are passed to the orange ROI via the `updateRoi` action, with the boundary strategy selected below."
+          }
+        </p>
+
         <SelectStrategy />
         <RoiContainer
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
@@ -173,7 +182,6 @@ export function UpdatePositionWithCommitStrategy() {
             }}
           />
         </RoiContainer>
-        <CommittedRoisButton />
       </Layout>
     </RoiProvider>
   );
