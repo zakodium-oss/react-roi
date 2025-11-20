@@ -1,5 +1,6 @@
 import type { Draft } from 'immer';
 
+import type { Roi } from '../../types/Roi.ts';
 import { assert } from '../../utilities/assert.js';
 import { denormalizeBox } from '../../utilities/box.js';
 import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
@@ -13,9 +14,14 @@ export function cancelAction(
    */
   roiId?: string,
 ) {
-  const rois = draft.rois.filter((roi) =>
-    roiId ? roi.id === roiId : roi.action.type !== 'idle',
-  );
+  function byRoiId(roi: Roi) {
+    return roi.id === roiId;
+  }
+  function byIdleAction(roi: Roi) {
+    return roi.action.type !== 'idle';
+  }
+
+  const rois = draft.rois.filter(roiId ? byRoiId : byIdleAction);
 
   if (rois.length === 0) {
     return;
