@@ -1,5 +1,4 @@
 import { getRectanglePoints } from '../utilities/box.js';
-import type { Point } from '../utilities/point.js';
 
 import type { Roi } from './Roi.js';
 import type { CommittedBox } from './box.js';
@@ -29,7 +28,7 @@ export class CommittedRoi<TData = unknown>
     this.angle = properties.angle;
     this.data = properties.data;
   }
-  public getRectanglePoints(): Point[] {
+  public getRectanglePoints() {
     return getRectanglePoints(this);
   }
 }
