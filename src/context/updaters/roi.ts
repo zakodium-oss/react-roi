@@ -1,6 +1,7 @@
 import type { Draft } from 'immer';
 
 import type {
+  BoundaryStrategy,
   CommittedBox,
   CommittedRoiProperties,
   Size,
@@ -14,8 +15,9 @@ import {
   denormalizeBox,
   normalizeBox,
 } from '../../utilities/box.js';
+import { rectanglesIntersect } from '../../utilities/intersection.ts';
 import { getMBRBoundaries } from '../../utilities/rotate.js';
-import type { ReactRoiState } from '../roiReducer.js';
+import type { CommitBoxStrategy, ReactRoiState } from '../roiReducer.js';
 
 export function boundBox(
   committedBox: CommittedBox,
@@ -77,15 +79,15 @@ export function boundBox(
       break;
     }
     case 'is_partially_inside': {
-      const mbr = getMBRBoundaries(committedBox);
-      // The separating axis theorem says that if any of the projections of 2 convex shapes do not overlap, then the shapes do not overlap.
-      if (
-        mbr.maxX < 0 ||
-        mbr.minX > targetSize.width ||
-        mbr.maxY < 0 ||
-        mbr.minY > targetSize.height
-      ) {
-        // Throwing an error here will cancel the operation
+      const targetRectangle = {
+        x: 0,
+        y: 0,
+        width: targetSize.width,
+        height: targetSize.height,
+        angle: 0,
+      };
+      const intersects = rectanglesIntersect(committedBox, targetRectangle);
+      if (!intersects) {
         throw new Error('ROI is completely outside of target boundaries');
       }
       break;
@@ -114,13 +116,21 @@ export function updateCommittedRoiPosition(
   draft: ReactRoiState,
   committedRoi: Draft<CommittedRoiProperties>,
   roi: Draft<Roi>,
+  strategies?: {
+    boxStrategy?: CommitBoxStrategy;
+    boundaryStrategy?: BoundaryStrategy;
+  },
 ) {
   const strategy = getBoundaryStrategyFromAction(
     roi,
-    draft.commitRoiBoundaryStrategy,
+    strategies?.boundaryStrategy ?? draft.commitRoiBoundaryStrategy,
   );
   const normalizedBox = boundBox(
-    commitBox(normalizeBox(roi.box), roi.action, draft.commitRoiBoxStrategy),
+    commitBox(
+      normalizeBox(roi.box),
+      roi.action,
+      strategies?.boxStrategy ?? draft.commitRoiBoxStrategy,
+    ),
     draft.targetSize,
     strategy,
   );

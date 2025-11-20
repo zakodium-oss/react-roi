@@ -194,7 +194,11 @@ export function SyncRoisAfterUpdate() {
   };
   return (
     <RoiProvider<SideData>
-      initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
+      initialConfig={{
+        mode: 'hybrid',
+        rois: syncInitialRois,
+        commitRoiBoundaryStrategy: 'partially_inside',
+      }}
       onCommit={updateRois}
     >
       <Layout>
@@ -245,7 +249,7 @@ export function SyncRoisDuringUpdate() {
             height: roi.height,
             angle: roi.angle,
           },
-          { commit },
+          { commit, boundaryStrategy: 'none' },
         );
       } else {
         const leftRoi = roisBeforeCommit.find(
@@ -261,14 +265,18 @@ export function SyncRoisDuringUpdate() {
             height: roi.height,
             angle: roi.angle,
           },
-          { commit },
+          { commit, boundaryStrategy: 'none' },
         );
       }
     };
 
   return (
     <RoiProvider<SideData>
-      initialConfig={{ mode: 'hybrid', rois: syncInitialRois }}
+      initialConfig={{
+        mode: 'hybrid',
+        rois: syncInitialRois,
+        commitRoiBoundaryStrategy: 'partially_inside',
+      }}
       onCommit={(param) => {
         const { roi, actions, actionType } = param;
         assert(roi.data);

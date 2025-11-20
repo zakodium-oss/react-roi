@@ -16,7 +16,7 @@ import { Layout } from '../utils/Layout.tsx';
 import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
-  title: 'ROI custom styles',
+  title: 'Custom styles',
   args: {
     showGrid: false,
     displayRotationHandle: false,

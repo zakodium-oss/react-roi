@@ -16,11 +16,22 @@ export function add(pointA: Point, pointB: Point): Point {
   };
 }
 
+export function subtract(pointA: Point, pointB: Point): Point {
+  return {
+    x: pointA.x - pointB.x,
+    y: pointA.y - pointB.y,
+  };
+}
+
 export function mulScalar(point: Point, scalar: number): Point {
   return {
     x: point.x * scalar,
     y: point.y * scalar,
   };
+}
+
+export function dotProduct(pointA: Point, pointB: Point): number {
+  return pointA.x * pointB.x + pointA.y * pointB.y;
 }
 
 export function getBoundaries(points: Point[]) {

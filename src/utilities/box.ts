@@ -387,7 +387,9 @@ export const yAxisCornerToCenter: Record<YCornerPosition, YRotationCenter> = {
   center: 'center',
 };
 
-export function getRectanglePoints(box: CommittedBox): Point[] {
+export function getRectanglePoints(
+  box: CommittedBox,
+): [Point, Point, Point, Point] {
   const { x, y, width, height, angle } = box;
   const center: Point = { x, y };
   return [

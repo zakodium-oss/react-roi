@@ -4,11 +4,11 @@ import { useMemo } from 'react';
 
 import type {
   CancelActionPayload,
-  UpdateRoiOptions,
   ZoomIntoROIOptions,
 } from '../context/roiReducer.js';
 import { zoomAction } from '../context/updaters/zoom.js';
 import type { CommittedRoi, CommittedRoiProperties } from '../index.js';
+import type { UpdateRoiOptions } from '../types/actions.ts';
 import type { RoiMode } from '../types/utils.js';
 import type { Point } from '../utilities/point.js';
 
@@ -20,6 +20,7 @@ import { useRoiDispatch } from './useRoiDispatch.js';
 export type UpdateData<TData = unknown> = Partial<
   Omit<CommittedRoiProperties<TData>, 'id'>
 >;
+
 export function useActions<TData = unknown>() {
   const roiDispatch = useRoiDispatch();
   const containerRef = useRoiContainerRef();

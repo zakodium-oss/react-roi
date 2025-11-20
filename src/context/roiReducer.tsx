@@ -12,6 +12,7 @@ import type {
 } from '../index.js';
 import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
 import type { Roi, XCornerPosition, YCornerPosition } from '../types/Roi.js';
+import type { UpdateRoiOptions } from '../types/actions.ts';
 import { assert, assertUnreachable } from '../utilities/assert.js';
 import {
   changeBoxRotationCenter,
@@ -29,6 +30,7 @@ import { cancelAction } from './updaters/cancelAction.js';
 import { endAction } from './updaters/endAction.js';
 import { updateInitialPanZoom } from './updaters/initialPanZoom.js';
 import { pointerMove } from './updaters/pointerMove.js';
+import { updateCommittedRoiPosition } from './updaters/roi.ts';
 import { sanitizeRois } from './updaters/sanitizeRois.js';
 import {
   prepareSelectedBoxForAction,
@@ -117,16 +119,6 @@ export interface ReactRoiState<TData = unknown> {
    * Zoom level min and max
    */
   zoomDomain: ZoomDomain;
-}
-
-export interface UpdateRoiOptions {
-  /**
-   * Whether the update should be committed immediately.
-   * In both cases, the ROI will move immediately on screen.
-   * If set to false, the ROI will enter a mode where it can't be modified through user interactions until committed.
-   * Setting it to false also prevents having frequent updates to committed ROIs when those can trigger expensive operations.
-   */
-  commit: boolean;
 }
 
 export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
@@ -335,7 +327,7 @@ export function roiReducer(
       case 'UPDATE_ROI': {
         const {
           id,
-          options = { commit: true, boundingStrategy: 'none' },
+          options = { commit: true, boundaryStrategy: 'none' },
           ...updatedData
         } = action.payload;
         if (!id) return;
@@ -344,11 +336,21 @@ export function roiReducer(
         if (options.commit) {
           const committedRoi = draft.committedRois[index];
           assert(committedRoi, 'Committed ROI not found');
-          Object.assign<
-            CommittedRoiProperties,
-            Partial<CommittedRoiProperties>
-          >(committedRoi, updatedData);
-          draft.rois[index] = createRoiFromCommittedRoi(committedRoi);
+          draft.rois[index] = createRoiFromCommittedRoi({
+            ...committedRoi,
+            ...updatedData,
+          });
+          try {
+            updateCommittedRoiPosition(draft, committedRoi, draft.rois[index], {
+              boundaryStrategy: options.boundaryStrategy ?? 'none',
+              boxStrategy: 'exact',
+            });
+            if (updatedData.data) {
+              committedRoi.data = updatedData.data;
+            }
+          } catch {
+            cancelAction(draft, { noUnselection: false }, id);
+          }
         } else {
           const roi = draft.rois[index];
           const { x, y, width, height, angle, ...otherData } = updatedData;

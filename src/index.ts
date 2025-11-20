@@ -10,6 +10,7 @@ export * from './types/utils.js';
 export * from './types/box.js';
 export * from './types/CommittedRoi.js';
 export * from './types/RoiList.js';
+export * from './types/actions.js';
 
 export * from './hooks/useActions.js';
 export * from './hooks/useCommittedRois.js';

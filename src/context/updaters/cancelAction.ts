@@ -1,5 +1,6 @@
 import type { Draft } from 'immer';
 
+import type { Roi } from '../../types/Roi.ts';
 import { assert } from '../../utilities/assert.js';
 import { denormalizeBox } from '../../utilities/box.js';
 import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
@@ -7,8 +8,20 @@ import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
 export function cancelAction(
   draft: Draft<ReactRoiState>,
   payload: CancelActionPayload,
+  /**
+   * If you want to cancel action for a specific ROI, provide its ID here.
+   * Otherwise, all ROIs with non-idle actions will be cancelled.
+   */
+  roiId?: string,
 ) {
-  const rois = draft.rois.filter((roi) => roi.action.type !== 'idle');
+  function byRoiId(roi: Roi) {
+    return roi.id === roiId;
+  }
+  function byIdleAction(roi: Roi) {
+    return roi.action.type !== 'idle';
+  }
+
+  const rois = draft.rois.filter(roiId ? byRoiId : byIdleAction);
 
   if (rois.length === 0) {
     return;

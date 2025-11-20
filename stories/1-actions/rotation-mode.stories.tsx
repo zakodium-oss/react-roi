@@ -7,12 +7,12 @@ import {
   RoiProvider,
   TargetImage,
   useActions,
-} from '../../../src/index.ts';
-import { Layout } from '../../utils/Layout.tsx';
-import { getInitialRois } from '../../utils/initialRois.ts';
+} from '../../src/index.ts';
+import { Layout } from '../utils/Layout.tsx';
+import { getInitialRois } from '../utils/initialRois.ts';
 
 export default {
-  title: 'hooks/useActions',
+  title: 'Actions',
   decorators: [
     (Story) => (
       <RoiProvider
