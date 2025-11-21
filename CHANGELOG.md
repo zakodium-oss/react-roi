@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.0](https://github.com/zakodium-oss/react-roi/compare/v2.0.1...v3.0.0) (2025-11-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* getStyle, getReadOnly, renderLabel, getOverlayOpacity callback props on `RoiList` have changed their contract.
+* rename `allowRotate` to `displayRotationHandle` on `RoiList`. The old option did not have a good name because it was only controlling the ability to rotate by showing and hiding the handle. There are other ways now to rotate an ROI.
+
+### Features
+
+* add commitRoiBoundaryStrategy configuration ([#172](https://github.com/zakodium-oss/react-roi/issues/172)) ([b4a7c3a](https://github.com/zakodium-oss/react-roi/commit/b4a7c3a1158e679b3733d435dd181787683d685c))
+* add new rotate_selected mode ([#171](https://github.com/zakodium-oss/react-roi/issues/171)) ([ad3578f](https://github.com/zakodium-oss/react-roi/commit/ad3578f74234b551f3dab5292fe67d828ee292ca))
+* add option not to commit when updating through actions api ([#168](https://github.com/zakodium-oss/react-roi/issues/168)) ([168dc05](https://github.com/zakodium-oss/react-roi/commit/168dc05a1bfc277cceddc4b1ee037fdf9f7a4a2f))
+* add options to customize the number of grid lines in select ROIs ([#170](https://github.com/zakodium-oss/react-roi/issues/170)) ([ba318fc](https://github.com/zakodium-oss/react-roi/commit/ba318fc3e19b2a208e42767a04eade6b5d5127af))
+* allow boundary strategy to be passed when updating rois programmatically ([#177](https://github.com/zakodium-oss/react-roi/issues/177)) ([863c925](https://github.com/zakodium-oss/react-roi/commit/863c9254ec571549a893f9c76864e4b36ff93ac0))
+
+
+### Bug Fixes
+
+* improve RoiList callback arguments ([#174](https://github.com/zakodium-oss/react-roi/issues/174)) ([2049776](https://github.com/zakodium-oss/react-roi/commit/2049776c0ddc0fa15e79c2a18e72f5c314db072c))
+
 ## [2.0.1](https://github.com/zakodium-oss/react-roi/compare/v2.0.0...v2.0.1) (2025-11-03)
 
 
