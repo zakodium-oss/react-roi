@@ -1,6 +1,7 @@
 import type { Meta } from '@storybook/react-vite';
 import { useState } from 'react';
 
+import type { GetReadOnlyCallback } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
@@ -8,7 +9,6 @@ import {
   TargetImage,
   useRoiState,
 } from '../../src/index.ts';
-import type { Roi } from '../../src/types/Roi.ts';
 import { Layout } from '../utils/Layout.tsx';
 import { getInitialRois } from '../utils/initialRois.ts';
 
@@ -20,9 +20,9 @@ export function ReadOnly() {
   const initialRois = getInitialRois(320, 320);
   const [state, setState] = useState<string | null>(null);
 
-  function getReadOnly(roi: Roi) {
+  const getReadOnly: GetReadOnlyCallback = (roi) => {
     return roi.id === state;
-  }
+  };
 
   function ReadOnlyButton() {
     const { selectedRoi } = useRoiState();

@@ -38,7 +38,10 @@ export type GetStyleCallback<TData = unknown> = (
   globalState: GlobalStateCallbackPayload,
 ) => CustomRoiStyle;
 
-export type GetReadOnlyCallback<TData = unknown> = (roi: Roi<TData>) => boolean;
+export type GetReadOnlyCallback<TData = unknown> = (
+  roi: Omit<RoiCallbackPayload<TData>, 'isReadOnly'>,
+  globalState: GlobalStateCallbackPayload,
+) => boolean;
 export type GetOverlayOpacity<TData = unknown> = (
   roi: RoiCallbackPayload<TData>,
   globalState: GlobalStateCallbackPayload,
