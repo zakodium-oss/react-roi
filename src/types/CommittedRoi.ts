@@ -9,9 +9,9 @@ export type CommittedRoiProperties<TData = unknown> = Omit<
 > &
   CommittedBox;
 
-export class CommittedRoi<TData = unknown>
-  implements CommittedRoiProperties<TData>
-{
+export class CommittedRoi<
+  TData = unknown,
+> implements CommittedRoiProperties<TData> {
   public id: string;
   public x: number;
   public y: number;

@@ -1,4 +1,9 @@
-import type { CSSProperties, JSX, ReactNode, SVGAttributes } from 'react';
+import type {
+  CSSProperties,
+  ReactElement,
+  ReactNode,
+  SVGAttributes,
+} from 'react';
 
 import type { Roi, RoiAction } from './Roi.ts';
 
@@ -30,7 +35,7 @@ export interface CustomRoiStyle {
    * This can be used for example to render an svg pattern that can then be used as a fill in `rectAttributes`
    * It is not meant to be used to render markup that will be displayed on screen, see `rectAttributes` to customize the ROI appearance
    */
-  renderCustomPattern?: () => JSX.Element;
+  renderCustomPattern?: () => ReactElement;
 }
 
 export type GetStyleCallback<TData = unknown> = (

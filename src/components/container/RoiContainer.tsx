@@ -1,4 +1,4 @@
-import type { CSSProperties, JSX, ReactNode } from 'react';
+import type { CSSProperties, ReactElement, ReactNode } from 'react';
 
 import type { Actions } from '../../hooks/useActions.js';
 import { usePanZoom } from '../../hooks/usePanZoom.js';
@@ -7,7 +7,7 @@ import type { CommittedRoiProperties } from '../../types/CommittedRoi.js';
 import { ContainerComponent } from './ContainerComponent.js';
 
 export interface RoiContainerProps<TData = unknown> {
-  target: JSX.Element;
+  target: ReactElement;
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;
@@ -49,16 +49,18 @@ interface CallbackParameterBase<TData = unknown> {
   roisBeforeCommit: Array<CommittedRoiProperties<TData>>;
 }
 
-export interface OnCommitCallbackParameter<TData = unknown>
-  extends CallbackParameterBase<TData> {
+export interface OnCommitCallbackParameter<
+  TData = unknown,
+> extends CallbackParameterBase<TData> {
   /**
    * The ROI which just got updated / created through user interaction, before it is committed.
    */
   roi: CommittedRoiProperties<TData>;
 }
 
-export interface OnChangeCallbackParameter<TData = unknown>
-  extends CallbackParameterBase<TData> {
+export interface OnChangeCallbackParameter<
+  TData = unknown,
+> extends CallbackParameterBase<TData> {
   /**
    * The new ROI which just got updated / created through user interaction
    * before it is committed. It can be null when drawing a new ROI which is

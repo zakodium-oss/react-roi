@@ -36,7 +36,7 @@ export const committedRoisContext = createContext<
 export const roisContext = createContext<Roi[] | null>(null);
 
 export const roiContainerRefContext =
-  createContext<RefObject<HTMLDivElement> | null>(null);
+  createContext<RefObject<HTMLDivElement | null> | null>(null);
 
 export interface PanZoomContext {
   panZoom: PanZoom;

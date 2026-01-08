@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { memo, useEffect } from 'react';
 
 import { usePanZoom } from '../../hooks/usePanZoom.js';
@@ -29,7 +29,7 @@ interface RoiBoxProps {
   gridOptions: GetGridLinesOptions;
 }
 
-function RoiBoxInternal(props: RoiBoxProps): JSX.Element {
+function RoiBoxInternal(props: RoiBoxProps): ReactElement {
   const {
     roi,
     getStyle,
