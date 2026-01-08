@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/zakodium-oss/react-roi/compare/v3.0.0...v3.1.0) (2026-01-08)
+
+
+### Features
+
+* update dependencies ([#182](https://github.com/zakodium-oss/react-roi/issues/182)) ([43033d8](https://github.com/zakodium-oss/react-roi/commit/43033d853eae53d510cbccdad22b7f850d5a9a70))
+
 ## [3.0.0](https://github.com/zakodium-oss/react-roi/compare/v2.0.1...v3.0.0) (2025-11-21)
 
 
