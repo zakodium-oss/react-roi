@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export function useLoadImage(
   imgId: string,
-  canvas: RefObject<HTMLCanvasElement>,
+  canvas: RefObject<HTMLCanvasElement | null>,
 ) {
   const [image, setImage] = useState<Image | null>(null);
 

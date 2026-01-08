@@ -1,6 +1,6 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
-import type { CSSProperties, JSX, MutableRefObject, ReactNode } from 'react';
+import type { CSSProperties, ReactElement, ReactNode, RefObject } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 
 import type { ActionCallbacks, LockContext } from '../../context/contexts.js';
@@ -26,7 +26,7 @@ import { roiHasChanged } from '../../utilities/rois.js';
 import { throttle } from '../../utilities/throttle.js';
 
 interface ContainerProps<TData = unknown> {
-  target: JSX.Element & { ref?: MutableRefObject<HTMLImageElement> };
+  target: ReactElement & { ref?: RefObject<HTMLImageElement> };
   children: ReactNode;
   style?: CSSProperties;
   className?: string;
