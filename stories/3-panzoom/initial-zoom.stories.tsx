@@ -15,12 +15,16 @@ export default {
 export function InitialZoomLevel() {
   return (
     <Layout>
+      <p>With initial zoom level of 0.8</p>
       <RoiProvider
         initialConfig={{
-          zoom: { initial: { scale: 1.4, translation: [0, 0] } },
+          zoom: { initial: { scale: 0.8, origin: 'center' } },
         }}
       >
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+        <RoiContainer
+          target={<TargetImage src="/barbara.jpg" />}
+          style={{ border: 'solid 1px red' }}
+        >
           <RoiList />
         </RoiContainer>
       </RoiProvider>

@@ -58,7 +58,7 @@ function RoiBoxInternal(props: RoiBoxProps): ReactElement {
   };
 
   const globalStatePayload = {
-    zoomScale: panzoom.panZoom.scale * panzoom.initialPanZoom.scale,
+    zoomScale: panzoom.panZoom.scale * panzoom.basePanZoom.scale,
   };
 
   const isReadOnly =

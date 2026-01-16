@@ -9,33 +9,21 @@ export const initialSize: Size = {
   width: 1,
   height: 1,
 };
-export function isSizeObserved(data: {
-  targetSize: Size;
-  containerSize: Size;
-}) {
-  // Those are initialized to a fixed value and get updated by the resize observers
-  // When both the size of the target and the container are set we can:
-  // - Make the target visible
-  // - Compute the initial transform which fits the target inside the container
-  return (
-    data.targetSize.width !== initialSize.height ||
-    data.containerSize.width !== initialSize.width
-  );
-}
-export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
-  if (!isSizeObserved(draft)) {
+
+export function updateBasePanZoom(draft: Draft<ReactRoiState>) {
+  if (!draft.isInitialized) {
     return;
   }
 
   switch (draft.resizeStrategy) {
     case 'contain':
-      updateInitialPanZoomContain(draft);
+      updateBasePanZoomContain(draft);
       break;
     case 'cover':
-      updateInitialPanZoomCover(draft);
+      updateBasePanZoomCover(draft);
       break;
     case 'center':
-      updateInitialPanZoomCenter(draft);
+      updateBasePanZoomCenter(draft);
       break;
     case 'none':
       updateInitialPanZoomNone(draft);
@@ -45,7 +33,7 @@ export function updateInitialPanZoom(draft: Draft<ReactRoiState>) {
   }
 }
 
-function updateInitialPanZoomCover(draft: Draft<ReactRoiState>) {
+function updateBasePanZoomCover(draft: Draft<ReactRoiState>) {
   const { targetSize, containerSize } = draft;
   const wFactor = targetSize.width / containerSize.width;
   const hFactor = targetSize.height / containerSize.height;
@@ -53,57 +41,57 @@ function updateInitialPanZoomCover(draft: Draft<ReactRoiState>) {
     // Target is bigger than container
     if (wFactor > hFactor) {
       // Target is wider than container
-      draft.initialPanZoom.scale = 1 / hFactor;
-      draft.initialPanZoom.translation = [
+      draft.basePanZoom.scale = 1 / hFactor;
+      draft.basePanZoom.translation = [
         -(targetSize.width / hFactor - containerSize.width) / 2,
         0,
       ];
     } else {
       // Target is taller than container
-      draft.initialPanZoom.scale = 1 / wFactor;
-      draft.initialPanZoom.translation = [
+      draft.basePanZoom.scale = 1 / wFactor;
+      draft.basePanZoom.translation = [
         0,
         -(targetSize.height / wFactor - containerSize.height) / 2,
       ];
     }
   } else {
     // The image is smaller, just center it
-    draft.initialPanZoom.scale = 1;
-    updateInitialPanZoomCenter(draft);
+    draft.basePanZoom.scale = 1;
+    updateBasePanZoomCenter(draft);
   }
 }
 
-function updateInitialPanZoomContain(draft: Draft<ReactRoiState>) {
+function updateBasePanZoomContain(draft: Draft<ReactRoiState>) {
   const { targetSize, containerSize } = draft;
   const wFactor = targetSize.width / containerSize.width;
   const hFactor = targetSize.height / containerSize.height;
   if (wFactor > 1 || hFactor > 1) {
-    // Target is bigger than container
+    // Target is bigger than the container
     if (wFactor > hFactor) {
-      // Target is wider than container
-      draft.initialPanZoom.scale = 1 / wFactor;
-      updateInitialPanZoomCenter(draft);
+      // Target is wider than the container
+      draft.basePanZoom.scale = 1 / wFactor;
+      updateBasePanZoomCenter(draft);
     } else {
-      // Target is taller than container
-      draft.initialPanZoom.scale = 1 / hFactor;
-      updateInitialPanZoomCenter(draft);
+      // Target is taller than the container
+      draft.basePanZoom.scale = 1 / hFactor;
+      updateBasePanZoomCenter(draft);
     }
   } else {
     // The image is smaller, just center it
-    draft.initialPanZoom.scale = 1;
-    updateInitialPanZoomCenter(draft);
+    draft.basePanZoom.scale = 1;
+    updateBasePanZoomCenter(draft);
   }
 }
 
-function updateInitialPanZoomCenter(draft: Draft<ReactRoiState>) {
-  const { targetSize, containerSize, initialPanZoom } = draft;
-  draft.initialPanZoom.translation = [
-    (containerSize.width - initialPanZoom.scale * targetSize.width) / 2,
-    (containerSize.height - initialPanZoom.scale * targetSize.height) / 2,
+function updateBasePanZoomCenter(draft: Draft<ReactRoiState>) {
+  const { targetSize, containerSize, basePanZoom } = draft;
+  draft.basePanZoom.translation = [
+    (containerSize.width - basePanZoom.scale * targetSize.width) / 2,
+    (containerSize.height - basePanZoom.scale * targetSize.height) / 2,
   ];
 }
 
 function updateInitialPanZoomNone(draft: Draft<ReactRoiState>) {
-  draft.initialPanZoom.scale = 1;
-  draft.initialPanZoom.translation = [0, 0];
+  draft.basePanZoom.scale = 1;
+  draft.basePanZoom.translation = [0, 0];
 }

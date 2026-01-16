@@ -5,6 +5,7 @@ import type {
   BoundaryStrategy,
   CommittedRoi,
   PanZoom,
+  PanZoomWithOrigin,
   ReactRoiAction,
   ResizeStrategy,
   RoiMode,
@@ -28,7 +29,7 @@ import {
 
 import { cancelAction } from './updaters/cancelAction.js';
 import { endAction } from './updaters/endAction.js';
-import { updateInitialPanZoom } from './updaters/initialPanZoom.js';
+import { updateBasePanZoom } from './updaters/initialPanZoom.js';
 import { pointerMove } from './updaters/pointerMove.js';
 import { updateCommittedRoiPosition } from './updaters/roi.ts';
 import { sanitizeRois } from './updaters/sanitizeRois.js';
@@ -113,12 +114,24 @@ export interface ReactRoiState<TData = unknown> {
   /**
    * Defines the inital panZoom transform so that the image is appropriately scaled and centered in the container
    */
-  initialPanZoom: PanZoom;
+  basePanZoom: PanZoom;
+
+  /**
+   * Defines starting panzoom level
+   * Use to compute the panzoom level when the component is initialized or
+   * when the zoom level is reset.
+   */
+  startPanZoom: PanZoomWithOrigin;
 
   /**
    * Zoom level min and max
    */
   zoomDomain: ZoomDomain;
+
+  /**
+   * Toggled to true once image and container dimensions are known.
+   */
+  isInitialized: boolean;
 }
 
 export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
@@ -263,13 +276,18 @@ export function roiReducer(
         if (action.payload.width === 0 || action.payload.height === 0) return;
 
         draft.targetSize = action.payload;
-        updateInitialPanZoom(draft);
         sanitizeRois(draft);
         break;
       }
       case 'SET_CONTAINER_SIZE': {
         draft.containerSize = action.payload;
-        updateInitialPanZoom(draft);
+        if (draft.targetSize && !draft.isInitialized) {
+          draft.isInitialized = true;
+          updateBasePanZoom(draft);
+          resetZoomAction(draft);
+        } else {
+          updateBasePanZoom(draft);
+        }
         break;
       }
       case 'REMOVE_ROI': {

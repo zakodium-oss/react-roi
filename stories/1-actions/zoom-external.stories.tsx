@@ -148,6 +148,7 @@ export function UpdateZoom({
       initialConfig={{
         rois: getInitialRois(320, 320),
         zoom: {
+          initial: { scale: 2, translation: [0, 0], origin: 'center' },
           min: minZoom,
           max: maxZoom,
           spaceAroundTarget,

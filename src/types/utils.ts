@@ -16,6 +16,10 @@ export interface PanZoom {
   translation: [number, number];
 }
 
+export interface PanZoomWithOrigin extends PanZoom {
+  origin: 'top-left' | 'center';
+}
+
 export type RoiMode = 'select' | 'draw' | 'hybrid' | 'rotate_selected';
 
 export type ResizeStrategy = 'cover' | 'contain' | 'center' | 'none';

@@ -6,10 +6,12 @@ import type {
   OnChangeCallback,
   OnCommitCallback,
   PanZoom,
+  PanZoomWithOrigin,
   RoiState,
   Size,
 } from '../index.js';
 import type { Roi } from '../types/Roi.js';
+import { getIdentityPanzoom } from '../utilities/panZoom.ts';
 
 import type { ReactRoiState, RoiReducerAction } from './roiReducer.js';
 import { initialSize } from './updaters/initialPanZoom.js';
@@ -40,7 +42,8 @@ export const roiContainerRefContext =
 
 export interface PanZoomContext {
   panZoom: PanZoom;
-  initialPanZoom: PanZoom;
+  basePanZoom: PanZoom;
+  startPanZoom: PanZoomWithOrigin;
   isReady: boolean;
   targetSize: Size;
   containerSize: Size;
@@ -55,13 +58,11 @@ export const panZoomContext = createContext<PanZoomContext>({
     width: initialSize.width,
     height: initialSize.height,
   },
-  panZoom: {
-    scale: 1,
-    translation: [0, 0],
-  },
-  initialPanZoom: {
-    scale: 1,
-    translation: [0, 0],
+  panZoom: getIdentityPanzoom(),
+  basePanZoom: getIdentityPanzoom(),
+  startPanZoom: {
+    ...getIdentityPanzoom(),
+    origin: 'top-left',
   },
   isReady: false,
 });

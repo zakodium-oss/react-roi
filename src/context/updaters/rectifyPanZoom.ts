@@ -82,11 +82,11 @@ function computePanZoomTranslation(
   container: number,
   dim: 0 | 1,
 ) {
-  const { initialPanZoom, panZoom } = draft;
+  const { basePanZoom, panZoom } = draft;
   return (
     container -
-    target * initialPanZoom.scale * panZoom.scale -
-    panZoom.scale * initialPanZoom.translation[dim]
+    target * basePanZoom.scale * panZoom.scale -
+    panZoom.scale * basePanZoom.translation[dim]
   );
 }
 
