@@ -66,7 +66,7 @@ export function BoxSvg({
         action: roi.action.type,
       },
       {
-        zoomScale: panZoom.panZoom.scale * panZoom.initialPanZoom.scale,
+        zoomScale: panZoom.panZoom.scale * panZoom.basePanZoom.scale,
       },
     ),
   };

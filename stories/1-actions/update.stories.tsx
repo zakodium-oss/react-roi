@@ -125,7 +125,7 @@ export function UpdatePositionWithCommitStrategyDebug() {
           min: 0.1,
           initial: {
             scale: 0.5,
-            translation: [80, 80],
+            origin: 'center',
           },
         },
       }}

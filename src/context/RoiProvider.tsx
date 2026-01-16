@@ -6,11 +6,13 @@ import type {
   OnChangeCallback,
   OnCommitCallback,
   PanZoom,
+  PanZoomWithOrigin,
   ResizeStrategy,
   RoiMode,
   RoiState,
 } from '../index.js';
 import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
+import { getIdentityPanzoom } from '../utilities/panZoom.ts';
 import { createRoiFromCommittedRoi } from '../utilities/rois.js';
 import { normalizeAngle } from '../utilities/rotate.js';
 
@@ -27,16 +29,21 @@ import {
 } from './contexts.js';
 import type { CommitBoxStrategy, ReactRoiState } from './roiReducer.js';
 import { roiReducer } from './roiReducer.js';
-import { initialSize, isSizeObserved } from './updaters/initialPanZoom.js';
+import { initialSize } from './updaters/initialPanZoom.js';
 
 export interface RoiProviderInitialConfig<TData> {
   mode?: RoiMode;
   zoom?: {
     /**
      * The initial zoom level.
+     * The scaling and translation apply on the coordinate system of the container.
+     * Therefore, translations are in device pixels.
+     * The origin is the fixed point of the scaling transformation, before the translation applies:
+     *   - 'top-left': the top left corner of the container
+     *   - 'center': the center of the container
      * @default { scale: 1, translation: [0, 0]}
      */
-    initial?: PanZoom;
+    initial?: Partial<PanZoomWithOrigin>;
     /**
      * The minimum zoom level allowed.
      * @default 1
@@ -103,7 +110,7 @@ interface RoiProviderProps<TData> {
 type CreateInitialConfigParam<T> = Required<
   Omit<RoiProviderInitialConfig<T>, 'selectedRoiId'>
 > & {
-  zoom: Required<RoiProviderInitialConfig<T>['zoom']>;
+  zoom: Required<Required<RoiProviderInitialConfig<T>['zoom']>>;
   selectedRoiId?: string;
 };
 
@@ -113,6 +120,7 @@ function createInitialState<T>(
   return {
     mode: initialConfig.mode,
     action: 'idle',
+    isInitialized: false,
     resizeStrategy: initialConfig.resizeStrategy,
     commitRoiBoxStrategy: initialConfig.commitRoiBoxStrategy,
     commitRoiBoundaryStrategy: initialConfig.commitRoiBoundaryStrategy,
@@ -126,10 +134,12 @@ function createInitialState<T>(
         angle: normalizeAngle(committedRoi.angle),
       }))
       .map((committedRoi) => createRoiFromCommittedRoi(committedRoi)),
-    panZoom: initialConfig.zoom.initial,
-    initialPanZoom: {
-      scale: 1,
-      translation: [0, 0],
+    panZoom: getIdentityPanzoom(),
+    basePanZoom: getIdentityPanzoom(),
+    startPanZoom: {
+      scale: initialConfig.zoom.initial?.scale ?? 1,
+      translation: initialConfig.zoom.initial?.translation ?? [0, 0],
+      origin: initialConfig.zoom.initial?.origin ?? 'top-left',
     },
     zoomDomain: initialConfig.zoom,
     rotationResolution: initialConfig.rotationResolution,
@@ -147,7 +157,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const {
     rois: initialRois = [],
     mode: initialMode = 'hybrid',
-    zoom: { min = 1, max = 200, spaceAroundTarget = 0.5 } = {},
+    zoom = {},
     selectedRoiId,
     commitRoiBoundaryStrategy = 'inside_auto',
     resizeStrategy = 'contain',
@@ -155,6 +165,10 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     rotationResolution = 1200,
   } = initialConfig;
 
+  const { spaceAroundTarget = 0.5 } = zoom;
+  // Choose the most appropriate min / max based on different parameters
+  const min = Math.min(zoom.min ?? 1, zoom.initial?.scale ?? 1);
+  const max = Math.max(zoom.max ?? 200, zoom.initial?.scale ?? 1);
   const [state, dispatch] = useReducer(roiReducer, null, () =>
     createInitialState<TData>({
       mode: initialMode,
@@ -164,8 +178,8 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
         max,
         spaceAroundTarget,
         initial: initialConfig.zoom?.initial ?? {
-          scale: 1,
-          translation: [0, 0],
+          ...getIdentityPanzoom(),
+          origin: 'top-left',
         },
       },
       commitRoiBoundaryStrategy,
@@ -201,9 +215,11 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     mode,
     selectedRoi,
     panZoom,
-    initialPanZoom,
+    basePanZoom,
+    startPanZoom,
     targetSize,
     containerSize,
+    isInitialized,
     action,
   } = state;
   const roiState: RoiState = useMemo(() => {
@@ -219,11 +235,19 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
       targetSize,
       containerSize,
       panZoom,
-      initialPanZoom,
+      basePanZoom,
+      startPanZoom,
       // We memoize this here to minimize the number of times we need to render the container
-      isReady: isSizeObserved({ targetSize, containerSize }),
+      isReady: isInitialized,
     };
-  }, [panZoom, initialPanZoom, targetSize, containerSize]);
+  }, [
+    panZoom,
+    basePanZoom,
+    startPanZoom,
+    isInitialized,
+    targetSize,
+    containerSize,
+  ]);
 
   return (
     <callbacksRefContext.Provider value={callbacksRef}>
