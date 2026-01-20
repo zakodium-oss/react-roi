@@ -16,8 +16,10 @@ export interface PanZoom {
   translation: [number, number];
 }
 
+export type RotationOrigin = 'top-left' | 'center';
+
 export interface PanZoomWithOrigin extends PanZoom {
-  origin: 'top-left' | 'center';
+  origin: RotationOrigin;
 }
 
 export type RoiMode = 'select' | 'draw' | 'hybrid' | 'rotate_selected';

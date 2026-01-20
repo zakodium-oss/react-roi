@@ -21,16 +21,17 @@ export function CommittedRoisButton(props: {
     }
     const newImage = image.clone();
     for (const roi of rois) {
-      newImage.drawRectangle({
-        strokeColor: [255, 255, 255],
-        origin: {
-          column: Math.round(roi.x),
-          row: Math.round(roi.y),
+      const points = roi.getRectanglePoints();
+      newImage.drawPolygon(
+        points.map((point) => ({
+          row: point.y,
+          column: point.x,
+        })),
+        {
+          strokeColor: [255, 255, 255],
+          out: newImage,
         },
-        width: Math.round(roi.width),
-        height: Math.round(roi.height),
-        out: newImage,
-      });
+      );
     }
 
     if (ref.current) {

@@ -24,3 +24,11 @@ export interface UpdateRoiOptionsWithCommit {
   commit: true;
   boundaryStrategy?: UpdateRoiOptionsBoundaryStrategy;
 }
+
+export type XRotationCenter = 'left' | 'right' | 'center';
+export type YRotationCenter = 'top' | 'bottom' | 'center';
+
+export type UpdateRoiAngleOptions = UpdateRoiOptions & {
+  xRotationCenter: XRotationCenter;
+  yRotationCenter: YRotationCenter;
+};
