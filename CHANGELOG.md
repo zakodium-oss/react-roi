@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.0](https://github.com/zakodium-oss/react-roi/compare/v3.1.0...v3.2.0) (2026-01-20)
+
+
+### Features
+
+* add update angle action ([#189](https://github.com/zakodium-oss/react-roi/issues/189)) ([3e50924](https://github.com/zakodium-oss/react-roi/commit/3e5092477212b504a471e81f1f03048d6276619a))
+* allow a zoom init level which transforms the image relative to the center of the container ([#186](https://github.com/zakodium-oss/react-roi/issues/186)) ([6536d80](https://github.com/zakodium-oss/react-roi/commit/6536d80ab8143001857333898919354118052698))
+* make 1D side resize handle easier to use ([#188](https://github.com/zakodium-oss/react-roi/issues/188)) ([138e5fb](https://github.com/zakodium-oss/react-roi/commit/138e5fbac2e8279148a3242fed3335e539954bfc))
+
 ## [3.1.0](https://github.com/zakodium-oss/react-roi/compare/v3.0.0...v3.1.0) (2026-01-08)
 
 
