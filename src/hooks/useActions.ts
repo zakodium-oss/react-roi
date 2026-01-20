@@ -10,7 +10,7 @@ import { zoomAction } from '../context/updaters/zoom.js';
 import type {
   CommittedRoi,
   CommittedRoiProperties,
-  RotateRoiOptions,
+  UpdateRoiAngleOptions,
 } from '../index.js';
 import type { UpdateRoiOptions } from '../types/actions.ts';
 import type { RoiMode } from '../types/utils.js';
@@ -85,7 +85,7 @@ export function useActions<TData = unknown>() {
       updateRoiAngle: (
         roiId: string,
         angle: number,
-        options?: RotateRoiOptions,
+        options?: UpdateRoiAngleOptions,
       ) => {
         roiDispatch({
           type: 'UPDATE_ROI_ANGLE',

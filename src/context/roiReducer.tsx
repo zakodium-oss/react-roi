@@ -9,8 +9,8 @@ import type {
   ReactRoiAction,
   ResizeStrategy,
   RoiMode,
-  RotateRoiOptions,
   Size,
+  UpdateRoiAngleOptions,
 } from '../index.js';
 import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
 import type { Roi, XCornerPosition, YCornerPosition } from '../types/Roi.js';
@@ -168,7 +168,7 @@ export interface ZoomIntoROIPayload {
 export interface UpdateAnglePayload {
   id: string;
   angle: number;
-  options?: RotateRoiOptions;
+  options?: UpdateRoiAngleOptions;
 }
 
 export interface StartDrawPayload {

@@ -28,11 +28,7 @@ export interface UpdateRoiOptionsWithCommit {
 export type XRotationCenter = 'left' | 'right' | 'center';
 export type YRotationCenter = 'top' | 'bottom' | 'center';
 
-interface UpdateRoiRotationOptions {
+export type UpdateRoiAngleOptions = UpdateRoiOptions & {
   xRotationCenter: XRotationCenter;
   yRotationCenter: YRotationCenter;
-}
-
-export type RotateRoiOptions =
-  | (UpdateRoiOptionsWithCommit & UpdateRoiRotationOptions)
-  | (UpdateRoiOptionsNoCommit & UpdateRoiRotationOptions);
+};
