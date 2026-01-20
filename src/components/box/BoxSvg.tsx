@@ -169,6 +169,7 @@ export function BoxSvg({
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
             disabled={!isResizableMode(roiState.mode)}
+            box={box}
             corner={corner}
             roiId={roi.id}
             sizes={handlerSizes}

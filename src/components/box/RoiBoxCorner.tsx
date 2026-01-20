@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import { useRoiState } from '../../hooks/useRoiState.js';
+import type { Box } from '../../utilities/box.ts';
 import type { CornerData } from '../../utilities/corners.js';
 import { defaultHandlerColor } from '../constants.js';
 
@@ -12,6 +13,7 @@ import { getCursor } from './utils.js';
 type PointerDownCallback = PointerEventHandler<SVGRectElement>;
 
 interface RoiBoxCornerProps {
+  box: Box;
   corner: CornerData;
   roiId: string;
   sizes: HandlerSizeOptions;
@@ -20,6 +22,7 @@ interface RoiBoxCornerProps {
 }
 
 export function RoiBoxCorner({
+  box,
   corner,
   roiId,
   sizes,
@@ -53,6 +56,7 @@ export function RoiBoxCorner({
   if (corner.xPosition === 'center' || corner.yPosition === 'center') {
     return (
       <SideHandler
+        box={box}
         corner={corner}
         onPointerDown={onPointerDown}
         scaledSizes={sizes}
@@ -73,12 +77,14 @@ export function RoiBoxCorner({
 }
 
 function SideHandler({
+  box,
   corner,
   onPointerDown,
   scaledSizes,
   disabled,
   handlerColor = defaultHandlerColor,
 }: {
+  box: Box;
   corner: CornerData;
   onPointerDown: PointerDownCallback;
   scaledSizes: HandlerSizeOptions;
@@ -88,7 +94,7 @@ function SideHandler({
   const roiState = useRoiState();
 
   const linePoints = getSidePoints(corner, scaledSizes);
-  const handlerRect = getHandlerRect(corner, scaledSizes);
+  const handlerRect = getSideHandlerRect(box, corner, scaledSizes);
   const transform = getTransform(corner, scaledSizes);
   return (
     <g transform={transform}>
@@ -191,6 +197,32 @@ function getHandlerRect(corner: CornerData, scaledSizes: HandlerSizeOptions) {
     width,
     height,
   };
+}
+
+function getSideHandlerRect(
+  box: Box,
+  corner: CornerData,
+  scaledSizes: HandlerSizeOptions,
+) {
+  if (corner.xPosition === 'center') {
+    return {
+      x: box.x + scaledSizes.handlerSize,
+      y: corner.cy - scaledSizes.handlerSize,
+      width: box.width - 2 * scaledSizes.handlerSize,
+      height: scaledSizes.handlerSize * 2,
+    };
+  } else if (corner.yPosition === 'center') {
+    return {
+      x: corner.cx - scaledSizes.handlerSize,
+      y: box.y + scaledSizes.handlerSize,
+      width: scaledSizes.handlerSize * 2,
+      height: box.height - 2 * scaledSizes.handlerSize,
+    };
+  } else {
+    throw new Error(
+      `Invalid corner position: ${corner.xPosition}, ${corner.yPosition} is not a side`,
+    );
+  }
 }
 
 function getTransform(corner: CornerData, scaledSizes: HandlerSizeOptions) {
