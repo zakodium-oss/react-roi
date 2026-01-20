@@ -25,7 +25,7 @@ export default {
   title: 'Actions',
 } as Meta;
 
-export function UpdatePosition() {
+export function UpdateRoiPosition() {
   function UpdateXYPositionButton() {
     const { selectedRoi } = useRoiState();
     const { updateRoi } = useActions();
@@ -70,7 +70,7 @@ export function UpdatePosition() {
   );
 }
 
-export function UpdateRotation() {
+export function UpdateRoiAngle() {
   function UpdateXYPositionButton() {
     const [angle, setAngle] = useState('15');
     const [xRotationCenter, setXRotationCenter] =
