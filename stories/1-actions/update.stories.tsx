@@ -6,6 +6,8 @@ import type {
   CommittedRoiProperties,
   UpdateData,
   UpdateRoiOptionsBoundaryStrategy,
+  XRotationCenter,
+  YRotationCenter,
 } from '../../src/index.ts';
 import {
   RoiContainer,
@@ -49,6 +51,100 @@ export function UpdatePosition() {
         <button type="button" onClick={() => onClick('top')}>
           Move ROI to the top
         </button>
+      </div>
+    );
+  }
+
+  return (
+    <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
+      <Layout>
+        <UpdateXYPositionButton />
+        <RoiContainer
+          target={<TargetImage id="story-image" src="/barbara.jpg" />}
+        >
+          <RoiList />
+        </RoiContainer>
+        <CommittedRoisButton />
+      </Layout>
+    </RoiProvider>
+  );
+}
+
+export function UpdateRotation() {
+  function UpdateXYPositionButton() {
+    const [angle, setAngle] = useState('15');
+    const [xRotationCenter, setXRotationCenter] =
+      useState<XRotationCenter>('center');
+    const [yRotationCenter, setYRotationCenter] =
+      useState<YRotationCenter>('center');
+    const { selectedRoi } = useRoiState();
+    const { updateRoiAngle } = useActions();
+
+    function updateAngle(commit: boolean, angle: number) {
+      if (selectedRoi) {
+        updateRoiAngle(selectedRoi, (angle * Math.PI) / 180, {
+          xRotationCenter,
+          yRotationCenter,
+          commit,
+          boundaryStrategy: 'none',
+        });
+      }
+    }
+
+    return (
+      <div
+        style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: 5 }}
+      >
+        <label htmlFor="angle">Angle (degrees)</label>
+        <input
+          id="angle"
+          type="number"
+          onChange={(event) => setAngle(event.target.value)}
+          value={angle}
+        />
+        <label htmlFor="xRotationCenter">Center X</label>
+        <select
+          id="xRotationCenter"
+          name="xRotationCenter"
+          onChange={(event) =>
+            setXRotationCenter(event.target.value as XRotationCenter)
+          }
+        >
+          <option value="center">Center</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+        <label htmlFor="yRotationCenter">Center Y</label>
+        <select
+          id="yRotationCenter"
+          name="yRotationCenter"
+          onChange={(event) =>
+            setYRotationCenter(event.target.value as YRotationCenter)
+          }
+        >
+          <option value="center">Center</option>
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+        </select>
+
+        <button type="button" onClick={() => updateAngle(true, Number(angle))}>
+          Set angle and commit
+        </button>
+        <input
+          type="range"
+          min={-180}
+          max={180}
+          step={1}
+          value={angle}
+          onChange={(event) => {
+            const angle = event.target.valueAsNumber;
+            setAngle(angle.toString());
+            updateAngle(false, angle);
+          }}
+          onPointerUp={() => {
+            updateAngle(true, Number(angle));
+          }}
+        />
       </div>
     );
   }

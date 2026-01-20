@@ -9,6 +9,7 @@ import type {
   ReactRoiAction,
   ResizeStrategy,
   RoiMode,
+  RotateRoiOptions,
   Size,
 } from '../index.js';
 import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
@@ -27,6 +28,7 @@ import {
   createRoiFromCommittedRoi,
 } from '../utilities/rois.js';
 
+import { updateAngle } from './updaters/angle.ts';
 import { cancelAction } from './updaters/cancelAction.js';
 import { endAction } from './updaters/endAction.js';
 import { updateBasePanZoom } from './updaters/initialPanZoom.js';
@@ -163,6 +165,12 @@ export interface ZoomIntoROIPayload {
   options: ZoomIntoROIOptions;
 }
 
+export interface UpdateAnglePayload {
+  id: string;
+  angle: number;
+  options?: RotateRoiOptions;
+}
+
 export interface StartDrawPayload {
   event: PointerEvent | ReactPointerEvent;
   containerBoundingRect: DOMRect;
@@ -255,6 +263,7 @@ export type RoiReducerAction =
       payload: ZoomPayload;
     }
   | { type: 'ZOOM_INTO_ROI'; payload: ZoomIntoROIPayload }
+  | { type: 'UPDATE_ROI_ANGLE'; payload: UpdateAnglePayload }
   | {
       type: 'RESET_ZOOM';
     }
@@ -463,6 +472,9 @@ export function roiReducer(
         break;
       case 'ZOOM_INTO_ROI':
         zoomIntoROI(draft, action.payload);
+        break;
+      case 'UPDATE_ROI_ANGLE':
+        updateAngle(draft, action.payload);
         break;
       case 'RESET_ZOOM':
         resetZoomAction(draft);

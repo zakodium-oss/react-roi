@@ -4,6 +4,7 @@ import type {
   XCornerPosition,
   YCornerPosition,
 } from '../types/Roi.js';
+import type { XRotationCenter, YRotationCenter } from '../types/actions.ts';
 import type { CommittedBox } from '../types/box.js';
 import type { PanZoom } from '../types/utils.js';
 
@@ -30,9 +31,6 @@ export interface Box {
    */
   height: number;
 }
-
-export type XRotationCenter = 'left' | 'right' | 'center';
-export type YRotationCenter = 'top' | 'bottom' | 'center';
 
 /**
  * Represents the coordinates and angle of a box
@@ -319,6 +317,12 @@ export function changeBoxRotationCenter(
   box: BoxWithRotationCenter,
   newCenter: CenterOrigin,
 ): BoxWithRotationCenter {
+  if (
+    box.xRotationCenter === newCenter.xRotationCenter &&
+    box.yRotationCenter === newCenter.yRotationCenter
+  ) {
+    return box;
+  }
   const oldRotationCenter = getRotationCenter(box);
   const altPoint = getRotationCenter({ ...box, ...newCenter });
   const newCenterPoint = rotatePoint(altPoint, oldRotationCenter, box.angle);

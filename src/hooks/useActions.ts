@@ -7,7 +7,11 @@ import type {
   ZoomIntoROIOptions,
 } from '../context/roiReducer.js';
 import { zoomAction } from '../context/updaters/zoom.js';
-import type { CommittedRoi, CommittedRoiProperties } from '../index.js';
+import type {
+  CommittedRoi,
+  CommittedRoiProperties,
+  RotateRoiOptions,
+} from '../index.js';
 import type { UpdateRoiOptions } from '../types/actions.ts';
 import type { RoiMode } from '../types/utils.js';
 import type { Point } from '../utilities/point.js';
@@ -74,6 +78,19 @@ export function useActions<TData = unknown>() {
           );
           callbacksRef.current.onZoom(newState.panZoom);
         }
+      },
+      /**
+       * Update the angle of the ROI, using a custom rotation center.
+       */
+      updateRoiAngle: (
+        roiId: string,
+        angle: number,
+        options?: RotateRoiOptions,
+      ) => {
+        roiDispatch({
+          type: 'UPDATE_ROI_ANGLE',
+          payload: { id: roiId, angle, options },
+        });
       },
       createRoi: (roi: CommittedRoiProperties<TData>) => {
         roiDispatch({
