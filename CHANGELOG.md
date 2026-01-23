@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/zakodium-oss/react-roi/compare/v3.2.0...v3.2.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* target and container size initialization order should not affect base transform calculations ([#190](https://github.com/zakodium-oss/react-roi/issues/190)) ([52afd14](https://github.com/zakodium-oss/react-roi/commit/52afd142793a9939a90f723ed744b6631991b8b2))
+
 ## [3.2.0](https://github.com/zakodium-oss/react-roi/compare/v3.1.0...v3.2.0) (2026-01-20)
 
 
