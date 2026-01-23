@@ -81,6 +81,7 @@ export interface RoiProviderInitialConfig<TData> {
    *            scaled at all if the target is smaller than the container. The center of the target matches the center
    *            of the container.
    * - `center`: The center of the target matches the center of the container, without scaling the target.
+   * @default 'contain'
    */
   resizeStrategy?: ResizeStrategy;
   /**
