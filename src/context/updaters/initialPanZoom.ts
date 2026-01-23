@@ -10,11 +10,11 @@ export const initialSize: Size = {
   height: 1,
 };
 
+/**
+ * Updates the base transform which places the target relative to the container.
+ * This should only be called once both the target and container sizes are known.
+ */
 export function updateBasePanZoom(draft: Draft<ReactRoiState>) {
-  if (!draft.isInitialized) {
-    return;
-  }
-
   switch (draft.resizeStrategy) {
     case 'contain':
       updateBasePanZoomContain(draft);

@@ -71,6 +71,18 @@ export interface RoiProviderInitialConfig<TData> {
    * @default 'inside_auto'
    */
   commitRoiBoundaryStrategy?: BoundaryStrategy;
+  /**
+   * Defines how the target should fit within the container at initialization.
+   * - `none`: The target is not transformed relative to the container. The top-left corner of the target matches the
+   *           top-left corner of the container.
+   * - `contain`: The target is transformed such as the full target is visible in the container. The center of the
+   *              target matches the center of the container.
+   * - `cover`: The target is scaled down such that one of the dimensions is fitting the container exactly, or not
+   *            scaled at all if the target is smaller than the container. The center of the target matches the center
+   *            of the container.
+   * - `center`: The center of the target matches the center of the container, without scaling the target.
+   * @default 'contain'
+   */
   resizeStrategy?: ResizeStrategy;
   /**
    * How should the roi be updated before committing it when created / moved / resized / rotated.
@@ -120,7 +132,8 @@ function createInitialState<T>(
   return {
     mode: initialConfig.mode,
     action: 'idle',
-    isInitialized: false,
+    isContainerInitialized: false,
+    isTargetInitialized: false,
     resizeStrategy: initialConfig.resizeStrategy,
     commitRoiBoxStrategy: initialConfig.commitRoiBoxStrategy,
     commitRoiBoundaryStrategy: initialConfig.commitRoiBoundaryStrategy,
@@ -219,7 +232,8 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     startPanZoom,
     targetSize,
     containerSize,
-    isInitialized,
+    isTargetInitialized,
+    isContainerInitialized,
     action,
   } = state;
   const roiState: RoiState = useMemo(() => {
@@ -230,6 +244,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
     };
   }, [mode, selectedRoi, action]);
 
+  const isReady = isTargetInitialized && isContainerInitialized;
   const panzoomContextValue: PanZoomContext = useMemo(() => {
     return {
       targetSize,
@@ -238,16 +253,9 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
       basePanZoom,
       startPanZoom,
       // We memoize this here to minimize the number of times we need to render the container
-      isReady: isInitialized,
+      isReady,
     };
-  }, [
-    panZoom,
-    basePanZoom,
-    startPanZoom,
-    isInitialized,
-    targetSize,
-    containerSize,
-  ]);
+  }, [panZoom, basePanZoom, startPanZoom, isReady, targetSize, containerSize]);
 
   return (
     <callbacksRefContext.Provider value={callbacksRef}>
