@@ -131,9 +131,14 @@ export interface ReactRoiState<TData = unknown> {
   zoomDomain: ZoomDomain;
 
   /**
-   * Toggled to true once image and container dimensions are known.
+   * Toggled to true once the target's size is known
    */
-  isInitialized: boolean;
+  isTargetInitialized: boolean;
+
+  /**
+   * Toggled to true once the container's size is known
+   */
+  isContainerInitialized: boolean;
 }
 
 export type UpdateRoiPayload = Partial<CommittedRoiProperties> & {
@@ -220,7 +225,7 @@ export type RoiReducerAction =
       payload: CreateRoiPayload;
     }
   | {
-      type: 'SET_SIZE';
+      type: 'SET_TARGET_SIZE';
       payload: Size;
     }
   | {
@@ -280,23 +285,31 @@ export function roiReducer(
       case 'SET_MODE':
         draft.mode = action.payload;
         break;
-      case 'SET_SIZE': {
+      case 'SET_TARGET_SIZE': {
         // Ignore if size is 0
-        if (action.payload.width === 0 || action.payload.height === 0) return;
+        if (action.payload.width === 0 || action.payload.height === 0) {
+          return;
+        }
 
         draft.targetSize = action.payload;
         sanitizeRois(draft);
+
+        if (draft.isContainerInitialized && !draft.isTargetInitialized) {
+          updateBasePanZoom(draft);
+          resetZoomAction(draft);
+        }
+        draft.isTargetInitialized = true;
         break;
       }
       case 'SET_CONTAINER_SIZE': {
         draft.containerSize = action.payload;
-        if (draft.targetSize && !draft.isInitialized) {
-          draft.isInitialized = true;
+        if (draft.isTargetInitialized && !draft.isContainerInitialized) {
           updateBasePanZoom(draft);
           resetZoomAction(draft);
-        } else {
+        } else if (draft.isContainerInitialized && draft.isTargetInitialized) {
           updateBasePanZoom(draft);
         }
+        draft.isContainerInitialized = true;
         break;
       }
       case 'REMOVE_ROI': {

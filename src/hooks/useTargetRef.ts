@@ -11,7 +11,7 @@ export function useTargetRef<T extends HTMLElement>() {
   // @ts-expect-error This can be ignored for now
   useResizeObserver(targetRef, (data) => {
     roiDispatch({
-      type: 'SET_SIZE',
+      type: 'SET_TARGET_SIZE',
       payload: {
         width: data.contentRect.width,
         height: data.contentRect.height,

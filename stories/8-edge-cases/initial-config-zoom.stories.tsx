@@ -1,6 +1,7 @@
 import type { Meta } from '@storybook/react-vite';
 import type { PropsWithChildren } from 'react';
 
+import type { ResizeStrategy } from '../../src/index.ts';
 import {
   RoiContainer,
   RoiList,
@@ -9,6 +10,7 @@ import {
   getTargetImageStyle,
   useTargetRef,
 } from '../../src/index.ts';
+import { useResetOnChange } from '../utils/useResetOnChange.ts';
 
 export default {
   title: 'Edge cases > zoom',
@@ -18,6 +20,17 @@ export default {
         <Story />
       </AppLayout>
     );
+  },
+  args: {
+    resizeStrategy: 'contain',
+  },
+  argTypes: {
+    resizeStrategy: {
+      options: ['contain', 'cover', 'center', 'none'],
+      control: {
+        type: 'select',
+      },
+    },
   },
 } as Meta;
 
@@ -35,9 +48,15 @@ function AppLayout(props: PropsWithChildren) {
   );
 }
 
-export function NoConfigWithTargetImage() {
+export function NoConfigWithTargetImage(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
+  const keyId = useResetOnChange([props.resizeStrategy]);
   return (
-    <RoiProvider>
+    <RoiProvider
+      key={keyId}
+      initialConfig={{ resizeStrategy: props.resizeStrategy }}
+    >
       <RoiContainer
         target={<TargetImage src="/barbara.jpg" />}
         style={{ height: '100%' }}
@@ -48,10 +67,17 @@ export function NoConfigWithTargetImage() {
   );
 }
 
-export function InitialConfigZoomWithTargetImage() {
+export function InitialConfigZoomWithTargetImage(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
+  const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
-      initialConfig={{ zoom: { initial: { origin: 'center', scale: 0.8 } } }}
+      key={keyId}
+      initialConfig={{
+        zoom: { initial: { origin: 'center', scale: 0.8 } },
+        resizeStrategy: props.resizeStrategy,
+      }}
     >
       <RoiContainer
         target={<TargetImage src="/barbara.jpg" />}
@@ -64,19 +90,32 @@ export function InitialConfigZoomWithTargetImage() {
 }
 
 // when we use image with ref from useTargetRef it's broken
-export function NoConfigWithoutTargetImage() {
+export function NoConfigWithoutTargetImage(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
+  const keyId = useResetOnChange([props.resizeStrategy]);
   return (
-    <RoiProvider>
+    <RoiProvider
+      key={keyId}
+      initialConfig={{ resizeStrategy: props.resizeStrategy }}
+    >
       <Container />
     </RoiProvider>
   );
 }
 
 // when we use image with ref from useTargetRef it's broken
-export function InitialConfigZoomWithoutTargetImage() {
+export function InitialConfigZoomWithoutTargetImage(props: {
+  resizeStrategy: ResizeStrategy;
+}) {
+  const keyId = useResetOnChange([props.resizeStrategy]);
   return (
     <RoiProvider
-      initialConfig={{ zoom: { initial: { origin: 'center', scale: 0.8 } } }}
+      key={keyId}
+      initialConfig={{
+        zoom: { initial: { origin: 'center', scale: 0.8 } },
+        resizeStrategy: props.resizeStrategy,
+      }}
     >
       <Container />
     </RoiProvider>
