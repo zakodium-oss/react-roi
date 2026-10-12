@@ -360,7 +360,7 @@ function callPointerUpActionHooks(
           );
           assert(
             roi,
-            `An ROI in the current "${state.action} state should exist`,
+            `An ROI in the current "${state.action}" state should exist`,
           );
           const newState = produce(state, (draft) => {
             endAction(draft, payload);
