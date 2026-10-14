@@ -35,7 +35,10 @@ export function NoUnselection() {
       <RoiProvider
         initialConfig={{ rois: initialRois, selectedRoiId: initialRois[2].id }}
       >
-        <RoiContainer target={<TargetImage src="/barbara.jpg" />} noUnselection>
+        <RoiContainer
+          target={<TargetImage src="/barbara.jpg" />}
+          interactions={{ unselect: false }}
+        >
           <RoiList />
         </RoiContainer>
       </RoiProvider>

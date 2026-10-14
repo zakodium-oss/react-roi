@@ -1,8 +1,14 @@
 import type { CSSProperties, ReactElement, ReactNode } from 'react';
+import { useMemo } from 'react';
 
 import type { Actions } from '../../hooks/useActions.js';
 import { usePanZoom } from '../../hooks/usePanZoom.js';
 import type { CommittedRoiProperties } from '../../types/CommittedRoi.js';
+import type {
+  ContainerInteractions,
+  ResolvedContainerInteractions,
+} from '../../types/interactions.js';
+import { defaultContainerInteractions } from '../../types/interactions.js';
 
 import { ContainerComponent } from './ContainerComponent.js';
 
@@ -12,12 +18,13 @@ export interface RoiContainerProps<TData = unknown> {
   style?: CSSProperties;
   className?: string;
   id?: string;
-  lockZoom?: boolean;
-  lockPan?: boolean;
   /**
-   * If true, the user won't be able to unselect the current ROI by clicking on the container
+   * Pointer interactions allowed on the container: `pan`, `zoom` and `unselect`.
+   * Every interaction is allowed unless explicitly set to `false`.
+   * Interactions on individual ROIs are configured on `RoiList`.
+   * @default { pan: true, zoom: true, unselect: true }
    */
-  noUnselection?: boolean;
+  interactions?: ContainerInteractions;
   /**
    * Get the data of a new ROI as it is being drawn.
    */
@@ -86,20 +93,24 @@ export type OnChangeCallback<TData = unknown> = (
 ) => void;
 
 export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {
-  const {
-    children,
-    style,
-    lockZoom = false,
-    lockPan = false,
-    ...otherProps
-  } = props;
+  const { children, style, interactions, ...otherProps } = props;
 
   const panZoom = usePanZoom();
+  const {
+    pan = defaultContainerInteractions.pan,
+    zoom = defaultContainerInteractions.zoom,
+    unselect = defaultContainerInteractions.unselect,
+  } = interactions ?? {};
+  // Memoize on the primitive values so that an inline object literal does not
+  // change the context value (and re-register the container listeners) on every render.
+  const resolvedInteractions = useMemo<ResolvedContainerInteractions>(
+    () => ({ pan, zoom, unselect }),
+    [pan, zoom, unselect],
+  );
 
   return (
     <ContainerComponent
-      lockZoom={lockZoom}
-      lockPan={lockPan}
+      interactions={resolvedInteractions}
       style={{
         ...style,
         visibility: panZoom.isReady ? 'visible' : 'hidden',

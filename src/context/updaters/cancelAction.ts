@@ -7,7 +7,7 @@ import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
 
 export function cancelAction(
   draft: Draft<ReactRoiState>,
-  payload: CancelActionPayload,
+  payload: CancelActionPayload = {},
   /**
    * If you want to cancel action for a specific ROI, provide its ID here.
    * Otherwise, all ROIs with non-idle actions will be cancelled.
@@ -31,7 +31,7 @@ export function cancelAction(
     if (roi.action.type === 'drawing') {
       const roiIndex = draft.rois.findIndex((r) => r.id === roi.id);
       draft.rois.splice(roiIndex, 1);
-      if (payload.noUnselection) {
+      if (!payload.unselect) {
         draft.selectedRoi = roi.action.previousSelectedRoi;
       } else {
         draft.selectedRoi = undefined;

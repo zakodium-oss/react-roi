@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 
+import { useContainerInteractions } from '../../hooks/useContainerInteractions.js';
 import { useIsKeyDown } from '../../hooks/useIsKeyDown.js';
-import { useLockContext } from '../../hooks/useLockContext.js';
 import { usePanZoom } from '../../hooks/usePanZoom.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import type {
@@ -74,7 +74,7 @@ export function BoxSvg({
   const handlerSizes = getHandlerSizes(roi, panZoom);
 
   const clipPathId = `within-roi-${roi.id}`;
-  const { lockPan } = useLockContext();
+  const { pan: canPan } = useContainerInteractions();
 
   return (
     <svg
@@ -88,7 +88,7 @@ export function BoxSvg({
           isReadOnly,
           isAltKeyDown,
           roiState.action,
-          lockPan,
+          canPan,
         ),
         ...style,
       }}
@@ -191,7 +191,7 @@ function getCursor(
   readOnly: boolean,
   isAltKeyDown: boolean,
   action: ReactRoiAction,
-  lockPan: boolean,
+  canPan: boolean,
 ): CSSProperties['cursor'] {
   const { mode, selectedRoi } = state;
   if (mode === 'rotate_selected' && selectedRoi) {
@@ -209,17 +209,17 @@ function getCursor(
     }
   }
 
-  if (isAltKeyDown && !lockPan) return 'grab';
+  if (isAltKeyDown && canPan) return 'grab';
 
   if (readOnly) {
     if (mode !== 'select') {
-      if ((!isAltKeyDown && !lockPan) || lockPan) {
+      if (!isAltKeyDown || !canPan) {
         return 'crosshair';
       } else {
-        return isAltKeyDown ? 'grab' : 'default';
+        return 'grab';
       }
     } else {
-      return lockPan ? 'default' : 'grab';
+      return canPan ? 'grab' : 'default';
     }
   }
 
