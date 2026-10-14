@@ -12,6 +12,7 @@ import type {
 } from '../../index.js';
 import { useRoiState } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
+import type { ResolvedRoiInteractions } from '../../types/interactions.js';
 import type { Box } from '../../utilities/box.js';
 import { getAllCorners } from '../../utilities/corners.js';
 import type { GetGridLinesOptions } from '../../utilities/grid.js';
@@ -29,9 +30,9 @@ export interface BoxAnnotationProps {
   box: Box;
   style?: CSSProperties;
   className?: string;
-  isReadOnly: boolean;
+  interactions: ResolvedRoiInteractions;
   getStyle: GetStyleCallback;
-  displayRotationHandle: boolean;
+  showRotationHandle: boolean;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
 }
@@ -40,10 +41,10 @@ export function BoxSvg({
   roi,
   style,
   className,
-  isReadOnly,
+  interactions,
   getStyle,
   box,
-  displayRotationHandle,
+  showRotationHandle,
   showGrid,
   gridOptions,
 }: BoxAnnotationProps) {
@@ -57,7 +58,7 @@ export function BoxSvg({
     ...baseRoiStyle,
     ...getStyle(
       {
-        isReadOnly,
+        interactions,
         isSelected,
         id: roi.id,
         box: roi.box,
@@ -75,6 +76,8 @@ export function BoxSvg({
 
   const clipPathId = `within-roi-${roi.id}`;
   const { pan: canPan } = useContainerInteractions();
+  const isResizeDisabled =
+    !isResizableMode(roiState.mode) || !interactions.resize;
 
   return (
     <svg
@@ -85,7 +88,7 @@ export function BoxSvg({
         height: box.height,
         cursor: getCursor(
           roiState,
-          isReadOnly,
+          interactions,
           isAltKeyDown,
           roiState.action,
           canPan,
@@ -97,7 +100,7 @@ export function BoxSvg({
       onPointerDown={(event) => {
         if (
           event.altKey ||
-          isReadOnly ||
+          !interactions.select ||
           roiState.mode === 'draw' ||
           event.button !== 0
         ) {
@@ -108,20 +111,27 @@ export function BoxSvg({
 
         event.stopPropagation();
 
-        if (isRotate) {
-          roiDispatch({
-            type: 'SELECT_BOX_AND_START_ROTATE',
-            payload: {
-              id: roi.id,
-            },
-          });
-        } else {
+        if (roiState.mode === 'rotate_selected') {
           roiDispatch({
             type: 'SELECT_BOX_AND_START_ACTION',
-            payload: {
-              id: roi.id,
-            },
+            payload: { id: roi.id },
           });
+          return;
+        }
+
+        if (isRotate && interactions.rotate) {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_ROTATE',
+            payload: { id: roi.id },
+          });
+        } else if (!isRotate && interactions.move) {
+          roiDispatch({
+            type: 'SELECT_BOX_AND_START_ACTION',
+            payload: { id: roi.id },
+          });
+        } else {
+          // Selecting is allowed but the drag is not: select without starting an action.
+          roiDispatch({ type: 'SELECT_ROI', payload: roi.id });
         }
       }}
     >
@@ -159,7 +169,7 @@ export function BoxSvg({
             sizes={handlerSizes}
             handlerColor={styles.resizeHandlerColor}
             edge={edge}
-            disabled={isResizableMode(roiState.mode)}
+            disabled={isResizeDisabled}
             gridLineOpacity={styles.gridLineOpacity}
           />
         ))}
@@ -168,7 +178,7 @@ export function BoxSvg({
         getAllCorners(box, roi.box.angle).map((corner) => (
           <RoiBoxCorner
             key={`corner-${corner.xPosition}-${corner.yPosition}`}
-            disabled={!isResizableMode(roiState.mode)}
+            disabled={isResizeDisabled}
             box={box}
             corner={corner}
             roiId={roi.id}
@@ -178,7 +188,8 @@ export function BoxSvg({
         ))}
 
       {isSelected &&
-        displayRotationHandle &&
+        showRotationHandle &&
+        interactions.rotate &&
         (roi.action.type === 'rotating' || roi.action.type === 'idle') && (
           <RoiBoxRotateHandler box={box} styles={styles} />
         )}
@@ -188,7 +199,7 @@ export function BoxSvg({
 
 function getCursor(
   state: RoiState,
-  readOnly: boolean,
+  interactions: ResolvedRoiInteractions,
   isAltKeyDown: boolean,
   action: ReactRoiAction,
   canPan: boolean,
@@ -211,7 +222,7 @@ function getCursor(
 
   if (isAltKeyDown && canPan) return 'grab';
 
-  if (readOnly) {
+  if (!interactions.select) {
     if (mode !== 'select') {
       if (!isAltKeyDown || !canPan) {
         return 'crosshair';
@@ -221,6 +232,8 @@ function getCursor(
     } else {
       return canPan ? 'grab' : 'default';
     }
+  } else if (!interactions.move) {
+    return 'pointer';
   }
 
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
@@ -228,7 +241,7 @@ function getCursor(
     case 'draw':
       return 'crosshair';
     default:
-      return 'move';
+      return interactions.move ? 'move' : 'default';
   }
 }
 

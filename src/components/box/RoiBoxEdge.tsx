@@ -74,6 +74,7 @@ export function RoiBoxEdge(props: RoiBoxEdgeProps) {
       />
       <rect
         {...handlerRect}
+        data-testid={`resize-edge-${edge.position}`}
         onPointerDown={onPointerDown}
         cursor={getCursor(roiState, edge.cursor, disabled)}
         fill="transparent"

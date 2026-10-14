@@ -29,38 +29,21 @@ export function App() {
 }
 ```
 
-Any component rendered inside the `RoiProvider` can read and update the state with the hooks (`useActions`, `useCommittedRois`, `useRoiState`, ...).
+Any component rendered inside the `RoiProvider` can read and update the state with the following hooks:
+
+- `useActions`: various callbacks for mutating the ROIs
+- `useCommittedRois`: read the state of committed ROIs (updates only when an ROI is committed)
+- `useRoiState`: read live ROI state (updates on every change) and other metadata like the selected ROI
 
 ## Which component takes which option?
 
 Each component owns one kind of concern. When looking for an option, start from what it affects:
 
-| Component      | Owns                                                                                                   | Examples                                                                                |
-| -------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| `RoiProvider`  | The state and the strategies applied to it: initial ROIs, mode, zoom domain, commit and boundary rules | `initialConfig.mode`, `initialConfig.commitRoiBoundaryStrategy`, `onCommit`, `onChange` |
-| `RoiContainer` | The viewport and the pointer interactions on it: panning, zooming, unselecting, drawing new ROIs       | `interactions={{ pan: false }}`, `zoomWithoutModifierKey`, `getNewRoiData`              |
-| `RoiList`      | How each ROI looks and what the user can do with each ROI                                              | `getStyle`, `renderLabel`, `showGrid`                                                   |
-
-### Allowed interactions
-
-Interactions are what the user does with the pointer: pan, zoom, unselect, select, move, resize, rotate, draw. By default everything is allowed. Restrictions only apply to pointer interactions: the actions API returned by `useActions` is never restricted.
-
-On the container, pass an `interactions` object and set to `false` what should not be allowed:
-
-```jsx
-<RoiContainer
-  target={<TargetImage src="/my-image.jpg" />}
-  interactions={{ pan: false, zoom: false, unselect: false }}
->
-  <RoiList />
-</RoiContainer>
-```
-
-- `pan`: panning the target with alt + drag, the middle / right mouse button, or a plain drag in `select` mode.
-- `zoom`: zooming the target with the mouse wheel.
-- `unselect`: unselecting the current ROI by clicking on empty space. When `false`, the selection is kept, including when a new draw is cancelled or too small.
-
-Whether the user can draw new ROIs is controlled by the `mode` of the `RoiProvider`.
+| Component      | Owns                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| `RoiProvider`  | Global options: initial ROIs, mode, zoom domain, commit and boundary rules                                  |
+| `RoiContainer` | The viewport and the pointer interactions on the container: panning, zooming, unselecting, drawing new ROIs |
+| `RoiList`      | Individual ROI styles and behaviours                                                                        |
 
 [npm-image]: https://img.shields.io/npm/v/react-roi.svg
 [npm-url]: https://npmjs.org/package/react-roi

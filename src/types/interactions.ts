@@ -1,25 +1,6 @@
-/**
- * Interactions the user may perform on the container with the pointer.
- * Every interaction is allowed unless explicitly set to `false`.
- * These settings only affect pointer interactions. The actions API is never restricted.
- */
 export interface ContainerInteractions {
-  /**
-   * Allow panning the target, either with the alt key + drag, the middle / right mouse button,
-   * or a plain drag on empty space when in `select` mode.
-   * @default true
-   */
   pan?: boolean;
-  /**
-   * Allow zooming the target with the mouse wheel.
-   * @default true
-   */
   zoom?: boolean;
-  /**
-   * Allow unselecting the current ROI by clicking on empty space of the container.
-   * When `false`, a click on empty space (or a cancelled draw) keeps the current ROI selected.
-   * @default true
-   */
   unselect?: boolean;
 }
 
@@ -30,3 +11,27 @@ export const defaultContainerInteractions: ResolvedContainerInteractions = {
   zoom: true,
   unselect: true,
 };
+
+export interface RoiInteractions {
+  select?: boolean;
+  move?: boolean;
+  resize?: boolean;
+  /**
+   * Allow rotating the ROI with the rotation handle.
+   */
+  rotate?: boolean;
+}
+
+export type ResolvedRoiInteractions = Required<RoiInteractions>;
+
+export function resolveRoiInteractions(
+  interactions: RoiInteractions | undefined,
+): ResolvedRoiInteractions {
+  const {
+    select = true,
+    move = true,
+    resize = true,
+    rotate = true,
+  } = interactions ?? {};
+  return { select, move, resize, rotate };
+}

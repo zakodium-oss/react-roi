@@ -101,8 +101,7 @@ export function RoiContainer<TData = unknown>(props: RoiContainerProps<TData>) {
     zoom = defaultContainerInteractions.zoom,
     unselect = defaultContainerInteractions.unselect,
   } = interactions ?? {};
-  // Memoize on the primitive values so that an inline object literal does not
-  // change the context value (and re-register the container listeners) on every render.
+
   const resolvedInteractions = useMemo<ResolvedContainerInteractions>(
     () => ({ pan, zoom, unselect }),
     [pan, zoom, unselect],

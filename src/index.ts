@@ -11,6 +11,8 @@ export * from './types/box.js';
 export type {
   ContainerInteractions,
   ResolvedContainerInteractions,
+  ResolvedRoiInteractions,
+  RoiInteractions,
 } from './types/interactions.js';
 export * from './types/CommittedRoi.js';
 export * from './types/RoiList.js';

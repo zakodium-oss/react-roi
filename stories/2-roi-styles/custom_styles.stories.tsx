@@ -19,7 +19,7 @@ export default {
   title: 'Custom styles',
   args: {
     showGrid: false,
-    displayRotationHandle: false,
+    showRotationHandle: false,
     gridHorizontalLineCount: 2,
     gridVerticalLineCount: 2,
     gridSpacingX: 0,
@@ -41,7 +41,7 @@ const initialRois = getInitialRois<CustomColorData>(320, 320, {
 
 type StoryProps = Pick<
   RoiListProps,
-  | 'displayRotationHandle'
+  | 'showRotationHandle'
   | 'showGrid'
   | 'gridHorizontalLineCount'
   | 'gridVerticalLineCount'

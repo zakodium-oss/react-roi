@@ -36,6 +36,7 @@ export function RoiBoxRotateHandler(props: RoiBoxRotateHandlerProps) {
       />
       <rect
         id="rotate-handler"
+        data-testid="rotate-handle"
         x={cx - 2 * r}
         y={cy - 2 * r}
         width={r * 4}

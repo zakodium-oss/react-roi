@@ -43,7 +43,7 @@ export function CropImage() {
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList
-            displayRotationHandle
+            showRotationHandle
             showGrid
             getOverlayOpacity={() => 0.6}
             getStyle={({ action }) => ({

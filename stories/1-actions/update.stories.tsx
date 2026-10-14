@@ -258,11 +258,13 @@ export function UpdatePositionWithCommitStrategyDebug() {
           style={{ border: '1px solid red' }}
         >
           <RoiList<BoundaryStrategy>
-            displayRotationHandle
-            getReadOnly={(roi) => roi.id !== 'editable'}
+            showRotationHandle
+            getInteractions={(roi) =>
+              roi.id === 'editable' ? undefined : { select: false }
+            }
             renderLabel={({ data }) => data}
-            getStyle={({ isReadOnly }) => {
-              if (isReadOnly) {
+            getStyle={({ interactions }) => {
+              if (!interactions.select) {
                 return {
                   rectAttributes: {
                     fill: 'orange',

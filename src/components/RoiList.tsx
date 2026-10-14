@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useRois } from '../hooks/useRois.js';
 import { useRoiState } from '../index.js';
 import type {
+  GetInteractionsCallback,
   GetOverlayOpacity,
-  GetReadOnlyCallback,
   GetStyleCallback,
   RenderLabelCallback,
 } from '../types/RoiList.ts';
@@ -16,10 +16,14 @@ import { LabelContainer } from './label/LabelContainer.js';
 
 export interface RoiListProps<TData = unknown> {
   getStyle?: GetStyleCallback<TData>;
-  getReadOnly?: GetReadOnlyCallback<TData>;
+  /**
+   * Pointer interactions allowed on each ROI: `select`, `move`, `resize` and `rotate`.
+   * Every interaction is allowed unless explicitly set to `false`.
+   */
+  getInteractions?: GetInteractionsCallback<TData>;
   renderLabel?: RenderLabelCallback<TData>;
   getOverlayOpacity?: GetOverlayOpacity<TData>;
-  displayRotationHandle?: boolean;
+  showRotationHandle?: boolean;
   showGrid?: boolean;
   /**
    * Spacing (in device pixels) between vertical grid lines along the horizontal axis.
@@ -48,10 +52,10 @@ export interface RoiListProps<TData = unknown> {
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   const {
     getStyle = defaultGetStyle,
-    getReadOnly = () => false,
+    getInteractions = defaultGetInteractions,
     getOverlayOpacity = () => 0,
     renderLabel = defaultRenderLabel,
-    displayRotationHandle = false,
+    showRotationHandle = false,
     showGrid = false,
     gridHorizontalLineCount = 2,
     gridVerticalLineCount = 2,
@@ -88,9 +92,9 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
           roi={roi}
           getStyle={getStyle as GetStyleCallback}
           renderLabel={renderLabel as RenderLabelCallback}
-          getReadOnly={getReadOnly as GetReadOnlyCallback}
+          getInteractions={getInteractions as GetInteractionsCallback}
           getOverlayOpacity={getOverlayOpacity as GetOverlayOpacity}
-          displayRotationHandle={displayRotationHandle}
+          showRotationHandle={showRotationHandle}
           isSelected={roi.id === selectedRoi}
           showGrid={showGrid}
           gridOptions={gridOptions}
@@ -100,10 +104,12 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   );
 }
 
-const defaultGetStyle: GetStyleCallback = ({ isReadOnly, isSelected }) => {
+const defaultGetInteractions: GetInteractionsCallback = () => undefined;
+
+const defaultGetStyle: GetStyleCallback = ({ interactions, isSelected }) => {
   return {
     rectAttributes: {
-      fill: isReadOnly
+      fill: !interactions.select
         ? 'rgba(0,0,0,0.6)'
         : isSelected
           ? 'rgba(0,0,0,0.2)'
