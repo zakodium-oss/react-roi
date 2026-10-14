@@ -197,20 +197,13 @@ export interface StartResizePayload {
 }
 
 export interface EndActionPayload {
-  /**
-   * Whether the container allows unselecting. When `false`, a cancelled draw
-   * restores the ROI which was selected before drawing started.
-   */
   unselect: boolean;
   minNewRoiSize: number;
 }
 
 export interface CancelActionPayload {
   /**
-   * Whether cancelling a draw may leave no ROI selected.
-   * When `false`, the ROI which was selected before drawing started is selected again.
-   * This should match the `unselect` interaction of the RoiContainer.
-   * @default true
+   * Whether cancelling should bring back the previously selected ROI.
    */
   unselect?: boolean;
 }

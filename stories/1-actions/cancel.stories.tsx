@@ -30,7 +30,7 @@ export function CancelActionWithShortcut() {
   useKbsGlobal([
     {
       shortcut: ['Escape'],
-      handler: (event) => cancelAction(event),
+      handler: (event) => cancelAction(event, { unselect: false }),
     },
   ]);
 
@@ -40,7 +40,10 @@ export function CancelActionWithShortcut() {
         Try moving a ROI. And while still holding the ROI, press your Escape
         button. The ROI&apos;s position will be reset
       </p>
-      <RoiContainer target={<TargetImage src="/barbara.jpg" />}>
+      <RoiContainer
+        target={<TargetImage src="/barbara.jpg" />}
+        interactions={{ unselect: false }}
+      >
         <RoiList />
       </RoiContainer>
     </Layout>

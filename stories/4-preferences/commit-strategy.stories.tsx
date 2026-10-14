@@ -15,7 +15,7 @@ export default {
   title: 'Preferences',
   args: {
     commitStrategy: 'exact',
-    displayRotationHandle: false,
+    showRotationHandle: false,
   },
   argTypes: {
     commitStrategy: {
@@ -29,7 +29,7 @@ export default {
 
 interface StoryProps {
   commitStrategy: CommitBoxStrategy;
-  displayRotationHandle: boolean;
+  showRotationHandle: boolean;
 }
 
 export function CommitStrategy(props: StoryProps) {
@@ -46,7 +46,7 @@ export function CommitStrategy(props: StoryProps) {
         <RoiContainer
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
-          <RoiList displayRotationHandle={props.displayRotationHandle} />
+          <RoiList showRotationHandle={props.showRotationHandle} />
         </RoiContainer>
       </Layout>
       <CommittedRoisButton showImage={false} />

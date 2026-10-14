@@ -106,6 +106,7 @@ function SideHandler({
       />
       <rect
         {...handlerRect}
+        data-testid={`resize-handle-${corner.yPosition}-${corner.xPosition}`}
         cursor={getCursor(roiState, corner.cursor, disabled)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}
@@ -144,6 +145,7 @@ function CornerHandler({
       />
       <rect
         {...handlerRect}
+        data-testid={`resize-handle-${corner.yPosition}-${corner.xPosition}`}
         cursor={getCursor(roiState, corner.cursor, disabled)}
         fill="transparent"
         style={{ pointerEvents: 'initial' }}

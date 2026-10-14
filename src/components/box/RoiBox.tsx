@@ -4,12 +4,13 @@ import { memo, useEffect } from 'react';
 import { usePanZoom } from '../../hooks/usePanZoom.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import type {
+  GetInteractionsCallback,
   GetOverlayOpacity,
-  GetReadOnlyCallback,
   GetStyleCallback,
   RenderLabelCallback,
 } from '../../index.js';
 import type { Roi } from '../../types/Roi.js';
+import { resolveRoiInteractions } from '../../types/interactions.js';
 import { applyTransformToBox } from '../../utilities/box.js';
 import type { GetGridLinesOptions } from '../../utilities/grid.ts';
 import { computeTotalPanZoom } from '../../utilities/panZoom.js';
@@ -21,9 +22,9 @@ interface RoiBoxProps {
   roi: Roi;
   isSelected: boolean;
   getStyle: GetStyleCallback;
-  getReadOnly: GetReadOnlyCallback;
+  getInteractions: GetInteractionsCallback;
   renderLabel: RenderLabelCallback;
-  displayRotationHandle: boolean;
+  showRotationHandle: boolean;
   getOverlayOpacity: GetOverlayOpacity;
   showGrid: boolean;
   gridOptions: GetGridLinesOptions;
@@ -33,11 +34,11 @@ function RoiBoxInternal(props: RoiBoxProps): ReactElement {
   const {
     roi,
     getStyle,
-    getReadOnly,
+    getInteractions,
     isSelected,
     renderLabel,
     getOverlayOpacity,
-    displayRotationHandle,
+    showRotationHandle,
     showGrid,
     gridOptions,
   } = props;
@@ -48,7 +49,7 @@ function RoiBoxInternal(props: RoiBoxProps): ReactElement {
 
   const roiDispatch = useRoiDispatch();
 
-  const getReadOnlyRoiPayload = {
+  const baseRoiPayload = {
     id,
     isSelected,
     box: roi.box,
@@ -61,20 +62,22 @@ function RoiBoxInternal(props: RoiBoxProps): ReactElement {
     zoomScale: panzoom.panZoom.scale * panzoom.basePanZoom.scale,
   };
 
-  const isReadOnly =
-    getReadOnly(getReadOnlyRoiPayload, globalStatePayload) || false;
+  const interactions = resolveRoiInteractions(
+    getInteractions(baseRoiPayload, globalStatePayload),
+  );
   const roiPayload = {
-    ...getReadOnlyRoiPayload,
-    isReadOnly,
+    ...baseRoiPayload,
+    interactions,
   };
 
   const shadowOpacity = getOverlayOpacity(roiPayload, globalStatePayload);
 
+  const canSelect = interactions.select;
   useEffect(() => {
-    if (isReadOnly) {
+    if (!canSelect) {
       roiDispatch({ type: 'UNSELECT_ROI', payload: id });
     }
-  }, [id, isReadOnly, roiDispatch]);
+  }, [id, canSelect, roiDispatch]);
 
   const box = applyTransformToBox(totalPanzoom, roi.box);
   const label = renderLabel(roiPayload, globalStatePayload);
@@ -99,9 +102,9 @@ function RoiBoxInternal(props: RoiBoxProps): ReactElement {
         <BoxSvg
           roi={roi}
           box={box}
-          isReadOnly={isReadOnly}
+          interactions={interactions}
           getStyle={getStyle}
-          displayRotationHandle={displayRotationHandle}
+          showRotationHandle={showRotationHandle}
           showGrid={showGrid}
           gridOptions={gridOptions}
         />

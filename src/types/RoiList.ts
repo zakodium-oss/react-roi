@@ -6,6 +6,10 @@ import type {
 } from 'react';
 
 import type { Roi, RoiAction } from './Roi.ts';
+import type {
+  ResolvedRoiInteractions,
+  RoiInteractions,
+} from './interactions.ts';
 
 export interface GlobalStateCallbackPayload {
   /**
@@ -20,7 +24,7 @@ export type RoiCallbackPayload<TData = unknown> = Pick<
 > & {
   action: RoiAction['type'];
   isSelected: boolean;
-  isReadOnly: boolean;
+  interactions: ResolvedRoiInteractions;
 };
 
 export interface CustomRoiStyle {
@@ -43,10 +47,10 @@ export type GetStyleCallback<TData = unknown> = (
   globalState: GlobalStateCallbackPayload,
 ) => CustomRoiStyle;
 
-export type GetReadOnlyCallback<TData = unknown> = (
-  roi: Omit<RoiCallbackPayload<TData>, 'isReadOnly'>,
+export type GetInteractionsCallback<TData = unknown> = (
+  roi: Omit<RoiCallbackPayload<TData>, 'interactions'>,
   globalState: GlobalStateCallbackPayload,
-) => boolean;
+) => RoiInteractions | undefined;
 export type GetOverlayOpacity<TData = unknown> = (
   roi: RoiCallbackPayload<TData>,
   globalState: GlobalStateCallbackPayload,

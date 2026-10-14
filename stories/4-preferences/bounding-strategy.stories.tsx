@@ -52,7 +52,7 @@ export function CommitBoundaryStrategy(props: {
         <RoiContainer
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
-          <RoiList displayRotationHandle={props.allowRotate} />
+          <RoiList showRotationHandle={props.allowRotate} />
         </RoiContainer>
       </Layout>
       <CommittedRoisButton />

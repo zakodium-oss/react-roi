@@ -22,7 +22,9 @@ export function DrawReadOnlyAndEditable() {
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >
           <RoiList
-            getReadOnly={(roi) => roi.id === initialRois[2].id}
+            getInteractions={(roi) =>
+              roi.id === initialRois[2].id ? { select: false } : undefined
+            }
             getStyle={(roi) => ({
               rectAttributes: {
                 fill: roi.id === initialRois[2].id ? 'red' : 'gray',

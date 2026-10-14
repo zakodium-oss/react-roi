@@ -31,7 +31,7 @@ export function Zoom() {
   );
 }
 
-export function DisallowZoom() {
+export function NoZoomInteraction() {
   return (
     <Layout>
       <div>Zooming with the mouse wheel is not allowed, panning still is</div>
@@ -49,7 +49,7 @@ export function DisallowZoom() {
   );
 }
 
-export function DisallowPan() {
+export function NoPanInteraction() {
   const initialRois = getInitialRois(320, 320);
   return (
     <Layout>
@@ -60,7 +60,11 @@ export function DisallowPan() {
             interactions={{ pan: false }}
             target={<TargetImage src="/barbara.jpg" />}
           >
-            <RoiList getReadOnly={(roi) => roi.id === initialRois[2].id} />
+            <RoiList
+              getInteractions={(roi) =>
+                roi.id === initialRois[2].id ? { select: false } : undefined
+              }
+            />
           </RoiContainer>
         </RoiProvider>
       </div>
