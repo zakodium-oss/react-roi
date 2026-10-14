@@ -8,6 +8,10 @@ export * from './context/RoiProvider.js';
 export * from './types/state.js';
 export * from './types/utils.js';
 export * from './types/box.js';
+export type {
+  ContainerInteractions,
+  ResolvedContainerInteractions,
+} from './types/interactions.js';
 export * from './types/CommittedRoi.js';
 export * from './types/RoiList.js';
 export * from './types/actions.js';

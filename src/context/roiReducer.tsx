@@ -15,6 +15,7 @@ import type {
 import type { CommittedRoiProperties } from '../types/CommittedRoi.js';
 import type { Roi, XCornerPosition, YCornerPosition } from '../types/Roi.js';
 import type { UpdateRoiOptions } from '../types/actions.ts';
+import type { ResolvedContainerInteractions } from '../types/interactions.js';
 import { assert, assertUnreachable } from '../utilities/assert.js';
 import {
   changeBoxRotationCenter,
@@ -180,8 +181,7 @@ export interface StartDrawPayload {
   event: PointerEvent | ReactPointerEvent;
   containerBoundingRect: DOMRect;
   isPanZooming: boolean;
-  noUnselection?: boolean;
-  lockPan: boolean;
+  interactions: ResolvedContainerInteractions;
   data?: unknown;
 }
 
@@ -197,12 +197,22 @@ export interface StartResizePayload {
 }
 
 export interface EndActionPayload {
-  noUnselection: boolean;
+  /**
+   * Whether the container allows unselecting. When `false`, a cancelled draw
+   * restores the ROI which was selected before drawing started.
+   */
+  unselect: boolean;
   minNewRoiSize: number;
 }
 
 export interface CancelActionPayload {
-  noUnselection: boolean;
+  /**
+   * Whether cancelling a draw may leave no ROI selected.
+   * When `false`, the ROI which was selected before drawing started is selected again.
+   * This should match the `unselect` interaction of the RoiContainer.
+   * @default true
+   */
+  unselect?: boolean;
 }
 
 export interface SelectBoxAndStartActionPayload {
@@ -313,7 +323,7 @@ export function roiReducer(
         break;
       }
       case 'REMOVE_ROI': {
-        cancelAction(draft, { noUnselection: false });
+        cancelAction(draft);
 
         const id = action.payload ?? draft.selectedRoi;
         const index = draft.rois.findIndex((roi) => roi.id === id);
@@ -329,11 +339,11 @@ export function roiReducer(
         if (id) {
           const roi = draft.rois.find((roi) => roi.id === id);
           if (roi) {
-            cancelAction(draft, { noUnselection: false });
+            cancelAction(draft);
             draft.selectedRoi = id;
           }
         } else if (draft.selectedRoi) {
-          cancelAction(draft, { noUnselection: false });
+          cancelAction(draft);
           draft.selectedRoi = undefined;
         }
         break;
@@ -343,7 +353,7 @@ export function roiReducer(
         const id = action.payload;
 
         if (draft.selectedRoi === id) {
-          cancelAction(draft, { noUnselection: false });
+          cancelAction(draft);
           draft.selectedRoi = undefined;
         }
 
@@ -389,7 +399,7 @@ export function roiReducer(
               committedRoi.data = updatedData.data;
             }
           } catch {
-            cancelAction(draft, { noUnselection: false }, id);
+            cancelAction(draft, {}, id);
           }
         } else {
           const roi = draft.rois[index];

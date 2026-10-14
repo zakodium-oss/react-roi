@@ -22,7 +22,7 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
     try {
       updateCommittedRoiPosition(draft, committedRoi, roi);
     } catch {
-      return cancelAction(draft, { noUnselection: false });
+      return cancelAction(draft);
     }
   } else {
     assert(roi.action.type === 'drawing');
@@ -36,7 +36,7 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
       // Roi is not valid, remove it
       const index = draft.rois.findIndex((r) => r.id === roi.id);
       draft.rois.splice(index, 1);
-      if (payload.noUnselection) {
+      if (!payload.unselect) {
         draft.selectedRoi = roi.action.previousSelectedRoi;
       } else {
         draft.selectedRoi = undefined;
@@ -46,7 +46,7 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
         updateCommittedRoiPosition(draft, newCommittedRoi, roi);
         draft.committedRois.push(newCommittedRoi);
       } catch {
-        return cancelAction(draft, { noUnselection: false });
+        return cancelAction(draft);
       }
     }
   }

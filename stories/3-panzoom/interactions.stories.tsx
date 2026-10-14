@@ -31,12 +31,16 @@ export function Zoom() {
   );
 }
 
-export function LockZoom() {
+export function DisallowZoom() {
   return (
     <Layout>
+      <div>Zooming with the mouse wheel is not allowed, panning still is</div>
       <div style={{ width: 300, height: 500 }}>
         <RoiProvider initialConfig={{ rois: getInitialRois(320, 320) }}>
-          <RoiContainer lockZoom target={<TargetImage src="/barbara.jpg" />}>
+          <RoiContainer
+            interactions={{ zoom: false }}
+            target={<TargetImage src="/barbara.jpg" />}
+          >
             <RoiList />
           </RoiContainer>
         </RoiProvider>
@@ -45,13 +49,17 @@ export function LockZoom() {
   );
 }
 
-export function LockPan() {
+export function DisallowPan() {
   const initialRois = getInitialRois(320, 320);
   return (
     <Layout>
+      <div>Panning is not allowed, zooming with the mouse wheel still is</div>
       <div style={{ width: 300, height: 500 }}>
         <RoiProvider initialConfig={{ rois: initialRois }}>
-          <RoiContainer lockPan target={<TargetImage src="/barbara.jpg" />}>
+          <RoiContainer
+            interactions={{ pan: false }}
+            target={<TargetImage src="/barbara.jpg" />}
+          >
             <RoiList getReadOnly={(roi) => roi.id === initialRois[2].id} />
           </RoiContainer>
         </RoiProvider>

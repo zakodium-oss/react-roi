@@ -330,10 +330,7 @@ function CancelWithShortcut() {
   useKbsGlobal([
     {
       shortcut: ['Escape'],
-      handler: (event) =>
-        cancelAction(event, {
-          noUnselection: false,
-        }),
+      handler: (event) => cancelAction(event),
     },
   ]);
   return null;

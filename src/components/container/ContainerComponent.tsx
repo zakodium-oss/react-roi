@@ -1,10 +1,10 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
 import type { CSSProperties, ReactElement, ReactNode, RefObject } from 'react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import type { ActionCallbacks, LockContext } from '../../context/contexts.js';
-import { lockContext } from '../../context/contexts.js';
+import type { ActionCallbacks } from '../../context/contexts.js';
+import { containerInteractionsContext } from '../../context/contexts.js';
 import type {
   EndActionPayload,
   PointerMovePayload,
@@ -21,6 +21,7 @@ import { useRoiContainerRef } from '../../hooks/useRoiContainerRef.js';
 import { useRoiDispatch } from '../../hooks/useRoiDispatch.js';
 import type { Actions, ReactRoiAction, RoiState } from '../../index.js';
 import { useActions, useRoiState } from '../../index.js';
+import type { ResolvedContainerInteractions } from '../../types/interactions.js';
 import { assert, assertUnreachable } from '../../utilities/assert.js';
 import { roiHasChanged } from '../../utilities/rois.js';
 import { throttle } from '../../utilities/throttle.js';
@@ -31,9 +32,7 @@ interface ContainerProps<TData = unknown> {
   style?: CSSProperties;
   className?: string;
   id?: string;
-  noUnselection?: boolean;
-  lockZoom: boolean;
-  lockPan: boolean;
+  interactions: ResolvedContainerInteractions;
   zoomWithoutModifierKey?: boolean;
   minNewRoiSize?: number;
   getNewRoiData?: () => TData;
@@ -48,9 +47,7 @@ export function ContainerComponent<TData = unknown>(
     style,
     className,
     id,
-    noUnselection,
-    lockZoom,
-    lockPan,
+    interactions,
     zoomWithoutModifierKey = false,
     minNewRoiSize = 1,
   } = props;
@@ -91,7 +88,7 @@ export function ContainerComponent<TData = unknown>(
     function onPointerMove(event: PointerEvent) {
       if (!stateRef.current || !containerRef?.current) return;
       const endPayload = {
-        noUnselection: noUnselection || false,
+        unselect: interactions.unselect,
         minNewRoiSize,
       };
       const movePayload = {
@@ -114,7 +111,7 @@ export function ContainerComponent<TData = unknown>(
     function onPointerUp() {
       if (!stateRef.current) return;
       const endPayload = {
-        noUnselection: noUnselection || false,
+        unselect: interactions.unselect,
         minNewRoiSize,
       };
       roiDispatch({
@@ -151,7 +148,9 @@ export function ContainerComponent<TData = unknown>(
     }, 25);
 
     function onWheel(event: WheelEvent) {
-      if ((!event.altKey && !zoomWithoutModifierKey) || lockZoom) return;
+      if ((!event.altKey && !zoomWithoutModifierKey) || !interactions.zoom) {
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       onZoom(event);
@@ -172,20 +171,15 @@ export function ContainerComponent<TData = unknown>(
     roiDispatch,
     containerRef,
     callbacksRef,
-    lockZoom,
+    interactions,
     minNewRoiSize,
-    noUnselection,
     stateRef,
     actions,
     zoomWithoutModifierKey,
   ]);
 
-  const lockContextValue = useMemo<LockContext>(() => {
-    return { lockPan, lockZoom };
-  }, [lockPan, lockZoom]);
-
   return (
-    <lockContext.Provider value={lockContextValue}>
+    <containerInteractionsContext.Provider value={interactions}>
       <div
         id={id}
         ref={containerRef}
@@ -195,7 +189,12 @@ export function ContainerComponent<TData = unknown>(
           overflow: 'hidden',
           margin: 0,
           padding: 0,
-          cursor: getCursor(roiState, isAltKeyDown, roiState.action, lockPan),
+          cursor: getCursor(
+            roiState,
+            isAltKeyDown,
+            roiState.action,
+            interactions.pan,
+          ),
           userSelect: 'none',
           WebkitUserSelect: 'none',
           touchAction: 'none',
@@ -222,12 +221,11 @@ export function ContainerComponent<TData = unknown>(
                   event,
                   containerBoundingRect,
                   isPanZooming: event.altKey,
-                  lockPan,
-                  noUnselection,
+                  interactions,
                   data: getNewRoiData.current?.(),
                 },
               });
-            } else if (!lockPan) {
+            } else if (interactions.pan) {
               roiDispatch({ type: 'START_PAN' });
             }
           }
@@ -258,7 +256,7 @@ export function ContainerComponent<TData = unknown>(
           {children}
         </div>
       </div>
-    </lockContext.Provider>
+    </containerInteractionsContext.Provider>
   );
 }
 
@@ -266,7 +264,7 @@ function getCursor(
   state: RoiState,
   altKey: boolean,
   action: ReactRoiAction,
-  lockPan: boolean,
+  canPan: boolean,
 ): CSSProperties['cursor'] {
   const { mode, selectedRoi } = state;
   if (mode === 'rotate_selected' && selectedRoi) {
@@ -285,12 +283,12 @@ function getCursor(
     }
   }
 
-  // No action, return cursor based on mode, lockPan and altKey
-  if (mode === 'select' && lockPan) {
+  // No action, return cursor based on mode, pan permission and altKey
+  if (mode === 'select' && !canPan) {
     return 'default';
   }
 
-  if (altKey && !lockPan) {
+  if (altKey && canPan) {
     return 'grab';
   }
 

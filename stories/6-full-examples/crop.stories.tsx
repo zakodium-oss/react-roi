@@ -38,7 +38,7 @@ export function CropImage() {
         }}
       >
         <RoiContainer
-          noUnselection
+          interactions={{ unselect: false }}
           style={{ backgroundColor: 'black', borderRadius: '4px' }}
           target={<TargetImage id="story-image" src="/barbara.jpg" />}
         >

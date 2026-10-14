@@ -33,9 +33,12 @@ export function useActions<TData = unknown>() {
 
   return useMemo(() => {
     return {
+      /**
+       * Cancel the current user interaction (draw, move, resize or rotate) and revert the ROI.
+       */
       cancelAction: (
         event: KeyboardEvent | ReactKeyboardEvent,
-        options: CancelActionPayload,
+        options: CancelActionPayload = {},
       ) => {
         event.preventDefault();
 

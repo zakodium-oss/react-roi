@@ -40,7 +40,7 @@ export function updateAngle(
         boxStrategy: 'exact',
       });
     } catch {
-      cancelAction(draft, { noUnselection: false }, id);
+      cancelAction(draft, {}, id);
     }
   } else {
     const roi = draft.rois[index];

@@ -14,10 +14,10 @@ import { prepareSelectedBoxForAction } from './selectBoxAndStartAction.ts';
  * The draw action is executed when the user starts interacting with the container
  */
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
-  const { event, containerBoundingRect, noUnselection, lockPan } = payload;
+  const { event, containerBoundingRect, interactions } = payload;
   const emptyRoi = createRoi(crypto.randomUUID());
 
-  if (payload.isPanZooming && !lockPan) {
+  if (payload.isPanZooming && interactions.pan) {
     draft.action = 'panning';
     return;
   }
@@ -67,11 +67,11 @@ export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
       break;
     }
     case 'select': {
-      if (!noUnselection) {
+      if (interactions.unselect) {
         draft.selectedRoi = undefined;
       }
 
-      if (!lockPan) {
+      if (interactions.pan) {
         draft.action = 'panning';
       }
       break;

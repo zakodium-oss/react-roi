@@ -11,6 +11,8 @@ import type {
   Size,
 } from '../index.js';
 import type { Roi } from '../types/Roi.js';
+import type { ResolvedContainerInteractions } from '../types/interactions.js';
+import { defaultContainerInteractions } from '../types/interactions.js';
 import { getIdentityPanzoom } from '../utilities/panZoom.ts';
 
 import type { ReactRoiState, RoiReducerAction } from './roiReducer.js';
@@ -18,15 +20,8 @@ import { initialSize } from './updaters/initialPanZoom.js';
 
 export const roiStateContext = createContext<RoiState | null>(null);
 
-export interface LockContext {
-  lockPan: boolean;
-  lockZoom: boolean;
-}
-
-export const lockContext = createContext<LockContext>({
-  lockPan: false,
-  lockZoom: false,
-});
+export const containerInteractionsContext =
+  createContext<ResolvedContainerInteractions>(defaultContainerInteractions);
 
 export const roiDispatchContext =
   createContext<Dispatch<RoiReducerAction> | null>(null);
