@@ -28,7 +28,7 @@ export function rectifyPanZoom(draft: Draft<ReactRoiState>) {
     maxY / draft.containerSize.height < 1 - draft.zoomDomain.spaceAroundTarget;
 
   // If both are false, nothing needs to be updated
-  // If both are true,
+  // If both are true, nothing can be done to rectify
   if (shouldUpdateLeft !== shouldUpdateRight) {
     const translation1 = computePanZoomTranslation(
       draft,

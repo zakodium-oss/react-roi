@@ -54,7 +54,7 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
     getStyle = DEFAULT_GET_STYLE,
     getInteractions = DEFAULT_GET_INTERACTIONS,
     getOverlayOpacity = DEFAULT_GET_OVERLAY_OPACITY,
-    renderLabel = defaultRenderLabel,
+    renderLabel = DEFAULT_RENDER_LABEL,
     showRotationHandle = false,
     showGrid = false,
     gridHorizontalLineCount = 2,
@@ -120,7 +120,7 @@ const DEFAULT_GET_STYLE: GetStyleCallback = ({ interactions, isSelected }) => {
   };
 };
 
-const defaultRenderLabel: RenderLabelCallback = (roi) => {
+const DEFAULT_RENDER_LABEL: RenderLabelCallback = (roi) => {
   return <LabelContainer>{roi.label}</LabelContainer>;
 };
 
