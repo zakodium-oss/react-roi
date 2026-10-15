@@ -234,16 +234,13 @@ function getCursor(
     }
     return canPan ? 'grab' : 'default';
   }
-  if (!interactions.move) {
-    return 'pointer';
-  }
 
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (mode) {
     case 'draw':
       return 'crosshair';
     default:
-      return interactions.move ? 'move' : 'default';
+      return interactions.move ? 'move' : 'pointer';
   }
 }
 
