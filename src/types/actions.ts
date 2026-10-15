@@ -1,8 +1,7 @@
 import type { BoundaryStrategy } from './utils.ts';
 
 export type UpdateRoiOptions =
-  | UpdateRoiOptionsNoCommit
-  | UpdateRoiOptionsWithCommit;
+  UpdateRoiOptionsNoCommit | UpdateRoiOptionsWithCommit;
 
 export interface UpdateRoiOptionsNoCommit {
   /**

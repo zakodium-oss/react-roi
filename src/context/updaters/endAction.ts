@@ -12,7 +12,7 @@ export function endAction(draft: ReactRoiState, payload: EndActionPayload) {
   const roi = rois.find((roi) => roi.id === selectedRoi);
   const committedRoi = committedRois.find((roi) => roi.id === selectedRoi);
 
-  if (!roi || (roi.action.type === 'idle')) return;
+  if (!roi || roi.action.type === 'idle') return;
   if (committedRoi) {
     assert(
       roi.action.type !== 'drawing',

@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/experimental-ct-react';
 
 import { TestComponent } from '../TestComponent.tsx';
 
- 
 test('load initial rois', async ({ mount, page }) => {
   await mount(<TestComponent />);
   const label1 = page.getByTestId('label-box-1');

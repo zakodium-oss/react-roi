@@ -4,12 +4,7 @@ export interface Size {
 }
 
 export type ReactRoiAction =
-  | 'idle'
-  | 'moving'
-  | 'rotating'
-  | 'drawing'
-  | 'panning'
-  | 'resizing';
+  'idle' | 'moving' | 'rotating' | 'drawing' | 'panning' | 'resizing';
 
 export interface PanZoom {
   scale: number;
@@ -27,7 +22,4 @@ export type RoiMode = 'select' | 'draw' | 'hybrid' | 'rotate_selected';
 export type ResizeStrategy = 'cover' | 'contain' | 'center' | 'none';
 
 export type BoundaryStrategy =
-  | 'inside_auto'
-  | 'inside'
-  | 'partially_inside'
-  | 'none';
+  'inside_auto' | 'inside' | 'partially_inside' | 'none';
