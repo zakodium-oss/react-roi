@@ -15,12 +15,13 @@ import { prepareSelectedBoxForAction } from './selectBoxAndStartAction.ts';
  */
 export function startDraw(draft: ReactRoiState, payload: StartDrawPayload) {
   const { event, containerBoundingRect, interactions } = payload;
-  const emptyRoi = createRoi(crypto.randomUUID());
 
   if (payload.isPanZooming && interactions.pan) {
     draft.action = 'panning';
     return;
   }
+
+  const emptyRoi = createRoi(crypto.randomUUID());
   const totalPanZoom = computeTotalPanZoom(draft);
   const x = applyInverseX(
     totalPanZoom,

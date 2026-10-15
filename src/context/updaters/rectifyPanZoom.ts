@@ -27,52 +27,52 @@ export function rectifyPanZoom(draft: Draft<ReactRoiState>) {
   const shouldUpdateBottom =
     maxY / draft.containerSize.height < 1 - draft.zoomDomain.spaceAroundTarget;
 
-  if (!(shouldUpdateLeft && shouldUpdateRight)) {
-    if (shouldUpdateLeft || shouldUpdateRight) {
-      const translation1 = computePanZoomTranslation(
-        draft,
-        0,
-        draft.zoomDomain.spaceAroundTarget * draft.containerSize.width,
-        0,
-      );
-      const translation2 = computePanZoomTranslation(
-        draft,
-        draft.targetSize.width,
-        (1 - draft.zoomDomain.spaceAroundTarget) * draft.containerSize.width,
-        0,
-      );
-      const diff1 = abs(translation1 - draft.panZoom.translation[0]);
-      const diff2 = abs(translation2 - draft.panZoom.translation[0]);
-      if (diff1 < diff2) {
-        draft.panZoom.translation[0] = translation1;
-      } else {
-        draft.panZoom.translation[0] = translation2;
-      }
+  // If both are false, nothing needs to be updated
+  // If both are true,
+  if (shouldUpdateLeft !== shouldUpdateRight) {
+    const translation1 = computePanZoomTranslation(
+      draft,
+      0,
+      draft.zoomDomain.spaceAroundTarget * draft.containerSize.width,
+      0,
+    );
+    const translation2 = computePanZoomTranslation(
+      draft,
+      draft.targetSize.width,
+      (1 - draft.zoomDomain.spaceAroundTarget) * draft.containerSize.width,
+      0,
+    );
+    const diff1 = Math.abs(translation1 - draft.panZoom.translation[0]);
+    const diff2 = Math.abs(translation2 - draft.panZoom.translation[0]);
+    if (diff1 < diff2) {
+      draft.panZoom.translation[0] = translation1;
+    } else {
+      draft.panZoom.translation[0] = translation2;
     }
   }
 
-  if (!(shouldUpdateTop && shouldUpdateBottom)) {
-    if (shouldUpdateTop || shouldUpdateBottom) {
-      const translation1 = computePanZoomTranslation(
-        draft,
-        0,
-        draft.zoomDomain.spaceAroundTarget * draft.containerSize.height,
-        1,
-      );
-      const translation2 = computePanZoomTranslation(
-        draft,
-        draft.targetSize.height,
-        (1 - draft.zoomDomain.spaceAroundTarget) * draft.containerSize.height,
-        1,
-      );
-      const diff1 = abs(translation1 - draft.panZoom.translation[1]);
-      const diff2 = abs(translation2 - draft.panZoom.translation[1]);
-      if (diff1 < diff2) {
-        draft.panZoom.translation[1] = translation1;
-      } else {
-        draft.panZoom.translation[1] = translation2;
-      }
-    }
+  if (shouldUpdateTop === shouldUpdateBottom) {
+    return;
+  }
+
+  const translation1 = computePanZoomTranslation(
+    draft,
+    0,
+    draft.zoomDomain.spaceAroundTarget * draft.containerSize.height,
+    1,
+  );
+  const translation2 = computePanZoomTranslation(
+    draft,
+    draft.targetSize.height,
+    (1 - draft.zoomDomain.spaceAroundTarget) * draft.containerSize.height,
+    1,
+  );
+  const diff1 = Math.abs(translation1 - draft.panZoom.translation[1]);
+  const diff2 = Math.abs(translation2 - draft.panZoom.translation[1]);
+  if (diff1 < diff2) {
+    draft.panZoom.translation[1] = translation1;
+  } else {
+    draft.panZoom.translation[1] = translation2;
   }
 }
 
@@ -88,8 +88,4 @@ function computePanZoomTranslation(
     target * basePanZoom.scale * panZoom.scale -
     panZoom.scale * basePanZoom.translation[dim]
   );
-}
-
-function abs(value: number) {
-  return value < 0 ? -value : value;
 }

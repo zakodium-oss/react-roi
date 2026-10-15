@@ -103,21 +103,24 @@ export function getMBRBoundaries(
       minY: p2.y,
       maxY: p0.y,
     };
-  } else if (box.angle >= ANGLE_90_NEGATIVE && box.angle < 0) {
+  }
+  if (box.angle >= ANGLE_90_NEGATIVE && box.angle < 0) {
     return {
       minX: p0.x,
       maxX: p2.x,
       minY: p1.y,
       maxY: p3.y,
     };
-  } else if (box.angle >= 0 && box.angle < ANGLE_90_POSITIVE) {
+  }
+  if (box.angle >= 0 && box.angle < ANGLE_90_POSITIVE) {
     return {
       minX: p3.x,
       maxX: p1.x,
       minY: p0.y,
       maxY: p2.y,
     };
-  } else if (box.angle >= ANGLE_90_POSITIVE && box.angle <= Math.PI) {
+  }
+  if (box.angle >= ANGLE_90_POSITIVE && box.angle <= Math.PI) {
     return {
       minX: p2.x,
       maxX: p0.x,

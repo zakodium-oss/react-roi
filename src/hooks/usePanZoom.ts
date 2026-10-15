@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
-import { panZoomContext } from '../context/contexts.js';
+import { PanZoomContext } from '../context/contexts.js';
 import { computeTotalPanZoom } from '../utilities/panZoom.js';
 
 export function usePanZoom() {
-  return useContext(panZoomContext);
+  return useContext(PanZoomContext);
 }
 
 export function usePanZoomTransform() {

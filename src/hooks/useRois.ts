@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
-import { roisContext } from '../context/contexts.js';
+import { RoisContext } from '../context/contexts.js';
 import type { Roi } from '../types/Roi.js';
 
 export function useRois<T>() {
-  const rois = useContext(roisContext);
+  const rois = useContext(RoisContext);
   if (!rois) {
     throw new Error('useRois must be used within a RoiProvider');
   }

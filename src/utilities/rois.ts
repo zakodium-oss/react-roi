@@ -61,9 +61,9 @@ export function createCommittedRoiFromRoi<T>(
 ): CommittedRoiProperties<T> {
   const strategy = getBoundaryStrategyFromAction(roi, options.boundaryStrategy);
   const { targetSize, commitStrategy } = options;
-  const { action, ...obj } = roi;
+  const { action, ...object } = roi;
   return {
-    ...obj,
+    ...object,
     ...boundBox(
       commitBox(normalizeBox(roi.box), roi.action, commitStrategy),
       targetSize,

@@ -52,9 +52,9 @@ export function getAllEdges(roi: Box, angle: number): EdgeData[] {
     },
   ];
 
-  return edges.map((edge, idx) => ({
+  return edges.map((edge, index) => ({
     ...edge,
-    cursor: getCornerCursor(angle, idx * 2 + 1),
+    cursor: getCornerCursor(angle, index * 2 + 1),
   }));
 }
 

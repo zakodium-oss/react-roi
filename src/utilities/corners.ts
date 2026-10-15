@@ -17,8 +17,8 @@ export interface CornerData {
 // Add π/8 so that:
 // -π/8 <= angle < π/8 becomes 0 <= angle < π/4
 // which returns an index of 0 when dividing by π/4 and computing modulo
-function getCursorIndex(angle: number, idx: number) {
-  return (Math.floor(((17 * Math.PI) / 8 + angle) / (Math.PI / 4)) + idx) % 8;
+function getCursorIndex(angle: number, index: number) {
+  return (Math.floor(((17 * Math.PI) / 8 + angle) / (Math.PI / 4)) + index) % 8;
 }
 
 // List of cursors going around the rectangle, starting from the top-left position and moving to the right from there
@@ -34,9 +34,9 @@ const cursors: Array<Exclude<CSSProperties['cursor'], undefined>> = [
 ];
 export function getCornerCursor(
   angle: number,
-  idx: number,
+  index: number,
 ): CSSProperties['cursor'] {
-  return cursors[getCursorIndex(angle, idx)];
+  return cursors[getCursorIndex(angle, index)];
 }
 // (angle + Math.PI/8) / (Math.PI / 4) => 0-7
 
@@ -92,8 +92,8 @@ export function getAllCorners(roi: Box, angle: number): CornerData[] {
       cy: y + height / 2,
     },
   ];
-  return cursors.map((item, idx) => ({
+  return cursors.map((item, index) => ({
     ...item,
-    cursor: getCornerCursor(angle, idx),
+    cursor: getCornerCursor(angle, index),
   }));
 }

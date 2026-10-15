@@ -48,13 +48,13 @@ export function useActions<TData = unknown>() {
       },
       zoomIntoROI: (
         roiOrPoints: CommittedRoi | Point[],
-        options: ZoomIntoROIOptions = { margin: 0.2 },
+        options?: ZoomIntoROIOptions,
       ) => {
         roiDispatch({
           type: 'ZOOM_INTO_ROI',
           payload: {
             roiOrPoints,
-            options,
+            options: options ?? { margin: 0.2 },
           },
         });
       },
@@ -72,12 +72,14 @@ export function useActions<TData = unknown>() {
           payload: zoomPayload,
         });
 
-        if (stateRef.current && callbacksRef.current?.onZoom) {
-          const newState = produce(stateRef.current, (draft) =>
-            zoomAction(draft, zoomPayload),
-          );
-          callbacksRef.current.onZoom(newState.panZoom);
+        if (!stateRef.current || !callbacksRef.current?.onZoom) {
+          return;
         }
+
+        const newState = produce(stateRef.current, (draft) =>
+          zoomAction(draft, zoomPayload),
+        );
+        callbacksRef.current.onZoom(newState.panZoom);
       },
       /**
        * Update the angle of the ROI, using a custom rotation center.

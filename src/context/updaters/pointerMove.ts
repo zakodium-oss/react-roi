@@ -134,7 +134,7 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
         box.x = newX;
         box.width -= movementX;
       } else {
-        box.x = box.x + box.width;
+        box.x += box.width;
         box.width = newX - box.x;
         roi.action.xAxisCorner = 'right';
         roi.box.xRotationCenter = 'left';
@@ -146,7 +146,7 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
       if (newWidth >= 0) {
         box.width = newWidth;
       } else {
-        box.x = box.x + newWidth;
+        box.x += newWidth;
         box.width = -newWidth;
         roi.action.xAxisCorner = 'left';
         roi.box.xRotationCenter = 'right';
@@ -170,7 +170,7 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
         box.y = newY;
         box.height -= movementY;
       } else {
-        box.y = box.y + box.height;
+        box.y += box.height;
         box.height = newY - box.y;
         roi.action.yAxisCorner = 'bottom';
         roi.box.yRotationCenter = 'top';
@@ -182,7 +182,7 @@ function resize(draft: Draft<ReactRoiState>, roi: Draft<Roi>, movement: Point) {
       if (newHeight >= 0) {
         box.height = newHeight;
       } else {
-        box.y = box.y + newHeight;
+        box.y += newHeight;
         box.height = -newHeight;
         roi.action.yAxisCorner = 'top';
         roi.box.yRotationCenter = 'bottom';

@@ -61,10 +61,9 @@ export function zoomIntoROI(draft: ReactRoiState, zoom: ZoomIntoROIPayload) {
   // Avoid dividing by 0
   const sanitizedMargin = Math.min(margin, 1 - Number.EPSILON);
   const { containerSize } = draft;
-
-  const boundaries = Array.isArray(roiOrPoints)
-    ? getBoundaries(roiOrPoints)
-    : getBoundaries(getRectanglePoints(roiOrPoints));
+  const boundaries = getBoundaries(
+    Array.isArray(roiOrPoints) ? roiOrPoints : getRectanglePoints(roiOrPoints),
+  );
   const width = boundaries.maxX - boundaries.minX;
   const height = boundaries.maxY - boundaries.minY;
   const center = {

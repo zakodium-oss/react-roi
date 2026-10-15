@@ -4,4 +4,6 @@ import config from './playwright-base.config.ts';
 
 config.testDir = './tests/components/';
 
-export default defineConfig(config);
+const playwrightConfig = defineConfig(config);
+
+export default playwrightConfig;

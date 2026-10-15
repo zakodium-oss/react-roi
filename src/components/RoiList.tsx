@@ -51,9 +51,9 @@ export interface RoiListProps<TData = unknown> {
 
 export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   const {
-    getStyle = defaultGetStyle,
-    getInteractions = defaultGetInteractions,
-    getOverlayOpacity = () => 0,
+    getStyle = DEFAULT_GET_STYLE,
+    getInteractions = DEFAULT_GET_INTERACTIONS,
+    getOverlayOpacity = DEFAULT_GET_OVERLAY_OPACITY,
     renderLabel = defaultRenderLabel,
     showRotationHandle = false,
     showGrid = false,
@@ -104,9 +104,9 @@ export function RoiList<TData = unknown>(props: RoiListProps<TData>) {
   );
 }
 
-const defaultGetInteractions: GetInteractionsCallback = () => undefined;
+const DEFAULT_GET_INTERACTIONS: GetInteractionsCallback = () => undefined;
 
-const defaultGetStyle: GetStyleCallback = ({ interactions, isSelected }) => {
+const DEFAULT_GET_STYLE: GetStyleCallback = ({ interactions, isSelected }) => {
   return {
     rectAttributes: {
       fill: !interactions.select
@@ -123,3 +123,5 @@ const defaultGetStyle: GetStyleCallback = ({ interactions, isSelected }) => {
 const defaultRenderLabel: RenderLabelCallback = (roi) => {
   return <LabelContainer>{roi.label}</LabelContainer>;
 };
+
+const DEFAULT_GET_OVERLAY_OPACITY = () => 0;

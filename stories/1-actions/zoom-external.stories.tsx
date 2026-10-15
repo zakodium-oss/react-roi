@@ -234,7 +234,7 @@ function ZoomTargetButtons() {
   const { zoomIntoROI } = useActions();
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {rois.map((roi, idx) => (
+      {rois.map((roi, index) => (
         <button
           type="button"
           key={roi.id}
@@ -242,7 +242,7 @@ function ZoomTargetButtons() {
             zoomIntoROI(roi);
           }}
         >
-          Zoom into ROI {idx}
+          Zoom into ROI {index}
         </button>
       ))}
     </div>

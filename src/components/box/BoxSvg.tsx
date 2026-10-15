@@ -150,10 +150,10 @@ export function BoxSvg({
       />
       {isSelected &&
         showGrid &&
-        getAllGridLines(box, gridOptions).map((gridLine, idx) => (
+        getAllGridLines(box, gridOptions).map((gridLine, index) => (
           <RoiBoxGridLine
-            // eslint-disable-next-line react/no-array-index-key
-            key={idx}
+            /* eslint-disable-next-line @eslint-react/no-array-index-key */
+            key={index}
             line={gridLine}
             sizes={handlerSizes}
             gridLineOpacity={styles.gridLineOpacity}
@@ -211,11 +211,14 @@ function getCursor(
   if (action !== 'idle') {
     if (action === 'drawing') {
       return 'crosshair';
-    } else if (action === 'moving') {
+    }
+    if (action === 'moving') {
       return 'move';
-    } else if (action === 'rotating') {
+    }
+    if (action === 'rotating') {
       return 'ew-resize';
-    } else if (action === 'panning') {
+    }
+    if (action === 'panning') {
       return 'grab';
     }
   }
@@ -226,13 +229,12 @@ function getCursor(
     if (mode !== 'select') {
       if (!isAltKeyDown || !canPan) {
         return 'crosshair';
-      } else {
-        return 'grab';
       }
-    } else {
-      return canPan ? 'grab' : 'default';
+      return 'grab';
     }
-  } else if (!interactions.move) {
+    return canPan ? 'grab' : 'default';
+  }
+  if (!interactions.move) {
     return 'pointer';
   }
 
