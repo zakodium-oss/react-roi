@@ -14,7 +14,7 @@
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib-esm",
     "dev": "storybook dev -p 6006",
-    "eslint": "eslint ./",
+    "eslint": "eslint ./ --max-warnings=0",
     "eslint-fix": "npm run eslint -- --fix",
     "playwright": "npm run playwright-ct -- --project chromium",
     "playwright-ct": "playwright test -c playwright-ct.config.ts",
@@ -27,7 +27,7 @@
     "tsc-esm": "tsc --project tsconfig.esm.json"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=19"
   },
   "dependencies": {
     "@react-hook/resize-observer": "^2.0.2",

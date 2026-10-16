@@ -7,7 +7,7 @@ export function useTargetRef<T extends HTMLElement>() {
   const targetRef = useRef<T>(null);
   const roiDispatch = useRoiDispatch();
 
-  // TODO: https://github.com/zakodium-oss/react-roi/issues/164
+  //  https://github.com/zakodium-oss/react-roi/issues/164
   // @ts-expect-error This can be ignored for now
   useResizeObserver(targetRef, (data) => {
     roiDispatch({

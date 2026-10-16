@@ -260,22 +260,20 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   }, [panZoom, basePanZoom, startPanZoom, isReady, targetSize, containerSize]);
 
   return (
-    <CallbacksRefContext.Provider value={callbacksRef}>
-      <RoiStateRefContext.Provider value={stateRef}>
-        <RoiContainerRefContext.Provider value={containerRef}>
-          <PanZoomContext.Provider value={panzoomContextValue}>
-            <RoiDispatchContext.Provider value={dispatch}>
-              <RoisContext.Provider value={rois}>
-                <CommittedRoisContext.Provider value={committedRois}>
-                  <RoiStateContext.Provider value={roiState}>
-                    {children}
-                  </RoiStateContext.Provider>
-                </CommittedRoisContext.Provider>
-              </RoisContext.Provider>
-            </RoiDispatchContext.Provider>
-          </PanZoomContext.Provider>
-        </RoiContainerRefContext.Provider>
-      </RoiStateRefContext.Provider>
-    </CallbacksRefContext.Provider>
+    <CallbacksRefContext value={callbacksRef}>
+      <RoiStateRefContext value={stateRef}>
+        <RoiContainerRefContext value={containerRef}>
+          <PanZoomContext value={panzoomContextValue}>
+            <RoiDispatchContext value={dispatch}>
+              <RoisContext value={rois}>
+                <CommittedRoisContext value={committedRois}>
+                  <RoiStateContext value={roiState}>{children}</RoiStateContext>
+                </CommittedRoisContext>
+              </RoisContext>
+            </RoiDispatchContext>
+          </PanZoomContext>
+        </RoiContainerRefContext>
+      </RoiStateRefContext>
+    </CallbacksRefContext>
   );
 }

@@ -1,7 +1,7 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
 import type { CSSProperties, ReactElement, ReactNode, RefObject } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import type { ActionCallbacks } from '../../context/contexts.js';
 import { ContainerInteractionsContext } from '../../context/contexts.js';
@@ -50,6 +50,7 @@ export function ContainerComponent<TData = unknown>(
     interactions,
     zoomWithoutModifierKey = false,
     minNewRoiSize = 1,
+    getNewRoiData,
   } = props;
 
   const isAltKeyDown = useIsKeyDown('Alt');
@@ -63,14 +64,7 @@ export function ContainerComponent<TData = unknown>(
   const callbacksRef = useCallbacksRef();
   const stateRef = useCurrentState();
 
-  const newRoiDataCallbackRef = useRef(props.getNewRoiData);
-
-  // TODO: useEffectEvent once we migrate to React 19
-  useEffect(() => {
-    newRoiDataCallbackRef.current = props.getNewRoiData;
-  }, [props.getNewRoiData]);
-
-  // TODO: https://github.com/zakodium-oss/react-roi/issues/164
+  // See https://github.com/zakodium-oss/react-roi/issues/164
   // @ts-expect-error This can be ignored for now
   useResizeObserver(containerRef, (entry) => {
     const { width, height } = entry.contentRect;
@@ -183,7 +177,7 @@ export function ContainerComponent<TData = unknown>(
   ]);
 
   return (
-    <ContainerInteractionsContext.Provider value={interactions}>
+    <ContainerInteractionsContext value={interactions}>
       <div
         id={id}
         ref={containerRef}
@@ -228,7 +222,7 @@ export function ContainerComponent<TData = unknown>(
                   containerBoundingRect,
                   isPanZooming: event.altKey,
                   interactions,
-                  data: newRoiDataCallbackRef.current?.(),
+                  data: getNewRoiData?.(),
                 },
               });
             } else if (interactions.pan) {
@@ -262,7 +256,7 @@ export function ContainerComponent<TData = unknown>(
           {children}
         </div>
       </div>
-    </ContainerInteractionsContext.Provider>
+    </ContainerInteractionsContext>
   );
 }
 

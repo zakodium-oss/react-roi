@@ -1,8 +1,7 @@
-import { useContext } from 'react';
+import { use } from 'react';
 
 import { RoiContainerRefContext } from '../context/contexts.js';
 
 export function useRoiContainerRef() {
-  const container = useContext(RoiContainerRefContext);
-  return container;
+  return use(RoiContainerRefContext);
 }

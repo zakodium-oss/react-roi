@@ -1,7 +1,7 @@
-import { useContext } from 'react';
+import { use } from 'react';
 
 import { ContainerInteractionsContext } from '../context/contexts.js';
 
 export function useContainerInteractions() {
-  return useContext(ContainerInteractionsContext);
+  return use(ContainerInteractionsContext);
 }
