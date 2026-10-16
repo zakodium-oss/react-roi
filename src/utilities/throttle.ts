@@ -1,5 +1,5 @@
 // @ts-expect-error too generic to type
-export function throttle(function_, timeFrame) {
+export function throttle(callback, timeFrame) {
   let lastTime = 0;
   // @ts-expect-error too generic to type
   return function throttled(...arguments_) {
@@ -8,7 +8,7 @@ export function throttle(function_, timeFrame) {
       return;
     }
 
-    function_(...arguments_);
+    callback(...arguments_);
     lastTime = now;
   };
 }
