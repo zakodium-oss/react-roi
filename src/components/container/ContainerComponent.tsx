@@ -1,7 +1,7 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { produce } from 'immer';
 import type { CSSProperties, ReactElement, ReactNode, RefObject } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 
 import type { ActionCallbacks } from '../../context/contexts.js';
 import { ContainerInteractionsContext } from '../../context/contexts.js';
@@ -78,80 +78,87 @@ export function ContainerComponent<TData = unknown>(
     });
   });
 
+  const onPointerMove = useEffectEvent((event: PointerEvent) => {
+    if (!stateRef.current || !containerRef?.current) return;
+    const endPayload = {
+      unselect: interactions.unselect,
+      minNewRoiSize,
+    };
+    const movePayload = {
+      event,
+      containerBoundingRect: containerRef.current.getBoundingClientRect(),
+    };
+    roiDispatch({
+      type: 'POINTER_MOVE',
+      payload: movePayload,
+    });
+    callPointerMoveActionHooks(
+      stateRef.current,
+      callbacksRef.current || {},
+      movePayload,
+      endPayload,
+      actions,
+    );
+  });
+
+  const onPointerUp = useEffectEvent(() => {
+    if (!stateRef.current) return;
+    const endPayload = {
+      unselect: interactions.unselect,
+      minNewRoiSize,
+    };
+    roiDispatch({
+      type: 'END_ACTION',
+      payload: endPayload,
+    });
+    callPointerUpActionHooks(
+      stateRef.current,
+      callbacksRef.current || {},
+      endPayload,
+      actions,
+    );
+  });
+
+  const isZoomAllowed = useEffectEvent(
+    (event: WheelEvent) =>
+      (event.altKey || zoomWithoutModifierKey) && interactions.zoom,
+  );
+
+  const zoom = useEffectEvent((event: WheelEvent) => {
+    if (!containerRef?.current) {
+      return;
+    }
+
+    const zoomPayload = {
+      scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      containerBoundingRect: containerRef.current.getBoundingClientRect(),
+    };
+    roiDispatch({
+      type: 'ZOOM',
+      payload: zoomPayload,
+    });
+    if (!stateRef.current || !callbacksRef.current?.onZoom) {
+      return;
+    }
+
+    const newState = produce(stateRef.current, (draft) =>
+      zoomAction(draft, zoomPayload),
+    );
+    callbacksRef.current.onZoom(newState.panZoom);
+  });
+
   useEffect(() => {
-    function onPointerMove(event: PointerEvent) {
-      if (!stateRef.current || !containerRef?.current) return;
-      const endPayload = {
-        unselect: interactions.unselect,
-        minNewRoiSize,
-      };
-      const movePayload = {
-        event,
-        containerBoundingRect: containerRef.current.getBoundingClientRect(),
-      };
-      roiDispatch({
-        type: 'POINTER_MOVE',
-        payload: movePayload,
-      });
-      callPointerMoveActionHooks(
-        stateRef.current,
-        callbacksRef.current || {},
-        movePayload,
-        endPayload,
-        actions,
-      );
-    }
-
-    function onPointerUp() {
-      if (!stateRef.current) return;
-      const endPayload = {
-        unselect: interactions.unselect,
-        minNewRoiSize,
-      };
-      roiDispatch({
-        type: 'END_ACTION',
-        payload: endPayload,
-      });
-      callPointerUpActionHooks(
-        stateRef.current,
-        callbacksRef.current || {},
-        endPayload,
-        actions,
-      );
-    }
-
-    const onZoom = throttle((event: WheelEvent) => {
-      if (!containerRef?.current) {
-        return;
-      }
-
-      const zoomPayload = {
-        scale: event.deltaY > 0 ? 0.92 : 1 / 0.92,
-        clientX: event.clientX,
-        clientY: event.clientY,
-        containerBoundingRect: containerRef.current.getBoundingClientRect(),
-      };
-      roiDispatch({
-        type: 'ZOOM',
-        payload: zoomPayload,
-      });
-      if (!stateRef.current || !callbacksRef.current?.onZoom) {
-        return;
-      }
-
-      const newState = produce(stateRef.current, (draft) =>
-        zoomAction(draft, zoomPayload),
-      );
-      callbacksRef.current.onZoom(newState.panZoom);
-    }, 25);
+    const throttledZoom = throttle((event: WheelEvent) => zoom(event), 25);
 
     function onWheel(event: WheelEvent) {
-      if ((!event.altKey && !zoomWithoutModifierKey) || !interactions.zoom) {
+      if (!isZoomAllowed(event)) {
         return;
       }
       event.preventDefault();
       event.stopPropagation();
-      onZoom(event);
+      throttledZoom(event);
     }
 
     const containerElement = containerRef?.current;
@@ -165,16 +172,7 @@ export function ContainerComponent<TData = unknown>(
       document.removeEventListener('pointerup', onPointerUp);
       containerElement?.removeEventListener('wheel', onWheel);
     };
-  }, [
-    roiDispatch,
-    containerRef,
-    callbacksRef,
-    interactions,
-    minNewRoiSize,
-    stateRef,
-    actions,
-    zoomWithoutModifierKey,
-  ]);
+  }, [containerRef]);
 
   return (
     <ContainerInteractionsContext value={interactions}>
