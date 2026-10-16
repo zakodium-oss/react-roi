@@ -133,8 +133,9 @@ export function initBox(
     case 'exact':
       return box;
     case 'round': {
-      const { x, y, width, height, angle } = box;
+      const { angle } = box;
       if (angle === 0) {
+        const { x, y, width, height } = box;
         const x1 = Math.round(x);
         const y1 = Math.round(y);
         const x2 = Math.round(x + width);
@@ -146,15 +147,15 @@ export function initBox(
           height: y2 - y1,
           angle,
         };
-      } else {
-        const denormalized = denormalizeBox(box);
-        const width = Math.round(denormalized.width);
-        const height = Math.round(denormalized.height);
-
-        const x = box.x + (box.width - width) / 2;
-        const y = box.y + (box.height - height) / 2;
-        return { x, y, width, height, angle };
       }
+
+      const denormalized = denormalizeBox(box);
+      const width = Math.round(denormalized.width);
+      const height = Math.round(denormalized.height);
+
+      const x = box.x + (box.width - width) / 2;
+      const y = box.y + (box.height - height) / 2;
+      return { x, y, width, height, angle };
     }
     default:
       assertUnreachable(strategy);
@@ -194,9 +195,8 @@ function commitRound(roi: CommittedBox, action: RoiAction): CommittedBox {
           height: Math.round(y2) - y1,
           angle,
         };
-      } else {
-        return commitExact(roi);
       }
+      return commitExact(roi);
     }
     case 'rotating_free':
     case 'rotating': {

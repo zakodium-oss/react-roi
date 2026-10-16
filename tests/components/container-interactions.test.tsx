@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 

@@ -330,8 +330,8 @@ export function roiReducer(
       case 'SELECT_ROI': {
         const id = action.payload;
         if (id) {
-          const roi = draft.rois.find((roi) => roi.id === id);
-          if (roi) {
+          const hasRoi = draft.rois.some((roi) => roi.id === id);
+          if (hasRoi) {
             cancelAction(draft);
             draft.selectedRoi = id;
           }
@@ -451,8 +451,8 @@ export function roiReducer(
             break;
           }
           case 'draw':
+            break;
           default: {
-            // The draw action does not select the box
             break;
           }
         }

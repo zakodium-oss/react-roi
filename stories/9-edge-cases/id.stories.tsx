@@ -14,28 +14,28 @@ export default {
   title: 'Edge cases',
 } as Meta;
 
-export function CrashWithSameId() {
-  function CreateButton() {
-    const { createRoi } = useActions();
-    const newRoi = getInitialRois(320, 320)[0];
-    newRoi.id = 'ROI 1';
-    function onClick() {
-      createRoi(newRoi);
-    }
-
-    return (
-      <>
-        <p>
-          warning: this stories should throw an error if you add two time a ROI
-          with the button.
-        </p>
-        <button type="button" onClick={onClick}>
-          {'Add a new ROI with id "ROI 1"'}
-        </button>
-      </>
-    );
+function CreateButton() {
+  const { createRoi } = useActions();
+  const newRoi = getInitialRois(320, 320)[0];
+  newRoi.id = 'ROI 1';
+  function onClick() {
+    createRoi(newRoi);
   }
 
+  return (
+    <>
+      <p>
+        warning: this stories should throw an error if you add two time a ROI
+        with the button.
+      </p>
+      <button type="button" onClick={onClick}>
+        {'Add a new ROI with id "ROI 1"'}
+      </button>
+    </>
+  );
+}
+
+export function CrashWithSameId() {
   return (
     <Layout>
       <RoiProvider>

@@ -52,9 +52,8 @@ export function getBoundaryStrategyFromAction(
 
       if (roi.action.type === 'moving' || roi.action.type === 'rotating') {
         return 'move_inside';
-      } else {
-        return 'resize_inside';
       }
+      return 'resize_inside';
     }
     default: {
       assertUnreachable(strategy);

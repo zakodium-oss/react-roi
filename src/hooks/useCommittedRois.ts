@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
-import { committedRoisContext } from '../context/contexts.js';
+import { CommittedRoisContext } from '../context/contexts.js';
 import { CommittedRoi } from '../types/CommittedRoi.js';
 
 export function useCommittedRois<T>() {
-  const committedRois = useContext(committedRoisContext);
+  const committedRois = useContext(CommittedRoisContext);
   if (!committedRois) {
     throw new Error('useCommittedRois must be used within a RoiProvider');
   }

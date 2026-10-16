@@ -163,14 +163,13 @@ function getSidePoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
       x2: corner.cx,
       y2: corner.cy + scaledSizes.handlerSize / 2,
     };
-  } else {
-    return {
-      x1: corner.cx - scaledSizes.handlerSize / 2,
-      y1: corner.cy,
-      x2: corner.cx + scaledSizes.handlerSize / 2,
-      y2: corner.cy,
-    };
   }
+  return {
+    x1: corner.cx - scaledSizes.handlerSize / 2,
+    y1: corner.cy,
+    x2: corner.cx + scaledSizes.handlerSize / 2,
+    y2: corner.cy,
+  };
 }
 
 function getCornerPoints(corner: CornerData, scaledSizes: HandlerSizeOptions) {
@@ -213,18 +212,18 @@ function getSideHandlerRect(
       width: box.width - 2 * scaledSizes.handlerSize,
       height: scaledSizes.handlerSize * 2,
     };
-  } else if (corner.yPosition === 'center') {
+  }
+  if (corner.yPosition === 'center') {
     return {
       x: corner.cx - scaledSizes.handlerSize,
       y: box.y + scaledSizes.handlerSize,
       width: scaledSizes.handlerSize * 2,
       height: box.height - 2 * scaledSizes.handlerSize,
     };
-  } else {
-    throw new Error(
-      `Invalid corner position: ${corner.xPosition}, ${corner.yPosition} is not a side`,
-    );
   }
+  throw new Error(
+    `Invalid corner position: ${corner.xPosition}, ${corner.yPosition} is not a side`,
+  );
 }
 
 function getTransform(corner: CornerData, scaledSizes: HandlerSizeOptions) {

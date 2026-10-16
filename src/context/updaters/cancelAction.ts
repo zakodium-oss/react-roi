@@ -5,6 +5,10 @@ import { assert } from '../../utilities/assert.js';
 import { denormalizeBox } from '../../utilities/box.js';
 import type { CancelActionPayload, ReactRoiState } from '../roiReducer.js';
 
+function byIdleAction(roi: Roi) {
+  return roi.action.type !== 'idle';
+}
+
 export function cancelAction(
   draft: Draft<ReactRoiState>,
   payload: CancelActionPayload = {},
@@ -16,9 +20,6 @@ export function cancelAction(
 ) {
   function byRoiId(roi: Roi) {
     return roi.id === roiId;
-  }
-  function byIdleAction(roi: Roi) {
-    return roi.action.type !== 'idle';
   }
 
   const rois = draft.rois.filter(roiId ? byRoiId : byIdleAction);

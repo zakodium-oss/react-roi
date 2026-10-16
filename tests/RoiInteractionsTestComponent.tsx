@@ -8,6 +8,8 @@ import {
   useTargetRef,
 } from '../src/index.ts';
 
+const DEFAULT_INTERACTIONS: Record<string, RoiInteractions> = {};
+
 interface RoiInteractionsTestComponentProps {
   mode?: RoiMode;
   /**
@@ -28,7 +30,7 @@ export function RoiInteractionsTestComponent(
 ) {
   const {
     mode = 'hybrid',
-    interactions = {},
+    interactions = DEFAULT_INTERACTIONS,
     selectedRoiId,
     showRotationHandle = false,
     showGrid = false,
@@ -57,11 +59,11 @@ export function RoiInteractionsTestComponent(
 }
 
 function StateProbe() {
-  const { selectedRoi } = useRoiState();
+  const { selectedRoi = 'none' } = useRoiState();
   const rois = useCommittedRois();
   return (
     <>
-      <div data-testid="selected">{selectedRoi ?? 'none'}</div>
+      <div data-testid="selected">{selectedRoi}</div>
       <div data-testid="count">{rois.length}</div>
       {rois.map((roi) => (
         <div key={roi.id} data-testid={`geometry-${roi.id}`}>

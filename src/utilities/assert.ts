@@ -1,12 +1,9 @@
 export function assertUnreachable(x: never, message?: string): never {
+  if (message) {
+    throw new Error(`unreachable: ${message}`);
+  }
   throw new Error(
-    `unreachable: ${
-      message
-        ? message
-        : typeof x === 'string'
-          ? x
-          : 'reached assertUnreachable'
-    }`,
+    `unreachable: ${typeof x === 'string' ? x : 'reached assertUnreachable'}`,
   );
 }
 

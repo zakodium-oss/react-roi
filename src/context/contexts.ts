@@ -18,24 +18,24 @@ import { getIdentityPanzoom } from '../utilities/panZoom.ts';
 import type { ReactRoiState, RoiReducerAction } from './roiReducer.js';
 import { initialSize } from './updaters/initialPanZoom.js';
 
-export const roiStateContext = createContext<RoiState | null>(null);
+export const RoiStateContext = createContext<RoiState | null>(null);
 
-export const containerInteractionsContext =
+export const ContainerInteractionsContext =
   createContext<ResolvedContainerInteractions>(defaultContainerInteractions);
 
-export const roiDispatchContext =
+export const RoiDispatchContext =
   createContext<Dispatch<RoiReducerAction> | null>(null);
 
-export const committedRoisContext = createContext<
+export const CommittedRoisContext = createContext<
   CommittedRoiProperties[] | null
 >(null);
 
-export const roisContext = createContext<Roi[] | null>(null);
+export const RoisContext = createContext<Roi[] | null>(null);
 
-export const roiContainerRefContext =
+export const RoiContainerRefContext =
   createContext<RefObject<HTMLDivElement | null> | null>(null);
 
-export interface PanZoomContext {
+export interface PanZoomContextValues {
   panZoom: PanZoom;
   basePanZoom: PanZoom;
   startPanZoom: PanZoomWithOrigin;
@@ -44,7 +44,7 @@ export interface PanZoomContext {
   containerSize: Size;
 }
 
-export const panZoomContext = createContext<PanZoomContext>({
+export const PanZoomContext = createContext<PanZoomContextValues>({
   targetSize: {
     width: initialSize.width,
     height: initialSize.height,
@@ -62,7 +62,7 @@ export const panZoomContext = createContext<PanZoomContext>({
   isReady: false,
 });
 
-export const roiStateRefContext =
+export const RoiStateRefContext =
   createContext<RefObject<ReactRoiState> | null>(null);
 
 export interface ActionCallbacks<TData = unknown> {
@@ -70,7 +70,7 @@ export interface ActionCallbacks<TData = unknown> {
   onChange?: OnChangeCallback<TData>;
   onZoom?: (zoom: PanZoom) => void;
 }
-export const callbacksRefContext = createContext<RefObject<
+export const CallbacksRefContext = createContext<RefObject<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ActionCallbacks<any>
 > | null>(null);

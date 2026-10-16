@@ -92,14 +92,13 @@ function getSidePoints(edge: EdgeData, scaledSizes: HandlerSizeOptions) {
       x2: edge.x2,
       y2: edge.y2 - scaledSizes.handlerBorderWidth,
     };
-  } else {
-    return {
-      x1: edge.x1 + scaledSizes.handlerSize,
-      y1: edge.y1,
-      x2: edge.x2 - scaledSizes.handlerSize,
-      y2: edge.y2,
-    };
   }
+  return {
+    x1: edge.x1 + scaledSizes.handlerSize,
+    y1: edge.y1,
+    x2: edge.x2 - scaledSizes.handlerSize,
+    y2: edge.y2,
+  };
 }
 
 function getTransform(edge: EdgeData, scaledSizes: HandlerSizeOptions) {
@@ -130,13 +129,13 @@ function getHandlerRect(edge: EdgeData, sizes: HandlerSizeOptions) {
       y: edge.y1 + sizes.handlerSize,
       x: edge.x1 - width / 2,
     };
-  } else {
-    const height = sizes.handlerSize * 2;
-    return {
-      height,
-      width: Math.max(0, edge.x2 - edge.x1 - 2 * sizes.handlerSize),
-      x: edge.x1 + sizes.handlerSize,
-      y: edge.y1 - height / 2,
-    };
   }
+
+  const height = sizes.handlerSize * 2;
+  return {
+    height,
+    width: Math.max(0, edge.x2 - edge.x1 - 2 * sizes.handlerSize),
+    x: edge.x1 + sizes.handlerSize,
+    y: edge.y1 - height / 2,
+  };
 }

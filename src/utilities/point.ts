@@ -6,7 +6,7 @@ export interface Point {
 }
 
 export function norm(point: Point): number {
-  return Math.sqrt(point.x ** 2 + point.y ** 2);
+  return Math.hypot(point.x, point.y);
 }
 
 export function add(pointA: Point, pointB: Point): Point {

@@ -52,11 +52,11 @@ export function ContainerInteractionsTestComponent(
 
 function StateProbe() {
   const transform = usePanZoomTransform();
-  const { selectedRoi } = useRoiState();
+  const { selectedRoi = 'none' } = useRoiState();
   return (
     <>
       <div data-testid="transform">{transform}</div>
-      <div data-testid="selected">{selectedRoi ?? 'none'}</div>
+      <div data-testid="selected">{selectedRoi}</div>
     </>
   );
 }

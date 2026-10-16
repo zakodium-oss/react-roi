@@ -1,4 +1,4 @@
-import type { PanZoomContext } from '../../context/contexts.js';
+import type { PanZoomContextValues } from '../../context/contexts.js';
 import type { Roi } from '../../types/Roi.js';
 
 export interface HandlerSizeOptions {
@@ -13,7 +13,7 @@ export const baseHandlerSizes: HandlerSizeOptions = {
 
 export function getHandlerSizes(
   roi: Roi,
-  panZoom: PanZoomContext,
+  panZoom: PanZoomContextValues,
 ): HandlerSizeOptions {
   const totalScale = panZoom.panZoom.scale * panZoom.basePanZoom.scale;
   const minLength = Math.min(roi.box.width, roi.box.height) * totalScale;

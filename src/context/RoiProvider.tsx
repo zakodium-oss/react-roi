@@ -16,20 +16,22 @@ import { getIdentityPanzoom } from '../utilities/panZoom.ts';
 import { createRoiFromCommittedRoi } from '../utilities/rois.js';
 import { normalizeAngle } from '../utilities/rotate.js';
 
-import type { ActionCallbacks, PanZoomContext } from './contexts.js';
+import type { ActionCallbacks, PanZoomContextValues } from './contexts.js';
 import {
-  callbacksRefContext,
-  committedRoisContext,
-  panZoomContext,
-  roiContainerRefContext,
-  roiDispatchContext,
-  roiStateContext,
-  roiStateRefContext,
-  roisContext,
+  CallbacksRefContext,
+  CommittedRoisContext,
+  PanZoomContext,
+  RoiContainerRefContext,
+  RoiDispatchContext,
+  RoiStateContext,
+  RoiStateRefContext,
+  RoisContext,
 } from './contexts.js';
 import type { CommitBoxStrategy, ReactRoiState } from './roiReducer.js';
 import { roiReducer } from './roiReducer.js';
 import { initialSize } from './updaters/initialPanZoom.js';
+
+const DEFAULT_INITIAL_CONFIG: RoiProviderInitialConfig<unknown> = {};
 
 export interface RoiProviderInitialConfig<TData> {
   mode?: RoiMode;
@@ -162,7 +164,7 @@ function createInitialState<T>(
 export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   const {
     children,
-    initialConfig = {},
+    initialConfig = DEFAULT_INITIAL_CONFIG as RoiProviderInitialConfig<TData>,
     onAfterZoomChange,
     onCommit,
     onChange,
@@ -245,7 +247,7 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   }, [mode, selectedRoi, action]);
 
   const isReady = isTargetInitialized && isContainerInitialized;
-  const panzoomContextValue: PanZoomContext = useMemo(() => {
+  const panzoomContextValue: PanZoomContextValues = useMemo(() => {
     return {
       targetSize,
       containerSize,
@@ -258,22 +260,22 @@ export function RoiProvider<TData>(props: RoiProviderProps<TData>) {
   }, [panZoom, basePanZoom, startPanZoom, isReady, targetSize, containerSize]);
 
   return (
-    <callbacksRefContext.Provider value={callbacksRef}>
-      <roiStateRefContext.Provider value={stateRef}>
-        <roiContainerRefContext.Provider value={containerRef}>
-          <panZoomContext.Provider value={panzoomContextValue}>
-            <roiDispatchContext.Provider value={dispatch}>
-              <roisContext.Provider value={rois}>
-                <committedRoisContext.Provider value={committedRois}>
-                  <roiStateContext.Provider value={roiState}>
+    <CallbacksRefContext.Provider value={callbacksRef}>
+      <RoiStateRefContext.Provider value={stateRef}>
+        <RoiContainerRefContext.Provider value={containerRef}>
+          <PanZoomContext.Provider value={panzoomContextValue}>
+            <RoiDispatchContext.Provider value={dispatch}>
+              <RoisContext.Provider value={rois}>
+                <CommittedRoisContext.Provider value={committedRois}>
+                  <RoiStateContext.Provider value={roiState}>
                     {children}
-                  </roiStateContext.Provider>
-                </committedRoisContext.Provider>
-              </roisContext.Provider>
-            </roiDispatchContext.Provider>
-          </panZoomContext.Provider>
-        </roiContainerRefContext.Provider>
-      </roiStateRefContext.Provider>
-    </callbacksRefContext.Provider>
+                  </RoiStateContext.Provider>
+                </CommittedRoisContext.Provider>
+              </RoisContext.Provider>
+            </RoiDispatchContext.Provider>
+          </PanZoomContext.Provider>
+        </RoiContainerRefContext.Provider>
+      </RoiStateRefContext.Provider>
+    </CallbacksRefContext.Provider>
   );
 }

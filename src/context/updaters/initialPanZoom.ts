@@ -70,22 +70,20 @@ function updateBasePanZoomContain(draft: Draft<ReactRoiState>) {
     if (wFactor > hFactor) {
       // Target is wider than the container
       draft.basePanZoom.scale = 1 / wFactor;
-      updateBasePanZoomCenter(draft);
     } else {
       // Target is taller than the container
       draft.basePanZoom.scale = 1 / hFactor;
-      updateBasePanZoomCenter(draft);
     }
   } else {
     // The image is smaller, just center it
     draft.basePanZoom.scale = 1;
-    updateBasePanZoomCenter(draft);
   }
+  updateBasePanZoomCenter(draft);
 }
 
 function updateBasePanZoomCenter(draft: Draft<ReactRoiState>) {
   const { targetSize, containerSize, basePanZoom } = draft;
-  draft.basePanZoom.translation = [
+  basePanZoom.translation = [
     (containerSize.width - basePanZoom.scale * targetSize.width) / 2,
     (containerSize.height - basePanZoom.scale * targetSize.height) / 2,
   ];
