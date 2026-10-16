@@ -20,9 +20,6 @@ export default defineConfig(
   {
     rules: {
       'unicorn/prefer-query-selector': 'off',
-      // This library is still compatible with react 18
-      '@eslint-react/no-use-context': 'off',
-      '@eslint-react/no-context-provider': 'off',
     },
   },
   {
