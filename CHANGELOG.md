@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.0.0](https://github.com/zakodium-oss/react-roi/compare/v3.2.1...v4.0.0) (2026-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* the package no longer supports react 18
+* `getReadOnly` on `RoiList` is replaced by `getInteractions`, `displayRotationHandle` is renamed `showRotationHandle`, and the `isReadOnly` field of the callback payloads is replaced by `interactions`. A former `getReadOnly: () => true` becomes
+* `lockPan`, `lockZoom` and `noUnselection` props of `RoiContainer` are replaced by `interactions={{ pan, zoom, unselect }}`. The options of `actions.cancelAction` are now optional and use `unselect` instead of `noUnselection`.
+
+### Features
+
+* replace getReadOnly with per-ROI interactions ([024b0a3](https://github.com/zakodium-oss/react-roi/commit/024b0a3f2c425829f0e42e6821fa57c27e50e476))
+* replace lockPan, lockZoom and noUnselection with an interactions object ([24589af](https://github.com/zakodium-oss/react-roi/commit/24589aff7df216c662d07eb49ae47653dbabe1a2))
+
+
+### Bug Fixes
+
+* typo in error message ([cad9b70](https://github.com/zakodium-oss/react-roi/commit/cad9b7070d4731641b28fc4f85682523c55e3862))
+
+
+### Miscellaneous Chores
+
+* use react 19 primitives ([b68908d](https://github.com/zakodium-oss/react-roi/commit/b68908d56bf710f3a98d1e3448cc5cf4d732ff53))
+
 ## [3.2.1](https://github.com/zakodium-oss/react-roi/compare/v3.2.0...v3.2.1) (2026-01-23)
 
 
